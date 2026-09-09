@@ -19,8 +19,7 @@
     "test:types": "./.commands/test-types.sh",
     "test:types:target": "./.commands/test-types-target.sh",
     "test:lint": "./.commands/test-lint.sh",
-    "test:lint:fix": "./.commands/test-lint.sh --fix",
-    "prepare": "husky"
+    "test:lint:fix": "./.commands/test-lint.sh --fix"
   },
   "sideEffects": false,
   "types": "./dist/index.d.ts",
