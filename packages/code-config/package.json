@@ -1,0 +1,104 @@
+{
+  "name": "@duplojs/code-config",
+  "version": "0.0.0",
+  "license": "MIT",
+  "type": "module",
+  "author": {
+    "name": "DuploJS",
+    "url": "https://github.com/duplojs"
+  },
+  "description": "Shared project configuration presets for TypeScript, Oxlint, Commitlint, and more.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duplojs/code-config.git"
+  },
+  "scripts": {
+    "build": "./.commands/build.sh",
+    "test:ut": "./.commands/test-ut.sh",
+    "test:ut:watch": "./.commands/test-ut.sh --watch",
+    "test:types": "./.commands/test-types.sh",
+    "test:types:target": "./.commands/test-types-target.sh",
+    "test:lint": "./.commands/test-lint.sh",
+    "test:lint:fix": "./.commands/test-lint.sh --fix",
+    "prepare": "husky"
+  },
+  "sideEffects": false,
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "duplojs-commitlint": "./bin/commitlint.js",
+    "duplojs-oxlint": "./bin/oxlint.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./scripts/index.ts",
+      "import": "./scripts/index.ts"
+    },
+    "./oxlint": {
+      "types": "./scripts/oxlint/index.ts",
+      "import": "./scripts/oxlint/index.ts"
+    },
+    "./oxlint/plugin": {
+      "types": "./scripts/oxlint/plugin/index.ts",
+      "import": "./scripts/oxlint/plugin/index.ts"
+    },
+    "./commitlint": {
+      "types": "./scripts/commitlint/index.ts",
+      "import": "./scripts/commitlint/index.ts"
+    },
+    "./tsconfig/base.json": "./tsconfig/base.json",
+    "./tsconfig/build.json": "./tsconfig/build.json"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.cjs"
+      },
+      "./oxlint": {
+        "types": "./dist/oxlint/index.d.ts",
+        "import": "./dist/oxlint/index.mjs",
+        "require": "./dist/oxlint/index.cjs"
+      },
+      "./oxlint/plugin": {
+        "types": "./dist/oxlint/plugin/index.d.ts",
+        "import": "./dist/oxlint/plugin/index.mjs",
+        "require": "./dist/oxlint/plugin/index.cjs"
+      },
+      "./commitlint": {
+        "types": "./dist/commitlint/index.d.ts",
+        "import": "./dist/commitlint/index.mjs",
+        "require": "./dist/commitlint/index.cjs"
+      },
+      "./tsconfig/base.json": "./tsconfig/base.json",
+      "./tsconfig/build.json": "./tsconfig/build.json"
+    }
+  },
+  "dependencies": {
+    "@commitlint/cli": "21.2.2",
+    "@commitlint/config-conventional": "21.2.2",
+    "@stylistic/eslint-plugin": "5.10.0",
+    "eslint": "10.10.0",
+    "oxlint": "1.82.0",
+    "oxlint-tsgolint": "7.0.2001"
+  },
+  "devDependencies": {
+    "@types/node": "24.1.0"
+  },
+  "files": [
+    "dist",
+    "README",
+    "tsconfig"
+  ],
+  "keywords": [
+    "rules",
+    "lint",
+    "duplojs",
+    "oxlint",
+    "commitlint",
+    "tsconfig"
+  ],
+  "engines": {
+    "node": ">=24.18.0"
+  }
+}

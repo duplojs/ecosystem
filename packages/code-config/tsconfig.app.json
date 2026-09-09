@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig/base.json",
+  "compilerOptions": {
+	"types": ["node"],
+    "checkJs": true,
+    "paths": {
+	  "@scripts": ["./scripts/index.ts"],
+      "@scripts/*": ["./scripts/*"],
+    },
+  },
+  "include": ["./scripts/**/*.ts", "bin/*.js"],
+}

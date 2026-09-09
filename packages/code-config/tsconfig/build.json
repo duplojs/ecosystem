@@ -1,0 +1,10 @@
+{
+	"extends": "./base.json",
+	"compilerOptions": {
+		"outDir": "dist",
+		"noEmit": false,
+		"declaration": true,
+		"declarationDir": "dist",
+		"stripInternal": true
+	}
+}

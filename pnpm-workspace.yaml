@@ -1,0 +1,6 @@
+# pnpm-workspace.yaml
+packages:
+  - "packages/*"
+nodeLinker: hoisted
+allowBuilds:
+  esbuild: true

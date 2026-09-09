@@ -1,0 +1,36 @@
+{
+  "name": "duplojs",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "./.commands/build.sh",
+    "test:ut": "./.commands/test-ut.sh",
+    "test:types": "./.commands/test-types.sh",
+    "test:lint": "./.commands/test-lint.sh",
+    "remove-modules": "rm -rf node_modules packages/*/node_modules",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duplojs/ecosystem.git"
+  },
+  "devDependencies": {
+    "@duplojs/code-config": "workspace:*",
+    "@typescript/typescript6": "^6.0.2",
+    "@vitest/coverage-istanbul": "5.0.0",
+    "husky": "9.1.7",
+    "rolldown": "1.2.7",
+    "tscw-config": "1.1.2",
+    "tsx": "4.23.13",
+    "typescript": "7.0.2",
+    "unplugin-dts": "^1.1.0",
+    "vitest": "5.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=24.18.0"
+  }
+}
