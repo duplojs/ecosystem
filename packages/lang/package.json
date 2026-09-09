@@ -93,7 +93,8 @@
     "./printer": {
       "types": "./scripts/printer/index.ts",
       "import": "./scripts/printer/index.ts"
-    }
+    },
+    "./test-integration": "./integrations/package.tgz"
   },
   "publishConfig": {
     "exports": {

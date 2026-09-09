@@ -113,7 +113,7 @@ importers:
         specifier: workspace:*
         version: link:packages/code-config
       '@typescript/typescript6':
-        specifier: ^6.0.2
+        specifier: 6.0.2
         version: 6.0.2
       '@vitest/coverage-istanbul':
         specifier: 5.0.0
@@ -134,7 +134,7 @@ importers:
         specifier: 7.0.2
         version: 7.0.2
       unplugin-dts:
-        specifier: ^1.1.0
+        specifier: 1.1.0
         version: 1.1.0(esbuild@0.28.2)(rolldown@1.2.7)(typescript@7.0.2)(vite@8.2.2(@types/node@24.1.0)(esbuild@0.28.2)(jiti@2.6.1)(tsx@4.23.13))
       vitest:
         specifier: 5.0.0
@@ -181,10 +181,10 @@ importers:
         version: 24.1.0
 
   packages/lang/integrations:
-    dependencies:
+    optionalDependencies:
       '@duplojs/lang':
-        specifier: file:./duplojs-lang-0.0.0.tgz
-        version: file:packages/lang/integrations/duplojs-lang-0.0.0.tgz
+        specifier: file:./package.tgz
+        version: file:packages/lang/integrations/package.tgz
 
 packages:
 
@@ -357,8 +357,8 @@ packages:
     resolution: {integrity: sha512-aalGyl7dbB5PArRebDIX43ZvBlXrYm9uWzGJ26t+4SzJVPsOuvfILGGbw5X4yX7i50YEmJ8zvbiWnqH/AAnZqg==}
     engines: {node: '>=22'}
 
-  '@duplojs/lang@file:packages/lang/integrations/duplojs-lang-0.0.0.tgz':
-    resolution: {integrity: sha512-uARP2U6u6B9py+SvaqPT0uV7HWPfVhCqfu1zen+21pOT9QZjUxy/HAAkEbYYqZQwAY2PqNR4t9UH6Z9AeC4QRw==, tarball: file:packages/lang/integrations/duplojs-lang-0.0.0.tgz}
+  '@duplojs/lang@file:packages/lang/integrations/package.tgz':
+    resolution: {integrity: sha512-8mkuVhcp4mKyAwTt2LanUinzinZ5l2G3c37auRpTwjEGXaXHLPkH4dB3UXlRraj+D+gRcepi2Tz98NdDZ0ewqA==, tarball: file:packages/lang/integrations/package.tgz}
     version: 0.0.0
     engines: {node: '>=24.18.0'}
 
@@ -2184,7 +2184,8 @@ snapshots:
 
   '@conventional-changelog/template@1.4.0': {}
 
-  '@duplojs/lang@file:packages/lang/integrations/duplojs-lang-0.0.0.tgz': {}
+  '@duplojs/lang@file:packages/lang/integrations/package.tgz':
+    optional: true
 
   '@esbuild/aix-ppc64@0.28.2':
     optional: true
