@@ -1,0 +1,59 @@
+{
+  "name": "@duplojs/json-web-token",
+  "version": "0.0.0",
+    "author": {
+    "name": "DuploJS",
+    "url": "https://github.com/duplojs"
+  },
+  "homepage": "https://json-web-token.duplojs.dev/",
+  "description": "Strongly-typed, policy-centric JWT handling with a ready-to-use tokenHandler and pluggable Signer/Cipher implementations.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duplojs/ecosystem.git",
+    "directory": "packages/json-web-token"
+  },
+  "bugs": {
+    "url": "https://github.com/duplojs/ecosystem/issues"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "./.commands/build.sh",
+    "test:types": "./.commands/test-types.sh",
+    "test:types:target": "./.commands/test-types-target.sh",
+    "test:lint": "./.commands/test-lint.sh",
+    "test:lint:fix": "./.commands/test-lint.sh --fix"
+  },
+  "sideEffects": false,
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "peerDependencies": {
+    "@duplojs/lang": "workspace:*"
+  },
+  "devDependencies": {
+    "@duplojs/code-config": "workspace:*",
+    "@types/node": "24.13.3",
+    "@types/web": "0.0.356"
+  },
+    "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "json-web-token",
+    "auth",
+    "token",
+    "duplojs",
+    "webcrypto",
+    "jwt"
+  ],
+  "engines": {
+    "node": ">=24.18.0"
+  }
+}

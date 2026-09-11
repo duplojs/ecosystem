@@ -9,6 +9,10 @@
 			"path": "../packages/server"
 		},
 		{
+			"name": "@duplojs/json-web-token",
+			"path": "../packages/json-web-token"
+		},
+		{
 			"name": "@duplojs/tools",
 			"path": "../packages/tools"
 		},

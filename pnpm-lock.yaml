@@ -174,6 +174,31 @@ importers:
         specifier: workspace:*
         version: link:..
 
+  packages/json-web-token:
+    dependencies:
+      '@duplojs/lang':
+        specifier: workspace:*
+        version: link:../lang
+    devDependencies:
+      '@duplojs/code-config':
+        specifier: workspace:*
+        version: link:../code-config
+      '@types/node':
+        specifier: 24.13.3
+        version: 24.13.3
+      '@types/web':
+        specifier: 0.0.356
+        version: 0.0.356
+
+  packages/json-web-token/integrations:
+    dependencies:
+      '@duplojs/json-web-token':
+        specifier: workspace:*
+        version: link:..
+      '@duplojs/server':
+        specifier: workspace:*
+        version: link:../../server
+
   packages/lang:
     devDependencies:
       '@duplojs/code-config':
@@ -233,8 +258,8 @@ importers:
         specifier: workspace:*
         version: link:../code-config
       '@types/node':
-        specifier: 24.1.0
-        version: 24.1.0
+        specifier: 24.13.3
+        version: 24.13.3
 
   packages/tools/integrations:
     dependencies:
@@ -1053,6 +1078,9 @@ packages:
 
   '@types/node@24.13.3':
     resolution: {integrity: sha512-Dh8vAsV36ig5wa9OX4pXvMc9D3Veibfw2wix0CUwYODLD8nkj9UsLjASr49nPg+2eKzxhBV+v7L8pXvT4e639Q==}
+
+  '@types/web@0.0.356':
+    resolution: {integrity: sha512-FjE7SeW2G2It3cSeEuzxRLDZbBhiy6cmHI4506Q7hGVivabw+xz5aQBW2zoHoCWGoIrNMJAhfB7lV1SU3JZrDA==}
 
   '@typescript-eslint/types@8.70.0':
     resolution: {integrity: sha512-asTOIYhDg4zdzOScCyaytrsV3cR6B4ecPQlXw/dJIm7J/MZTtCtfVII9JD8Geh4jTCrK/Xe6cg5UevoleMcoJQ==}
@@ -2747,6 +2775,8 @@ snapshots:
   '@types/node@24.13.3':
     dependencies:
       undici-types: 7.18.2
+
+  '@types/web@0.0.356': {}
 
   '@typescript-eslint/types@8.70.0': {}
 

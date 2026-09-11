@@ -33,7 +33,6 @@ export default oxlint.defineConfig({
 		"coverage/**",
 		"dist/**",
 		".commands/**",
-		".agents/**",
 		"global.d.ts",
 	],
 });

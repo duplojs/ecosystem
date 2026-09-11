@@ -2,7 +2,6 @@
   "name": "@duplojs/tools",
   "version": "0.0.0",
   "license": "MIT",
-  "type": "module",
   "author": {
     "name": "DuploJS",
     "url": "https://github.com/duplojs"
@@ -10,8 +9,13 @@
   "description": "Tools and utilities for duplojs.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/duplojs/ecosystem.git"
+    "url": "git+https://github.com/duplojs/ecosystem.git",
+    "directory": "packages/tools"
   },
+  "bugs": {
+    "url": "https://github.com/duplojs/ecosystem/issues"
+  },
+  "type": "module",
   "scripts": {
     "build": "./.commands/build.sh",
     "test:types": "./.commands/test-types.sh",
@@ -56,7 +60,7 @@
   },
   "devDependencies": {
     "@duplojs/code-config": "workspace:*",
-    "@types/node": "24.1.0"
+    "@types/node": "24.13.3"
   },
   "files": [
     "dist",

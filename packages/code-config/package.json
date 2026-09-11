@@ -2,7 +2,6 @@
   "name": "@duplojs/code-config",
   "version": "0.0.0",
   "license": "MIT",
-  "type": "module",
   "author": {
     "name": "DuploJS",
     "url": "https://github.com/duplojs"
@@ -10,8 +9,13 @@
   "description": "Shared project configuration presets for TypeScript, Oxlint, Commitlint, and more.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/duplojs/ecosystem.git"
+    "url": "git+https://github.com/duplojs/ecosystem.git",
+    "directory": "packages/code-config"
   },
+  "bugs": {
+    "url": "https://github.com/duplojs/ecosystem/issues"
+  },
+  "type": "module",
   "scripts": {
     "build": "./.commands/build.sh",
     "test:types": "./.commands/test-types.sh",

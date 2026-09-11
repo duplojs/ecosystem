@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@duplojs/server": "workspace:*",
+    "@duplojs/json-web-token": "workspace:*"
+  }
+}
