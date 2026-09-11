@@ -16,13 +16,14 @@
   "scripts": {
     "build": "./.commands/build.sh",
     "test:ut": "./.commands/test-ut.sh",
+    "test:ut:update": "./.commands/test-ut.sh --update",
     "test:ut:watch": "./.commands/test-ut.sh --watch",
     "test:types": "./.commands/test-types.sh",
     "test:types:target": "./.commands/test-types-target.sh",
     "test:lint": "./.commands/test-lint.sh",
-    "test:lint:fix": "./.commands/test-lint.sh --fix",
-    "prepare": "husky"
+    "test:lint:fix": "./.commands/test-lint.sh --fix"
   },
+  "types": "./dist/index.d.ts",
   "sideEffects": false,
   "exports": {
     ".": {

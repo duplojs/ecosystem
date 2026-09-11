@@ -61,7 +61,7 @@
     "oxlint-tsgolint": "7.0.2001"
   },
   "devDependencies": {
-    "@types/node": "24.1.0"
+    "@types/node": "24.13.3"
   },
   "files": [
     "dist",
