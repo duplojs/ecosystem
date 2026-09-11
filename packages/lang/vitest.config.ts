@@ -8,7 +8,7 @@ export default defineConfig({
 			"integrations/**/*.test.ts",
 		],
 		coverage: {
-			include: ["scripts/**/*.ts"],
+			include: ["scripts"],
 			exclude: [
 				"**/*.test.ts",
 				"bin",

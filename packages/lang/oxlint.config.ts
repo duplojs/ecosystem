@@ -1,7 +1,6 @@
-import { defineConfig } from "oxlint";
-import { openConfig, testPreset } from "@duplojs/code-config/oxlint";
+import { openConfig, testPreset, oxlint } from "@duplojs/code-config/oxlint";
 
-export default defineConfig({
+export default oxlint.defineConfig({
 	extends: [openConfig],
 	rules: {
 		"typescript/consistent-type-exports": [

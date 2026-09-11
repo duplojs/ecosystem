@@ -1,0 +1,62 @@
+{
+  "test": {
+    "permissions": "read-and-write",
+    "include": [
+      "integrations/deno"
+    ]
+  },
+  "compilerOptions": {
+    "lib": ["deno.ns", "dom"],
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "skipLibCheck": true
+  },
+  "imports": {
+    "@duplojs/lang": "../../../lang/dist/index.mjs",
+    "@duplojs/lang/common": "../../../lang/dist/common/index.mjs",
+    "@duplojs/lang/kind": "../../../lang/dist/kind/index.mjs",
+    "@duplojs/lang/object": "../../../lang/dist/object/index.mjs",
+    "@duplojs/lang/string": "../../../lang/dist/string/index.mjs",
+    "@duplojs/lang/either": "../../../lang/dist/either/index.mjs",
+    "@duplojs/lang/dataStructure": "../../../lang/dist/dataStructure/index.mjs",
+    "@duplojs/lang/array": "../../../lang/dist/array/index.mjs",
+    "@duplojs/lang/chrono": "../../../lang/dist/chrono/index.mjs",
+    "@duplojs/lang/tuple": "../../../lang/dist/tuple/index.mjs",
+    "@duplojs/lang/number": "../../../lang/dist/number/index.mjs",
+    "@duplojs/lang/modeling": "../../../lang/dist/modeling/index.mjs",
+    "@duplojs/lang/pattern": "../../../lang/dist/pattern/index.mjs",
+    "@duplojs/lang/generator": "../../../lang/dist/generator/index.mjs",
+    "@duplojs/lang/invocation": "../../../lang/dist/invocation/index.mjs",
+    "@duplojs/lang/path": "../../../lang/dist/path/index.mjs",
+    "@duplojs/lang/printer": "../../../lang/dist/printer/index.mjs",
+
+    "@duplojs/server": "../../dist/index.mjs",
+    "@duplojs/server/file": "../../dist/file/index.mjs",
+    "@duplojs/server/common": "../../dist/common/index.mjs",
+    "@duplojs/server/dataStructure": "../../dist/dataStructure/index.mjs",
+    "@duplojs/server/command": "../../dist/command/index.mjs"
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-sloppy-imports"]
+    }
+  },
+  "permissions": {
+    "read-and-write": {
+      "read": true,
+      "write": true,
+      "env": true
+    }
+  }
+}

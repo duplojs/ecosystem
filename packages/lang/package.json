@@ -27,162 +27,89 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./scripts/index.ts",
-      "import": "./scripts/index.ts"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
     },
     "./common": {
-      "types": "./scripts/common/index.ts",
-      "import": "./scripts/common/index.ts"
+      "import": "./dist/common/index.mjs",
+      "require": "./dist/common/index.cjs",
+      "types": "./dist/common/index.d.ts"
     },
     "./kind": {
-      "types": "./scripts/kind/index.ts",
-      "import": "./scripts/kind/index.ts"
+      "import": "./dist/kind/index.mjs",
+      "require": "./dist/kind/index.cjs",
+      "types": "./dist/kind/index.d.ts"
     },
     "./object": {
-      "types": "./scripts/object/index.ts",
-      "import": "./scripts/object/index.ts"
+      "import": "./dist/object/index.mjs",
+      "require": "./dist/object/index.cjs",
+      "types": "./dist/object/index.d.ts"
     },
     "./string": {
-      "types": "./scripts/string/index.ts",
-      "import": "./scripts/string/index.ts"
+      "import": "./dist/string/index.mjs",
+      "require": "./dist/string/index.cjs",
+      "types": "./dist/string/index.d.ts"
     },
     "./either": {
-      "types": "./scripts/either/index.ts",
-      "import": "./scripts/either/index.ts"
+      "import": "./dist/either/index.mjs",
+      "require": "./dist/either/index.cjs",
+      "types": "./dist/either/index.d.ts"
     },
     "./dataStructure": {
-      "types": "./scripts/dataStructure/index.ts",
-      "import": "./scripts/dataStructure/index.ts"
+      "import": "./dist/dataStructure/index.mjs",
+      "require": "./dist/dataStructure/index.cjs",
+      "types": "./dist/dataStructure/index.d.ts"
     },
     "./array": {
-      "types": "./scripts/array/index.ts",
-      "import": "./scripts/array/index.ts"
+      "import": "./dist/array/index.mjs",
+      "require": "./dist/array/index.cjs",
+      "types": "./dist/array/index.d.ts"
     },
     "./chrono": {
-      "types": "./scripts/chrono/index.ts",
-      "import": "./scripts/chrono/index.ts"
+      "import": "./dist/chrono/index.mjs",
+      "require": "./dist/chrono/index.cjs",
+      "types": "./dist/chrono/index.d.ts"
     },
     "./tuple": {
-      "types": "./scripts/tuple/index.ts",
-      "import": "./scripts/tuple/index.ts"
+      "import": "./dist/tuple/index.mjs",
+      "require": "./dist/tuple/index.cjs",
+      "types": "./dist/tuple/index.d.ts"
     },
     "./number": {
-      "types": "./scripts/number/index.ts",
-      "import": "./scripts/number/index.ts"
+      "import": "./dist/number/index.mjs",
+      "require": "./dist/number/index.cjs",
+      "types": "./dist/number/index.d.ts"
     },
     "./modeling": {
-      "types": "./scripts/modeling/index.ts",
-      "import": "./scripts/modeling/index.ts"
+      "import": "./dist/modeling/index.mjs",
+      "require": "./dist/modeling/index.cjs",
+      "types": "./dist/modeling/index.d.ts"
     },
     "./pattern": {
-      "types": "./scripts/pattern/index.ts",
-      "import": "./scripts/pattern/index.ts"
+      "import": "./dist/pattern/index.mjs",
+      "require": "./dist/pattern/index.cjs",
+      "types": "./dist/pattern/index.d.ts"
     },
     "./generator": {
-      "types": "./scripts/generator/index.ts",
-      "import": "./scripts/generator/index.ts"
+      "import": "./dist/generator/index.mjs",
+      "require": "./dist/generator/index.cjs",
+      "types": "./dist/generator/index.d.ts"
     },
     "./invocation": {
-      "types": "./scripts/invocation/index.ts",
-      "import": "./scripts/invocation/index.ts"
+      "import": "./dist/invocation/index.mjs",
+      "require": "./dist/invocation/index.cjs",
+      "types": "./dist/invocation/index.d.ts"
     },
     "./path": {
-      "types": "./scripts/path/index.ts",
-      "import": "./scripts/path/index.ts"
+      "import": "./dist/path/index.mjs",
+      "require": "./dist/path/index.cjs",
+      "types": "./dist/path/index.d.ts"
     },
     "./printer": {
-      "types": "./scripts/printer/index.ts",
-      "import": "./scripts/printer/index.ts"
-    },
-    "./test-integration": "./integrations/package.tgz"
-  },
-  "publishConfig": {
-    "exports": {
-      ".": {
-        "import": "./dist/index.mjs",
-        "require": "./dist/index.cjs",
-        "types": "./dist/index.d.ts"
-      },
-      "./common": {
-        "import": "./dist/common/index.mjs",
-        "require": "./dist/common/index.cjs",
-        "types": "./dist/common/index.d.ts"
-      },
-      "./kind": {
-        "import": "./dist/kind/index.mjs",
-        "require": "./dist/kind/index.cjs",
-        "types": "./dist/kind/index.d.ts"
-      },
-      "./object": {
-        "import": "./dist/object/index.mjs",
-        "require": "./dist/object/index.cjs",
-        "types": "./dist/object/index.d.ts"
-      },
-      "./string": {
-        "import": "./dist/string/index.mjs",
-        "require": "./dist/string/index.cjs",
-        "types": "./dist/string/index.d.ts"
-      },
-      "./either": {
-        "import": "./dist/either/index.mjs",
-        "require": "./dist/either/index.cjs",
-        "types": "./dist/either/index.d.ts"
-      },
-      "./dataStructure": {
-        "import": "./dist/dataStructure/index.mjs",
-        "require": "./dist/dataStructure/index.cjs",
-        "types": "./dist/dataStructure/index.d.ts"
-      },
-      "./array": {
-        "import": "./dist/array/index.mjs",
-        "require": "./dist/array/index.cjs",
-        "types": "./dist/array/index.d.ts"
-      },
-      "./chrono": {
-        "import": "./dist/chrono/index.mjs",
-        "require": "./dist/chrono/index.cjs",
-        "types": "./dist/chrono/index.d.ts"
-      },
-      "./tuple": {
-        "import": "./dist/tuple/index.mjs",
-        "require": "./dist/tuple/index.cjs",
-        "types": "./dist/tuple/index.d.ts"
-      },
-      "./number": {
-        "import": "./dist/number/index.mjs",
-        "require": "./dist/number/index.cjs",
-        "types": "./dist/number/index.d.ts"
-      },
-      "./modeling": {
-        "import": "./dist/modeling/index.mjs",
-        "require": "./dist/modeling/index.cjs",
-        "types": "./dist/modeling/index.d.ts"
-      },
-      "./pattern": {
-        "import": "./dist/pattern/index.mjs",
-        "require": "./dist/pattern/index.cjs",
-        "types": "./dist/pattern/index.d.ts"
-      },
-      "./generator": {
-        "import": "./dist/generator/index.mjs",
-        "require": "./dist/generator/index.cjs",
-        "types": "./dist/generator/index.d.ts"
-      },
-      "./invocation": {
-        "import": "./dist/invocation/index.mjs",
-        "require": "./dist/invocation/index.cjs",
-        "types": "./dist/invocation/index.d.ts"
-      },
-      "./path": {
-        "import": "./dist/path/index.mjs",
-        "require": "./dist/path/index.cjs",
-        "types": "./dist/path/index.d.ts"
-      },
-      "./printer": {
-        "import": "./dist/printer/index.mjs",
-        "require": "./dist/printer/index.cjs",
-        "types": "./dist/printer/index.d.ts"
-      }
+      "import": "./dist/printer/index.mjs",
+      "require": "./dist/printer/index.cjs",
+      "types": "./dist/printer/index.d.ts"
     }
   },
   "devDependencies": {
@@ -211,8 +138,5 @@
     "pattern-matching",
     "constrained-types",
     "duplojs"
-  ],
-  "engines": {
-    "node": ">=24.18.0"
-  }
+  ]
 }

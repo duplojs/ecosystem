@@ -1,7 +1,7 @@
 {
   "private": true,
   "type": "module",
-  "optionalDependencies": {
-    "@duplojs/lang": "file:./package.tgz"
+  "dependencies": {
+    "@duplojs/lang": "workspace:*"
   }
 }

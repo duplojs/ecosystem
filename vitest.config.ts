@@ -8,6 +8,8 @@ export default defineConfig({
 			provider: "istanbul",
 			reporter: ["text", "json", "html", "json-summary"],
 			reportsDirectory: "coverage",
+			include: ["**/scripts/**/*.ts",],
+			exclude: ["**/tests/**"],
 			thresholds: {
 				lines: 100,
 				branches: 100,

@@ -2,6 +2,6 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@duplojs/code-config": "file:.."
+    "@duplojs/code-config": "workspace:*"
   }
 }

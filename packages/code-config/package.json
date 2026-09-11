@@ -29,53 +29,32 @@
   },
   "exports": {
     ".": {
-      "types": "./scripts/index.ts",
-      "import": "./scripts/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     },
     "./oxlint": {
-      "types": "./scripts/oxlint/index.ts",
-      "import": "./scripts/oxlint/index.ts"
+      "types": "./dist/oxlint/index.d.ts",
+      "import": "./dist/oxlint/index.mjs",
+      "require": "./dist/oxlint/index.cjs"
     },
     "./oxlint/plugin": {
-      "types": "./scripts/oxlint/plugin/index.ts",
-      "import": "./scripts/oxlint/plugin/index.ts"
+      "types": "./dist/oxlint/plugin/index.d.ts",
+      "import": "./dist/oxlint/plugin/index.mjs",
+      "require": "./dist/oxlint/plugin/index.cjs"
     },
     "./commitlint": {
-      "types": "./scripts/commitlint/index.ts",
-      "import": "./scripts/commitlint/index.ts"
+      "types": "./dist/commitlint/index.d.ts",
+      "import": "./dist/commitlint/index.mjs",
+      "require": "./dist/commitlint/index.cjs"
     },
     "./tsconfig/base.json": "./tsconfig/base.json",
     "./tsconfig/build.json": "./tsconfig/build.json"
   },
-  "publishConfig": {
-    "exports": {
-      ".": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.mjs",
-        "require": "./dist/index.cjs"
-      },
-      "./oxlint": {
-        "types": "./dist/oxlint/index.d.ts",
-        "import": "./dist/oxlint/index.mjs",
-        "require": "./dist/oxlint/index.cjs"
-      },
-      "./oxlint/plugin": {
-        "types": "./dist/oxlint/plugin/index.d.ts",
-        "import": "./dist/oxlint/plugin/index.mjs",
-        "require": "./dist/oxlint/plugin/index.cjs"
-      },
-      "./commitlint": {
-        "types": "./dist/commitlint/index.d.ts",
-        "import": "./dist/commitlint/index.mjs",
-        "require": "./dist/commitlint/index.cjs"
-      },
-      "./tsconfig/base.json": "./tsconfig/base.json",
-      "./tsconfig/build.json": "./tsconfig/build.json"
-    }
-  },
   "dependencies": {
     "@commitlint/cli": "21.2.2",
     "@commitlint/config-conventional": "21.2.2",
+    "@commitlint/types": "21.2.0",
     "@stylistic/eslint-plugin": "5.10.0",
     "eslint": "10.10.0",
     "oxlint": "1.82.0",
@@ -96,8 +75,5 @@
     "oxlint",
     "commitlint",
     "tsconfig"
-  ],
-  "engines": {
-    "node": ">=24.18.0"
-  }
+  ]
 }

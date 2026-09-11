@@ -4,4 +4,6 @@ packages:
   - "packages/*/integrations"
 nodeLinker: hoisted
 allowBuilds:
+  bun: true
+  deno: true
   esbuild: true

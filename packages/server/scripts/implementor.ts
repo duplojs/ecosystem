@@ -1,0 +1,99 @@
+/* oxlint-disable @typescript-eslint/consistent-type-imports */
+import { type AnyFunction, createEnum, createGlobalStore, type GetEnumValue, memoPromise } from "@duplojs/lang";
+
+export interface ServerFunction {}
+
+export const SupportedEnvironment = createEnum(["BUN", "DENO", "NODE", "TEST"]);
+export type SupportedEnvironment = GetEnumValue<typeof SupportedEnvironment>;
+
+const SymbolEnvironmentStore = Symbol("environmentStore");
+type SymbolEnvironmentStore = typeof SymbolEnvironmentStore;
+
+declare module "@duplojs/lang" {
+	interface GlobalStore {
+		[SymbolEnvironmentStore]: SupportedEnvironment;
+	}
+}
+
+const environmentStoreHandler = createGlobalStore(
+	SymbolEnvironmentStore,
+	(() => {
+		if (typeof Deno !== "undefined") {
+			return "DENO";
+		}
+		if (typeof Bun !== "undefined") {
+			return "BUN";
+		}
+		if (typeof process !== "undefined" && process.versions?.node) {
+			return "NODE";
+		}
+
+		return "NODE";
+	})(),
+);
+
+export function setEnvironment(environment: SupportedEnvironment) {
+	environmentStoreHandler.set(environment);
+}
+
+export namespace TESTImplementation {
+	const store = new Map<string, AnyFunction>();
+
+	export function clear() {
+		store.clear();
+	}
+
+	export function set<
+		GenericFunctionName extends keyof ServerFunction,
+	>(
+		functionName: GenericFunctionName,
+		theFunction: ServerFunction[GenericFunctionName],
+	): ServerFunction[GenericFunctionName] {
+		store.set(functionName, theFunction);
+
+		return theFunction;
+	}
+
+	export function get<
+		GenericFunctionName extends keyof ServerFunction,
+	>(
+		functionName: GenericFunctionName,
+	): ServerFunction[GenericFunctionName] | undefined {
+		return store.get(functionName);
+	}
+}
+
+export function implementFunction<
+	GenericFunctionName extends keyof ServerFunction,
+>(
+	functionName: GenericFunctionName,
+	theFunctions: {
+		NODE: ServerFunction[GenericFunctionName];
+		BUN?: ServerFunction[GenericFunctionName];
+		DENO?: ServerFunction[GenericFunctionName];
+	},
+): ServerFunction[GenericFunctionName] {
+	const environmentFunctions: Record<
+		SupportedEnvironment,
+		AnyFunction
+	> = {
+		NODE: theFunctions.NODE,
+		BUN: theFunctions.BUN ||= theFunctions.NODE,
+		DENO: theFunctions.DENO ||= theFunctions.NODE,
+		get TEST() {
+			const theFunction = TESTImplementation.get(functionName);
+
+			if (!theFunction) {
+				throw new Error(`Missing function implementation "${functionName}" in TEST environment.`);
+			}
+
+			return theFunction;
+		},
+	};
+
+	return (...args: unknown[]) => environmentFunctions[environmentStoreHandler.value](...args);
+}
+
+export const nodeFileSystem = memoPromise(() => import("node:fs/promises") as Promise<typeof import("node:fs/promises")>);
+export const nodeCrypto = memoPromise(() => import("node:crypto") as Promise<typeof import("node:crypto")>);
+export const nodeOs = memoPromise(() => import("node:os") as Promise<typeof import("node:os")>);

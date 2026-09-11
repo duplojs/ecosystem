@@ -6,6 +6,7 @@ export default defineConfig({
 		/^@stylistic\/eslint-plugin/,
 		/^@commitlint\/cli/,
 		/^@commitlint\/config-conventional/,
+		/^@commitlint\/types/,
 		/^eslint/,
 		/^oxlint/,
 		/^oxlint-tsgolint/,

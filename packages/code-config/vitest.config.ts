@@ -8,7 +8,7 @@ export default defineConfig({
 			"integrations/**/*.test.ts",
 		],
 		coverage: {
-			include: ["scripts/**/*.ts"],
+			include: ["scripts"],
 			exclude: [
 				"**/*.test.ts",
 				"bin",
@@ -20,6 +20,12 @@ export default defineConfig({
 				"tests/**/*.bench.ts",
 				"integrations/**/*.bench.ts",
 			],
+		},
+		typecheck: {
+			enabled: true,
+			tsconfig: "./tsconfig.test.json",
+			include: ["tests/**/*.test-d.ts"],
+			ignoreSourceErrors: true,
 		},
 	},
 	resolve: {

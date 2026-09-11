@@ -1,0 +1,79 @@
+{
+  "name": "@duplojs/server",
+  "version": "0.0.0",
+  "license": "MIT",
+  "type": "module",
+  "author": {
+    "name": "DuploJS",
+    "url": "https://github.com/duplojs"
+  },
+  "description": "Typed helpers to handle files, system operations, and CLI commands.",
+  "homepage": "https://server.duplojs.dev/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duplojs/server.git"
+  },
+  "scripts": {
+    "build": "./.commands/build.sh",
+    "test:ut": "./.commands/test-ut.sh",
+    "test:ut:watch": "./.commands/test-ut.sh --watch",
+    "test:types": "./.commands/test-types.sh",
+    "test:types:target": "./.commands/test-types-target.sh",
+    "test:lint": "./.commands/test-lint.sh",
+    "test:lint:fix": "./.commands/test-lint.sh --fix",
+    "prepare": "husky"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./file": {
+      "import": "./dist/file/index.mjs",
+      "require": "./dist/file/index.cjs",
+      "types": "./dist/file/index.d.ts"
+    },
+    "./common": {
+      "import": "./dist/common/index.mjs",
+      "require": "./dist/common/index.cjs",
+      "types": "./dist/common/index.d.ts"
+    },
+    "./dataStructure": {
+      "import": "./dist/dataStructure/index.mjs",
+      "require": "./dist/dataStructure/index.cjs",
+      "types": "./dist/dataStructure/index.d.ts"
+    },
+    "./command": {
+      "import": "./dist/command/index.mjs",
+      "require": "./dist/command/index.cjs",
+      "types": "./dist/command/index.d.ts"
+    }
+  },
+  "peerDependencies": {
+    "@duplojs/lang": "workspace:*"
+  },
+  "devDependencies": {
+    "@duplojs/code-config": "workspace:*",
+    "@types/bun": "1.4.1",
+    "@types/deno": "2.7.0",
+    "@types/node": "24.13.3",
+    "bun": "1.4.2",
+    "deno": "2.9.6"
+  },
+  "files": [
+    "dist",
+    "README"
+  ],
+  "keywords": [
+    "duplojs",
+    "file",
+    "fileSystem",
+    "cli",
+    "command",
+    "dotenv",
+    "env",
+    "server-utils"
+  ]
+}

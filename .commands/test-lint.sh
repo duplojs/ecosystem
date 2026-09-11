@@ -4,3 +4,4 @@ set -euo pipefail
 
 pnpm --filter @duplojs/code-config test:lint
 pnpm --filter @duplojs/lang test:lint
+pnpm --filter @duplojs/server test:lint
