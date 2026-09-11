@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`oddConstraintTransformer > renders an odd picking zone number 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const pickingZoneDataStructure = DDataStructure.ObjectStructure({ zone: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.OddConstraint()]) }, []);"
+`;

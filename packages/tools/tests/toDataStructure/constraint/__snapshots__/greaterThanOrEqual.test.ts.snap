@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`greaterThanOrEqualConstraintTransformer > renders a non negative stock level 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const stockLevelDataStructure = DDataStructure.ObjectStructure({ available: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.GreaterThanOrEqualConstraint(0)]) }, []);"
+`;

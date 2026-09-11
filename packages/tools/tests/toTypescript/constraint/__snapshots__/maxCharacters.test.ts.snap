@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`maxCharactersConstraintTransformer > rejects a non-finite maximum 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`maxCharactersConstraintTransformer > renders positive and negative maximums 1`] = `
+[
+  "import * as DString from "@duplojs/lang/string";
+
+export type Value = string & DString.MaxCharacters<2>;",
+  "import * as DString from "@duplojs/lang/string";
+
+export type Value = string & DString.MaxCharacters<-2>;",
+]
+`;

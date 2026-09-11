@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`multipleOfConstraintTransformer > rejects a non-finite multiple 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`multipleOfConstraintTransformer > renders positive and negative multiples 1`] = `
+[
+  "import * as DNumber from "@duplojs/lang/number";
+
+export type Value = number & DNumber.MultipleOf<2>;",
+  "import * as DNumber from "@duplojs/lang/number";
+
+export type Value = number & DNumber.MultipleOf<-2>;",
+]
+`;

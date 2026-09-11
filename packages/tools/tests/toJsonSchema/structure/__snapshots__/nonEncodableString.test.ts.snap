@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`nonEncodableStringStructureTransformer > renders a non encodable string structure 1`] = `
+{
+  "$ref": "#/definitions/Value",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Value": {
+      "const": "opaque",
+      "type": "string",
+    },
+  },
+}
+`;

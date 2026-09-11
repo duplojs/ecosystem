@@ -1,0 +1,29 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`toDataStructure override > renders an overridden constraint without mutating the source constraint 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const customerEmailDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.EmailConstraint()]);"
+`;
+
+exports[`toDataStructure override > renders an overridden data structure without mutating the source structure 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const externalSkuDataStructure = DDataStructure.StringType();"
+`;
+
+exports[`toDataStructure override > sets and removes an override on the current constraint 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const customerNameDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]);"
+`;
+
+exports[`toDataStructure override > sets and removes an override on the current structure 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const searchScoreDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
+`;
+
+exports[`toDataStructure override > throws when a constraint override reports a build error 1`] = `[Error: Error during the render of dataStructure in dataStructure.]`;
+
+exports[`toDataStructure override > throws when an override reports a build error 1`] = `[Error: Error during the render of dataStructure in dataStructure.]`;

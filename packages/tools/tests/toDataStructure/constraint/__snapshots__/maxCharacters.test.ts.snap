@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`maxCharactersConstraintTransformer > renders a short product title limit 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const productSummaryDataStructure = DDataStructure.ObjectStructure({ title: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.MaxCharactersConstraint(80)]) }, []);"
+`;

@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`typeStructureTransformer > propagates an unsupported inner type 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`typeStructureTransformer > renders a wrapped type structure 1`] = `
+"import * as DString from "@duplojs/lang/string";
+
+export type Value = string & DString.MinCharacters<3>;"
+`;
+
+exports[`typeStructureTransformer > with identifier structure 1`] = `
+"export type Test = string;
+
+export type Value = Test;"
+`;

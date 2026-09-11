@@ -1,0 +1,80 @@
+{
+  "name": "@duplojs/tools",
+  "version": "0.0.0",
+  "license": "MIT",
+  "type": "module",
+  "author": {
+    "name": "DuploJS",
+    "url": "https://github.com/duplojs"
+  },
+  "description": "Tools and utilities for duplojs.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duplojs/ecosystem.git"
+  },
+  "scripts": {
+    "build": "./.commands/build.sh",
+    "test:types": "./.commands/test-types.sh",
+    "test:types:target": "./.commands/test-types-target.sh",
+    "test:lint": "./.commands/test-lint.sh",
+    "test:lint:fix": "./.commands/test-lint.sh --fix"
+  },
+  "sideEffects": false,
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./toTypescript": {
+      "import": "./dist/toTypescript/index.mjs",
+      "require": "./dist/toTypescript/index.cjs",
+      "types": "./dist/toTypescript/index.d.ts"
+    },
+    "./toJsonSchema": {
+      "import": "./dist/toJsonSchema/index.mjs",
+      "require": "./dist/toJsonSchema/index.cjs",
+      "types": "./dist/toJsonSchema/index.d.ts"
+    },
+    "./toDataStructure": {
+      "import": "./dist/toDataStructure/index.mjs",
+      "require": "./dist/toDataStructure/index.cjs",
+      "types": "./dist/toDataStructure/index.d.ts"
+    },
+    "./typescript": {
+      "import": "./dist/typescript/index.mjs",
+      "require": "./dist/typescript/index.cjs",
+      "types": "./dist/typescript/index.d.ts"
+    }
+  },
+  "peerDependencies": {
+    "@duplojs/lang": "workspace:*"
+  },
+  "dependencies": {
+    "@typescript/typescript6": "6.0.2"
+  },
+  "devDependencies": {
+    "@duplojs/code-config": "workspace:*",
+    "@types/node": "24.1.0"
+  },
+  "files": [
+    "dist",
+    "README"
+  ],
+  "keywords": [
+    "duplojs",
+    "duplojs-lang",
+    "tools",
+    "tools",
+    "tooling",
+    "transformer",
+    "typescript",
+    "json-schema",
+    "openapi",
+    "data-structure"
+  ],
+  "engines": {
+    "node": ">=24.18.0"
+  }
+}

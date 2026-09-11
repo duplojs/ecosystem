@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`greaterThanOrEqualConstraintTransformer > rejects a non-finite threshold 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`greaterThanOrEqualConstraintTransformer > renders positive and negative thresholds 1`] = `
+[
+  "import * as DNumber from "@duplojs/lang/number";
+
+export type Value = number & DNumber.GreaterThanOrEqual<2>;",
+  "import * as DNumber from "@duplojs/lang/number";
+
+export type Value = number & DNumber.GreaterThanOrEqual<-2>;",
+]
+`;

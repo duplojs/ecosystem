@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`allowedCharactersConstraintTransformer > rejects an empty character range collection 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`allowedCharactersConstraintTransformer > renders one or several allowed character ranges 1`] = `
+[
+  "import * as DString from "@duplojs/lang/string";
+
+export type Value = string & DString.AllowedCharacters<"a-z">;",
+  "import * as DString from "@duplojs/lang/string";
+
+export type Value = string & (DString.AllowedCharacters<"a-z"> & DString.AllowedCharacters<"0-9">);",
+]
+`;

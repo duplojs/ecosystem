@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`toTypescript hooks > chains hooks until stop and caches a shared structure 1`] = `
+"import { HookMarker } from "hook-package";
+
+export type Hooked = {
+    readonly first?: undefined | boolean;
+    readonly second?: undefined | boolean;
+};"
+`;

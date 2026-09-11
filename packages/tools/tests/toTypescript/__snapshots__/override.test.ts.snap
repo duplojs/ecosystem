@@ -1,0 +1,59 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`toTypescript override > adds override metadata without mutating the source structure 1`] = `
+"import * as NamespaceValue from "namespace-package";
+
+import DefaultValue from "default-package";
+
+import { ExternalType } from "direct-package";
+
+export type ExternalValue = ExternalType;
+
+export type Values = readonly ExternalValue[];"
+`;
+
+exports[`toTypescript override > delegates to the standard transformer 1`] = `"export type Value = string;"`;
+
+exports[`toTypescript override > removes an override with null 1`] = `"export type Value = string;"`;
+
+exports[`toTypescript override > renders a product sheet with overridden external models 1`] = `
+"import { CatalogProductRow } from "@acme/catalog";
+
+import { MoneyAmount } from "@acme/money";
+
+import { ExternalStockLine } from "@acme/stock";
+
+export type ProductRow = CatalogProductRow;
+
+export type Money = MoneyAmount;
+
+export type StockLine = ExternalStockLine;
+
+export type ProductSheet = {
+    readonly product: ProductRow;
+    readonly price: Money;
+    readonly discountPrice?: undefined | Money;
+    readonly stockByWarehouse: Readonly<Record<"main" | "outlet", StockLine>>;
+    readonly relatedProducts: readonly ProductRow[];
+};"
+`;
+
+exports[`toTypescript override > sets import metadata on the current structure 1`] = `
+"import { SkuValue } from "@acme/sku";
+
+export type ExternalSku = SkuValue;
+
+export type SkuContainer = {
+    readonly sku: ExternalSku;
+};"
+`;
+
+exports[`toTypescript override > sets override metadata on the current structure 1`] = `
+"import { CurrentType } from "direct-package";
+
+export type CurrentValue = CurrentType;
+
+export type Value = CurrentValue;"
+`;
+
+exports[`toTypescript override > throws when no structure transformer supports the data structure 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;

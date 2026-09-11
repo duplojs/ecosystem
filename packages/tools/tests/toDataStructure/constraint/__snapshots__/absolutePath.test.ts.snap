@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`absolutePathConstraintTransformer > renders an absolute storage root path 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const documentStorageConfigDataStructure = DDataStructure.ObjectStructure({ rootPath: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.AbsolutePathConstraint()]) }, []);"
+`;

@@ -1,0 +1,211 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`arrayStructureTransformer > renders array structures and constraints 1`] = `
+[
+  {
+    "$ref": "#/definitions/Value",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+      "Value": {
+        "items": {
+          "type": "string",
+        },
+        "type": "array",
+      },
+    },
+  },
+  {
+    "$ref": "#/definitions/Value",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+      "Value": {
+        "allOf": [
+          {
+            "maxItems": 4,
+            "minItems": 4,
+          },
+        ],
+        "items": {
+          "type": "integer",
+        },
+        "maxItems": 10,
+        "minItems": 2,
+        "type": "array",
+      },
+    },
+  },
+  {
+    "$ref": "#/definitions/Value",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+      "Value": {
+        "items": {
+          "type": "string",
+        },
+        "maxItems": 3,
+        "minItems": 3,
+        "type": "array",
+      },
+    },
+  },
+]
+`;
+
+exports[`arrayStructureTransformer > renders nested array payloads 1`] = `
+{
+  "$ref": "#/definitions/Value",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Value": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "locations": {
+            "items": {
+              "anyOf": [
+                {
+                  "const": "warehouse",
+                  "type": "string",
+                },
+                {
+                  "const": "store",
+                  "type": "string",
+                },
+              ],
+            },
+            "minItems": 1,
+            "type": "array",
+          },
+          "quantity": {
+            "minimum": 0,
+            "type": "integer",
+          },
+          "sku": {
+            "minLength": 1,
+            "pattern": "^\\S.*\\S$|^\\S$",
+            "type": "string",
+          },
+        },
+        "required": [
+          "sku",
+          "quantity",
+          "locations",
+        ],
+        "type": "object",
+      },
+      "minItems": 1,
+      "type": "array",
+    },
+  },
+}
+`;
+
+exports[`arrayStructureTransformer > renders repeated array constraints with allOf 1`] = `
+[
+  {
+    "$ref": "#/definitions/Value",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+      "Value": {
+        "allOf": [
+          {
+            "minItems": 2,
+          },
+          {
+            "minItems": 3,
+          },
+        ],
+        "items": {
+          "type": "string",
+        },
+        "minItems": 1,
+        "type": "array",
+      },
+    },
+  },
+  {
+    "$ref": "#/definitions/Value",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+      "Value": {
+        "allOf": [
+          {
+            "maxItems": 4,
+          },
+          {
+            "maxItems": 3,
+          },
+        ],
+        "items": {
+          "type": "string",
+        },
+        "maxItems": 5,
+        "type": "array",
+      },
+    },
+  },
+  {
+    "$ref": "#/definitions/Value",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+      "Value": {
+        "allOf": [
+          {
+            "maxItems": 2,
+            "minItems": 2,
+          },
+        ],
+        "items": {
+          "type": "string",
+        },
+        "minItems": 1,
+        "type": "array",
+      },
+    },
+  },
+  {
+    "$ref": "#/definitions/Value",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+      "Value": {
+        "allOf": [
+          {
+            "maxItems": 2,
+            "minItems": 2,
+          },
+        ],
+        "items": {
+          "type": "string",
+        },
+        "maxItems": 4,
+        "type": "array",
+      },
+    },
+  },
+  {
+    "$ref": "#/definitions/Value",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+      "Value": {
+        "allOf": [
+          {
+            "maxItems": 2,
+            "minItems": 2,
+          },
+          {
+            "maxItems": 3,
+            "minItems": 3,
+          },
+        ],
+        "items": {
+          "type": "string",
+        },
+        "minItems": 1,
+        "type": "array",
+      },
+    },
+  },
+]
+`;
+
+exports[`arrayStructureTransformer > throws when the element structure is not supported 1`] = `[Error: Error during the render of a data structure as a JsonSchema.]`;

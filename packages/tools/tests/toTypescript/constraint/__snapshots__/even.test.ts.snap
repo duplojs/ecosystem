@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`evenConstraintTransformer > renders an even constraint 1`] = `
+"import * as DNumber from "@duplojs/lang/number";
+
+export type Value = number & DNumber.Even;"
+`;

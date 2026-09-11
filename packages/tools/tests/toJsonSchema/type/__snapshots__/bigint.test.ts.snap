@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`bigintTypeTransformer > renders a bigint type as an integer schema 1`] = `
+{
+  "type": "integer",
+}
+`;

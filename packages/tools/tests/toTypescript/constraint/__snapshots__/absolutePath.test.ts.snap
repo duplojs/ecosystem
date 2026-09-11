@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`absolutePathConstraintTransformer > renders an absolutePath constraint 1`] = `
+"import * as DPath from "@duplojs/lang/path";
+
+export type AbsolutePath = string & DPath.Absolute;"
+`;

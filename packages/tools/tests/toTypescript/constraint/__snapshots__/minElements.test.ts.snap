@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`minElementsConstraintTransformer > rejects a non-finite minimum 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`minElementsConstraintTransformer > renders positive and negative minimums 1`] = `
+[
+  "import * as DArray from "@duplojs/lang/array";
+
+export type Value = readonly number[] & DArray.MinElements<2>;",
+  "import * as DArray from "@duplojs/lang/array";
+
+export type Value = readonly number[] & DArray.MinElements<-2>;",
+]
+`;

@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`arrayLengthEqualConstraintTransformer > renders a two person approval chain 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const purchaseApprovalDataStructure = DDataStructure.ObjectStructure({ approvers: DDataStructure.ArrayStructure(DDataStructure.TypeStructure(DDataStructure.StringType(), []), [DDataStructure.ArrayLengthEqualConstraint(2)]) }, []);"
+`;

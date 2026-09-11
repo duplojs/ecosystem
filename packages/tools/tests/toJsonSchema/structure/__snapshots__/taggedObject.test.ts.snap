@@ -1,0 +1,205 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`taggedObjectStructureTransformer > renders a complex tagged audit event 1`] = `
+{
+  "$ref": "#/definitions/Value",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Value": {
+      "additionalProperties": false,
+      "properties": {
+        "@duplojs/lang/kind/@DuplojsLangModeling/object-tag": {
+          "const": "audit-event",
+          "type": "string",
+        },
+        "actorId": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "title": "UserId",
+          "type": "string",
+        },
+        "id": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "type": "string",
+        },
+        "metadata": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string",
+              },
+              {
+                "type": "number",
+              },
+              {
+                "type": "boolean",
+              },
+            ],
+          },
+          "propertyNames": {
+            "type": "string",
+          },
+          "type": "object",
+        },
+        "payload": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "changes": {
+                  "additionalProperties": {
+                    "minLength": 1,
+                    "pattern": "^\\S.*\\S$|^\\S$",
+                    "type": "string",
+                  },
+                  "propertyNames": {
+                    "type": "string",
+                  },
+                  "type": "object",
+                },
+                "type": {
+                  "const": "product.updated",
+                  "type": "string",
+                },
+              },
+              "required": [
+                "type",
+                "changes",
+              ],
+              "type": "object",
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "quantity": {
+                  "type": "integer",
+                },
+                "reason": {
+                  "anyOf": [
+                    {
+                      "const": "correction",
+                      "type": "string",
+                    },
+                    {
+                      "const": "sale",
+                      "type": "string",
+                    },
+                    {
+                      "const": "return",
+                      "type": "string",
+                    },
+                  ],
+                },
+                "type": {
+                  "const": "stock.adjusted",
+                  "type": "string",
+                },
+              },
+              "required": [
+                "type",
+                "quantity",
+                "reason",
+              ],
+              "type": "object",
+            },
+          ],
+        },
+      },
+      "required": [
+        "id",
+        "actorId",
+        "payload",
+        "metadata",
+        "@duplojs/lang/kind/@DuplojsLangModeling/object-tag",
+      ],
+      "title": "audit-event",
+      "type": "object",
+    },
+  },
+}
+`;
+
+exports[`taggedObjectStructureTransformer > renders a recursive tagged object tree 1`] = `
+{
+  "$ref": "#/definitions/Category",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Category": {
+      "$ref": "#/definitions/RecursiveName0",
+      "title": "category-node",
+    },
+    "RecursiveName0": {
+      "additionalProperties": false,
+      "properties": {
+        "@duplojs/lang/kind/@DuplojsLangModeling/object-tag": {
+          "const": "category-node",
+          "type": "string",
+        },
+        "children": {
+          "items": {
+            "$ref": "#/definitions/RecursiveName0",
+            "title": "category-node",
+          },
+          "maxItems": 10,
+          "type": "array",
+        },
+        "id": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "type": "string",
+        },
+        "name": {
+          "minLength": 1,
+          "pattern": "^\\S.*\\S$|^\\S$",
+          "type": "string",
+        },
+      },
+      "required": [
+        "id",
+        "name",
+        "children",
+        "@duplojs/lang/kind/@DuplojsLangModeling/object-tag",
+      ],
+      "type": "object",
+    },
+  },
+}
+`;
+
+exports[`taggedObjectStructureTransformer > renders an taggedObject structure 1`] = `
+{
+  "$ref": "#/definitions/Value",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Value": {
+      "additionalProperties": false,
+      "properties": {
+        "@duplojs/lang/kind/@DuplojsLangModeling/object-tag": {
+          "const": "user-simple",
+          "type": "string",
+        },
+        "email": {
+          "format": "email",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "type": "string",
+        },
+        "id": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "type": "string",
+        },
+      },
+      "required": [
+        "id",
+        "email",
+        "@duplojs/lang/kind/@DuplojsLangModeling/object-tag",
+      ],
+      "title": "user-simple",
+      "type": "object",
+    },
+  },
+}
+`;
+
+exports[`taggedObjectStructureTransformer > throws when the inner object is not supported 1`] = `[Error: Error during the render of a data structure as a JsonSchema.]`;

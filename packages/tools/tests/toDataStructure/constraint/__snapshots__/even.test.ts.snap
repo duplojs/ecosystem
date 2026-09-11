@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`evenConstraintTransformer > renders an even warehouse aisle number 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const warehouseAisleDataStructure = DDataStructure.ObjectStructure({ aisle: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.EvenConstraint()]) }, []);"
+`;

@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`multipleOfConstraintTransformer > renders a price step in cents 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const priceRuleDataStructure = DDataStructure.ObjectStructure({ priceCents: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.MultipleOfConstraint(5)]) }, []);"
+`;

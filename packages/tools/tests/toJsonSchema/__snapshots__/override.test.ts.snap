@@ -1,0 +1,311 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`toJsonSchema override > renders a named reference after removing a JSON schema override 1`] = `
+{
+  "$ref": "#/components/schemas/OverrideLifecycle",
+  "components": {
+    "schemas": {
+      "OverrideLifecycle": {
+        "additionalProperties": false,
+        "properties": {
+          "removed": {
+            "$ref": "#/components/schemas/StandardString",
+          },
+        },
+        "required": [
+          "removed",
+        ],
+        "type": "object",
+      },
+      "StandardString": {
+        "type": "string",
+      },
+    },
+  },
+  "openapi": "https://spec.openapis.org/oas/3.1.0",
+}
+`;
+
+exports[`toJsonSchema override > renders named references for a product sheet database view 1`] = `
+{
+  "$ref": "#/definitions/ProductSheet",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "PriceAmount": {
+      "minimum": 0,
+      "title": "PriceAmount",
+      "type": "number",
+    },
+    "ProductCharacteristic": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "minLength": 1,
+          "pattern": "^\\S.*\\S$|^\\S$",
+          "type": "string",
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string",
+            },
+            {
+              "type": "number",
+            },
+            {
+              "type": "boolean",
+            },
+          ],
+        },
+      },
+      "required": [
+        "code",
+        "value",
+      ],
+      "type": "object",
+    },
+    "ProductIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "pattern": "^\\S.*\\S$|^\\S$",
+          "type": "string",
+        },
+        "sku": {
+          "minLength": 1,
+          "pattern": "^\\S.*\\S$|^\\S$",
+          "type": "string",
+        },
+        "status": {
+          "anyOf": [
+            {
+              "const": "draft",
+              "type": "string",
+            },
+            {
+              "const": "published",
+              "type": "string",
+            },
+            {
+              "const": "archived",
+              "type": "string",
+            },
+          ],
+        },
+      },
+      "required": [
+        "sku",
+        "name",
+        "status",
+      ],
+      "type": "object",
+    },
+    "ProductSheet": {
+      "additionalProperties": false,
+      "properties": {
+        "characteristics": {
+          "items": {
+            "$ref": "#/definitions/ProductCharacteristic",
+          },
+          "minItems": 1,
+          "type": "array",
+        },
+        "price": {
+          "$ref": "#/definitions/PriceAmount",
+        },
+        "product": {
+          "$ref": "#/definitions/ProductIdentity",
+        },
+        "relatedProducts": {
+          "items": {
+            "$ref": "#/definitions/ProductIdentity",
+          },
+          "type": "array",
+        },
+        "stockByWarehouse": {
+          "additionalProperties": {
+            "$ref": "#/definitions/StockLine",
+          },
+          "minProperties": 2,
+          "propertyNames": {
+            "anyOf": [
+              {
+                "const": "main",
+                "type": "string",
+              },
+              {
+                "const": "outlet",
+                "type": "string",
+              },
+            ],
+          },
+          "required": [
+            "main",
+            "outlet",
+          ],
+          "type": "object",
+        },
+      },
+      "required": [
+        "product",
+        "price",
+        "stockByWarehouse",
+        "characteristics",
+        "relatedProducts",
+      ],
+      "type": "object",
+    },
+    "StockLine": {
+      "additionalProperties": false,
+      "properties": {
+        "available": {
+          "minimum": 0,
+          "type": "integer",
+        },
+        "reserved": {
+          "minimum": 0,
+          "type": "integer",
+        },
+      },
+      "required": [
+        "available",
+        "reserved",
+      ],
+      "type": "object",
+    },
+  },
+}
+`;
+
+exports[`toJsonSchema override > renders named references for a recursive catalog structure 1`] = `
+{
+  "$ref": "#/definitions/CatalogCategory",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "CatalogCategory": {
+      "additionalProperties": false,
+      "properties": {
+        "children": {
+          "items": {
+            "$ref": "#/definitions/CatalogCategory",
+          },
+          "maxItems": 20,
+          "type": "array",
+        },
+        "featuredProducts": {
+          "items": {
+            "$ref": "#/definitions/ProductSummary",
+          },
+          "type": "array",
+        },
+        "id": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "type": "string",
+        },
+        "name": {
+          "minLength": 1,
+          "pattern": "^\\S.*\\S$|^\\S$",
+          "type": "string",
+        },
+        "parent": {
+          "anyOf": [
+            {
+              "type": "null",
+            },
+            {
+              "$ref": "#/definitions/CatalogCategory",
+            },
+          ],
+        },
+      },
+      "required": [
+        "id",
+        "name",
+        "children",
+        "featuredProducts",
+        "parent",
+      ],
+      "type": "object",
+    },
+    "ProductSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "pattern": "^\\S.*\\S$|^\\S$",
+          "type": "string",
+        },
+        "sku": {
+          "minLength": 1,
+          "pattern": "^\\S.*\\S$|^\\S$",
+          "type": "string",
+        },
+      },
+      "required": [
+        "sku",
+        "name",
+      ],
+      "type": "object",
+    },
+  },
+}
+`;
+
+exports[`toJsonSchema override > renders specific JSON schema overrides 1`] = `
+{
+  "$ref": "#/definitions/StockUpdate",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Quantity": {
+      "minimum": 0,
+      "type": "integer",
+    },
+    "Sku": {
+      "pattern": "^SKU-[0-9]{8}$",
+      "type": "string",
+    },
+    "StockUpdate": {
+      "additionalProperties": false,
+      "properties": {
+        "quantity": {
+          "$ref": "#/definitions/Quantity",
+        },
+        "sku": {
+          "$ref": "#/definitions/Sku",
+        },
+        "stock": {
+          "additionalProperties": {
+            "$ref": "#/definitions/Quantity",
+          },
+          "minProperties": 2,
+          "propertyNames": {
+            "anyOf": [
+              {
+                "const": "main",
+                "type": "string",
+              },
+              {
+                "const": "secondary",
+                "type": "string",
+              },
+            ],
+          },
+          "required": [
+            "main",
+            "secondary",
+          ],
+          "type": "object",
+        },
+      },
+      "required": [
+        "sku",
+        "quantity",
+        "stock",
+      ],
+      "type": "object",
+    },
+  },
+}
+`;

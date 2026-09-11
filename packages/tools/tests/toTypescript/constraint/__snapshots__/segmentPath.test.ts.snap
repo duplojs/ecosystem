@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`segmentPathConstraintTransformer > renders an segmentPath constraint 1`] = `
+"import * as DPath from "@duplojs/lang/path";
+
+export type SegmentPath = string & DPath.Segment;"
+`;

@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`typeStructureTransformer > propagates unsupported type constraints 1`] = `[Error: Error during the render of dataStructure in dataStructure.]`;
+
+exports[`typeStructureTransformer > renders primitive and literal business values 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const featureFlagSnapshotDataStructure = DDataStructure.ObjectStructure({ label: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]), revision: DDataStructure.TypeStructure(DDataStructure.NumberType(), []), stableRevision: DDataStructure.TypeStructure(DDataStructure.NumberLiteralType(2), []), enabled: DDataStructure.TypeStructure(DDataStructure.BooleanType(), []), defaultEnabled: DDataStructure.TypeStructure(DDataStructure.BooleanLiteralType(true), []), manualReview: DDataStructure.TypeStructure(DDataStructure.BooleanLiteralType(false), []), createdAt: DDataStructure.TypeStructure(DDataStructure.DateType(), []), refreshAt: DDataStructure.TypeStructure(DDataStructure.TimeType(), []), rawVersion: DDataStructure.TypeStructure(DDataStructure.BigintType(), []), expectedVersion: DDataStructure.TypeStructure(DDataStructure.BigintLiteralType(1n), []), deletedAt: DDataStructure.TypeStructure(DDataStructure.NullType(), []), deprecatedValue: DDataStructure.TypeStructure(DDataStructure.UndefinedType(), []), status: DDataStructure.TypeStructure(DDataStructure.StringLiteralType("active"), []) }, []);"
+`;

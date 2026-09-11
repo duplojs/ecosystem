@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`minCharactersConstraintTransformer > rejects a non-finite minimum 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`minCharactersConstraintTransformer > renders positive and negative minimums 1`] = `
+[
+  "import * as DString from "@duplojs/lang/string";
+
+export type Value = string & DString.MinCharacters<2>;",
+  "import * as DString from "@duplojs/lang/string";
+
+export type Value = string & DString.MinCharacters<-2>;",
+]
+`;

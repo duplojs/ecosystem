@@ -1,0 +1,46 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`objectStructureTransformer > propagates an unsupported property 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`objectStructureTransformer > renders a product sheet projection 1`] = `
+"import * as DString from "@duplojs/lang/string";
+
+import * as DNumber from "@duplojs/lang/number";
+
+import * as DModeling from "@duplojs/lang/modeling";
+
+export type ProductIdentity = {
+    readonly sku: string & DString.NotEmpty;
+    readonly name: string & DString.NotEmpty;
+    readonly status: "draft" | "published" | "archived";
+};
+
+export type PriceAmount = number & DNumber.GreaterThanOrEqual<0> & DModeling.NewType<"PriceAmount", never>;
+
+export type ProductSheet = {
+    readonly product: ProductIdentity;
+    readonly price: PriceAmount;
+    readonly characteristics: readonly {
+        readonly code: string & DString.NotEmpty;
+        readonly value: string | number | boolean;
+    }[];
+    readonly stockByWarehouse: Readonly<Record<"main" | "outlet", number & DNumber.Integer & DNumber.GreaterThanOrEqual<0>>>;
+};"
+`;
+
+exports[`objectStructureTransformer > renders required, optional and quoted properties 1`] = `
+"export type Value = {
+    readonly id: number;
+    readonly "display-name": string;
+    readonly nickname?: undefined | string;
+};"
+`;
+
+exports[`objectStructureTransformer > with identifier structure 1`] = `
+"export type Test = {
+    readonly id: number;
+    readonly name: string;
+};
+
+export type Value = Test;"
+`;

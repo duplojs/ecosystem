@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`notEmptyConstraintTransformer > renders a not-empty constraint 1`] = `
+"import * as DString from "@duplojs/lang/string";
+
+export type Value = string & DString.NotEmpty;"
+`;

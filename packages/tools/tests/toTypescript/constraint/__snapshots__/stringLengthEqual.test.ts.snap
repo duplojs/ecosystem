@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`stringLengthEqualConstraintTransformer > rejects a non-finite length 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`stringLengthEqualConstraintTransformer > renders positive and negative lengths 1`] = `
+[
+  "import * as DString from "@duplojs/lang/string";
+
+export type Value = string & DString.LengthEqual<2>;",
+  "import * as DString from "@duplojs/lang/string";
+
+export type Value = string & DString.LengthEqual<-2>;",
+]
+`;

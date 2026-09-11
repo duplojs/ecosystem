@@ -1,0 +1,27 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`toTypescript recursion > propagates undefined through a recursive union 1`] = `
+"export type RecursiveType0 = string | undefined | readonly RecursiveType0[];
+
+export type Container = {
+    readonly value?: RecursiveType0;
+};"
+`;
+
+exports[`toTypescript recursion > renders a nested recursive structure with an automatic identifier 1`] = `
+"export type RecursiveType0 = number | readonly RecursiveType0[];
+
+export type Values = readonly RecursiveType0[];"
+`;
+
+exports[`toTypescript recursion > renders mutually recursive structures 1`] = `
+"export type RecursiveType0 = {
+    readonly name: string;
+    readonly next: {
+        readonly value: number;
+        readonly next: RecursiveType0;
+    };
+};
+
+export type Values = readonly RecursiveType0[];"
+`;

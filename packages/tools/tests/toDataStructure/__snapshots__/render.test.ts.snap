@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`toDataStructure render > applies hooks and import metadata while rendering a shared structure 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+import { CatalogMarker } from "@acme/catalog";
+
+export const externalProductDataStructure = DDataStructure.ObjectStructure({ sku: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]) }, []);
+
+export const catalogPageDataStructure = DDataStructure.ObjectStructure({ primaryProduct: externalProductDataStructure, secondaryProduct: externalProductDataStructure }, []);"
+`;
+
+exports[`toDataStructure render > merges data structure and TypeScript import contexts when rendering 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+import * as DataStructureNamespace from "@acme/shared";
+
+import TypescriptDefault from "@acme/shared";
+
+import { DataStructureImport, TypescriptImport } from "@acme/shared";
+
+import { FirstDirectImport, SecondDirectImport } from "@acme/direct-only";
+
+export const sharedValueDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
+`;
+
+exports[`toDataStructure render > throws when a constraint transformer fails 1`] = `[Error: Error during the render of dataStructure in dataStructure.]`;
+
+exports[`toDataStructure render > throws when no constraint transformer supports a constraint 1`] = `[Error: Error during the render of dataStructure in dataStructure.]`;
+
+exports[`toDataStructure render > throws when recursive type rendering is unsupported 1`] = `[Error: Error during the render of dataStructure in dataStructure.]`;

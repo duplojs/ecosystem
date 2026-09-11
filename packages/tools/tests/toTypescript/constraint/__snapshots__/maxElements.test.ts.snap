@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`maxElementsConstraintTransformer > rejects a non-finite maximum 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`maxElementsConstraintTransformer > renders positive and negative maximums 1`] = `
+[
+  "import * as DArray from "@duplojs/lang/array";
+
+export type Value = readonly number[] & DArray.MaxElements<2>;",
+  "import * as DArray from "@duplojs/lang/array";
+
+export type Value = readonly number[] & DArray.MaxElements<-2>;",
+]
+`;

@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`minCharactersConstraintTransformer > renders a minimum customer name length 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const customerIdentityDataStructure = DDataStructure.ObjectStructure({ displayName: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.MinCharactersConstraint(3)]) }, []);"
+`;

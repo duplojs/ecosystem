@@ -1,0 +1,96 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`lazyStructureTransformer > renders a lazy structure 1`] = `
+{
+  "$ref": "#/definitions/Value",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Value": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "type": "string",
+        },
+        "name": {
+          "minLength": 1,
+          "pattern": "^\\S.*\\S$|^\\S$",
+          "type": "string",
+        },
+      },
+      "required": [
+        "id",
+        "name",
+      ],
+      "type": "object",
+    },
+  },
+}
+`;
+
+exports[`lazyStructureTransformer > renders a recursive lazy union 1`] = `
+{
+  "$ref": "#/definitions/CatalogNode",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "CatalogNode": {
+      "$ref": "#/definitions/RecursiveName0",
+    },
+    "RecursiveName0": {
+      "anyOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "children": {
+              "items": {
+                "$ref": "#/definitions/RecursiveName0",
+              },
+              "type": "array",
+            },
+            "kind": {
+              "const": "category",
+              "type": "string",
+            },
+            "name": {
+              "minLength": 1,
+              "pattern": "^\\S.*\\S$|^\\S$",
+              "type": "string",
+            },
+          },
+          "required": [
+            "kind",
+            "name",
+            "children",
+          ],
+          "type": "object",
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "product",
+              "type": "string",
+            },
+            "sku": {
+              "minLength": 1,
+              "pattern": "^\\S.*\\S$|^\\S$",
+              "type": "string",
+            },
+            "stock": {
+              "minimum": 0,
+              "type": "integer",
+            },
+          },
+          "required": [
+            "kind",
+            "sku",
+            "stock",
+          ],
+          "type": "object",
+        },
+      ],
+    },
+  },
+}
+`;

@@ -10,12 +10,10 @@
   "description": "Shared project configuration presets for TypeScript, Oxlint, Commitlint, and more.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/duplojs/code-config.git"
+    "url": "git+https://github.com/duplojs/ecosystem.git"
   },
   "scripts": {
     "build": "./.commands/build.sh",
-    "test:ut": "./.commands/test-ut.sh",
-    "test:ut:watch": "./.commands/test-ut.sh --watch",
     "test:types": "./.commands/test-types.sh",
     "test:types:target": "./.commands/test-types-target.sh",
     "test:lint": "./.commands/test-lint.sh",
@@ -75,5 +73,8 @@
     "oxlint",
     "commitlint",
     "tsconfig"
-  ]
+  ],
+  "engines": {
+    "node": ">=24.18.0"
+  }
 }

@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`positiveConstraintTransformer > renders a positive subscription price 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const subscriptionPlanDataStructure = DDataStructure.ObjectStructure({ priceCents: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.PositiveConstraint()]) }, []);"
+`;

@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`booleanTypeTransformer > renders a boolean type 1`] = `
+{
+  "type": "boolean",
+}
+`;

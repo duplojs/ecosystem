@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`arrayLengthEqualConstraintTransformer > rejects a non-finite length 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`arrayLengthEqualConstraintTransformer > renders positive and negative lengths 1`] = `
+[
+  "import * as DArray from "@duplojs/lang/array";
+
+export type Value = readonly number[] & DArray.LengthEqual<2>;",
+  "import * as DArray from "@duplojs/lang/array";
+
+export type Value = readonly number[] & DArray.LengthEqual<-2>;",
+]
+`;

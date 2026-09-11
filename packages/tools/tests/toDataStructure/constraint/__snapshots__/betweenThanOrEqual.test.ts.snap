@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`betweenThanOrEqualConstraintTransformer > renders a customer birth year range 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const customerProfileDataStructure = DDataStructure.ObjectStructure({ birthYear: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.BetweenThanOrEqualConstraint(1900, 2100)]) }, []);"
+`;

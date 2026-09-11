@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`bigintLiteralTypeTransformer > renders a bigint literal type as an integer schema 1`] = `
+{
+  "const": 42n,
+  "type": "integer",
+}
+`;

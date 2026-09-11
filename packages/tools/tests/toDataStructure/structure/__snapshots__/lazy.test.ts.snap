@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`lazyStructureTransformer > propagates unsupported lazy getter and constraints 1`] = `
+[
+  [Error: Error during the render of dataStructure in dataStructure.],
+  [Error: Error during the render of dataStructure in dataStructure.],
+]
+`;
+
+exports[`lazyStructureTransformer > renders a recursive catalog tree with nested lazy structures 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+import * as DString from "@duplojs/lang/string";
+
+import * as DPath from "@duplojs/lang/path";
+
+export type CatalogFacet = {
+    readonly name: string & DString.NotEmpty;
+    readonly children: readonly CatalogFacet[];
+};
+
+export type $catalogFacetDataStructure = CatalogFacet;
+
+export type CatalogCategory = {
+    readonly slug: string & DPath.Segment;
+    readonly parent: null | CatalogCategory;
+    readonly facets: readonly CatalogFacet[];
+    readonly children: readonly CatalogCategory[];
+};
+
+export type $catalogCategoryDataStructure = CatalogCategory;
+
+export const catalogFacetDataStructure: DDataStructure.Structure<$catalogFacetDataStructure, unknown> = DDataStructure.ObjectStructure({ name: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]), children: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogFacetDataStructure(), []), []) }, []);
+
+export const catalogCategoryDataStructure: DDataStructure.Structure<$catalogCategoryDataStructure, unknown> = DDataStructure.ObjectStructure({ slug: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.SegmentPathConstraint()]), parent: DDataStructure.UnionStructure([DDataStructure.TypeStructure(DDataStructure.NullType(), []), catalogCategoryDataStructure], []), facets: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogFacetDataStructure(), []), []), children: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogCategoryDataStructure(), []), []) }, []);
+
+export const renderedCatalogCategoryDataStructure = catalogCategoryDataStructure;"
+`;

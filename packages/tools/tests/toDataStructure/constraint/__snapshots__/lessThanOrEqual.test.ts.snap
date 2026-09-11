@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`lessThanOrEqualConstraintTransformer > renders a maximum reservation quantity 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const reservationRuleDataStructure = DDataStructure.ObjectStructure({ quantity: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.LessThanOrEqualConstraint(25)]) }, []);"
+`;

@@ -1,0 +1,157 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`recordStructureTransformer > renders a nested inventory record 1`] = `
+{
+  "$ref": "#/definitions/InventoryByWarehouse",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "InventoryByWarehouse": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+          "flags": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "boolean",
+                },
+                {
+                  "type": "null",
+                },
+              ],
+            },
+            "propertyNames": {
+              "type": "string",
+            },
+            "type": "object",
+          },
+          "reservations": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "orderId": {
+                  "minLength": 1,
+                  "pattern": "^\\S.*\\S$|^\\S$",
+                  "type": "string",
+                },
+                "quantity": {
+                  "exclusiveMinimum": 0,
+                  "type": "integer",
+                },
+              },
+              "required": [
+                "orderId",
+                "quantity",
+              ],
+              "type": "object",
+            },
+            "type": "array",
+          },
+          "stock": {
+            "minimum": 0,
+            "type": "integer",
+          },
+        },
+        "required": [
+          "stock",
+          "reservations",
+          "flags",
+        ],
+        "type": "object",
+      },
+      "minProperties": 2,
+      "propertyNames": {
+        "anyOf": [
+          {
+            "const": "warehouse-a",
+            "type": "string",
+          },
+          {
+            "const": "warehouse-b",
+            "type": "string",
+          },
+        ],
+      },
+      "required": [
+        "warehouse-a",
+        "warehouse-b",
+      ],
+      "type": "object",
+    },
+  },
+}
+`;
+
+exports[`recordStructureTransformer > renders record structures with required key inference 1`] = `
+[
+  {
+    "$ref": "#/definitions/Value",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+      "Value": {
+        "additionalProperties": {
+          "type": "number",
+        },
+        "propertyNames": {
+          "type": "string",
+        },
+        "type": "object",
+      },
+    },
+  },
+  {
+    "$ref": "#/definitions/Value",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+      "Value": {
+        "additionalProperties": {
+          "minimum": 0,
+          "type": "integer",
+        },
+        "minProperties": 1,
+        "propertyNames": {
+          "const": "stock",
+          "type": "string",
+        },
+        "required": [
+          "stock",
+        ],
+        "type": "object",
+      },
+    },
+  },
+  {
+    "$ref": "#/definitions/Value",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+      "Value": {
+        "additionalProperties": {
+          "type": "boolean",
+        },
+        "minProperties": 2,
+        "propertyNames": {
+          "anyOf": [
+            {
+              "const": "draft",
+              "type": "string",
+            },
+            {
+              "const": "published",
+              "type": "string",
+            },
+          ],
+        },
+        "required": [
+          "draft",
+          "published",
+        ],
+        "type": "object",
+      },
+    },
+  },
+]
+`;
+
+exports[`recordStructureTransformer > throws when the key structure is not supported 1`] = `[Error: Error during the render of a data structure as a JsonSchema.]`;
+
+exports[`recordStructureTransformer > throws when the value structure is not supported 1`] = `[Error: Error during the render of a data structure as a JsonSchema.]`;

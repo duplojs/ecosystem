@@ -1,0 +1,39 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`recordStructureTransformer > propagates an unsupported key 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`recordStructureTransformer > propagates an unsupported value 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`recordStructureTransformer > renders a partial dynamic metadata record 1`] = `"export type ProductMetadata = Partial<Readonly<Record<string, string | number | boolean | undefined>>>;"`;
+
+exports[`recordStructureTransformer > renders an inventory record projection 1`] = `
+"import * as DNumber from "@duplojs/lang/number";
+
+export type InventoryByLocation = Readonly<Record<"main" | "outlet" | "supplier", {
+    readonly available: number & DNumber.Integer & DNumber.GreaterThanOrEqual<0>;
+    readonly reserved: number & DNumber.Integer & DNumber.GreaterThanOrEqual<0>;
+    readonly nextRestock: string | null;
+}>>;"
+`;
+
+exports[`recordStructureTransformer > renders required and partial records 1`] = `
+[
+  "export type Value = Readonly<Record<"key", number>>;",
+  "export type Value = Readonly<Record<"first" | "second", number>>;",
+  "export type Value = Partial<Readonly<Record<string, number>>>;",
+  "export type Value = Partial<Readonly<Record<string, number>>>;",
+  "export type Value = Readonly<Record<"key", number>>;",
+  "export type Value = Partial<Readonly<Record<never, number>>>;",
+  "export type Value = Partial<Readonly<Record<never, number>>>;",
+  "export type Value = Readonly<Record<"key", number>> & Partial<Readonly<Record<Exclude<string, "key">, number>>>;",
+  "export type Value = Readonly<Record<"key", number>> & Partial<Readonly<Record<Exclude<"key" | number, "key">, number>>>;",
+  "export type Value = Partial<Readonly<Record<never, number>>>;",
+  "export type Value = Partial<Readonly<Record<"key", undefined | number>>>;",
+]
+`;
+
+exports[`recordStructureTransformer > with identifier structure 1`] = `
+"export type Test = Partial<Readonly<Record<string, number>>>;
+
+export type Value = Test;"
+`;

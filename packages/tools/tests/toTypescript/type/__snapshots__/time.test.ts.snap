@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`timeTypeTransformer > renders a time type and its import 1`] = `
+"import * as DChrono from "@duplojs/lang/chrono";
+
+export type Value = DChrono.TheTime;"
+`;

@@ -1,0 +1,16 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`unionStructureTransformer > propagates unsupported union value and constraints 1`] = `
+[
+  [Error: Error during the render of dataStructure in dataStructure.],
+  [Error: Error during the render of dataStructure in dataStructure.],
+]
+`;
+
+exports[`unionStructureTransformer > renders checkout payment method variants 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const paymentMethodDataStructure = DDataStructure.UnionStructure([DDataStructure.ObjectStructure({ kind: DDataStructure.TypeStructure(DDataStructure.StringLiteralType("card"), []), last4: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.StringLengthEqualConstraint(4)]) }, []), DDataStructure.ObjectStructure({ kind: DDataStructure.TypeStructure(DDataStructure.StringLiteralType("bank-transfer"), []), iban: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]) }, []), DDataStructure.TypeStructure(DDataStructure.NullType(), [])], []);
+
+export const renderedPaymentMethodDataStructure = paymentMethodDataStructure;"
+`;

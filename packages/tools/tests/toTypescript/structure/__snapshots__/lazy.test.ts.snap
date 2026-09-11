@@ -1,0 +1,20 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`lazyStructureTransformer > renders a lazy structure 1`] = `"export type Value = string;"`;
+
+exports[`lazyStructureTransformer > renders a recursive catalog category 1`] = `
+"import * as DString from "@duplojs/lang/string";
+
+export type CatalogCategory = {
+    readonly id: string & DString.Uuid;
+    readonly name: string & DString.NotEmpty;
+    readonly children: readonly CatalogCategory[];
+    readonly parent: null | CatalogCategory;
+};"
+`;
+
+exports[`lazyStructureTransformer > with identifier structure 1`] = `
+"export type Test = string;
+
+export type Value = Test;"
+`;

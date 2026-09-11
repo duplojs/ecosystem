@@ -1,0 +1,43 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`entityStructureTransformer > propagates an unsupported property 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`entityStructureTransformer > renders a product entity with relational fields 1`] = `
+"import * as DModeling from "@duplojs/lang/modeling";
+
+import * as DString from "@duplojs/lang/string";
+
+import * as DNumber from "@duplojs/lang/number";
+
+export type Product = DModeling.Entity<"Product"> & {
+    readonly id: string & DModeling.NewType<"ProductId", never>;
+    readonly sku: string & DString.NotEmpty;
+    readonly categories: readonly string[];
+    readonly stockByWarehouse: Readonly<Record<"main" | "outlet", number & DNumber.Integer>>;
+    readonly metadata: Partial<Readonly<Record<string, string | number | boolean>>>;
+};
+
+export type Value = Product;"
+`;
+
+exports[`entityStructureTransformer > renders an entity structure 1`] = `
+"import * as DModeling from "@duplojs/lang/modeling";
+
+export type User = DModeling.Entity<"User"> & {
+    readonly id: number & DModeling.NewType<"Identifier", never>;
+    readonly name: string;
+};
+
+export type Value = User;"
+`;
+
+exports[`entityStructureTransformer > with identifier structure 1`] = `
+"import * as DModeling from "@duplojs/lang/modeling";
+
+export type Test = DModeling.Entity<"User"> & {
+    readonly id: number;
+    readonly name: string;
+};
+
+export type Value = Test;"
+`;

@@ -1,0 +1,215 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`numberTypeTransformer > renders a number type 1`] = `
+{
+  "type": "number",
+}
+`;
+
+exports[`numberTypeTransformer > renders direct number constraints 1`] = `
+{
+  "allOf": [
+    {
+      "maximum": 9007199254740991,
+    },
+    {
+      "minimum": -9007199254740991,
+    },
+    {
+      "exclusiveMinimum": 3,
+    },
+    {
+      "minimum": 4,
+    },
+    {
+      "exclusiveMaximum": 7,
+    },
+    {
+      "maximum": 6,
+    },
+  ],
+  "anyOf": [
+    {
+      "exclusiveMaximum": 0,
+    },
+    {
+      "exclusiveMinimum": 0,
+    },
+  ],
+  "exclusiveMaximum": 9,
+  "exclusiveMinimum": 1,
+  "maximum": 8,
+  "minimum": 2,
+  "multipleOf": 2,
+  "type": "integer",
+}
+`;
+
+exports[`numberTypeTransformer > renders repeated number bounds with and without an existing allOf 1`] = `
+[
+  {
+    "allOf": [
+      {
+        "maximum": 9007199254740991,
+      },
+      {
+        "minimum": -9007199254740991,
+      },
+      {
+        "maximum": 0,
+      },
+    ],
+    "maximum": 10,
+    "type": "number",
+  },
+  {
+    "allOf": [
+      {
+        "minimum": 0,
+      },
+    ],
+    "minimum": 1,
+    "type": "number",
+  },
+  {
+    "allOf": [
+      {
+        "exclusiveMaximum": 0,
+      },
+    ],
+    "exclusiveMaximum": 10,
+    "type": "number",
+  },
+  {
+    "allOf": [
+      {
+        "exclusiveMinimum": 0,
+      },
+    ],
+    "exclusiveMinimum": 1,
+    "type": "number",
+  },
+  {
+    "allOf": [
+      {
+        "exclusiveMaximum": 9,
+        "exclusiveMinimum": 1,
+      },
+    ],
+    "exclusiveMaximum": 10,
+    "type": "number",
+  },
+  {
+    "allOf": [
+      {
+        "maximum": 9,
+        "minimum": 1,
+      },
+    ],
+    "maximum": 10,
+    "type": "number",
+  },
+  {
+    "allOf": [
+      {
+        "exclusiveMinimum": 2,
+      },
+    ],
+    "exclusiveMinimum": 1,
+    "type": "number",
+  },
+  {
+    "allOf": [
+      {
+        "minimum": 2,
+      },
+    ],
+    "minimum": 1,
+    "type": "number",
+  },
+  {
+    "allOf": [
+      {
+        "exclusiveMaximum": 9,
+      },
+    ],
+    "exclusiveMaximum": 10,
+    "type": "number",
+  },
+  {
+    "allOf": [
+      {
+        "maximum": 9,
+      },
+    ],
+    "maximum": 10,
+    "type": "number",
+  },
+]
+`;
+
+exports[`numberTypeTransformer > renders repeated number constraints with allOf and anyOf 1`] = `
+{
+  "allOf": [
+    {
+      "maximum": 0,
+    },
+    {
+      "minimum": 0,
+    },
+    {
+      "exclusiveMaximum": 0,
+    },
+    {
+      "exclusiveMinimum": 0,
+    },
+    {
+      "exclusiveMaximum": 8,
+      "exclusiveMinimum": 3,
+    },
+    {
+      "exclusiveMaximum": 7,
+      "exclusiveMinimum": 4,
+    },
+    {
+      "maximum": 6,
+      "minimum": 5,
+    },
+    {
+      "maximum": 5,
+      "minimum": 5,
+    },
+    {
+      "maximum": 9007199254740991,
+    },
+    {
+      "minimum": -9007199254740991,
+    },
+    {
+      "maximum": 9007199254740991,
+    },
+    {
+      "minimum": -9007199254740991,
+    },
+  ],
+  "anyOf": [
+    {
+      "exclusiveMaximum": 0,
+    },
+    {
+      "exclusiveMinimum": 0,
+    },
+    {
+      "exclusiveMaximum": 0,
+    },
+    {
+      "exclusiveMinimum": 0,
+    },
+  ],
+  "exclusiveMaximum": 9,
+  "exclusiveMinimum": 2,
+  "maximum": 10,
+  "minimum": 1,
+  "type": "number",
+}
+`;

@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`betweenThanConstraintTransformer > renders a private promotion rate 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const promotionRuleDataStructure = DDataStructure.ObjectStructure({ discountPercent: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.BetweenThanConstraint(0, 100)]) }, []);"
+`;

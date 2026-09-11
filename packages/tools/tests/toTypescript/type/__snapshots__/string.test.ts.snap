@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`stringTypeTransformer > renders a string type 1`] = `"export type Value = string;"`;

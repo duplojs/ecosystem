@@ -1,0 +1,209 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`entityStructureTransformer > renders a complex product entity 1`] = `
+{
+  "$ref": "#/definitions/Value",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Value": {
+      "additionalProperties": false,
+      "properties": {
+        "@duplojs/lang/kind/@DuplojsLangModeling/entity": {
+          "const": "Product",
+          "type": "string",
+        },
+        "id": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "title": "ProductId",
+          "type": "string",
+        },
+        "metadata": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string",
+              },
+              {
+                "type": "number",
+              },
+              {
+                "type": "boolean",
+              },
+            ],
+          },
+          "propertyNames": {
+            "type": "string",
+          },
+          "type": "object",
+        },
+        "prices": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "number",
+          },
+          "minProperties": 2,
+          "propertyNames": {
+            "anyOf": [
+              {
+                "const": "EUR",
+                "type": "string",
+              },
+              {
+                "const": "USD",
+                "type": "string",
+              },
+            ],
+          },
+          "required": [
+            "EUR",
+            "USD",
+          ],
+          "type": "object",
+        },
+        "sku": {
+          "minLength": 1,
+          "pattern": "^\\S.*\\S$|^\\S$",
+          "type": "string",
+        },
+        "status": {
+          "anyOf": [
+            {
+              "const": "draft",
+              "type": "string",
+            },
+            {
+              "const": "published",
+              "type": "string",
+            },
+            {
+              "const": "archived",
+              "type": "string",
+            },
+          ],
+        },
+        "variants": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "reference": {
+                "minLength": 1,
+                "pattern": "^\\S.*\\S$|^\\S$",
+                "type": "string",
+              },
+              "stock": {
+                "type": "integer",
+              },
+            },
+            "required": [
+              "reference",
+              "stock",
+            ],
+            "type": "object",
+          },
+          "maxItems": 25,
+          "type": "array",
+        },
+      },
+      "required": [
+        "id",
+        "sku",
+        "status",
+        "prices",
+        "variants",
+        "metadata",
+        "@duplojs/lang/kind/@DuplojsLangModeling/entity",
+      ],
+      "title": "Product",
+      "type": "object",
+    },
+  },
+}
+`;
+
+exports[`entityStructureTransformer > renders a recursive entity tree 1`] = `
+{
+  "$ref": "#/definitions/Category",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Category": {
+      "$ref": "#/definitions/RecursiveName0",
+      "title": "Category",
+    },
+    "RecursiveName0": {
+      "additionalProperties": false,
+      "properties": {
+        "@duplojs/lang/kind/@DuplojsLangModeling/entity": {
+          "const": "Category",
+          "type": "string",
+        },
+        "children": {
+          "items": {
+            "$ref": "#/definitions/RecursiveName0",
+            "title": "Category",
+          },
+          "maxItems": 10,
+          "type": "array",
+        },
+        "id": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "title": "CategoryId",
+          "type": "string",
+        },
+        "name": {
+          "minLength": 1,
+          "pattern": "^\\S.*\\S$|^\\S$",
+          "type": "string",
+        },
+      },
+      "required": [
+        "id",
+        "name",
+        "children",
+        "@duplojs/lang/kind/@DuplojsLangModeling/entity",
+      ],
+      "type": "object",
+    },
+  },
+}
+`;
+
+exports[`entityStructureTransformer > renders an entity structure 1`] = `
+{
+  "$ref": "#/definitions/Value",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Value": {
+      "additionalProperties": false,
+      "properties": {
+        "@duplojs/lang/kind/@DuplojsLangModeling/entity": {
+          "const": "User",
+          "type": "string",
+        },
+        "email": {
+          "format": "email",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "title": "UserEmail",
+          "type": "string",
+        },
+        "id": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "title": "UserId",
+          "type": "string",
+        },
+      },
+      "required": [
+        "id",
+        "email",
+        "@duplojs/lang/kind/@DuplojsLangModeling/entity",
+      ],
+      "title": "User",
+      "type": "object",
+    },
+  },
+}
+`;
+
+exports[`entityStructureTransformer > throws when the inner object is not supported 1`] = `[Error: Error during the render of a data structure as a JsonSchema.]`;

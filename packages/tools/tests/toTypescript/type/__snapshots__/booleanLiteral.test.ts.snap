@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`booleanLiteralTypeTransformer > renders true and false literals 1`] = `
+[
+  "export type Value = true;",
+  "export type Value = false;",
+]
+`;

@@ -1,0 +1,18 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`newTypeStructureTransformer > propagates unsupported inner structure and new type constraints 1`] = `
+[
+  [Error: Error during the render of dataStructure in dataStructure.],
+  [Error: Error during the render of dataStructure in dataStructure.],
+]
+`;
+
+exports[`newTypeStructureTransformer > renders a money new type with inner and new type constraints 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+import * as DModeling from "@duplojs/lang/modeling";
+
+export const moneyAmountStructureDataStructure = DModeling.NewTypeStructure("MoneyAmount", DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.IntegerConstraint(), DDataStructure.GreaterThanOrEqualConstraint(0)]), [DDataStructure.SafeConstraint()]);
+
+export const renderedMoneyDataStructure = moneyAmountStructureDataStructure;"
+`;

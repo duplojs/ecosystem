@@ -1,0 +1,16 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`betweenThanConstraintTransformer > rejects non-finite bounds 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`betweenThanConstraintTransformer > rejects non-finite bounds 2`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`betweenThanConstraintTransformer > renders positive and negative bounds 1`] = `
+[
+  "import * as DNumber from "@duplojs/lang/number";
+
+export type Value = number & (DNumber.GreaterThan<1> & DNumber.LessThan<2>);",
+  "import * as DNumber from "@duplojs/lang/number";
+
+export type Value = number & (DNumber.GreaterThan<-2> & DNumber.LessThan<-1>);",
+]
+`;

@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`numberLiteralTypeTransformer > rejects a non-finite number literal 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`numberLiteralTypeTransformer > renders positive and negative number literals 1`] = `
+[
+  "export type Value = 42;",
+  "export type Value = -42;",
+]
+`;

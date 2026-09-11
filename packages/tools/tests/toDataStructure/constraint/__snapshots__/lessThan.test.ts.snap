@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`lessThanConstraintTransformer > renders a fraud score upper bound 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const fraudSignalDataStructure = DDataStructure.ObjectStructure({ score: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.LessThanConstraint(1)]) }, []);"
+`;

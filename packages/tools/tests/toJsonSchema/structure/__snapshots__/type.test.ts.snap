@@ -1,0 +1,16 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`typeStructureTransformer > renders a wrapped type structure 1`] = `
+{
+  "$ref": "#/definitions/Value",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Value": {
+      "minLength": 3,
+      "type": "string",
+    },
+  },
+}
+`;
+
+exports[`typeStructureTransformer > throws when the inner type is not supported 1`] = `[Error: Error during the render of a data structure as a JsonSchema.]`;

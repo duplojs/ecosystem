@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`nonEncodableStringStructureTransformer > renders a non-encodable string structure 1`] = `"export type Value = String;"`;
+
+exports[`nonEncodableStringStructureTransformer > with identifier structure 1`] = `
+"export type Test = String;
+
+export type Value = Test;"
+`;

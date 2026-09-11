@@ -1,0 +1,85 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`newTypeStructureTransformer > renders a new typed business object 1`] = `
+{
+  "$ref": "#/definitions/Value",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Value": {
+      "additionalProperties": false,
+      "properties": {
+        "email": {
+          "format": "email",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "type": "string",
+        },
+        "id": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "title": "CustomerId",
+          "type": "string",
+        },
+        "status": {
+          "anyOf": [
+            {
+              "const": "active",
+              "type": "string",
+            },
+            {
+              "const": "blocked",
+              "type": "string",
+            },
+          ],
+        },
+        "tags": {
+          "items": {
+            "minLength": 1,
+            "pattern": "^\\S.*\\S$|^\\S$",
+            "type": "string",
+          },
+          "maxItems": 5,
+          "type": "array",
+        },
+      },
+      "required": [
+        "id",
+        "email",
+        "status",
+        "tags",
+      ],
+      "title": "CustomerProfile",
+      "type": "object",
+    },
+  },
+}
+`;
+
+exports[`newTypeStructureTransformer > renders new types with and without dedicated constraints 1`] = `
+[
+  {
+    "$ref": "#/definitions/Value",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+      "Value": {
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+        "title": "UserId",
+        "type": "string",
+      },
+    },
+  },
+  {
+    "$ref": "#/definitions/Value",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+      "Value": {
+        "minimum": 0,
+        "title": "Quantity",
+        "type": "integer",
+      },
+    },
+  },
+]
+`;
+
+exports[`newTypeStructureTransformer > throws when the inner structure is not supported 1`] = `[Error: Error during the render of a data structure as a JsonSchema.]`;

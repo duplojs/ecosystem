@@ -1,0 +1,49 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`taggedObjectStructureTransformer > propagates an unsupported property 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`taggedObjectStructureTransformer > rejects a transformed inner structure that is not an object type 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`taggedObjectStructureTransformer > renders a tagged audit event with nested payloads 1`] = `
+"import * as DString from "@duplojs/lang/string";
+
+import * as DModeling from "@duplojs/lang/modeling";
+
+import * as DNumber from "@duplojs/lang/number";
+
+export interface AuditEvent extends DModeling.ObjectTag<"AuditEvent"> {
+    readonly id: string & DString.Uuid;
+    readonly actorId: string & DModeling.NewType<"UserId", never>;
+    readonly payload: {
+        readonly type: "product.updated";
+        readonly changes: Partial<Readonly<Record<string, string>>>;
+    } | {
+        readonly type: "stock.adjusted";
+        readonly quantity: number & DNumber.Integer;
+    };
+}
+
+export type Value = AuditEvent;"
+`;
+
+exports[`taggedObjectStructureTransformer > renders a tagged object as an interface 1`] = `
+"import * as DModeling from "@duplojs/lang/modeling";
+
+export interface User extends DModeling.ObjectTag<"User"> {
+    readonly id: number;
+    readonly name: string;
+}
+
+export type Value = User;"
+`;
+
+exports[`taggedObjectStructureTransformer > with identifier structure 1`] = `
+"import * as DModeling from "@duplojs/lang/modeling";
+
+export interface Test extends DModeling.ObjectTag<"User"> {
+    readonly id: number;
+    readonly name: string;
+}
+
+export type Value = Test;"
+`;

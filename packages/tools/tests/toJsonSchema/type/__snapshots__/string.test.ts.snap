@@ -1,0 +1,166 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`stringTypeTransformer > renders a string type 1`] = `
+{
+  "type": "string",
+}
+`;
+
+exports[`stringTypeTransformer > renders direct string constraints 1`] = `
+{
+  "allOf": [
+    {
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+    },
+    {
+      "pattern": "^\\S.*\\S$|^\\S$",
+    },
+    {
+      "pattern": "^\\S(.*\\S)?$",
+    },
+    {
+      "pattern": "^value$",
+    },
+    {
+      "pattern": "^(?:\\.|/|(?!.*\\u0000)(?!.*//)(?!.*/$)(?!.*(?:^|/)\\.(?:/|$))(?:(?=/)(?!.*(?:^|/)\\.\\.(?:/|$)).+|(?!/)(?!.*(?:^|/)(?!\\.\\.(?:/|$))[^/]+/\\.\\.(?:/|$)).+))$",
+    },
+    {
+      "pattern": "^(?!.*\\u0000)(?!.*//)(?!.*(?:^|/)\\.(?:/|$))(?!.*(?:^|/)\\.\\.(?:/|$))(?:/|/.*[^/])$",
+    },
+    {
+      "pattern": "^(?!\\.$|\\.\\.$)[^/\\u0000]+$",
+    },
+  ],
+  "format": "segment-path",
+  "maxLength": 4,
+  "minLength": 4,
+  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+  "type": "string",
+}
+`;
+
+exports[`stringTypeTransformer > renders repeated string constraints with allOf 1`] = `
+{
+  "allOf": [
+    {
+      "pattern": "^second$",
+    },
+    {
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+    },
+    {
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+    },
+    {
+      "pattern": "^\\S.*\\S$|^\\S$",
+    },
+    {
+      "pattern": "^\\S(.*\\S)?$",
+    },
+  ],
+  "format": "uuid",
+  "minLength": 1,
+  "pattern": "^first$",
+  "type": "string",
+}
+`;
+
+exports[`stringTypeTransformer > renders standalone string pattern constraints 1`] = `
+[
+  {
+    "format": "email",
+    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+    "type": "string",
+  },
+  {
+    "format": "uuid",
+    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+    "type": "string",
+  },
+  {
+    "minLength": 1,
+    "pattern": "^\\S.*\\S$|^\\S$",
+    "type": "string",
+  },
+  {
+    "minLength": 1,
+    "pattern": "^\\S(.*\\S)?$",
+    "type": "string",
+  },
+  {
+    "format": "path",
+    "pattern": "^(?:\\.|/|(?!.*\\u0000)(?!.*//)(?!.*/$)(?!.*(?:^|/)\\.(?:/|$))(?:(?=/)(?!.*(?:^|/)\\.\\.(?:/|$)).+|(?!/)(?!.*(?:^|/)(?!\\.\\.(?:/|$))[^/]+/\\.\\.(?:/|$)).+))$",
+    "type": "string",
+  },
+  {
+    "format": "absolute-path",
+    "pattern": "^(?!.*\\u0000)(?!.*//)(?!.*(?:^|/)\\.(?:/|$))(?!.*(?:^|/)\\.\\.(?:/|$))(?:/|/.*[^/])$",
+    "type": "string",
+  },
+  {
+    "format": "segment-path",
+    "pattern": "^(?!\\.$|\\.\\.$)[^/\\u0000]+$",
+    "type": "string",
+  },
+  {
+    "allOf": [
+      {
+        "pattern": "^(?:\\.|/|(?!.*\\u0000)(?!.*//)(?!.*/$)(?!.*(?:^|/)\\.(?:/|$))(?:(?=/)(?!.*(?:^|/)\\.\\.(?:/|$)).+|(?!/)(?!.*(?:^|/)(?!\\.\\.(?:/|$))[^/]+/\\.\\.(?:/|$)).+))$",
+      },
+    ],
+    "format": "path",
+    "pattern": "^first$",
+    "type": "string",
+  },
+  {
+    "allOf": [
+      {
+        "pattern": "^(?!.*\\u0000)(?!.*//)(?!.*(?:^|/)\\.(?:/|$))(?!.*(?:^|/)\\.\\.(?:/|$))(?:/|/.*[^/])$",
+      },
+    ],
+    "format": "absolute-path",
+    "pattern": "^first$",
+    "type": "string",
+  },
+  {
+    "allOf": [
+      {
+        "pattern": "^(?!\\.$|\\.\\.$)[^/\\u0000]+$",
+      },
+    ],
+    "format": "segment-path",
+    "pattern": "^first$",
+    "type": "string",
+  },
+  {
+    "allOf": [
+      {
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+      },
+    ],
+    "format": "email",
+    "pattern": "^first$",
+    "type": "string",
+  },
+  {
+    "allOf": [
+      {
+        "pattern": "^\\S.*\\S$|^\\S$",
+      },
+    ],
+    "minLength": 1,
+    "pattern": "^first$",
+    "type": "string",
+  },
+  {
+    "allOf": [
+      {
+        "pattern": "^\\S(.*\\S)?$",
+      },
+    ],
+    "minLength": 1,
+    "pattern": "^first$",
+    "type": "string",
+  },
+]
+`;

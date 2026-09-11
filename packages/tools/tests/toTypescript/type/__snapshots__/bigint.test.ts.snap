@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`bigintTypeTransformer > renders a bigint type 1`] = `"export type Value = bigint;"`;

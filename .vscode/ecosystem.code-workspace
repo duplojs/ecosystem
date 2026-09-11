@@ -1,10 +1,6 @@
 {
 	"folders": [
 		{
-			"name": "ecosystem",
-			"path": ".."
-		},
-		{
 			"name": "@duplojs/lang",
 			"path": "../packages/lang"
 		},
@@ -13,8 +9,16 @@
 			"path": "../packages/server"
 		},
 		{
+			"name": "@duplojs/tools",
+			"path": "../packages/tools"
+		},
+		{
 			"name": "@duplojs/code-config",
 			"path": "../packages/code-config"
+		},
+		{
+			"name": "ecosystem",
+			"path": ".."
 		},
 	],
 	"settings": {

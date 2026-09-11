@@ -1,0 +1,26 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`arrayStructureTransformer > propagates an unsupported element 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`arrayStructureTransformer > renders a product stock movement list 1`] = `
+"import * as DModeling from "@duplojs/lang/modeling";
+
+import * as DString from "@duplojs/lang/string";
+
+import * as DNumber from "@duplojs/lang/number";
+
+export type StockMovements = readonly {
+    readonly id: string & DModeling.NewType<"MovementId", never>;
+    readonly sku: string & DString.NotEmpty;
+    readonly status: "pending" | "applied" | "cancelled";
+    readonly warehouseStock: Readonly<Record<"main" | "outlet", number & DNumber.Integer & DNumber.GreaterThanOrEqual<0>>>;
+}[];"
+`;
+
+exports[`arrayStructureTransformer > renders an array structure 1`] = `"export type Value = readonly string[];"`;
+
+exports[`arrayStructureTransformer > with identifier structure 1`] = `
+"export type Test = readonly string[];
+
+export type Value = Test;"
+`;

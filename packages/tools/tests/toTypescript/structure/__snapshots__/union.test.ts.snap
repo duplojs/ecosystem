@@ -1,0 +1,36 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`unionStructureTransformer > propagates an unsupported member 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`unionStructureTransformer > renders a business event union 1`] = `
+"import * as DString from "@duplojs/lang/string";
+
+import * as DNumber from "@duplojs/lang/number";
+
+import * as DModeling from "@duplojs/lang/modeling";
+
+export type DomainEvent = {
+    readonly type: "stock.updated";
+    readonly payload: {
+        readonly sku: string & DString.NotEmpty;
+        readonly quantity: number & DNumber.Integer & DNumber.GreaterThanOrEqual<0>;
+    };
+} | {
+    readonly type: "customer.created";
+    readonly payload: {
+        readonly id: string & DString.Uuid;
+        readonly email: string & DString.Email;
+    } & DModeling.NewType<"Customer", never>;
+} | {
+    readonly type: "audit.logged";
+    readonly payload: Partial<Readonly<Record<string, string | number | boolean | null>>>;
+};"
+`;
+
+exports[`unionStructureTransformer > renders a union structure 1`] = `"export type Value = string | number;"`;
+
+exports[`unionStructureTransformer > with identifier structure 1`] = `
+"export type Test = string | number;
+
+export type Value = Test;"
+`;

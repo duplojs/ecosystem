@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`booleanLiteralTypeTransformer > renders boolean literal types 1`] = `
+[
+  {
+    "const": true,
+    "type": "boolean",
+  },
+  {
+    "const": false,
+    "type": "boolean",
+  },
+]
+`;

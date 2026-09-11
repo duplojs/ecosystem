@@ -1,0 +1,49 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`newTypeStructureTransformer > propagates an unsupported dedicated constraint 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`newTypeStructureTransformer > propagates an unsupported inner structure 1`] = `[Error: Error during the render of a data structure as a TypeScript type.]`;
+
+exports[`newTypeStructureTransformer > renders a new typed customer profile 1`] = `
+"import * as DModeling from "@duplojs/lang/modeling";
+
+import * as DString from "@duplojs/lang/string";
+
+export type Value = {
+    readonly id: string & DModeling.NewType<"CustomerId", never>;
+    readonly email: string & DString.Email;
+    readonly segments: readonly ("retail" | "pro")[];
+    readonly preferences: Partial<Readonly<Record<string, string | boolean | undefined>>>;
+} & DModeling.NewType<"CustomerProfile", never>;"
+`;
+
+exports[`newTypeStructureTransformer > renders new types with zero, one or several dedicated constraints 1`] = `
+[
+  "import * as DModeling from "@duplojs/lang/modeling";
+
+export type Value = number & DModeling.NewType<"Score", never>;",
+  "import * as DNumber from "@duplojs/lang/number";
+
+import * as DModeling from "@duplojs/lang/modeling";
+
+export type Value = number & DModeling.NewType<"Score", DNumber.Integer>;",
+  "import * as DNumber from "@duplojs/lang/number";
+
+import * as DModeling from "@duplojs/lang/modeling";
+
+export type Value = number & DModeling.NewType<"Score", DNumber.Integer | DNumber.Safe>;",
+  "import * as DNumber from "@duplojs/lang/number";
+
+import * as DModeling from "@duplojs/lang/modeling";
+
+export type Value = number & DNumber.Positive & DModeling.NewType<"Score", never>;",
+]
+`;
+
+exports[`newTypeStructureTransformer > with identifier structure 1`] = `
+"import * as DModeling from "@duplojs/lang/modeling";
+
+export type Test = number & DModeling.NewType<"Score", never>;
+
+export type Value = Test;"
+`;

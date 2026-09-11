@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`segmentPathConstraintTransformer > renders a catalog slug segment 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const catalogCategoryDataStructure = DDataStructure.ObjectStructure({ slug: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.SegmentPathConstraint()]) }, []);"
+`;

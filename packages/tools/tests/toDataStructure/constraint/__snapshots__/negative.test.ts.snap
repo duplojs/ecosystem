@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`negativeConstraintTransformer > renders a balance correction debit 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const balanceAdjustmentDataStructure = DDataStructure.ObjectStructure({ amount: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.NegativeConstraint()]) }, []);"
+`;

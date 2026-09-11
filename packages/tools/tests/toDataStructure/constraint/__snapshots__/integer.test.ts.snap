@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`integerConstraintTransformer > renders an integer product quantity 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const productQuantityDataStructure = DDataStructure.ObjectStructure({ quantity: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.IntegerConstraint()]) }, []);"
+`;
