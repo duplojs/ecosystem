@@ -1,5 +1,5 @@
 import { defineConfig } from "oxlint";
-import { openConfig, testPreset } from "./dist/oxlint/index.mjs";
+import { openConfig, testPreset } from "@duplojs/code-config/oxlint";
 
 export default defineConfig({
 	extends: [openConfig],

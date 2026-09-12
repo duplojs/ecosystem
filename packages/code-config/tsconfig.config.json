@@ -1,5 +1,4 @@
 {
   "extends": "./tsconfig.app.json",
   "include": ["oxlint.config.ts", "rolldown.config.ts", "vitest.config.ts"],
-  "exclude": ["dist"]
 }
