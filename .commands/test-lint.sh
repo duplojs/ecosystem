@@ -21,3 +21,6 @@ pnpm --filter @duplojs/tools test:lint
 
 printf "\n${GREEN}@duplojs/json-web-token${RESET}\n"
 pnpm --filter @duplojs/json-web-token test:lint
+
+printf "\n${GREEN}@duplojs/playwright${RESET}\n"
+pnpm --filter @duplojs/playwright test:lint

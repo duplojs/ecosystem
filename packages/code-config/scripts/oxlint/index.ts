@@ -1,5 +1,5 @@
 export * from "./plugin";
-export * from "./override";
+export type * from "./override";
 export * from "./defineRules";
 export * from "./base";
 export * from "./open";

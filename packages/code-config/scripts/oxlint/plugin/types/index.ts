@@ -1,1 +1,1 @@
-export * from "./ruleOptions";
+export type * from "./ruleOptions";

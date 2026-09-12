@@ -275,7 +275,12 @@ export const basePreset = {
 		"typescript/consistent-return": "off",
 		"typescript/consistent-type-assertions": "off",
 		"typescript/consistent-type-definitions": "error",
-		"typescript/consistent-type-exports": "off",
+		"typescript/consistent-type-exports": [
+			"error",
+			{
+				fixMixedExportsWithInlineTypeSpecifier: true,
+			},
+		],
 		"typescript/consistent-type-imports": [
 			"error",
 			{

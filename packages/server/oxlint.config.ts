@@ -2,14 +2,6 @@ import { openConfig, testPreset, oxlint } from "@duplojs/code-config/oxlint";
 
 export default oxlint.defineConfig({
 	extends: [openConfig],
-	rules: {
-		"typescript/consistent-type-exports": [
-			"error",
-			{
-				fixMixedExportsWithInlineTypeSpecifier: true,
-			},
-		],
-	},
 	options: {
 		...openConfig.options,
 		typeAware: true,

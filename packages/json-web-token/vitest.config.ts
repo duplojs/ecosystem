@@ -11,7 +11,6 @@ export default defineConfig({
 			include: ["scripts/**/*.ts"],
 			exclude: [
 				"**/*.test.ts",
-				"bin",
 				"dist",
 			],
 		},
