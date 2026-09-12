@@ -1,28 +1,29 @@
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
+import * as DPath from "@duplojs/lang/path";
 import { DServerFile, environmentVariable, getCurrentWorkDirectory, getProcessArguments, setCurrentWorkingDirectory } from "@duplojs/server";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 
 const initialWorkingDirectory = process.cwd();
 const initialProcessEnv = { ...process.env };
-const rootPath = `${initialWorkingDirectory}/.tmp-common-bun`;
-const applicationEnvPath = `${initialWorkingDirectory}/fixtures/env/application.env` as never;
-const serviceEnvPath = `${initialWorkingDirectory}/fixtures/env/service.env` as never;
-const runtimeEnvPath = `${initialWorkingDirectory}/fixtures/env/runtime.env` as never;
+const rootPath = DPath.createOrThrow(`${initialWorkingDirectory}/.tmp-common-bun`);
+const applicationEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/application.env`);
+const serviceEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/service.env`);
+const runtimeEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/runtime.env`);
 
 describe("common feature on bun", () => {
 	beforeEach(async() => {
 		process.chdir(initialWorkingDirectory);
 		process.env = { ...initialProcessEnv };
 		process.argv = ["bun", "integration.ts", "--runtime", "bun"];
-		await DServerFile.remove(rootPath as never, { recursive: true });
+		await DServerFile.remove(rootPath, { recursive: true });
 	});
 
 	afterEach(async() => {
 		process.chdir(initialWorkingDirectory);
 		process.env = { ...initialProcessEnv };
-		await DServerFile.remove(rootPath as never, { recursive: true });
+		await DServerFile.remove(rootPath, { recursive: true });
 	});
 
 	it("reads environment files with override and expansion", async() => {
@@ -115,17 +116,17 @@ describe("common feature on bun", () => {
 	});
 
 	it("reads and changes the current working directory", async() => {
-		const makeDirectoryResult = await DServerFile.ensureDirectory(rootPath as never);
+		const makeDirectoryResult = await DServerFile.ensureDirectory(rootPath);
 		expect(DEither.isRight(makeDirectoryResult)).toBe(true);
 		expect(DEither.unwrapRight(makeDirectoryResult)).toBeUndefined();
 
-		const setResult = setCurrentWorkingDirectory(rootPath as never);
+		const setResult = setCurrentWorkingDirectory(rootPath);
 		expect(DEither.isRight(setResult)).toBe(true);
 		expect(DEither.unwrapRight(setResult)).toBeUndefined();
 
 		const getResult = getCurrentWorkDirectory();
 		DCommon.asserts(getResult, DEither.isRight);
-		expect(DEither.unwrapRight(getResult)).toBe(rootPath as never);
+		expect(DEither.unwrapRight(getResult)).toBe(rootPath);
 	});
 
 	it("reads process arguments", () => {

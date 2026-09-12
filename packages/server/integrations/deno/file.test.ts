@@ -1,18 +1,19 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
+import * as DPath from "@duplojs/lang/path";
 import { DServerFile } from "@duplojs/server";
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, describe, it } from "node:test";
 
-const rootPath = `${Deno.cwd()}/.tmp-file-deno`;
+const rootPath = DPath.createOrThrow(`${Deno.cwd()}/.tmp-file-deno`);
 
 const paths = {
-	workspace: `${rootPath}/workspace` as never,
-	text: `${rootPath}/workspace/message.txt` as never,
-	bytes: `${rootPath}/workspace/bytes.bin` as never,
-	json: `${rootPath}/workspace/config.json` as never,
-	hardLink: `${rootPath}/workspace/hard-link.txt` as never,
-	relocatedParent: `${rootPath}/relocated` as never,
+	workspace: DPath.createOrThrow(`${rootPath}/workspace`),
+	text: DPath.createOrThrow(`${rootPath}/workspace/message.txt`),
+	bytes: DPath.createOrThrow(`${rootPath}/workspace/bytes.bin`),
+	json: DPath.createOrThrow(`${rootPath}/workspace/config.json`),
+	hardLink: DPath.createOrThrow(`${rootPath}/workspace/hard-link.txt`),
+	relocatedParent: DPath.createOrThrow(`${rootPath}/relocated`),
 };
 
 void describe("file feature on deno", () => {
@@ -105,7 +106,7 @@ void describe("file feature on deno", () => {
 		DCommon.asserts(readLinkContentResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(readLinkContentResult), "hello deno");
 
-		const renamedResult = await DServerFile.rename(paths.hardLink, "renamed.txt" as never);
+		const renamedResult = await DServerFile.rename(paths.hardLink, DCommon.infer("renamed.txt"));
 		DCommon.asserts(renamedResult, DEither.isRight);
 
 		const renamedPath = DEither.unwrapRight(renamedResult);

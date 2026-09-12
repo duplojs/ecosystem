@@ -4,14 +4,15 @@ import { afterEach, beforeEach, describe, it } from "node:test";
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
+import * as DPath from "@duplojs/lang/path";
 import { environmentVariable, getCurrentWorkDirectory, getProcessArguments, setCurrentWorkingDirectory } from "@duplojs/server";
 
 const initialWorkingDirectory = process.cwd();
 const initialProcessEnv = { ...process.env };
-const rootPath = `${initialWorkingDirectory}/.tmp-common-node`;
-const applicationEnvPath = `${initialWorkingDirectory}/fixtures/env/application.env` as never;
-const serviceEnvPath = `${initialWorkingDirectory}/fixtures/env/service.env` as never;
-const runtimeEnvPath = `${initialWorkingDirectory}/fixtures/env/runtime.env` as never;
+const rootPath = DPath.createOrThrow(`${initialWorkingDirectory}/.tmp-common-node`);
+const applicationEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/application.env`);
+const serviceEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/service.env`);
+const runtimeEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/runtime.env`);
 
 void describe("common feature on node", () => {
 	beforeEach(async() => {
@@ -126,7 +127,7 @@ void describe("common feature on node", () => {
 	void it("reads and changes the current working directory", async() => {
 		await mkdir(rootPath, { recursive: true });
 
-		const setResult = setCurrentWorkingDirectory(rootPath as never);
+		const setResult = setCurrentWorkingDirectory(rootPath);
 		assert.equal(DEither.isRight(setResult), true);
 		assert.equal(DEither.unwrapRight(setResult), undefined);
 
