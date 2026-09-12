@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+	"types": ["vitest/globals", "node"],
+    "paths": {
+	  "@scripts": ["./dist/index.d.ts"],
+      "@scripts/*": ["./dist/*"],
+      "@tests/*": ["./tests/*"],
+    },
+  },
+  "include": [
+	"tests/**/*.ts",
+  ],
+}

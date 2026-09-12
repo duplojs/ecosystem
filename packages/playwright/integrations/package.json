@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@duplojs/playwright": "workspace:*",
+    "@duplojs/server": "workspace:*"
+  }
+}

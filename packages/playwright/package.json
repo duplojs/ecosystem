@@ -1,0 +1,59 @@
+{
+  "name": "@duplojs/playwright",
+  "version": "0.0.0",
+    "author": {
+    "name": "DuploJS",
+    "url": "https://github.com/duplojs"
+  },
+  "homepage": "https://playwright.duplojs.dev/",
+  "description": "A thin organizational layer over Playwright for structuring tests as Website/Page/Component hierarchies with readable, named actions.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duplojs/playwright.git",
+    "directory": "packages/playwright"
+  },
+  "bugs": {
+    "url": "https://github.com/duplojs/ecosystem/issues"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "./.commands/build.sh",
+    "test:types": "./.commands/test-types.sh",
+    "test:types:target": "./.commands/test-types-target.sh",
+    "test:lint": "./.commands/test-lint.sh",
+    "test:lint:fix": "./.commands/test-lint.sh --fix"
+  },
+  "sideEffects": false,
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README"
+  ],
+  "peerDependencies": {
+    "@duplojs/lang": "workspace:*",
+    "playwright": ">=1.63.0 <2.0.0"
+  },
+  "devDependencies": {
+    "@duplojs/code-config": "workspace:*",
+    "@types/node": "24.13.3"
+  },
+  "workspaces": [
+    "integrations"
+  ],
+  "keywords": [
+    "test",
+    "playwright",
+    "duplojs"
+  ],
+  "engines": {
+    "node": ">=24.18.0"
+  }
+}
