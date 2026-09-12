@@ -61,20 +61,36 @@ export const environmentVariable = implementFunction(
 			const expandEnvResult = expandEnvironmentVariables(overrideEnvResult);
 
 			const structure = DDataStructure.object(shape);
-			const parsedEnvResult = await structure.asyncUnsafeDecode(
-				envFileParams?.codecs ?? DServerDataStructure.codecsString,
+
+			const envResult = DCommon.pipe(
 				expandEnvResult,
+				DObject.entries,
+				DArray.select(
+					({
+						select,
+						element: [key, value],
+						skip,
+					}) => DArray.includes(structure.definition.keys, key)
+						? select(DObject.entry(key, value))
+						: skip(),
+				),
+				DObject.fromEntries,
 			);
 
-			if (DEither.isLeft(parsedEnvResult)) {
-				return parsedEnvResult;
+			const checkedEnvResult = await structure.asyncUnsafeDecode(
+				envFileParams?.codecs ?? DServerDataStructure.codecsString,
+				envResult,
+			);
+
+			if (DEither.isLeft(checkedEnvResult)) {
+				return checkedEnvResult;
 			}
 
 			if (envFileParams?.justRead !== true) {
 				process.env = expandEnvResult;
 			}
 
-			return parsedEnvResult;
+			return checkedEnvResult;
 		},
 		DENO: async(shape, envFileParams) => {
 			const parseEnvFileResult = await parseEnvironmentFiles(
@@ -94,13 +110,29 @@ export const environmentVariable = implementFunction(
 			const expandEnvResult = expandEnvironmentVariables(overrideEnvResult);
 
 			const structure = DDataStructure.object(shape);
-			const parsedEnvResult = await structure.asyncUnsafeDecode(
-				envFileParams?.codecs ?? DDataStructure.codecsString,
+
+			const envResult = DCommon.pipe(
 				expandEnvResult,
+				DObject.entries,
+				DArray.select(
+					({
+						select,
+						element: [key, value],
+						skip,
+					}) => DArray.includes(structure.definition.keys, key)
+						? select(DObject.entry(key, value))
+						: skip(),
+				),
+				DObject.fromEntries,
 			);
 
-			if (DEither.isLeft(parsedEnvResult)) {
-				return parsedEnvResult;
+			const checkedEnvResult = await structure.asyncUnsafeDecode(
+				envFileParams?.codecs ?? DDataStructure.codecsString,
+				envResult,
+			);
+
+			if (DEither.isLeft(checkedEnvResult)) {
+				return checkedEnvResult;
 			}
 
 			if (envFileParams?.justRead !== true) {
@@ -113,7 +145,7 @@ export const environmentVariable = implementFunction(
 				}
 			}
 
-			return parsedEnvResult;
+			return checkedEnvResult;
 		},
 	},
 );

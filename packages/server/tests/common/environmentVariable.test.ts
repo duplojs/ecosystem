@@ -131,6 +131,22 @@ describe("environmentVariable", () => {
 		expect(process.env.APP_NAME).toBe("base");
 	});
 
+	it("test with a richer environment than required", async() => {
+		setEnvironment("NODE");
+		process.env = {
+			APP_NAME: "base",
+			ADDITIONAL_KEY: "key",
+		};
+
+		const result = await environmentVariable(
+			{
+				APP_NAME: DDataStructure.string(),
+			},
+		);
+
+		expect(DEither.isRight(result)).toBe(true);
+	});
+
 	it("reads a NODE env file without mutating process.env when justRead is true", async() => {
 		setEnvironment("NODE");
 		process.env = {};
