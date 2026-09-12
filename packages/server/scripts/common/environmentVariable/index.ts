@@ -62,19 +62,9 @@ export const environmentVariable = implementFunction(
 
 			const structure = DDataStructure.object(shape);
 
-			const envResult = DCommon.pipe(
+			const envResult = DObject.pick(
 				expandEnvResult,
-				DObject.entries,
-				DArray.select(
-					({
-						select,
-						element: [key, value],
-						skip,
-					}) => DArray.includes(structure.definition.keys, key)
-						? select(DObject.entry(key, value))
-						: skip(),
-				),
-				DObject.fromEntries,
+				structure.definition.keys,
 			);
 
 			const checkedEnvResult = await structure.asyncUnsafeDecode(
@@ -111,19 +101,9 @@ export const environmentVariable = implementFunction(
 
 			const structure = DDataStructure.object(shape);
 
-			const envResult = DCommon.pipe(
+			const envResult = DObject.pick(
 				expandEnvResult,
-				DObject.entries,
-				DArray.select(
-					({
-						select,
-						element: [key, value],
-						skip,
-					}) => DArray.includes(structure.definition.keys, key)
-						? select(DObject.entry(key, value))
-						: skip(),
-				),
-				DObject.fromEntries,
+				structure.definition.keys,
 			);
 
 			const checkedEnvResult = await structure.asyncUnsafeDecode(
