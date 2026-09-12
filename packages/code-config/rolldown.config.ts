@@ -1,24 +1,22 @@
 import { defineConfig } from "rolldown";
 import dts from "unplugin-dts/rolldown";
 
-const external = [
-	/^@stylistic\/eslint-plugin/,
-	/^@commitlint\/cli/,
-	/^@commitlint\/config-conventional/,
-	/^@commitlint\/types/,
-	/^eslint/,
-	/^oxlint/,
-	/^oxlint-tsgolint/,
-];
-
 export default defineConfig([
 	{
-		external,
+		external: [
+			/^@stylistic\/eslint-plugin/,
+			/^@commitlint\/cli/,
+			/^@commitlint\/config-conventional/,
+			/^@commitlint\/types/,
+			/^eslint/,
+			/^oxlint/,
+			/^oxlint-tsgolint/,
+		],
 		input: [
 			"scripts/index.ts",
 			"scripts/oxlint/index.ts",
 			"scripts/oxlint/plugin/index.ts",
-			"scripts/commitlint/config.ts",
+			"scripts/commitlint/index.ts",
 		],
 		platform: "neutral",
 		tsconfig: "tsconfig.build.json",
@@ -49,23 +47,6 @@ export default defineConfig([
 				outDirs: "dist",
 				bundleTypes: false,
 			}),
-		],
-	},
-	{
-		external,
-		input: ["scripts/commitlint/index.ts"],
-		platform: "neutral",
-		tsconfig: "tsconfig.build.json",
-		output: [
-			{
-				file: "dist/commitlint/index.mjs",
-				format: "esm",
-			},
-			{
-				file: "dist/commitlint/index.cjs",
-				format: "cjs",
-				exports: "default",
-			},
 		],
 	},
 ]);

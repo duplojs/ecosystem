@@ -1,3 +1,4 @@
+export * from "./kind";
 export * from "./computeRelative";
 export type * from "./constraints";
 export * from "./getBaseName";
@@ -10,3 +11,5 @@ export * from "./normalize";
 export * from "./resolveFrom";
 export * from "./resolveRelative";
 export type * from "./types";
+export * from "./create";
+export * from "./createOrThrow";
