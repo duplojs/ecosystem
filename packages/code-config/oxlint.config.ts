@@ -19,4 +19,8 @@ export default defineConfig({
 			},
 		},
 	],
+	ignorePatterns: [
+		"dist/**",
+		".commands/**",
+	],
 });

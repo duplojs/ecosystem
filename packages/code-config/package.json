@@ -50,6 +50,11 @@
       "import": "./dist/commitlint/index.mjs",
       "require": "./dist/commitlint/index.cjs"
     },
+    "./commitlint/config": {
+      "types": "./dist/commitlint/config.d.ts",
+      "import": "./dist/commitlint/config.mjs",
+      "require": "./dist/commitlint/config.cjs"
+    },
     "./tsconfig/base.json": "./tsconfig/base.json",
     "./tsconfig/build.json": "./tsconfig/build.json"
   },

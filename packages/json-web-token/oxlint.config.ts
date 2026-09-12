@@ -22,7 +22,6 @@ export default oxlint.defineConfig({
 		},
 	],
 	ignorePatterns: [
-		"coverage/**",
 		"dist/**",
 		".commands/**",
 	],

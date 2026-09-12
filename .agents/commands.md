@@ -37,6 +37,7 @@ Le build respecte l'ordre des dépendances internes :
 @duplojs/server
 @duplojs/tools
 @duplojs/json-web-token
+@duplojs/playwright
 ```
 
 Pour reconstruire uniquement un package lorsque ses dépendances sont déjà à jour :

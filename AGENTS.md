@@ -9,6 +9,7 @@ L'écosystème vise à rendre le développement TypeScript plus robuste en s'app
 * `packages/lang`: package fondamental de l'écosystème. Fournit les primitives fonctionnelles communes. Son exécution ne dépend d'aucune librairie externe et repose uniquement sur les API du langage JavaScript.
 * `packages/server`: abstrait les API serveur de Node.js, Bun et Deno afin de proposer une interface cohérente entre les différentes plateformes et avec les paradigmes définis par `lang`.
 * `packages/json-web-token`: fournit les outils nécessaires à la gestion des JSON Web Tokens selon les paradigmes de l'écosystème.
+* `packages/playwright`: ajoute une fine couche d'organisation au-dessus de Playwright pour structurer les tests sous forme de hiérarchies Site web/Page/Composant, avec des actions nommées et lisibles.
 * `packages/tools`: regroupe des outils de génération et de transformation de code utilisés pendant le développement d'un projet DuploJS, mais pas au runtime.
 * `packages/code-config`: regroupe les configurations et règles partagées liées notamment au linting, au formatage et aux autres outils de qualité de code.
 
