@@ -1,5 +1,8 @@
 #!/bin/bash
 
+GREEN='\033[32m'
+RESET='\033[0m'
+
 set -euo pipefail
 
 printf "\n${GREEN}@duplojs/code-config${RESET}\n"

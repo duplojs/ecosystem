@@ -1,5 +1,5 @@
 import { defineConfig } from "oxlint";
-import { openConfig, testPreset } from "@scripts/oxlint";
+import { openConfig, testPreset } from "./dist/oxlint/index.mjs";
 
 export default defineConfig({
 	extends: [openConfig],

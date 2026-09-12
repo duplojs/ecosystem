@@ -2,9 +2,7 @@
   "files": [],
   "references": [
 	  { "path": "./tsconfig.app.json" },
-	  { "path": "./tsconfig.build.json" },
 	  { "path": "./tsconfig.config.json" },
-	  { "path": "./tsconfig.lib.json" },
 	  { "path": "./tsconfig.test.json" }
   ],
 }

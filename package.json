@@ -9,7 +9,7 @@
     "test:types": "./.commands/test-types.sh",
     "test:lint": "./.commands/test-lint.sh",
     "remove-modules": "rm -rf node_modules packages/*/node_modules packages/*/integrations/node_modules",
-    "remove-dist": "rm -rf packages/*/dist packages/*/integrations/dist",
+    "remove-dist": "rm -rf packages/*/dist",
     "prepare": "husky"
   },
   "repository": {
@@ -23,7 +23,6 @@
     "husky": "9.1.7",
     "rolldown": "1.2.7",
     "tscw-config": "1.1.2",
-    "tsx": "4.23.13",
     "typescript": "7.0.2",
     "unplugin-dts": "1.1.0",
     "vitest": "5.0.0"

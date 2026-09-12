@@ -22,7 +22,8 @@
     "test:types": "./.commands/test-types.sh",
     "test:types:target": "./.commands/test-types-target.sh",
     "test:lint": "./.commands/test-lint.sh",
-    "test:lint:fix": "./.commands/test-lint.sh --fix"
+    "test:lint:fix": "./.commands/test-lint.sh --fix",
+    "prepare": "pnpm exec playwright install"
   },
   "sideEffects": false,
   "types": "./dist/index.d.ts",
