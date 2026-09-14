@@ -48,22 +48,22 @@ Les fonctionnalités sont réparties en domaines indépendants.
 
 Chaque domaine peut posséder son propre `AGENTS.md`, qui constitue le point d'entrée à consulter avant de travailler sur celui-ci.
 
-* [`array`](./scripts/array/AGENTS.md) : manipulation fonctionnelle et fortement typée des tableaux.
-* [`chrono`](./scripts/chrono/AGENTS.md) : manipulation des valeurs et opérations liées au temps.
-* [`common`](./scripts/common/AGENTS.md) : primitives et utilitaires communs aux différents domaines.
-* [`dataStructure`](./scripts/dataStructure/AGENTS.md) : représentation, validation et construction de contrats de données.
-* [`either`](./scripts/either/AGENTS.md) : représentation explicite d'une opération pouvant réussir ou échouer.
-* [`generator`](./scripts/generator/AGENTS.md) : utilitaires fonctionnels autour des générateurs.
-* [`invocation`](./scripts/invocation/AGENTS.md) : primitives liées à l'invocation et à la composition de fonctions.
-* [`kind`](./scripts/kind/AGENTS.md) : primitives permettant de caractériser et différencier des structures typées.
-* [`modeling`](./scripts/modeling/AGENTS.md) : outils dédiés à la modélisation des données.
-* [`number`](./scripts/number/AGENTS.md) : manipulation fonctionnelle et typage des nombres.
-* [`object`](./scripts/object/AGENTS.md) : manipulation et transformation fonctionnelle des objets.
-* [`path`](./scripts/path/AGENTS.md) : représentation et manipulation de chemins dans des structures de données.
-* [`pattern`](./scripts/pattern/AGENTS.md) : primitives de pattern matching et de composition conditionnelle.
-* [`printer`](./scripts/printer/AGENTS.md) : outils de représentation et de production de valeurs textuelles.
-* [`string`](./scripts/string/AGENTS.md) : manipulation fonctionnelle et typage des chaînes de caractères.
-* [`tuple`](./scripts/tuple/AGENTS.md) : manipulation et typage des tuples.
+* [`array`](./scripts/array) : manipulation fonctionnelle et fortement typée des tableaux.
+* [`chrono`](./scripts/chrono) : manipulation des valeurs et opérations liées au temps.
+* [`common`](./scripts/common) : primitives et utilitaires communs aux différents domaines.
+* [`dataStructure`](./scripts/dataStructure) : représentation, validation et construction de contrats de données.
+* [`either`](./scripts/either) : représentation explicite d'une opération pouvant réussir ou échouer.
+* [`generator`](./scripts/generator) : utilitaires fonctionnels autour des générateurs.
+* [`invocation`](./scripts/invocation) : primitives liées à l'invocation et à la composition de fonctions.
+* [`kind`](./scripts/kind) : primitives permettant de caractériser et différencier des structures typées.
+* [`modeling`](./scripts/modeling) : outils dédiés à la modélisation des données.
+* [`number`](./scripts/number) : manipulation fonctionnelle et typage des nombres.
+* [`object`](./scripts/object) : manipulation et transformation fonctionnelle des objets.
+* [`path`](./scripts/path) : représentation et manipulation de chemins dans des structures de données.
+* [`pattern`](./scripts/pattern) : primitives de pattern matching et de composition conditionnelle.
+* [`printer`](./scripts/printer) : outils de représentation et de production de valeurs textuelles.
+* [`string`](./scripts/string) : manipulation fonctionnelle et typage des chaînes de caractères.
+* [`tuple`](./scripts/tuple) : manipulation et typage des tuples.
 
 ## Avant de modifier un domaine
 
