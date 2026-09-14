@@ -13,6 +13,13 @@ L'écosystème vise à rendre le développement TypeScript plus robuste en s'app
 * `packages/tools`: regroupe des outils de génération et de transformation de code utilisés pendant le développement d'un projet DuploJS, mais pas au runtime.
 * `packages/code-config`: regroupe les configurations et règles partagées liées notamment au linting, au formatage et aux autres outils de qualité de code.
 
+## Contexte local
+
+Avant de modifier un package ou un domaine, consulter son `AGENTS.md` lorsqu'il existe.
+
+Les `AGENTS.md` locaux complètent les règles générales de l'écosystème avec le contexte, les concepts et les conventions propres à leur périmètre.
+
+
 ## Ressources du projet
 
 * Architecture et relations entre les packages : `.agents/architecture.md`
