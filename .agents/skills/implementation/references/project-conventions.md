@@ -47,15 +47,12 @@ Ne pas importer un domaine depuis l'index racine lorsque son sous-export existe 
 
 ```ts
 // À éviter
-import {
-	DEither,
-	DCommon,
-} from "@duplojs/lang";
+import { DEither, DCommon } from "@duplojs/lang";
 ```
 
 Ne jamais importer les sources, le `dist` ou un chemin interne non déclaré dans les exports du package.
 
-Les règles détaillées d'import entre packages sont documentées dans `.agents/importations.md` du projet.
+Les règles détaillées d'import entre packages sont documentées dans [`.agents/importations.md`](../../../importations.md) et doivent impérativement être consultées avant toute modification de code.
 
 ## Domaines
 

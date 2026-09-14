@@ -9,6 +9,8 @@ export type * from "./forbiddenKey";
 export type * from "./forbiddenUndefinedProps";
 export type * from "./getPropsWithValue";
 export type * from "./getPropsWithValueExtends";
+export type * from "./hasKeySignature";
+export type * from "./keyofWithoutSignature";
 export type * from "./override";
 export type * from "./partialKeys";
 export type * from "./requireAtLeastOne";

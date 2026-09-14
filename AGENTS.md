@@ -17,6 +17,8 @@ L'écosystème vise à rendre le développement TypeScript plus robuste en s'app
 
 Avant de modifier un package ou un domaine, consulter son `AGENTS.md` lorsqu'il existe.
 
+Avant toute modification de code ou de test, consulter impérativement [les règles d'importation](./.agents/importations.md), même si les conventions semblent pouvoir être déduites des fichiers voisins.
+
 Les `AGENTS.md` locaux complètent les règles générales de l'écosystème avec le contexte, les concepts et les conventions propres à leur périmètre.
 
 
@@ -26,3 +28,4 @@ Les `AGENTS.md` locaux complètent les règles générales de l'écosystème ave
 * Configuration TypeScript des différents packages : `.agents/typescript-config.md`
 * Différentes commandes du projet : `.agents/commands.md`
 * Règle des importations de packages de l'écosystème : `.agents/importations.md`
+* convention des fonctions curifiées, principalement conçues pour être composées avec `pipe` : `.agents/curried-functions.md`

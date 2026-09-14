@@ -44,6 +44,33 @@ describe("override", () => {
 		});
 	});
 
+	it("should accept an undefined override for an object union", () => {
+		type ObjectUnion =
+			| {
+				kind: "left";
+				left: number;
+			}
+			| {
+				kind: "right";
+				right: string;
+			};
+
+		const source: ObjectUnion = {
+			kind: "left",
+			left: 1,
+		};
+		const result = DObject.override<ObjectUnion>(source, undefined);
+
+		expect(result).toEqual(source);
+		expect(result).not.toBe(source);
+
+		type _CheckResult = ExpectType<
+			typeof result,
+			ObjectUnion,
+			"strict"
+		>;
+	});
+
 	it("should override values in pipe", () => {
 		const source: {
 			name: string;

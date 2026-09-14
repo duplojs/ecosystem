@@ -60,21 +60,19 @@ describe("functionName", () => {
 
 ## Imports du module courant
 
+Avant de créer ou modifier des imports, consulter impérativement [les règles d'importation du projet](../../../importations.md).
+
 Les tests situés dans `tests/` importent les éléments du package courant depuis `@scripts`. Cette convention est explicitement prévue pour les tests directs du package.
 
 ```ts
-import {
-	DNamespace,
-} from "@scripts";
+import { DNamespace } from "@scripts";
 ```
 
 Ne pas importer directement un fichier interne de `scripts/`.
 
 ```ts
 // À éviter
-import {
-	functionName,
-} from "../scripts/domain/functionName";
+import { functionName } from "../scripts/domain/functionName";
 ```
 
 Les namespaces doivent respecter les conventions d'importation du projet et utiliser leur nom long.
@@ -92,10 +90,7 @@ Ne pas importer ces domaines depuis l'index principal de `@duplojs/lang`.
 
 ```ts
 // À éviter
-import {
-	DCommon,
-	DEither,
-} from "@duplojs/lang";
+import { DCommon, DEither } from "@duplojs/lang";
 ```
 
 Les frontières publiques des packages doivent toujours être respectées. Un package ne doit consommer un autre package qu'à travers ses exports publics.

@@ -29,10 +29,11 @@ La couverture d'exécution ne suffit cependant pas. Les garanties apportées par
 
 1. Identifier le package et le module concernés.
 2. Déterminer l'intention à partir de l'API et de son typage.
-3. Lire les conventions du projet dans [references/project-conventions.md](references/project-conventions.md).
-4. Identifier les différentes formes de déclaration exposées par le module.
-5. Appliquer les patterns correspondants décrits dans [references/test-patterns.md](references/test-patterns.md).
-6. Créer ou modifier les tests nécessaires.
-7. Valider les tests selon [references/execution.md](references/execution.md).
-8. Vérifier que le comportement runtime et les garanties de typage sont couverts.
-9. Si une incohérence entre typage et exécution apparaît, arrêter toute tentative de correction et la signaler.
+3. Lire impérativement [les règles d'importation du projet](../../importations.md) avant d'inspecter, d'ajouter ou de modifier des imports.
+4. Lire les conventions du projet dans [references/project-conventions.md](references/project-conventions.md).
+5. Identifier les différentes formes de déclaration exposées par le module.
+6. Appliquer les patterns correspondants décrits dans [references/test-patterns.md](references/test-patterns.md).
+7. Créer ou modifier les tests nécessaires.
+8. Valider les tests selon [references/execution.md](references/execution.md).
+9. Vérifier que le comportement runtime et les garanties de typage sont couverts.
+10. Si une incohérence entre typage et exécution apparaît, arrêter toute tentative de correction et la signaler.

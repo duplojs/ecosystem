@@ -1,5 +1,9 @@
 # Importations
 
+## Format des imports
+
+Une déclaration `import` doit rester sur une seule ligne, y compris lorsqu'elle contient plusieurs symboles ou modificateurs `type`. Elle ne doit pas être découpée sur plusieurs lignes.
+
 ## Imports entre packages
 
 Lorsqu'un package importe un autre package de l'écosystème DuploJS, l'import doit cibler directement le sous-export utilisé et être exposé sous forme de namespace.

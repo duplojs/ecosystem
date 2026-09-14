@@ -1,5 +1,6 @@
 export * from "./assign";
 export * from "./countKeys";
+export * from "./deepOverride";
 export * from "./deepDiscriminate";
 export * from "./discriminate";
 export * from "./discriminateEntryKey";
