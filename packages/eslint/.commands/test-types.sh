@@ -9,3 +9,7 @@ echo "Everything is OK."
 echo "Test :"
 tsc -p tsconfig.test.json
 echo "Everything is OK."
+
+echo "Lib :"
+tsc -p tsconfig.lib.json
+echo "Everything is OK."
