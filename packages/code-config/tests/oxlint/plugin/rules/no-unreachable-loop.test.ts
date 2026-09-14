@@ -1,6 +1,5 @@
 import { Linter } from "eslint";
-
-import { DuplojsOxlint } from "@scripts";
+import { DOxlint } from "@scripts";
 
 describe("no-unreachable-loop", () => {
 	it("accepts reachable loop", () => {
@@ -10,7 +9,7 @@ describe("no-unreachable-loop", () => {
 				ecmaVersion: 2024,
 			},
 			plugins: {
-				"duplojs-plugin": DuplojsOxlint.plugin,
+				"duplojs-plugin": DOxlint.plugin,
 			},
 			rules: {
 				"duplojs-plugin/no-unreachable-loop": "error",
@@ -27,7 +26,7 @@ describe("no-unreachable-loop", () => {
 				ecmaVersion: 2024,
 			},
 			plugins: {
-				"duplojs-plugin": DuplojsOxlint.plugin,
+				"duplojs-plugin": DOxlint.plugin,
 			},
 			rules: {
 				"duplojs-plugin/no-unreachable-loop": "error",

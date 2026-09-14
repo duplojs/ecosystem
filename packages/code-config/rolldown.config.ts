@@ -4,20 +4,15 @@ import dts from "unplugin-dts/rolldown";
 export default defineConfig([
 	{
 		external: [
-			/^@stylistic\/eslint-plugin/,
 			/^@commitlint\/cli/,
 			/^@commitlint\/config-conventional/,
 			/^@commitlint\/types/,
-			/^eslint/,
 			/^oxlint/,
 			/^oxlint-tsgolint/,
+			/^eslint/,
+			/^@stylistic\/eslint-plugin/,
 		],
-		input: [
-			"scripts/index.ts",
-			"scripts/oxlint/index.ts",
-			"scripts/oxlint/plugin/index.ts",
-			"scripts/commitlint/index.ts",
-		],
+		input: "scripts/index.ts",
 		platform: "neutral",
 		tsconfig: "tsconfig.build.json",
 		output: [

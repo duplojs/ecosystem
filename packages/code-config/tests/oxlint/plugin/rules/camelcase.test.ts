@@ -1,6 +1,5 @@
 import { Linter } from "eslint";
-
-import { DuplojsOxlint } from "@scripts";
+import { DOxlint } from "@scripts";
 
 describe("camelcase", () => {
 	it("accepts camel case", () => {
@@ -10,7 +9,7 @@ describe("camelcase", () => {
 				ecmaVersion: 2024,
 			},
 			plugins: {
-				"duplojs-plugin": DuplojsOxlint.plugin,
+				"duplojs-plugin": DOxlint.plugin,
 			},
 			rules: {
 				"duplojs-plugin/camelcase": "error",
@@ -27,7 +26,7 @@ describe("camelcase", () => {
 				ecmaVersion: 2024,
 			},
 			plugins: {
-				"duplojs-plugin": DuplojsOxlint.plugin,
+				"duplojs-plugin": DOxlint.plugin,
 			},
 			rules: {
 				"duplojs-plugin/camelcase": "error",

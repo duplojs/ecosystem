@@ -1,6 +1,5 @@
 import { Linter } from "eslint";
-
-import { DuplojsOxlint } from "@scripts";
+import { DOxlint } from "@scripts";
 
 describe("dot-notation", () => {
 	it("accepts dot access", () => {
@@ -10,7 +9,7 @@ describe("dot-notation", () => {
 				ecmaVersion: 2024,
 			},
 			plugins: {
-				"duplojs-plugin": DuplojsOxlint.plugin,
+				"duplojs-plugin": DOxlint.plugin,
 			},
 			rules: {
 				"duplojs-plugin/dot-notation": "error",
@@ -27,7 +26,7 @@ describe("dot-notation", () => {
 				ecmaVersion: 2024,
 			},
 			plugins: {
-				"duplojs-plugin": DuplojsOxlint.plugin,
+				"duplojs-plugin": DOxlint.plugin,
 			},
 			rules: {
 				"duplojs-plugin/dot-notation": "error",

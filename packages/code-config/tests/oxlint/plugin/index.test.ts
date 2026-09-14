@@ -1,15 +1,15 @@
-import { DuplojsOxlint } from "@scripts";
+import { DOxlint } from "@scripts";
 import pluginDefault, { plugin, pluginSpecifier } from "@scripts/oxlint/plugin";
 
 describe("plugin/index", () => {
 	it("loads the endpoint", () => {
 		expect(pluginDefault).toBe(plugin);
-		expect(plugin).toBe(DuplojsOxlint.plugin);
+		expect(plugin).toBe(DOxlint.plugin);
 	});
 
 	it("matches the specifier", () => {
 		expect(pluginSpecifier).toBe("@duplojs/code-config/oxlint/plugin");
-		expect(pluginSpecifier).toBe(DuplojsOxlint.pluginSpecifier);
+		expect(pluginSpecifier).toBe(DOxlint.pluginSpecifier);
 	});
 
 	it("registers the rules", () => {

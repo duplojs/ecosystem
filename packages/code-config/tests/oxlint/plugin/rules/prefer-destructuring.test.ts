@@ -1,6 +1,5 @@
 import { Linter } from "eslint";
-
-import { DuplojsOxlint } from "@scripts";
+import { DOxlint } from "@scripts";
 
 describe("prefer-destructuring", () => {
 	it("accepts destructuring", () => {
@@ -10,7 +9,7 @@ describe("prefer-destructuring", () => {
 				ecmaVersion: 2024,
 			},
 			plugins: {
-				"duplojs-plugin": DuplojsOxlint.plugin,
+				"duplojs-plugin": DOxlint.plugin,
 			},
 			rules: {
 				"duplojs-plugin/prefer-destructuring": [
@@ -32,7 +31,7 @@ describe("prefer-destructuring", () => {
 				ecmaVersion: 2024,
 			},
 			plugins: {
-				"duplojs-plugin": DuplojsOxlint.plugin,
+				"duplojs-plugin": DOxlint.plugin,
 			},
 			rules: {
 				"duplojs-plugin/prefer-destructuring": [

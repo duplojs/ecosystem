@@ -662,6 +662,7 @@ export const basePresetConfig = {
 	},
 	options: {
 		typeAware: true,
+		typeCheck: true,
 		reportUnusedDisableDirectives: "error",
 		respectEslintDisableDirectives: true,
 	},

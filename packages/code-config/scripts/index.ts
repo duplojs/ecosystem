@@ -1,2 +1,2 @@
-export * as DuplojsOxlint from "./oxlint";
-export * as DuplojsCommitlint from "./commitlint";
+export * as DOxlint from "./oxlint";
+export * as DCommitlint from "./commitlint";
