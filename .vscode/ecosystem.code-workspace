@@ -9,6 +9,10 @@
 			"path": "../packages/server"
 		},
 		{
+			"name": "@duplojs/form",
+			"path": "../packages/form"
+		},
+		{
 			"name": "@duplojs/json-web-token",
 			"path": "../packages/json-web-token"
 		},
@@ -19,6 +23,10 @@
 		{
 			"name": "@duplojs/tools",
 			"path": "../packages/tools"
+		},
+		{
+			"name": "@duplojs/eslint",
+			"path": "../packages/eslint"
 		},
 		{
 			"name": "@duplojs/code-config",
@@ -71,6 +79,12 @@
 			}
 		],
 		
+		"prettier.enable": false,
+		"json.format.enable": false,
+		"html.format.enable": false,
+
 		"chss.stylesheetLocation": ".vscode/style-syntax.chss",
+		
+		"vue.codeActions.askNewComponentName": false,
 	}
 }

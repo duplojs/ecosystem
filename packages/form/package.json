@@ -1,0 +1,82 @@
+{
+  "name": "@duplojs/form",
+  "version": "0.0.0",
+  "author": {
+    "name": "DuploJS",
+    "url": "https://github.com/duplojs"
+  },
+  "homepage": "https://form.duplojs.dev/",
+  "description": "Build complex forms without friction, fully type-safe.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duplojs/ecosystem.git",
+    "directory": "packages/form"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "./.commands/build.sh",
+    "test:types": "./.commands/test-types.sh",
+    "test:lint": "./.commands/test-lint.sh",
+    "prepare": "husky"
+  },
+  "exports": {
+    "./vue": {
+      "types": "./dist/vue/index.d.ts",
+      "import": "./dist/vue/index.js",
+      "require": "./dist/vue/index.cjs"
+    },
+    "./vueGrid": {
+      "types": "./dist/vue/templates/grid/index.d.ts",
+      "import": "./dist/vue/templates/grid/index.js",
+      "require": "./dist/vue/templates/grid/index.cjs"
+    },
+    "./vueGrid.css": "./dist/vue/assets/index.css",
+    "./vueDesignSystem": {
+      "types": "./dist/vue/designSystem/index.d.ts",
+      "import": "./dist/vue/designSystem/index.js",
+      "require": "./dist/vue/designSystem/index.cjs"
+    },
+    "./vueDesignSystem.css": "./dist/vue/assets/index2.css"
+  },
+  "files": [
+    "dist",
+    "README"
+  ],
+  "peerDependencies": {
+    "@duplojs/lang": "workspace:*",
+    "vue": ">=3.5.42 <4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "vue": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@duplojs/code-config": "workspace:*",
+    "@duplojs/eslint": "workspace:*",
+    "@types/web": "0.0.356",
+    "vite": "8.3.0",
+    "@vitejs/plugin-vue": "6.0.8",
+    "jsdom": "30.0.1",
+    "sass-embedded": "1.104.1",
+    "@vue/language-core": "3.3.11",
+    "@vue/test-utils": "2.5.0",
+    "typescript": "npm:@typescript/typescript6@6.0.2",
+    "vue-tsc": "3.3.11"
+  },
+  "workspaces": [
+    "integrations/**"
+  ],
+  "keywords": [
+    "duplojs",
+    "form",
+    "vue",
+    "vue-form",
+    "typed-form",
+    "type-safe",
+    "form-builder",
+    "typescript",
+    "step-form"
+  ]
+}

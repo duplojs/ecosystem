@@ -1,0 +1,64 @@
+{
+  "name": "@duplojs/eslint",
+  "version": "0.0.0",
+  "license": "MIT",
+  "author": {
+    "name": "DuploJS",
+    "url": "https://github.com/duplojs"
+  },
+  "description": "Shared project configuration presets for Eslint.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duplojs/ecosystem.git",
+    "directory": "packages/eslint"
+  },
+  "bugs": {
+    "url": "https://github.com/duplojs/ecosystem/issues"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "./.commands/build.sh",
+    "test:types": "./.commands/test-types.sh",
+    "test:types:target": "./.commands/test-types-target.sh",
+    "test:lint": "./.commands/test-lint.sh",
+    "test:lint:fix": "./.commands/test-lint.sh --fix"
+  },
+  "sideEffects": false,
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "duplojs-eslint": "./bin/eslint.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "dependencies": {
+    "@stylistic/eslint-plugin": "5.10.0",
+    "eslint-plugin-vue": "10.11.0",
+    "typescript-eslint": "8.70.0",
+    "vue-eslint-parser": "10.4.1",
+    "eslint": "10.10.0",
+    "eslint-plugin-oxlint": "1.83.0",
+    "typescript": "npm:@typescript/typescript6@6.0.2"
+  },
+  "devDependencies": {
+    "@duplojs/code-config": "workspace:*",
+    "@types/node": "24.13.3"
+  },
+  "files": [
+    "dist",
+    "README"
+  ],
+  "keywords": [
+    "rules",
+    "lint",
+    "duplojs",
+    "eslint"
+  ],
+  "engines": {
+    "node": ">=24.18.0"
+  }
+}

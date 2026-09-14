@@ -10,6 +10,9 @@ tsc -p tsconfig.config.json
 printf "\n${GREEN}@duplojs/code-config${RESET}\n"
 pnpm --filter @duplojs/code-config test:lint
 
+printf "\n${GREEN}@duplojs/eslint${RESET}\n"
+pnpm --filter @duplojs/eslint test:lint
+
 printf "\n${GREEN}@duplojs/lang${RESET}\n"
 pnpm --filter @duplojs/lang test:lint
 

@@ -4,6 +4,7 @@ packages:
   - "packages/*/integrations"
 nodeLinker: hoisted
 allowBuilds:
+  '@parcel/watcher': false
   bun: true
   deno: true
   esbuild: true

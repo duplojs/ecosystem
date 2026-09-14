@@ -8,6 +8,9 @@ set -euo pipefail
 printf "\n${GREEN}@duplojs/code-config${RESET}\n"
 pnpm --filter @duplojs/code-config build
 
+printf "\n${GREEN}@duplojs/eslint${RESET}\n"
+pnpm --filter @duplojs/eslint build
+
 printf "\n${GREEN}@duplojs/lang${RESET}\n"
 pnpm --filter @duplojs/lang build
 
