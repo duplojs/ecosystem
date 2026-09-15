@@ -1,5 +1,9 @@
 {
+	"js/ts.tsdk.path": "node_modules/typescript/lib",
+	"js/ts.experimental.useTsgo": false,
 	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": "explicit"
+		"source.fixAll.eslint": "explicit",
+		"source.format.oxc": "always",
+		"source.fixAll.oxc": "always",
 	},
 }
