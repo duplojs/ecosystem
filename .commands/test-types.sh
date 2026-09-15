@@ -27,3 +27,6 @@ pnpm --filter @duplojs/json-web-token test:types
 
 printf "\n${GREEN}@duplojs/playwright${RESET}\n"
 pnpm --filter @duplojs/playwright test:types
+
+printf "\n${GREEN}@duplojs/form${RESET}\n"
+pnpm --filter @duplojs/form test:types

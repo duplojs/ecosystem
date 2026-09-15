@@ -6,7 +6,6 @@
     "declaration": true,
 	"emitDeclarationOnly": true,
 	"declarationDir": "../../dist/vue",
-	"types": null,
 	"stripInternal": true,
   },
 }

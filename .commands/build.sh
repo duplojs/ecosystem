@@ -25,3 +25,6 @@ pnpm --filter @duplojs/json-web-token build
 
 printf "\n${GREEN}@duplojs/playwright${RESET}\n"
 pnpm --filter @duplojs/playwright build
+
+printf "\n${GREEN}@duplojs/form${RESET}\n"
+pnpm --filter @duplojs/form build
