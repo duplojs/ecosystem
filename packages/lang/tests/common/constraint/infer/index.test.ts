@@ -800,6 +800,11 @@ describe("infer", () => {
 			const result: readonly string[] & DArray.MinElements<2> = DCommon.infer(
 				["a", "b", "c"],
 			);
+
+			type tt = DCommon.ComputeInferConstraintRule<
+				["a", "b", "c"],
+				string[] & DArray.MinElements<2>
+			>["array"];
 		});
 
 		it("correct infer MaxElements constraint from tuple", () => {

@@ -1,4 +1,4 @@
-import * as DKind from "@scripts/kind";
+import type * as DKind from "@scripts/kind";
 import * as DCommon from "@scripts/common";
 import * as DDataStructure from "@scripts/dataStructure";
 import * as DEither from "@scripts/either";
@@ -232,22 +232,6 @@ export interface EntityStructure<
 		| DEither.Left<"map-error", DDataStructure.Error>
 	>;
 
-	encodeEntity<
-		GenericCodecs extends DDataStructure.Codecs,
-	>(
-		codecs: GenericCodecs,
-		data: DDataStructure.StructureValue<this>,
-	): Promise<
-		DDataStructure.EncodedValue<
-			EntityMap<
-				DKind.Remove<
-					DDataStructure.StructureValue<this>
-				>
-			>,
-			GenericCodecs
-		>
-	>;
-
 	update<
 		GenericInputEntity extends (
 			& Entity<GenericName>
@@ -270,17 +254,6 @@ export interface EntityStructure<
 		input: GenericInputEntity,
 		update: GenericPayload
 	): EntityUpdate<GenericInputEntity, GenericPayload>;
-}
-
-export class EncodeEntityError extends DKind.parentClass(
-	createKind("encode-entity-error"),
-	Error,
-) {
-	public constructor(
-		public error: DDataStructure.Error,
-	) {
-		super(undefined, "An error occurred while encoding an Entity. This can only happen if you are bypassing the type system.");
-	}
 }
 
 export const EntityStructure = DDataStructure.createStructure(
@@ -324,6 +297,16 @@ export const EntityStructure = DDataStructure.createStructure(
 				data,
 				errorHandler,
 			) => self.definition.inner.value.executeDecode(codecContext, data, errorHandler),
+			executeParse: (
+				self,
+				codecContext,
+				data,
+				errorHandler,
+			) => self.definition.inner.value.executeParse(
+				codecContext,
+				data,
+				errorHandler,
+			),
 			isAsynchronous: (self) => self.definition.inner.value.isAsynchronous(),
 		},
 		{
@@ -448,17 +431,6 @@ export const EntityStructure = DDataStructure.createStructure(
 				}
 
 				return DEither.right("map-success", formattedData as never);
-			},
-			encodeEntity: async(self, codecs, data) => {
-				const result = await self.asyncEncode(codecs, data);
-
-				if (DEither.isLeft(result)) {
-					throw new EncodeEntityError(
-						DEither.unwrapLeft(result),
-					);
-				}
-
-				return DEither.unwrapRight(result);
 			},
 			update: (
 				self,

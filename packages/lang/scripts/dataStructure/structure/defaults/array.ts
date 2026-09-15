@@ -182,6 +182,46 @@ export const ArrayStructure = createStructure(
 					),
 				);
 			},
+			executeParse: (self, codecContext, data, errorHandler) => {
+				if (!Array.isArray(data)) {
+					return errorHandler?.().addIssue(self, data) ?? ErrorSymbol;
+				}
+
+				const pathStage = errorHandler?.().createPathStage();
+
+				const parsedData = data.reduce<unknown>(
+					(accumulator, value, index) => DCommon.callThen(
+						accumulator,
+						(awaitedAccumulator) => pathStage?.setCurrentPath(`[array: ${index}]`) ?? DCommon.callThen(
+							self.definition.element.executeParse(codecContext, value, errorHandler),
+							(parsedData) => {
+								if (parsedData === ErrorSymbol || awaitedAccumulator === ErrorSymbol) {
+									return ErrorSymbol;
+								}
+
+								(awaitedAccumulator as unknown[])[index] = parsedData;
+
+								return awaitedAccumulator;
+							},
+						),
+					),
+					[],
+				);
+
+				return DCommon.callThen(
+					parsedData,
+					(awaitedParsedData) => pathStage?.close() ?? (
+						awaitedParsedData === ErrorSymbol
+							? ErrorSymbol
+							: DCommon.callThen(
+								self.executeConstraints(awaitedParsedData, errorHandler),
+								(result) => result === ErrorSymbol
+									? ErrorSymbol
+									: awaitedParsedData,
+							)
+					),
+				);
+			},
 			isAsynchronous: (self) => self.definition.element.isAsynchronous(),
 		},
 	),

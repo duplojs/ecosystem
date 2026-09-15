@@ -212,6 +212,53 @@ export const UnionStructure = createStructure(
 					},
 				);
 			},
+			executeParse: (self, codecContext, data, errorHandler) => {
+				const errorHandlers: GetErrorHandler[] | undefined = errorHandler ? [] : undefined;
+
+				const parsedData = self.definition.values.value.reduce<unknown>(
+					(accumulator, value, index) => DCommon.callThen(
+						accumulator,
+						(awaitedAccumulator) => {
+							if (awaitedAccumulator !== ErrorSymbol) {
+								return awaitedAccumulator;
+							}
+
+							const subErrorHandler = errorHandler === undefined
+								? undefined
+								: createGetErrorHandler(errorHandler().currentPath);
+
+							if (errorHandlers && subErrorHandler) {
+								subErrorHandler().createPathStage().setCurrentPath(`(union: ${index})`);
+								errorHandlers.push(subErrorHandler);
+							}
+
+							return value.executeParse(codecContext, data, subErrorHandler);
+						},
+					),
+					ErrorSymbol,
+				);
+
+				return DCommon.callThen(
+					parsedData,
+					(awaitedParsedData) => {
+						if (awaitedParsedData === ErrorSymbol) {
+							if (errorHandlers) {
+								errorHandler?.().importIssues(errorHandlers);
+							}
+							errorHandler?.().addIssue(self, data);
+
+							return ErrorSymbol;
+						}
+
+						return DCommon.callThen(
+							self.executeConstraints(awaitedParsedData, errorHandler),
+							(result) => result === ErrorSymbol
+								? ErrorSymbol
+								: awaitedParsedData,
+						);
+					},
+				);
+			},
 			isAsynchronous: (self) => self.definition.values.value.some(
 				(value) => value.isAsynchronous(),
 			),

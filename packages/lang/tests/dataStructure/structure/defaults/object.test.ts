@@ -163,6 +163,7 @@ describe("ObjectStructure", () => {
 		const input = {
 			name: "Jane",
 		};
+		const codecs = DDataStructure.createCodecs({});
 		const invalidUnknownProperty = {
 			name: "Jane",
 			deletedAt: undefined,
@@ -180,6 +181,15 @@ describe("ObjectStructure", () => {
 
 		expect(structure.check(input)).toStrictEqual(
 			DEither.right("check-success", input),
+		);
+		expect(structure.encode(codecs, input)).toStrictEqual(
+			DEither.right("encode-success", input),
+		);
+		expect(structure.decode(codecs, input)).toStrictEqual(
+			DEither.right("decode-success", input),
+		);
+		expect(structure.parse(input)).toStrictEqual(
+			DEither.right("parse-success", input),
 		);
 		expect(structure.is(input)).toBe(true);
 		expect(
@@ -669,6 +679,51 @@ describe("ObjectStructure", () => {
 		});
 	});
 
+	it("parses declared properties while ignoring additional keys", async() => {
+		const structure = DDataStructure.ObjectStructure({
+			name: DDataStructure.TypeStructure(DDataStructure.StringType(), []),
+			age: DDataStructure.TypeStructure(DDataStructure.NumberType(), []),
+			profile: DDataStructure.ObjectStructure({
+				active: DDataStructure.TypeStructure(DDataStructure.BooleanType(), []),
+			}, []),
+		}, []);
+		const privateKey = Symbol("private");
+		const input = {
+			name: "Jane",
+			age: 30,
+			profile: {
+				active: true,
+				extra: true,
+			},
+			extra: true,
+			[privateKey]: true,
+		};
+		const success = structure.parse(input);
+		const asyncSuccess = await structure.asyncParse(input);
+		const invalidKind = structure.parse(null);
+		const invalidProperty = structure.parse({
+			...input,
+			name: 123,
+		});
+
+		expect(success).toStrictEqual(DEither.right("parse-success", {
+			name: "Jane",
+			age: 30,
+			profile: {
+				active: true,
+			},
+		}));
+		expect(asyncSuccess).toStrictEqual(DEither.right("parse-success", {
+			name: "Jane",
+			age: 30,
+			profile: {
+				active: true,
+			},
+		}));
+		expect(DEither.hasInformation(invalidKind, "parse-error")).toBe(true);
+		expect(DEither.hasInformation(invalidProperty, "parse-error")).toBe(true);
+	});
+
 	it("returns decode errors when decoded constraints fail", async() => {
 		const constraintKind = DDataStructure.createKind("test-public-object-decode-error");
 
@@ -696,6 +751,7 @@ describe("ObjectStructure", () => {
 		);
 		const failure = structure.decode(DDataStructure.createCodecs({}), { name: "Jane" });
 		const asyncFailure = await structure.asyncDecode(DDataStructure.createCodecs({}), { name: "Jane" });
+		const parseFailure = structure.parse({ name: "Jane" });
 
 		expect(
 			DEither.unwrapByInformationOrThrow(failure, "decode-error").issues[0]
@@ -708,6 +764,7 @@ describe("ObjectStructure", () => {
 			).issues[0] as DDataStructure.Issue | undefined)
 				?.getSubSource?.(),
 		).toBe(failingConstraint);
+		expect(DEither.hasInformation(parseFailure, "parse-error")).toBe(true);
 		expect(
 			DEither.unwrapByInformationOrThrow(
 				asyncFailure,

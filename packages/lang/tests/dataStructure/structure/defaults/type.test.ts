@@ -178,6 +178,8 @@ describe("TypeStructure", () => {
 		const asyncSuccess = await structure.asyncDecode(DDataStructure.createCodecs({ codec }), 4);
 		const fallbackSuccess = structure.decode(DDataStructure.createCodecs({}), "value");
 		const failure = structure.decode(DDataStructure.createCodecs({}), 123 as never);
+		const parseSuccess = structure.parse(4, DDataStructure.createCodecs({ codec }));
+		const parseFallbackSuccess = await structure.asyncParse("value");
 
 		type _CheckSuccess = ExpectType<
 			typeof success,
@@ -192,6 +194,13 @@ describe("TypeStructure", () => {
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
+		type _CheckParseSuccess = ExpectType<
+			typeof parseSuccess,
+			| DEither.Right<"parse-success", string>
+			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"parse-error", DDataStructure.Error>,
+			"strict"
+		>;
 
 		expect(success).toStrictEqual(DEither.right("decode-success", "value-4"));
 		expect(asyncSuccess).toStrictEqual(
@@ -199,6 +208,12 @@ describe("TypeStructure", () => {
 		);
 		expect(fallbackSuccess).toStrictEqual(
 			DEither.right("decode-success", "value"),
+		);
+		expect(parseSuccess).toStrictEqual(
+			DEither.right("parse-success", "value-4"),
+		);
+		expect(parseFallbackSuccess).toStrictEqual(
+			DEither.right("parse-success", "value"),
 		);
 		expect(
 			DEither.unwrapByInformationOrThrow(failure, "decode-error").issues[0],

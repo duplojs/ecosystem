@@ -46,6 +46,16 @@ describe("TaggedObjectStructure", () => {
 				value: expect.any(Object),
 			},
 		]);
+		expect(structure.parse({
+			name: "Jane",
+			score: 30,
+			extra: true,
+			[DModeling.objectTagKind.runTimeKey]: "user-created",
+		})).toStrictEqual(DEither.right("parse-success", {
+			name: "Jane",
+			score: 30,
+			[DModeling.objectTagKind.runTimeKey]: "user-created",
+		}));
 	});
 
 	it("requires the declared property constraints in an existing interface", () => {
@@ -374,96 +384,6 @@ describe("TaggedObjectStructure", () => {
 			DEither.right("map-success", structure.new({ name: "Jane" } as never)),
 		);
 		expect(DEither.isLeft(structure.map({ name: "Jo" }))).toBe(true);
-	});
-
-	it("encodes a typed tagged object in a promise without exposing encoding errors", async() => {
-		const structure = DModeling.TaggedObjectStructure(
-			"user-created",
-			{
-				name: DModeling.NewTypeStructure(
-					"user-name",
-					DDataStructure.string(),
-					[DDataStructure.minCharacters(3)],
-				),
-			},
-		);
-		const codec = DDataStructure.createCodec(
-			DDataStructure.TheString,
-			DDataStructure.number().is,
-			(data) => data.length,
-			(data) => `Jane-${data}`,
-		);
-		const codecs = DDataStructure.createCodecs({ codec });
-		const data = DEither.unwrapByInformationOrThrow(
-			structure.map({ name: "Jane" }),
-			"map-success",
-		);
-		const result = structure.encodeTaggedObject(codecs, data);
-
-		type _CheckResult = ExpectType<
-			typeof result,
-			Promise<{
-				readonly name: number;
-			}>,
-			"strict"
-		>;
-
-		expect(result).toBeInstanceOf(Promise);
-		await expect(result).resolves.toStrictEqual({
-			name: 4,
-			[DModeling.objectTagKind.runTimeKey]: "user-created",
-		});
-	});
-
-	it("asynchronously encodes a typed tagged object when the codec is asynchronous", async() => {
-		const structure = DModeling.TaggedObjectStructure(
-			"user-created",
-			{
-				name: DDataStructure.string(),
-			},
-		);
-		const codec = DDataStructure.createCodec(
-			DDataStructure.TheString,
-			DDataStructure.number().is,
-			(data) => Promise.resolve(data.length),
-			(data) => `Jane-${data}`,
-		);
-		const codecs = DDataStructure.createCodecs({ codec });
-		const data = structure.new({ name: "Jane" });
-		const result = structure.encodeTaggedObject(codecs, data);
-
-		expect(result).toBeInstanceOf(Promise);
-		await expect(result).resolves.toStrictEqual({
-			name: 4,
-			[DModeling.objectTagKind.runTimeKey]: "user-created",
-		});
-	});
-
-	it("rejects with an EncodeTaggedObjectError when a typed tagged object is bypassed", async() => {
-		const structure = DModeling.TaggedObjectStructure(
-			"user-created",
-			{
-				name: DDataStructure.string([DDataStructure.minCharacters(3)]),
-			},
-		);
-		const codecs = DDataStructure.createCodecs({});
-		const data = structure.new({ name: "Jo" } as never);
-		await expect(
-			structure.encodeTaggedObject(codecs, data),
-		).rejects.toMatchObject({
-			message: "An error occurred while encoding a TaggedObject. This can only happen if you are bypassing the type system.",
-			error: {
-				issues: [
-					expect.objectContaining({
-						data: "Jo",
-						path: "name",
-					}),
-				],
-			},
-		});
-		await expect(
-			structure.encodeTaggedObject(codecs, data),
-		).rejects.toBeInstanceOf(DModeling.EncodeTaggedObjectError);
 	});
 
 	it("maps raw properties to a tagged object in pipe", () => {

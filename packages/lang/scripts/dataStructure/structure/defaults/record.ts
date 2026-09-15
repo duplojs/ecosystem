@@ -1,4 +1,5 @@
 import type * as DKind from "@scripts/kind";
+import * as DObject from "@scripts/object";
 import * as DCommon from "@scripts/common";
 import { type Constraint } from "../../constraint";
 import { createStructure, type StructureDefinition, type Structure } from "../base";
@@ -90,8 +91,10 @@ export const RecordStructure = createStructure(
 					if (
 						key.definition.values.value
 							.some(
-								(value) => structureIdentifier(value, typeStructureKind)
-								&& typeIdentifier(value.definition.type, stringTypeKind),
+								(value) => (
+									structureIdentifier(value, typeStructureKind)
+									&& typeIdentifier(value.definition.type, stringTypeKind)
+								),
 							)
 					) {
 						return null;
@@ -120,12 +123,7 @@ export const RecordStructure = createStructure(
 		{
 			executeCheck: (self, data, errorHandler) => {
 				if (
-					typeof data !== "object"
-					|| data === null
-					|| (
-						data.constructor !== undefined
-						&& data.constructor.name !== "Object"
-					)
+					!DObject.isSimple(data)
 					|| Object.getOwnPropertySymbols(data).length !== 0
 				) {
 					return errorHandler?.().addIssue(self, data) ?? ErrorSymbol;
@@ -173,12 +171,7 @@ export const RecordStructure = createStructure(
 			},
 			executeEncode: (self, codecContext, data, errorHandler) => {
 				if (
-					typeof data !== "object"
-					|| data === null
-					|| (
-						data.constructor !== undefined
-						&& data.constructor.name !== "Object"
-					)
+					!DObject.isSimple(data)
 					|| Object.getOwnPropertySymbols(data).length !== 0
 				) {
 					return errorHandler?.().addIssue(self, data) ?? ErrorSymbol;
@@ -197,28 +190,32 @@ export const RecordStructure = createStructure(
 				const pathStage = errorHandler?.().createPathStage();
 
 				const encodedData = (requiredKeys ?? keyData).reduce<unknown>(
-					(accumulator, key) => DCommon.callThen(
-						accumulator,
-						(awaitedAccumulator) => pathStage?.setCurrentPath(`{record key: ${key}}`) ?? DCommon.callThen(
-							self.definition.key.executeCheck(key, errorHandler),
-							(keyResult) => pathStage?.setCurrentPath(`{record value: ${key}}`) ?? DCommon.callThen(
-								self.definition.value.executeEncode(codecContext, data[key as never], errorHandler),
-								(encodedValue) => {
-									if (
-										keyResult === ErrorSymbol
-										|| encodedValue === ErrorSymbol
-										|| awaitedAccumulator === ErrorSymbol
-									) {
-										return ErrorSymbol;
-									}
+					(accumulator, key) => key === "__proto__"
+						? accumulator
+						: DCommon.callThen(
+							accumulator,
+							(awaitedAccumulator) => pathStage?.setCurrentPath(`{record key: ${key}}`) ?? DCommon.callThen(
+								self.definition.key.executeCheck(key, errorHandler),
+								(keyResult) => pathStage?.setCurrentPath(`{record value: ${key}}`) ?? DCommon.callThen(
+									self.definition.value.executeEncode(codecContext, data[key as never], errorHandler),
+									(encodedValue) => {
+										if (
+											keyResult === ErrorSymbol
+											|| encodedValue === ErrorSymbol
+											|| awaitedAccumulator === ErrorSymbol
+										) {
+											return ErrorSymbol;
+										}
 
-									(awaitedAccumulator as Record<string, unknown>)[key] = encodedValue;
+										if (encodedValue !== undefined) {
+											(awaitedAccumulator as Record<string, unknown>)[key] = encodedValue;
+										}
 
-									return awaitedAccumulator;
-								},
+										return awaitedAccumulator;
+									},
+								),
 							),
 						),
-					),
 					{},
 				);
 
@@ -238,12 +235,7 @@ export const RecordStructure = createStructure(
 			},
 			executeDecode: (self, codecContext, data, errorHandler) => {
 				if (
-					typeof data !== "object"
-					|| data === null
-					|| (
-						data.constructor !== undefined
-						&& data.constructor.name !== "Object"
-					)
+					!DObject.isSimple(data)
 					|| Object.getOwnPropertySymbols(data).length !== 0
 				) {
 					return errorHandler?.().addIssue(self, data) ?? ErrorSymbol;
@@ -262,28 +254,32 @@ export const RecordStructure = createStructure(
 				const pathStage = errorHandler?.().createPathStage();
 
 				const decodedData = (requiredKeys ?? keyData).reduce<unknown>(
-					(accumulator, key) => DCommon.callThen(
-						accumulator,
-						(awaitedAccumulator) => pathStage?.setCurrentPath(`{record key: ${key}}`) ?? DCommon.callThen(
-							self.definition.key.executeCheck(key, errorHandler),
-							(keyResult) => pathStage?.setCurrentPath(`{record value: ${key}}`) ?? DCommon.callThen(
-								self.definition.value.executeDecode(codecContext, data[key as never], errorHandler),
-								(decodedValue) => {
-									if (
-										keyResult === ErrorSymbol
-										|| decodedValue === ErrorSymbol
-										|| awaitedAccumulator === ErrorSymbol
-									) {
-										return ErrorSymbol;
-									}
+					(accumulator, key) => key === "__proto__"
+						? accumulator
+						: DCommon.callThen(
+							accumulator,
+							(awaitedAccumulator) => pathStage?.setCurrentPath(`{record key: ${key}}`) ?? DCommon.callThen(
+								self.definition.key.executeCheck(key, errorHandler),
+								(keyResult) => pathStage?.setCurrentPath(`{record value: ${key}}`) ?? DCommon.callThen(
+									self.definition.value.executeDecode(codecContext, data[key as never], errorHandler),
+									(decodedValue) => {
+										if (
+											keyResult === ErrorSymbol
+											|| decodedValue === ErrorSymbol
+											|| awaitedAccumulator === ErrorSymbol
+										) {
+											return ErrorSymbol;
+										}
 
-									(awaitedAccumulator as Record<string, unknown>)[key] = decodedValue;
+										if (decodedValue !== undefined) {
+											(awaitedAccumulator as Record<string, unknown>)[key] = decodedValue;
+										}
 
-									return awaitedAccumulator;
-								},
+										return awaitedAccumulator;
+									},
+								),
 							),
 						),
-					),
 					{},
 				);
 
@@ -297,6 +293,64 @@ export const RecordStructure = createStructure(
 								(result) => result === ErrorSymbol
 									? ErrorSymbol
 									: awaitedDecodedData,
+							)
+					),
+				);
+			},
+			executeParse: (self, codecContext, data, errorHandler) => {
+				if (!DObject.isSimple(data)) {
+					return errorHandler?.().addIssue(self, data) ?? ErrorSymbol;
+				}
+
+				const keyData = Object.keys(data);
+				const requiredKeys = self.definition.requiredKeys.value;
+				const pathStage = errorHandler?.().createPathStage();
+
+				const parsedData = (requiredKeys ?? keyData)
+					.reduce<unknown>(
+						(accumulator, key) => key === "__proto__"
+							? accumulator
+							: DCommon.callThen(
+								accumulator,
+								(awaitedAccumulator) => pathStage?.setCurrentPath(`{record key: ${key}}`) ?? DCommon.callThen(
+									self.definition.key.executeCheck(key, errorHandler),
+									(keyResult) => pathStage?.setCurrentPath(`{record value: ${key}}`) ?? DCommon.callThen(
+										self.definition.value.executeParse(
+											codecContext,
+											data[key as never],
+											errorHandler,
+										),
+										(parsedValue) => {
+											if (
+												keyResult === ErrorSymbol
+												|| parsedValue === ErrorSymbol
+												|| awaitedAccumulator === ErrorSymbol
+											) {
+												return ErrorSymbol;
+											}
+
+											if (parsedValue !== undefined) {
+												(awaitedAccumulator as Record<string, unknown>)[key] = parsedValue;
+											}
+
+											return awaitedAccumulator;
+										},
+									),
+								),
+							),
+						{},
+					);
+
+				return DCommon.callThen(
+					parsedData,
+					(awaitedParsedData) => pathStage?.close() ?? (
+						awaitedParsedData === ErrorSymbol
+							? ErrorSymbol
+							: DCommon.callThen(
+								self.executeConstraints(awaitedParsedData, errorHandler),
+								(result) => result === ErrorSymbol
+									? ErrorSymbol
+									: awaitedParsedData,
 							)
 					),
 				);

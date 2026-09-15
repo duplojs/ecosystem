@@ -29,6 +29,50 @@ describe("NewTypeStructure", () => {
 		expect(structure.name).toBe("user-name");
 		expect(structure.definition.inner).toBe(inner);
 		expect(structure.definition.newTypeConstraints).toEqual([stringMinConstraint]);
+		expect(structure.parse("Jane")).toStrictEqual(
+			DEither.right("parse-success", "Jane"),
+		);
+	});
+
+	it("propagates parsing to its inner structure", () => {
+		const structure = DModeling.NewTypeStructure(
+			"user-profile",
+			DDataStructure.object({
+				name: DDataStructure.string(),
+			}),
+			[],
+		);
+
+		expect(structure.parse({
+			name: "Jane",
+			extra: true,
+		})).toStrictEqual(DEither.right("parse-success", {
+			name: "Jane",
+		}));
+	});
+
+	it("returns parse errors from inner, new type and structure constraints", () => {
+		const innerFailure = DModeling.NewTypeStructure(
+			"user-name",
+			DDataStructure.string(),
+			[],
+		).parse(123);
+		const newTypeConstraintFailure = DModeling.NewTypeStructure(
+			"user-name",
+			DDataStructure.string(),
+			[DDataStructure.minCharacters(3)],
+		).parse("Jo");
+		const structureConstraintFailure = DModeling.NewTypeStructure(
+			"user-name",
+			DDataStructure.string(),
+			[],
+		)
+			.addConstraint(DDataStructure.minCharacters(5))
+			.parse("Jane");
+
+		expect(DEither.hasInformation(innerFailure, "parse-error")).toBe(true);
+		expect(DEither.hasInformation(newTypeConstraintFailure, "parse-error")).toBe(true);
+		expect(DEither.hasInformation(structureConstraintFailure, "parse-error")).toBe(true);
 	});
 
 	it("checks the inner structure before applying new type constraints", () => {
@@ -201,78 +245,6 @@ describe("NewTypeStructure", () => {
 				?.getSubSource?.(),
 		).toBe(newTypeConstraint);
 		expect(structureConstraintExecuteCheck).not.toHaveBeenCalled();
-	});
-
-	it("encodes a typed new type value in a promise without exposing encoding errors", async() => {
-		const structure = DModeling.NewTypeStructure(
-			"user-name",
-			DDataStructure.string(),
-			[DDataStructure.minCharacters(3)],
-		);
-		const codec = DDataStructure.createCodec(
-			DDataStructure.TheString,
-			DDataStructure.number().is,
-			(data) => data.length,
-			(data) => `decoded-${data}`,
-		);
-		const codecs = DDataStructure.createCodecs({ codec });
-		const data = DEither.unwrapByInformationOrThrow(
-			structure.map("Jane"),
-			"map-success",
-		);
-		const result = structure.encodeNewType(codecs, data);
-
-		type _CheckResult = ExpectType<
-			typeof result,
-			Promise<number>,
-			"strict"
-		>;
-
-		expect(result).toBeInstanceOf(Promise);
-		await expect(result).resolves.toBe(4);
-	});
-
-	it("asynchronously encodes a typed new type value when the codec is asynchronous", async() => {
-		const structure = DModeling.NewTypeStructure(
-			"user-name",
-			DDataStructure.string(),
-			[DDataStructure.minCharacters(3)],
-		);
-		const codec = DDataStructure.createCodec(
-			DDataStructure.TheString,
-			DDataStructure.number().is,
-			(data) => Promise.resolve(data.length),
-			(data) => `decoded-${data}`,
-		);
-		const codecs = DDataStructure.createCodecs({ codec });
-		const data = DEither.unwrapByInformationOrThrow(
-			structure.map("Jane"),
-			"map-success",
-		);
-		const result = structure.encodeNewType(codecs, data);
-
-		expect(result).toBeInstanceOf(Promise);
-		await expect(result).resolves.toBe(4);
-	});
-
-	it("rejects with an EncodeNewTypeError when a typed new type value is bypassed", async() => {
-		const structure = DModeling.NewTypeStructure(
-			"user-name",
-			DDataStructure.string(),
-			[DDataStructure.minCharacters(3)],
-		);
-		const codecs = DDataStructure.createCodecs({});
-		await expect(
-			structure.encodeNewType(codecs, "Jo" as never),
-		).rejects.toMatchObject({
-			message: "An error occurred while encoding a NewType. This can only happen if you are bypassing the type system.",
-			error: {
-				issues: [expect.objectContaining({ data: "Jo" })],
-			},
-		});
-		await expect(
-			structure.encodeNewType(codecs, "Jo" as never),
-		).rejects.toBeInstanceOf(DModeling.EncodeNewTypeError);
 	});
 
 	it("stops encoding when the inner structure rejects the value", () => {

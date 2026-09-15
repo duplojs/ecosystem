@@ -96,6 +96,11 @@ export const TypeStructure = createStructure(
 						),
 				);
 			},
+			executeParse: (self, codecContext, data, errorHandler) => self.executeDecode(
+				codecContext,
+				data,
+				errorHandler,
+			),
 			isAsynchronous: (self) => self.definition.type.isAsynchronous(),
 		},
 	),

@@ -94,6 +94,7 @@ describe("ArrayStructure", () => {
 		const asyncEncoded = await structure.asyncEncode(DDataStructure.createCodecs({ codec }), ["Jane", "John"]);
 		const decoded = structure.decode(DDataStructure.createCodecs({ codec }), [4, 5]);
 		const asyncDecoded = await structure.asyncDecode(DDataStructure.createCodecs({ codec }), [4, 5]);
+		const parsed = structure.parse([4, 5], DDataStructure.createCodecs({ codec }));
 		const encodedValue = DEither.unwrapByInformationOrThrow(
 			encoded,
 			"encode-success",
@@ -166,6 +167,29 @@ describe("ArrayStructure", () => {
 		expect(asyncDecoded).toStrictEqual(
 			DEither.right("decode-success", ["name-4", "name-5"]),
 		);
+		expect(parsed).toStrictEqual(
+			DEither.right("parse-success", ["name-4", "name-5"]),
+		);
+	});
+
+	it("propagates parsing to its elements", () => {
+		const structure = DDataStructure.ArrayStructure(
+			DDataStructure.ObjectStructure({
+				name: DDataStructure.string(),
+			}, []),
+			[],
+		);
+
+		expect(structure.parse([
+			{
+				name: "Jane",
+				extra: true,
+			},
+		])).toStrictEqual(DEither.right("parse-success", [
+			{
+				name: "Jane",
+			},
+		]));
 	});
 
 	it("returns encode and decode errors for invalid arrays or invalid elements", () => {
@@ -177,6 +201,8 @@ describe("ArrayStructure", () => {
 		const invalidEncodeElement = structure.encode(DDataStructure.createCodecs({}), ["Jane", 123] as never);
 		const invalidDecodeKind = structure.decode(DDataStructure.createCodecs({}), null as never);
 		const invalidDecodeElement = structure.decode(DDataStructure.createCodecs({}), ["Jane", 123] as never);
+		const invalidParseKind = structure.parse(null);
+		const invalidParseElement = structure.parse([123, "Jane"]);
 
 		expect(
 			DEither.unwrapByInformationOrThrow(
@@ -213,6 +239,24 @@ describe("ArrayStructure", () => {
 		).toMatchObject({
 			data: 123,
 			path: "[array: 1]",
+		});
+		expect(
+			DEither.unwrapByInformationOrThrow(
+				invalidParseKind,
+				"parse-error",
+			).issues[0],
+		).toMatchObject({
+			data: null,
+			path: "",
+		});
+		expect(
+			DEither.unwrapByInformationOrThrow(
+				invalidParseElement,
+				"parse-error",
+			).issues[0],
+		).toMatchObject({
+			data: 123,
+			path: "[array: 0]",
 		});
 	});
 
@@ -255,9 +299,11 @@ describe("ArrayStructure", () => {
 		);
 		const encoded = structure.encode(DDataStructure.createCodecs({ codec }), ["Jane"]);
 		const decoded = await structure.asyncDecode(DDataStructure.createCodecs({ codec }), [4]);
+		const parsed = await structure.asyncParse([4], DDataStructure.createCodecs({ codec }));
 
 		expect(encoded).toStrictEqual(DEither.right("encode-success", [4]));
 		expect(decoded).toStrictEqual(DEither.right("decode-success", ["4"]));
+		expect(parsed).toStrictEqual(DEither.right("parse-success", ["4"]));
 		expect(executeCheck).toHaveBeenCalledWith(
 			arrayConstraint,
 			["Jane"],
@@ -293,6 +339,7 @@ describe("ArrayStructure", () => {
 		);
 		const encodeFailure = structure.encode(DDataStructure.createCodecs({}), ["Jane"]);
 		const decodeFailure = await structure.asyncDecode(DDataStructure.createCodecs({}), ["Jane"]);
+		const parseFailure = await structure.asyncParse(["Jane"]);
 
 		expect(
 			DEither.unwrapByInformationOrThrow(
@@ -316,6 +363,12 @@ describe("ArrayStructure", () => {
 			(DEither.unwrapByInformationOrThrow(
 				decodeFailure,
 				"decode-error",
+			).issues[0] as DDataStructure.Issue | undefined)?.getSubSource?.(),
+		).toBe(failingConstraint);
+		expect(
+			(DEither.unwrapByInformationOrThrow(
+				parseFailure,
+				"parse-error",
 			).issues[0] as DDataStructure.Issue | undefined)?.getSubSource?.(),
 		).toBe(failingConstraint);
 	});

@@ -73,6 +73,16 @@ export type SupportedOutputInfer = (
 	| number
 );
 
+type ComputeInput<
+	GenericInput extends unknown,
+> = GenericInput extends SupportedOutputInfer
+	? DCommon.RemoveConstraint<GenericInput> extends infer InferredResult
+		? InferredResult extends readonly unknown[]
+			? readonly [...InferredResult]
+			: InferredResult
+		: never
+	: never;
+
 type ComputeInferInputRequirement<
 	GenericInput extends unknown,
 > = GenericInput extends string
@@ -85,9 +95,7 @@ type ComputeInferInputRequirement<
 
 export function infer<
 	GenericOutput extends unknown,
-	const GenericInput extends DCommon.RemoveConstraint<
-		Extract<GenericOutput, SupportedOutputInfer>
-	> = never,
+	const GenericInput extends ComputeInput<GenericOutput> = never,
 	GenericComputedOutput = ComputeInferConstraint<
 		GenericInput,
 		Extract<GenericOutput, SupportedOutputInfer>

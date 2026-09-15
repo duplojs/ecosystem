@@ -44,6 +44,11 @@ export const NonEncodableStringStructure = createStructure(
 			executeDecode: (self, codecContext, data, errorHandler) => data === self.definition.value
 				? data
 				: errorHandler?.().addIssue(self, data) ?? ErrorSymbol,
+			executeParse: (self, codecContext, data, errorHandler) => self.executeDecode(
+				codecContext,
+				data,
+				errorHandler,
+			),
 			isAsynchronous: () => false,
 		},
 	),

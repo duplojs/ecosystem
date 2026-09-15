@@ -179,7 +179,9 @@ export const ObjectStructure = createStructure(
 									return ErrorSymbol;
 								}
 
-								(awaitedAccumulator as Record<string, unknown>)[entry.key] = encodedData;
+								if (encodedData !== undefined) {
+									(awaitedAccumulator as Record<string, unknown>)[entry.key] = encodedData;
+								}
 
 								return awaitedAccumulator;
 							},
@@ -229,7 +231,9 @@ export const ObjectStructure = createStructure(
 									return ErrorSymbol;
 								}
 
-								(awaitedAccumulator as Record<string, unknown>)[entry.key] = decodedData;
+								if (decodedData !== undefined) {
+									(awaitedAccumulator as Record<string, unknown>)[entry.key] = decodedData;
+								}
 
 								return awaitedAccumulator;
 							},
@@ -248,6 +252,48 @@ export const ObjectStructure = createStructure(
 								(result) => result === ErrorSymbol
 									? ErrorSymbol
 									: awaitedDecodedData,
+							)
+					),
+				);
+			},
+			executeParse: (self, codecContext, data, errorHandler) => {
+				if (!DObject.isSimple(data)) {
+					return errorHandler?.().addIssue(self, data) ?? ErrorSymbol;
+				}
+
+				const pathStage = errorHandler?.().createPathStage();
+
+				const parsedData = self.definition.shape.value.reduce<unknown>(
+					(accumulator, entry) => DCommon.callThen(
+						accumulator,
+						(awaitedAccumulator) => pathStage?.setCurrentPath(entry.key) ?? DCommon.callThen(
+							entry.value.executeParse(codecContext, data[entry.key as never], errorHandler),
+							(parsedData) => {
+								if (parsedData === ErrorSymbol || awaitedAccumulator === ErrorSymbol) {
+									return ErrorSymbol;
+								}
+
+								if (parsedData !== undefined) {
+									(awaitedAccumulator as Record<string, unknown>)[entry.key] = parsedData;
+								}
+
+								return awaitedAccumulator;
+							},
+						),
+					),
+					{},
+				);
+
+				return DCommon.callThen(
+					parsedData,
+					(awaitedParsedData) => pathStage?.close() ?? (
+						awaitedParsedData === ErrorSymbol
+							? ErrorSymbol
+							: DCommon.callThen(
+								self.executeConstraints(awaitedParsedData, errorHandler),
+								(result) => result === ErrorSymbol
+									? ErrorSymbol
+									: awaitedParsedData,
 							)
 					),
 				);

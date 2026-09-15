@@ -1,4 +1,4 @@
-import * as DKind from "@scripts/kind";
+import type * as DKind from "@scripts/kind";
 import * as DCommon from "@scripts/common";
 import * as DEither from "@scripts/either";
 import * as DDataStructure from "@scripts/dataStructure";
@@ -233,22 +233,6 @@ export interface TaggedObjectStructure<
 		| DEither.Left<"map-error", DDataStructure.Error>
 	>;
 
-	encodeTaggedObject<
-		GenericCodecs extends DDataStructure.Codecs,
-	>(
-		codecs: GenericCodecs,
-		data: DDataStructure.StructureValue<this>,
-	): Promise<
-		DDataStructure.EncodedValue<
-			TaggedObjectMap<
-				DKind.Remove<
-					DDataStructure.StructureValue<this>
-				>
-			>,
-			GenericCodecs
-		>
-	>;
-
 	update<
 		GenericInput extends GenericTaggedObject,
 		const GenericPayload extends Partial<DKind.Remove<GenericTaggedObject>>,
@@ -265,17 +249,6 @@ export interface TaggedObjectStructure<
 		input: GenericInput,
 		update: GenericPayload
 	): TaggedObjectUpdate<GenericInput, GenericPayload>;
-}
-
-export class EncodeTaggedObjectError extends DKind.parentClass(
-	createKind("encode-tagged-object-error"),
-	Error,
-) {
-	public constructor(
-		public error: DDataStructure.Error,
-	) {
-		super(undefined, "An error occurred while encoding a TaggedObject. This can only happen if you are bypassing the type system.");
-	}
 }
 
 export const TaggedObjectStructure = DDataStructure.createStructure(
@@ -321,6 +294,16 @@ export const TaggedObjectStructure = DDataStructure.createStructure(
 				data,
 				errorHandler,
 			) => self.definition.inner.executeDecode(codecContext, data, errorHandler),
+			executeParse: (
+				self,
+				codecContext,
+				data,
+				errorHandler,
+			) => self.definition.inner.executeParse(
+				codecContext,
+				data,
+				errorHandler,
+			),
 			isAsynchronous: (self) => self.definition.inner.isAsynchronous(),
 		},
 		{
@@ -445,17 +428,6 @@ export const TaggedObjectStructure = DDataStructure.createStructure(
 				}
 
 				return DEither.right("map-success", formattedData as never);
-			},
-			encodeTaggedObject: async(self, codecs, data) => {
-				const result = await self.asyncEncode(codecs, data);
-
-				if (DEither.isLeft(result)) {
-					throw new EncodeTaggedObjectError(
-						DEither.unwrapLeft(result),
-					);
-				}
-
-				return DEither.unwrapRight(result);
 			},
 			update: (
 				self,

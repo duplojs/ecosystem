@@ -99,6 +99,21 @@ export const LazyStructure = createStructure(
 							: decodedData,
 					),
 			),
+			executeParse: (self, codecContext, data, errorHandler) => DCommon.callThen(
+				self.definition.getter.value.executeParse(
+					codecContext,
+					data,
+					errorHandler,
+				),
+				(parsedData) => parsedData === ErrorSymbol
+					? ErrorSymbol
+					: DCommon.callThen(
+						self.executeConstraints(parsedData, errorHandler),
+						(result) => result === ErrorSymbol
+							? ErrorSymbol
+							: parsedData,
+					),
+			),
 			isAsynchronous: (self) => self.definition.getter.value.isAsynchronous(),
 		},
 	),

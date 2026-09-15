@@ -94,6 +94,11 @@ export interface Structure<
 		data: unknown,
 		errorHandler?: GetErrorHandler
 	): unknown;
+	executeParse(
+		codecContext: CodecContext,
+		data: unknown,
+		errorHandler?: GetErrorHandler
+	): unknown;
 	isAsynchronous(): boolean;
 	check(data: unknown): (
 		| DEither.Right<"check-success", StructureValue<this>>
@@ -203,6 +208,27 @@ export interface Structure<
 		>
 		| DEither.Left<"decode-error", Error>
 	>;
+	parse(
+		data: unknown,
+		codecs?: Codecs,
+	): (
+		| DEither.Right<
+			"parse-success",
+			StructureValue<this>
+		>
+		| DEither.Left<"async-error", undefined>
+		| DEither.Left<"parse-error", Error>
+	);
+	asyncParse(
+		data: unknown,
+		codecs?: Codecs,
+	): Promise<
+		| DEither.Right<
+			"parse-success",
+			StructureValue<this>
+		>
+		| DEither.Left<"parse-error", Error>
+	>;
 	contract<
 		GenericValue extends unknown,
 		GenericThis extends this,
@@ -234,6 +260,12 @@ export interface CreateStructureInitParams<
 		errorHandler?: GetErrorHandler,
 	): unknown;
 	executeDecode(
+		self: GenericStructure,
+		codecContext: CodecContext,
+		data: unknown,
+		errorHandler?: GetErrorHandler,
+	): unknown;
+	executeParse(
 		self: GenericStructure,
 		codecContext: CodecContext,
 		data: unknown,
@@ -289,6 +321,7 @@ export function createStructure<
 			executeCheck,
 			executeEncode,
 			executeDecode,
+			executeParse,
 			isAsynchronous,
 		},
 		...rest
@@ -317,6 +350,7 @@ export function createStructure<
 					executeCheck,
 					executeEncode,
 					executeDecode,
+					executeParse,
 					isAsynchronous,
 				},
 				...rest,
@@ -350,6 +384,12 @@ export function createStructure<
 				errorHandler,
 			),
 			executeDecode: (codecContext, data, errorHandler) => executeDecode(
+				self as never,
+				codecContext,
+				data,
+				errorHandler,
+			),
+			executeParse: (codecContext, data, errorHandler) => executeParse(
 				self as never,
 				codecContext,
 				data,
@@ -474,6 +514,38 @@ export function createStructure<
 
 				return DEither.right("decode-success", result as never);
 			},
+			parse: (data, codecs) => {
+				const errorHandler = createGetErrorHandler();
+				const result = self.executeParse(
+					codecs?.context.value ?? new Map(),
+					data,
+					errorHandler,
+				);
+
+				if (result instanceof Promise) {
+					return DEither.left("async-error", undefined);
+				}
+
+				if (result === ErrorSymbol) {
+					return DEither.left("parse-error", errorHandler().createError());
+				}
+
+				return DEither.right("parse-success", result as never);
+			},
+			asyncParse: async(data, codecs) => {
+				const errorHandler = createGetErrorHandler();
+				const result = await self.executeParse(
+					codecs?.context.value ?? new Map(),
+					data,
+					errorHandler,
+				);
+
+				if (result === ErrorSymbol) {
+					return DEither.left("parse-error", errorHandler().createError());
+				}
+
+				return DEither.right("parse-success", result as never);
+			},
 			contract: () => self as never,
 			clone: () => init(
 				DCommon.simpleClone(definition),
@@ -481,6 +553,7 @@ export function createStructure<
 					executeCheck,
 					executeEncode,
 					executeDecode,
+					executeParse,
 					isAsynchronous,
 				},
 				...rest,

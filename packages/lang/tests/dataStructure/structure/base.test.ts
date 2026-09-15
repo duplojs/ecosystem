@@ -55,6 +55,7 @@ describe("createStructure", () => {
 					executeCheck: structureExecuteCheck,
 					executeEncode: (_self, _codecContext, data) => data,
 					executeDecode: (_self, _codecContext, data) => data,
+					executeParse: (_self, _codecContext, data) => data,
 					isAsynchronous: () => false,
 				},
 			),
@@ -145,6 +146,7 @@ describe("createStructure", () => {
 					executeCheck: () => DDataStructure.SuccessSymbol,
 					executeEncode: (_self, _codecContext, data) => data,
 					executeDecode: (_self, _codecContext, data) => data,
+					executeParse: (_self, _codecContext, data) => data,
 					isAsynchronous: () => false,
 				},
 			),
@@ -210,6 +212,7 @@ describe("createStructure", () => {
 					executeCheck: () => DDataStructure.SuccessSymbol,
 					executeEncode: (_self, _codecContext, data) => data,
 					executeDecode: (_self, _codecContext, data) => data,
+					executeParse: (_self, _codecContext, data) => data,
 					isAsynchronous: structureIsAsynchronous,
 				},
 			),
@@ -250,6 +253,7 @@ describe("createStructure", () => {
 					executeCheck: () => DDataStructure.SuccessSymbol,
 					executeEncode: (_self, _codecContext, data) => data,
 					executeDecode: (_self, _codecContext, data) => data,
+					executeParse: (_self, _codecContext, data) => data,
 					isAsynchronous: structureIsAsynchronous,
 				},
 			),
@@ -305,6 +309,7 @@ describe("createStructure", () => {
 					executeCheck: () => DDataStructure.SuccessSymbol,
 					executeEncode: (_self, _codecContext, data) => data,
 					executeDecode: (_self, _codecContext, data) => data,
+					executeParse: (_self, _codecContext, data) => data,
 					isAsynchronous: () => true,
 				},
 			),
@@ -390,6 +395,7 @@ describe("createStructure", () => {
 						: errorHandler?.().addIssue(_self, data) ?? DDataStructure.ErrorSymbol,
 					executeEncode: (_self, _codecContext, data) => data,
 					executeDecode: (_self, _codecContext, data) => data,
+					executeParse: (_self, _codecContext, data) => data,
 					isAsynchronous: () => false,
 				},
 			),
@@ -402,6 +408,7 @@ describe("createStructure", () => {
 					executeCheck: () => Promise.resolve(DDataStructure.SuccessSymbol),
 					executeEncode: (_self, _codecContext, data) => data,
 					executeDecode: (_self, _codecContext, data) => data,
+					executeParse: (_self, _codecContext, data) => data,
 					isAsynchronous: () => true,
 				},
 			),
@@ -416,6 +423,7 @@ describe("createStructure", () => {
 					),
 					executeEncode: (_self, _codecContext, data) => data,
 					executeDecode: (_self, _codecContext, data) => data,
+					executeParse: (_self, _codecContext, data) => data,
 					isAsynchronous: () => true,
 				},
 			),
@@ -462,6 +470,7 @@ describe("createStructure", () => {
 					executeCheck,
 					executeEncode: (_self, _codecContext, data) => data,
 					executeDecode: (_self, _codecContext, data) => data,
+					executeParse: (_self, _codecContext, data) => data,
 					isAsynchronous: () => false,
 				},
 			),
@@ -493,6 +502,7 @@ describe("createStructure", () => {
 					executeCheck: () => DDataStructure.SuccessSymbol,
 					executeEncode: (_self, _codecContext, data) => data,
 					executeDecode: (_self, _codecContext, data) => data,
+					executeParse: (_self, _codecContext, data) => data,
 					isAsynchronous: () => false,
 				},
 			),
@@ -548,6 +558,7 @@ describe("createStructure", () => {
 						return selectedCodec?.encode(data as never) ?? data;
 					},
 					executeDecode: (_self, _codecContext, data) => data,
+					executeParse: (_self, _codecContext, data) => data,
 					isAsynchronous: () => false,
 				},
 			),
@@ -560,6 +571,7 @@ describe("createStructure", () => {
 					executeCheck: () => DDataStructure.SuccessSymbol,
 					executeEncode: () => Promise.resolve("encoded"),
 					executeDecode: (_self, _codecContext, data) => data,
+					executeParse: (_self, _codecContext, data) => data,
 					isAsynchronous: () => true,
 				},
 			),
@@ -596,6 +608,7 @@ describe("createStructure", () => {
 						errorHandler?.().addIssue(self, data) ?? DDataStructure.ErrorSymbol
 					),
 					executeDecode: (_self, _codecContext, data) => data,
+					executeParse: (_self, _codecContext, data) => data,
 					isAsynchronous: () => false,
 				},
 			),
@@ -654,6 +667,7 @@ describe("createStructure", () => {
 					executeCheck: () => DDataStructure.SuccessSymbol,
 					executeEncode: (_self, _codecContext, data) => data,
 					executeDecode: (_self, _codecContext, data) => String(data),
+					executeParse: (_self, _codecContext, data) => String(data),
 					isAsynchronous: () => false,
 				},
 			),
@@ -666,6 +680,7 @@ describe("createStructure", () => {
 					executeCheck: () => DDataStructure.SuccessSymbol,
 					executeEncode: (_self, _codecContext, data) => data,
 					executeDecode: () => Promise.resolve("decoded"),
+					executeParse: () => Promise.resolve("parsed"),
 					isAsynchronous: () => true,
 				},
 			),
@@ -680,11 +695,20 @@ describe("createStructure", () => {
 			DDataStructure.createCodecs({ codec }),
 			"value",
 		);
+		const parseSuccess = structure.parse(123);
+		const asyncParseFailure = asyncStructure.parse("value");
+		const asyncParseSuccess = await asyncStructure.asyncParse(
+			"value",
+			DDataStructure.createCodecs({ codec }),
+		);
 
 		expect(success).toStrictEqual(DEither.right("decode-success", "123"));
 		expect(asyncFailure).toStrictEqual(DEither.left("async-error", undefined));
 		expect(asyncSuccess).toStrictEqual(DEither.right("decode-success", "decoded"));
 		expect(asyncUnsafeSuccess).toStrictEqual(DEither.right("decode-success", "decoded"));
+		expect(parseSuccess).toStrictEqual(DEither.right("parse-success", "123"));
+		expect(asyncParseFailure).toStrictEqual(DEither.left("async-error", undefined));
+		expect(asyncParseSuccess).toStrictEqual(DEither.right("parse-success", "parsed"));
 	});
 
 	it("wraps decode errors with collected issues", async() => {
@@ -700,6 +724,9 @@ describe("createStructure", () => {
 					executeDecode: (self, _codecContext, data, errorHandler) => (
 						errorHandler?.().addIssue(self, data) ?? DDataStructure.ErrorSymbol
 					),
+					executeParse: (self, _codecContext, data, errorHandler) => (
+						errorHandler?.().addIssue(self, data) ?? DDataStructure.ErrorSymbol
+					),
 					isAsynchronous: () => false,
 				},
 			),
@@ -709,6 +736,8 @@ describe("createStructure", () => {
 		const failure = structure.decode(DDataStructure.createCodecs({}), "value");
 		const asyncFailure = await structure.asyncDecode(DDataStructure.createCodecs({}), "value");
 		const unsafeAsyncFailure = await structure.asyncUnsafeDecode(DDataStructure.createCodecs({}), "value");
+		const parseFailure = structure.parse("value");
+		const asyncParseFailure = await structure.asyncParse("value");
 
 		expect(
 			DEither.unwrapByInformationOrThrow(failure, "decode-error").issues,
@@ -723,6 +752,15 @@ describe("createStructure", () => {
 			DEither.unwrapByInformationOrThrow(
 				unsafeAsyncFailure,
 				"decode-error",
+			).issues,
+		).toHaveLength(1);
+		expect(
+			DEither.unwrapByInformationOrThrow(parseFailure, "parse-error").issues,
+		).toHaveLength(1);
+		expect(
+			DEither.unwrapByInformationOrThrow(
+				asyncParseFailure,
+				"parse-error",
 			).issues,
 		).toHaveLength(1);
 	});

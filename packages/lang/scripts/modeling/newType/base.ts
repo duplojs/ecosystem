@@ -1,4 +1,4 @@
-import * as DKind from "@scripts/kind";
+import type * as DKind from "@scripts/kind";
 import * as DCommon from "@scripts/common";
 import type * as DArray from "@scripts/array";
 import * as DEither from "@scripts/either";
@@ -189,31 +189,6 @@ export interface NewTypeStructure<
 		>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	>;
-
-	encodeNewType<
-		GenericCodecs extends DDataStructure.Codecs,
-	>(
-		codecs: GenericCodecs,
-		data: DDataStructure.StructureValue<this>,
-	): Promise<
-		DDataStructure.EncodedValue<
-			NewTypeMap<
-				DDataStructure.StructureValue<this>
-			>,
-			GenericCodecs
-		>
-	>;
-}
-
-export class EncodeNewTypeError extends DKind.parentClass(
-	createKind("encode-new-type-error"),
-	Error,
-) {
-	public constructor(
-		public error: DDataStructure.Error,
-	) {
-		super(undefined, "An error occurred while encoding a NewType. This can only happen if you are bypassing the type system.");
-	}
 }
 
 function executeNewTypeConstraints(
@@ -297,6 +272,26 @@ export const NewTypeStructure = DDataStructure.createStructure(
 			executeDecode: (self, codec, data, errorHandler) => DCommon.callThen(
 				self.definition.inner.executeDecode(
 					codec,
+					data,
+					errorHandler,
+				),
+				(awaitedInnerResult) => awaitedInnerResult === DDataStructure.ErrorSymbol
+					? DDataStructure.ErrorSymbol
+					: DCommon.callThen(
+						executeNewTypeConstraints(self, awaitedInnerResult, errorHandler),
+						(result) => result === DDataStructure.ErrorSymbol
+							? DDataStructure.ErrorSymbol
+							: DCommon.callThen(
+								self.executeConstraints(awaitedInnerResult, errorHandler),
+								(result) => result === DDataStructure.ErrorSymbol
+									? DDataStructure.ErrorSymbol
+									: awaitedInnerResult,
+							),
+					),
+			),
+			executeParse: (self, codecContext, data, errorHandler) => DCommon.callThen(
+				self.definition.inner.executeParse(
+					codecContext,
 					data,
 					errorHandler,
 				),
@@ -415,17 +410,6 @@ export const NewTypeStructure = DDataStructure.createStructure(
 				}
 
 				return DEither.right("map-success", data as never);
-			},
-			encodeNewType: async(self, codec, data) => {
-				const result = await self.asyncEncode(codec, data);
-
-				if (DEither.isLeft(result)) {
-					throw new EncodeNewTypeError(
-						DEither.unwrapLeft(result),
-					);
-				}
-
-				return DEither.unwrapRight(result);
 			},
 		},
 	) as never,

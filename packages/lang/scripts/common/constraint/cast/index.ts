@@ -6,7 +6,7 @@ import { type UnbundlesConstraint, type BaseConstraint, type RemoveConstraint } 
 import { type CastError, type RemoveCastError } from "./error";
 import { type ComputeCastConstraintNumberRule } from "./number";
 import { type ComputeCastConstraintStringRule } from "./string";
-import { type AnyTuple, type IsExtends, type BreakGenericLink, type NeverCoalescing, type UnionContain, type IsEqual } from "../../types";
+import { type IsExtends, type BreakGenericLink, type NeverCoalescing, type UnionContain, type IsEqual } from "../../types";
 
 export type * from "./array";
 export type * from "./error";
@@ -114,7 +114,7 @@ export type ComputeCastValue<
 	: never;
 
 export function cast<
-	GenericInput extends unknown,
+	const GenericInput extends unknown,
 	GenericExpectedValue extends unknown,
 	GenericError = (
 		RemoveCastError<GenericInput> extends infer InferredInput

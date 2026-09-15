@@ -1,4 +1,5 @@
 import { DChrono, DDataStructure, DEither } from "@scripts";
+import { resolveTlsa } from "dns";
 
 describe("codecsString", () => {
 	it("round trips string encoded values", () => {
@@ -39,7 +40,8 @@ describe("codecsString", () => {
 			time: input.time.toString(),
 			undefined: "undefined",
 		});
-		expect(decoded).toStrictEqual(input);
+		const { undefined: ___, ...rest } = input;
+		expect(decoded).toStrictEqual(rest);
 	});
 
 	it("decodes both boolean values", () => {

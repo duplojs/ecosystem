@@ -4,7 +4,7 @@ export function isSimple(input: unknown): input is object {
 		&& input !== null
 		&& (
 			input.constructor === undefined
-			|| input.constructor.name === "Object"
+			|| input.constructor?.name === "Object"
 		)
 	);
 }

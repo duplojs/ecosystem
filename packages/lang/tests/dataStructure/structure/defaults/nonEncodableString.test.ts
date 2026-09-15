@@ -106,6 +106,7 @@ describe("NonEncodableStringStructure", () => {
 		const asyncEncoded = await structure.asyncEncode(codecs, checkedValue);
 		const decoded = structure.decode(codecs, "secret");
 		const asyncDecoded = await structure.asyncDecode(codecs, "secret");
+		const parsed = structure.parse("secret", codecs);
 
 		type _CheckEncodedValue = ExpectType<
 			DDataStructure.EncodedValue<
@@ -146,6 +147,7 @@ describe("NonEncodableStringStructure", () => {
 		expect(asyncEncoded).toStrictEqual(DEither.right("encode-success", "secret"));
 		expect(decoded).toStrictEqual(DEither.right("decode-success", "secret"));
 		expect(asyncDecoded).toStrictEqual(DEither.right("decode-success", "secret"));
+		expect(parsed).toStrictEqual(DEither.right("parse-success", "secret"));
 		expect(encode).not.toHaveBeenCalled();
 		expect(decode).not.toHaveBeenCalled();
 	});

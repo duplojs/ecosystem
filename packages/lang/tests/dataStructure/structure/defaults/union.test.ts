@@ -180,6 +180,7 @@ describe("UnionStructure", () => {
 		const encodedNumber = await structure.asyncEncode(codecs, 42);
 		const decodedString = structure.decode(codecs, 4);
 		const decodedNumber = await structure.asyncDecode(codecs, "number-42");
+		const parsed = structure.parse(4, codecs);
 
 		type _CheckEncodedString = ExpectType<
 			typeof encodedString,
@@ -218,6 +219,25 @@ describe("UnionStructure", () => {
 		expect(decodedNumber).toStrictEqual(
 			DEither.right("decode-success", 42),
 		);
+		expect(parsed).toStrictEqual(
+			DEither.right("parse-success", "value-4"),
+		);
+	});
+
+	it("propagates parsing to the matching branch", () => {
+		const structure = DDataStructure.UnionStructure([
+			DDataStructure.ObjectStructure({
+				name: DDataStructure.string(),
+			}, []),
+			DDataStructure.number(),
+		], []);
+
+		expect(structure.parse({
+			name: "Jane",
+			extra: true,
+		})).toStrictEqual(DEither.right("parse-success", {
+			name: "Jane",
+		}));
 	});
 
 	it("imports branch errors when no structure matches during encode or decode", () => {
@@ -227,6 +247,7 @@ describe("UnionStructure", () => {
 		], []);
 		const encodeFailure = structure.encode(DDataStructure.createCodecs({}), true as never);
 		const decodeFailure = structure.decode(DDataStructure.createCodecs({}), ["value"] as never);
+		const parseFailure = structure.parse(["value"]);
 
 		expect(
 			DEither.unwrapByInformationOrThrow(
@@ -251,6 +272,25 @@ describe("UnionStructure", () => {
 			DEither.unwrapByInformationOrThrow(
 				decodeFailure,
 				"decode-error",
+			).issues,
+		).toMatchObject([
+			{
+				data: ["value"],
+				path: "(union: 0)",
+			},
+			{
+				data: "value",
+				path: "(union: 1).[array: 0]",
+			},
+			{
+				data: ["value"],
+				path: "",
+			},
+		]);
+		expect(
+			DEither.unwrapByInformationOrThrow(
+				parseFailure,
+				"parse-error",
 			).issues,
 		).toMatchObject([
 			{
@@ -359,6 +399,7 @@ describe("UnionStructure", () => {
 		);
 		const encoded = structure.encode(DDataStructure.createCodecs({ codec }), "Jane");
 		const decoded = await structure.asyncDecode(DDataStructure.createCodecs({ codec }), 4 as never);
+		const parsed = await structure.asyncParse(4, DDataStructure.createCodecs({ codec }));
 		const encodeFailure = structure.encode(DDataStructure.createCodecs({ codec }), "");
 		const emptyStringCodec = DDataStructure.createCodec(
 			DDataStructure.TheString,
@@ -370,9 +411,14 @@ describe("UnionStructure", () => {
 			DDataStructure.createCodecs({ emptyStringCodec }),
 			0 as never,
 		);
+		const parseFailure = await structure.asyncParse(
+			0,
+			DDataStructure.createCodecs({ emptyStringCodec }),
+		);
 
 		expect(encoded).toStrictEqual(DEither.right("encode-success", 4));
 		expect(decoded).toStrictEqual(DEither.right("decode-success", "4"));
+		expect(parsed).toStrictEqual(DEither.right("parse-success", "4"));
 		expect(
 			DEither.unwrapByInformationOrThrow(
 				encodeFailure,
@@ -395,6 +441,12 @@ describe("UnionStructure", () => {
 			(DEither.unwrapByInformationOrThrow(
 				decodeFailure,
 				"decode-error",
+			).issues[0] as DDataStructure.Issue | undefined)?.getSubSource?.(),
+		).toBe(unionConstraint);
+		expect(
+			(DEither.unwrapByInformationOrThrow(
+				parseFailure,
+				"parse-error",
 			).issues[0] as DDataStructure.Issue | undefined)?.getSubSource?.(),
 		).toBe(unionConstraint);
 		expect(executeCheck).toHaveBeenCalledWith(
@@ -424,6 +476,7 @@ describe("UnionStructure", () => {
 		expect(structure.executeCheck(true)).toBe(DDataStructure.ErrorSymbol);
 		expect(structure.executeEncode(new Map(), true)).toBe(DDataStructure.ErrorSymbol);
 		expect(structure.executeDecode(new Map(), ["value"])).toBe(DDataStructure.ErrorSymbol);
+		expect(structure.executeParse(new Map(), ["value"])).toBe(DDataStructure.ErrorSymbol);
 	});
 
 	it("returns async errors for asynchronous branches in synchronous APIs", async() => {
@@ -444,6 +497,7 @@ describe("UnionStructure", () => {
 					executeCheck: () => Promise.resolve(DDataStructure.SuccessSymbol),
 					executeEncode: (_self, _codec, data) => Promise.resolve(data),
 					executeDecode: (_self, _codec, data) => Promise.resolve(data),
+					executeParse: (_self, _codec, data) => Promise.resolve(data),
 					isAsynchronous: () => true,
 				},
 			),

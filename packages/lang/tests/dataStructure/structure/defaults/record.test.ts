@@ -124,6 +124,7 @@ describe("RecordStructure", () => {
 			[],
 		);
 		const input = {};
+		const codecs = DDataStructure.createCodecs({});
 
 		type _CheckStructureValue = ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
@@ -136,6 +137,15 @@ describe("RecordStructure", () => {
 		expect(structure.definition.requiredKeys.value).toStrictEqual(["deletedAt"]);
 		expect(structure.check(input)).toStrictEqual(
 			DEither.right("check-success", input),
+		);
+		expect(structure.encode(codecs, input)).toStrictEqual(
+			DEither.right("encode-success", input),
+		);
+		expect(structure.decode(codecs, input)).toStrictEqual(
+			DEither.right("decode-success", input),
+		);
+		expect(structure.parse(input)).toStrictEqual(
+			DEither.right("parse-success", input),
 		);
 	});
 
@@ -246,6 +256,10 @@ describe("RecordStructure", () => {
 			first: 4,
 			second: 5,
 		});
+		const parsed = structure.parse({
+			first: 4,
+			second: 5,
+		}, codecs);
 
 		type EncodedRecord = DDataStructure.EncodedValue<
 			DDataStructure.StructureValue<typeof structure>,
@@ -320,6 +334,10 @@ describe("RecordStructure", () => {
 			first: "name-4",
 			second: "name-5",
 		}));
+		expect(parsed).toStrictEqual(DEither.right("parse-success", {
+			first: "name-4",
+			second: "name-5",
+		}));
 	});
 
 	it("returns encode and decode errors for invalid records or invalid values", () => {
@@ -344,6 +362,14 @@ describe("RecordStructure", () => {
 		const invalidDecodeValue = structure.decode(DDataStructure.createCodecs({}), {
 			name: 123,
 		} as never);
+		const parsedWithAdditionalKeys = structure.parse({
+			name: "Jane",
+			extra: "value",
+			[Symbol("private")]: "value",
+		});
+		const invalidParseKind = structure.parse(null);
+		const invalidParseValue = structure.parse({ name: 123 });
+		const directInvalidParseKind = structure.executeParse(new Map(), null);
 
 		expect(
 			DEither.unwrapByInformationOrThrow(
@@ -397,6 +423,71 @@ describe("RecordStructure", () => {
 			data: 123,
 			path: "{record value: name}",
 		});
+		expect(parsedWithAdditionalKeys).toStrictEqual(
+			DEither.right("parse-success", { name: "Jane" }),
+		);
+		expect(DEither.hasInformation(invalidParseKind, "parse-error")).toBe(true);
+		expect(DEither.hasInformation(invalidParseValue, "parse-error")).toBe(true);
+		expect(directInvalidParseKind).toBe(DDataStructure.ErrorSymbol);
+	});
+
+	it("parses open records and propagates key and accumulated errors", () => {
+		const openKey = DDataStructure.TypeStructure(DDataStructure.StringType(), []);
+		const openStructure = DDataStructure.RecordStructure(
+			openKey,
+			DDataStructure.TypeStructure(DDataStructure.StringType(), []),
+			[],
+		);
+		const codecContext = DDataStructure.createCodecs({}).context.value;
+
+		expect(openStructure.executeParse(codecContext, { name: "Jane" })).toStrictEqual({
+			name: "Jane",
+		});
+
+		vi.spyOn(openKey, "executeCheck").mockReturnValue(DDataStructure.ErrorSymbol);
+		expect(openStructure.executeParse(codecContext, { name: "Jane" })).toBe(
+			DDataStructure.ErrorSymbol,
+		);
+
+		const requiredStructure = DDataStructure.RecordStructure(
+			DDataStructure.UnionStructure([
+				DDataStructure.TypeStructure(DDataStructure.StringLiteralType("first"), []),
+				DDataStructure.TypeStructure(DDataStructure.StringLiteralType("second"), []),
+			], []),
+			DDataStructure.TypeStructure(DDataStructure.StringType(), []),
+			[],
+		);
+
+		expect(requiredStructure.executeParse(codecContext, {
+			first: 123,
+			second: "Jane",
+		})).toBe(DDataStructure.ErrorSymbol);
+	});
+
+	it("ignores the __proto__ key while converting records", () => {
+		const structure = DDataStructure.RecordStructure(
+			DDataStructure.string(),
+			DDataStructure.object({
+				value: DDataStructure.string(),
+			}),
+			[],
+		);
+		const input = JSON.parse("{\"__proto__\":{\"value\":\"polluted\"}}");
+		const codecs = DDataStructure.createCodecs({});
+		const encoded = structure.encode(codecs, input);
+		const decoded = structure.decode(codecs, input);
+		const parsed = structure.parse(input);
+		const values = [
+			DEither.unwrapByInformationOrThrow(encoded, "encode-success"),
+			DEither.unwrapByInformationOrThrow(decoded, "decode-success"),
+			DEither.unwrapByInformationOrThrow(parsed, "parse-success"),
+		];
+
+		values.forEach((value) => {
+			expect(value).toStrictEqual({});
+			expect(Object.getPrototypeOf(value)).toBe(Object.prototype);
+			expect("value" in value).toBe(false);
+		});
 	});
 
 	it("returns encode and decode errors when constraints fail after conversion", () => {
@@ -407,12 +498,16 @@ describe("RecordStructure", () => {
 		);
 		const encoded = structure.encode(DDataStructure.createCodecs({}), { name: "Jane" });
 		const decoded = structure.decode(DDataStructure.createCodecs({}), { name: "Jane" });
+		const parsed = structure.parse({ name: "Jane" });
 
 		expect(
 			DEither.unwrapByInformationOrThrow(encoded, "encode-error").issues,
 		).toHaveLength(1);
 		expect(
 			DEither.unwrapByInformationOrThrow(decoded, "decode-error").issues,
+		).toHaveLength(1);
+		expect(
+			DEither.unwrapByInformationOrThrow(parsed, "parse-error").issues,
 		).toHaveLength(1);
 	});
 

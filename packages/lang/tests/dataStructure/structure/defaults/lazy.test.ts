@@ -170,6 +170,13 @@ describe("LazyStructure", () => {
 		const asyncEncoded = await structure.asyncEncode(DDataStructure.createCodecs({ codec }), { name: "Jane" });
 		const decoded = structure.decode(DDataStructure.createCodecs({ codec }), { name: 4 });
 		const asyncDecoded = await structure.asyncDecode(DDataStructure.createCodecs({ codec }), { name: 4 });
+		const parsed = structure.parse(
+			{
+				name: 4,
+				extra: true,
+			},
+			DDataStructure.createCodecs({ codec }),
+		);
 
 		type _CheckEncoded = ExpectType<
 			typeof encoded,
@@ -209,6 +216,9 @@ describe("LazyStructure", () => {
 		);
 		expect(asyncDecoded).toStrictEqual(
 			DEither.right("decode-success", { name: "name-4" }),
+		);
+		expect(parsed).toStrictEqual(
+			DEither.right("parse-success", { name: "name-4" }),
 		);
 	});
 
@@ -280,9 +290,19 @@ describe("LazyStructure", () => {
 			DDataStructure.createCodecs({ codec }),
 			4,
 		);
+		const parsed = structure.parse(
+			4,
+			DDataStructure.createCodecs({ codec }),
+		);
 
 		expect(
 			DEither.unwrapByInformationOrThrow(decoded, "decode-error").issues[0],
+		).toMatchObject({
+			data: 123,
+			path: "",
+		});
+		expect(
+			DEither.unwrapByInformationOrThrow(parsed, "parse-error").issues[0],
 		).toMatchObject({
 			data: 123,
 			path: "",
@@ -301,6 +321,7 @@ describe("LazyStructure", () => {
 			DDataStructure.createCodecs({}),
 			"guest:1" as never,
 		);
+		const parsed = structure.parse("guest:1");
 
 		expect(
 			DEither.unwrapByInformationOrThrow(decoded, "decode-error").issues[0],
@@ -313,6 +334,14 @@ describe("LazyStructure", () => {
 				DEither.unwrapByInformationOrThrow(
 					decoded,
 					"decode-error",
+				).issues[0] as DDataStructure.Issue | undefined
+			)?.getSubSource?.(),
+		).toBe(constraint);
+		expect(
+			(
+				DEither.unwrapByInformationOrThrow(
+					parsed,
+					"parse-error",
 				).issues[0] as DDataStructure.Issue | undefined
 			)?.getSubSource?.(),
 		).toBe(constraint);
