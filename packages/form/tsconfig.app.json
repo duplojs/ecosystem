@@ -1,11 +1,12 @@
 {
   "extends": "@duplojs/code-config/tsconfig/base.json",
   "compilerOptions": {
-	"types": ["web"],
+	  "types": ["web"],
     "paths": {
 	  "@scripts": ["./scripts/index.ts"],
       "@scripts/*": ["./scripts/*"],
     },
+	  "noUncheckedSideEffectImports": false,
   },
   "include": ["./scripts/**/*.ts"],
 }

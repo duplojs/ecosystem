@@ -1,0 +1,14 @@
+{
+  "extends": "../../../tsconfig.test.json",
+  "compilerOptions": {
+    "paths": {
+		"@V/*": ["../../../scripts/vue/*"],
+	},
+  },
+  "include": [
+	  "**/*.ts", 
+	  "**/*.vue", 
+	  "../../../scripts/vue/**/*.ts", 
+	  "../../../scripts/vue/**/*.vue",
+	],
+}

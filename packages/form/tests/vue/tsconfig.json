@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.test.json",
+  "compilerOptions": {
+    "paths": {
+	  "@V/*": ["../../scripts/vue/*"],
+	  "@V": ["../../scripts/vue/index.ts"],
+	  "@test-utils/vue/*": ["../_utils/vue/*"],
+    },
+	"types": ["vitest/globals", "web"]
+  },
+  "include": [
+	"**/*.ts", 
+	"../../scripts/vue/**/*.ts", 
+	"../../scripts/vue/**/*.vue", 
+	"../_utils/vue/**/*.ts",
+	"../_utils/vue/**/*.vue",
+  ],
+}

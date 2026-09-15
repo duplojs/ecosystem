@@ -1,0 +1,126 @@
+@property --DFV-grid-max-columns {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 12;
+}
+
+@property --DFV-grid-columns {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 12;
+}
+
+@property --DFV-grid-gap {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 5px;
+}
+
+.DFV-grid {
+	&-container {
+		display: grid;
+		grid-template-columns: repeat(var(--DFV-grid-max-columns), minmax(0, 1fr));
+		gap: var(--DFV-grid-gap);
+	}
+
+	&-element {
+		grid-column: span var(--DFV-grid-columns)  / span var(--DFV-grid-columns);
+	}
+
+	&-form {
+		--DFV-grid-form-gap: 0.75rem;
+
+		display: flex;
+		flex-direction: column;
+		gap: var(--DFV-grid-form-gap);
+	}
+
+	&-input {
+		--DFV-grid-input-gap: 0.35rem;
+
+		display: flex;
+		flex-direction: column;
+		gap: var(--DFV-grid-input-gap);
+	}
+
+	&-repeat-actions {
+		--DFV-grid-repeat-actions-gap: 0.35rem;
+
+		display: flex;
+		gap: var(--DFV-grid-repeat-actions-gap);
+	}
+}
+.DFV-template_union,
+.DFV-template_check, 
+.DFV-template_repeat,
+.DFV-grid-repeat-element,
+.DFV-template_section  {
+	display: flex;
+	flex-direction: column;
+	gap: var(--DFV-grid-gap);
+}
+
+.DFV-step-error,
+.DFV-grid-error {
+	--DFV-grid-error-font-size: 0.75rem;
+	--DFV-grid-error-color: #dc2626;
+	--DFV-grid-error-line-height: 1.2;
+	--DFV-grid-error-min-height: calc(var(--DFV-grid-error-font-size) * var(--DFV-grid-error-line-height));
+
+	display: inline-block;
+	min-height: var(--DFV-grid-error-min-height);
+	font-size: var(--DFV-grid-error-font-size);
+	line-height: var(--DFV-grid-error-line-height);
+	color: var(--DFV-grid-error-color);
+}
+
+.DFV-step {
+	&-root {
+		--DFV-step-gap: 0.65rem;
+
+		display: flex;
+		flex-direction: column;
+		gap: var(--DFV-step-gap);
+	}
+
+	&-head {
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	&-indicator {
+		--DFV-step-indicator-track-height: 0.38rem;
+		--DFV-step-indicator-track-background: #e2e8f0;
+		--DFV-step-indicator-fill-background: linear-gradient(90deg, #475569 0%, #64748b 100%);
+
+		&-track {
+			position: relative;
+			overflow: hidden;
+			height: var(--DFV-step-indicator-track-height);
+			border-radius: 999px;
+			background: var(--DFV-step-indicator-track-background);
+		}
+
+		&-fill {
+			display: block;
+			height: 100%;
+			border-radius: 999px;
+			background: var(--DFV-step-indicator-fill-background);
+			transition: width 180ms ease;
+		}
+	}
+
+	&-content {
+		display: flex;
+		flex-direction: column;
+	}
+
+	&-actions {
+		--DFV-step-actions-gap: 0.5rem;
+
+		display: flex;
+		justify-content: flex-end;
+		gap: var(--DFV-step-actions-gap);
+		flex-wrap: wrap;
+	}
+}

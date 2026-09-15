@@ -1,0 +1,81 @@
+@use "./colors";
+@use "./components/button/button";
+@use "./components/checkbox/checkbox";
+@use "./components/icons/icons";
+
+:root {
+	--DFV-primary: var(--DFV-color-blue-500);
+	--DFV-primary-foreground: var(--DFV-color-white);
+	--DFV-primary-border: var(--DFV-color-blue-700);
+	--DFV-primary-hover: var(--DFV-color-blue-600);
+	--DFV-primary-active: var(--DFV-color-blue-700);
+	--DFV-primary-focus: var(--DFV-color-blue-300);
+
+	--DFV-secondary: var(--DFV-color-slate-600);
+	--DFV-secondary-foreground: var(--DFV-color-white);
+
+	--DFV-muted: var(--DFV-color-gray-100);
+	--DFV-muted-foreground: var(--DFV-color-gray-700);
+	--DFV-muted-foreground-soft: var(--DFV-color-gray-500);
+	--DFV-muted-border: var(--DFV-color-gray-200);
+	--DFV-muted-border-strong: var(--DFV-color-gray-300);
+	--DFV-muted-border-stronger: var(--DFV-color-gray-600);
+	--DFV-muted-hover: var(--DFV-color-gray-100);
+	--DFV-muted-active: var(--DFV-color-gray-200);
+	--DFV-muted-focus: var(--DFV-color-slate-300);
+
+	--DFV-accent: var(--DFV-color-slate-600);
+	--DFV-accent-foreground: var(--DFV-color-white);
+
+	--DFV-destructive: var(--DFV-color-red-600);
+	--DFV-destructive-foreground: var(--DFV-color-white);
+	--DFV-destructive-border: var(--DFV-color-red-700);
+	--DFV-destructive-hover: var(--DFV-color-red-700);
+	--DFV-destructive-active: var(--DFV-color-red-800);
+	--DFV-destructive-focus: var(--DFV-color-red-300);
+
+	--DFV-radius-sm: 0.5rem;
+	--DFV-radius-md: 0.6875rem;
+	--DFV-radius-lg: 0.875rem;
+	--DFV-radius-xl: 1.1875rem;
+	--DFV-radius-2xl: 1.5rem;
+
+	--DFV-spacing-none: 0;
+	--DFV-spacing-xs: 0.45rem;
+	--DFV-spacing-sm: 0.75rem;
+	--DFV-spacing-md: 1rem;
+	--DFV-spacing-lg: 1.5rem;
+	--DFV-spacing-xl: 2rem;
+	--DFV-spacing-2xl: 3rem;
+
+	--DFV-font-size-sm: 0.875rem;
+	--DFV-font-size-md: 1rem;
+	--DFV-font-size-lg: 1.125rem;
+	--DFV-font-size-xl: 1.25rem;
+	--DFV-font-size-2xl: 1.5rem;
+
+	--DFV-font-weight-regular: 400;
+	--DFV-font-weight-medium: 500;
+	--DFV-font-weight-semibold: 600;
+	--DFV-font-weight-bold: 700;
+
+	--DFV-line-height-tight: 1.2;
+	--DFV-line-height-normal: 1.5;
+	--DFV-line-height-relaxed: 1.7;
+
+	--DFV-letter-spacing-tight: -0.02em;
+	--DFV-letter-spacing-normal: 0;
+	--DFV-letter-spacing-wide: 0.02em;
+
+	--DFV-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.05);
+	--DFV-shadow-sm: 0 1px 3px rgb(0 0 0 / 0.08);
+	--DFV-shadow-md: 0 4px 10px rgb(0 0 0 / 0.10);
+	--DFV-shadow-lg: 0 10px 24px rgb(0 0 0 / 0.12);
+	--DFV-shadow-xl: 0 20px 40px rgb(0 0 0 / 0.16);
+
+	--DFV-transition-fast: 140ms ease;
+
+	--DFV-opacity-disabled: 0.5;
+	--DFV-opacity-muted: 0.7;
+	--DFV-opacity-overlay: 0.8;
+}

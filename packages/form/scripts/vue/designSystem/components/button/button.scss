@@ -1,0 +1,115 @@
+.DFV-button {
+	--DFV-button-gap: --DFV-spacing-xs;
+	--DFV-button-radius: var(--DFV-radius-sm);
+	--DFV-button-font-size: var(--DFV-font-size-sm);
+	--DFV-button-font-weight: var(--DFV-font-weight-semibold);
+	--DFV-button-line-height: var(--DFV-line-height-tight);
+	--DFV-button-shadow: 0 0 0 2px var(--DFV-button-focus);
+	--DFV-button-height: 2.25rem;
+	--DFV-button-padding: 0.5rem 1rem;
+
+	&.DFV-button-size-sm {
+		--DFV-button-height: 2rem;
+		--DFV-button-padding: 0 0.75rem;
+	}
+
+	&.DFV-button-size-md {
+		--DFV-button-height: 2.25rem;
+		--DFV-button-padding: 0.5rem 1rem;
+	}
+
+	&.DFV-button-size-lg {
+		--DFV-button-height: 2.5rem;
+		--DFV-button-padding: 0.5rem 1rem;
+	}
+
+	&.DFV-button-size-xl {
+		--DFV-button-height: 2.75rem;
+		--DFV-button-padding: 0.625rem 1.125rem;
+	}
+
+	&.DFV-button-size-2xl {
+		--DFV-button-height: 3rem;
+		--DFV-button-padding: 0.75rem 1.25rem;
+	}
+
+	&.DFV-button-variant-primary {
+		--DFV-button-background: var(--DFV-primary);
+		--DFV-button-foreground: var(--DFV-primary-foreground);
+		--DFV-button-border-color: var(--DFV-primary-border);
+		--DFV-button-hover-background: var(--DFV-primary-hover);
+		--DFV-button-active-background: var(--DFV-primary-active);
+		--DFV-button-focus: var(--DFV-primary-focus);
+	}
+
+	&.DFV-button-variant-destructive {
+		--DFV-button-background: var(--DFV-destructive);
+		--DFV-button-foreground: var(--DFV-destructive-foreground);
+		--DFV-button-border-color: var(--DFV-destructive-border);
+		--DFV-button-hover-background: var(--DFV-destructive-hover);
+		--DFV-button-active-background: var(--DFV-destructive-active);
+		--DFV-button-focus: var(--DFV-destructive-focus);
+	}
+
+	&.DFV-button-variant-outline {
+		--DFV-button-background: var(--DFV-color-white);
+		--DFV-button-foreground: var(--DFV-muted-foreground);
+		--DFV-button-border-color: var(--DFV-muted-border);
+		--DFV-button-hover-background: var(--DFV-muted-hover);
+		--DFV-button-hover-border-color: var(--DFV-muted-border-strong);
+		--DFV-button-active-background: var(--DFV-muted-active);
+		--DFV-button-focus: var(--DFV-muted-focus);
+	}
+
+	&.DFV-button-variant-ghost {
+		--DFV-button-background: transparent;
+		--DFV-button-foreground: var(--DFV-muted-foreground);
+		--DFV-button-border-color: transparent;
+		--DFV-button-hover-background: var(--DFV-muted-hover);
+		--DFV-button-hover-border-color: transparent;
+		--DFV-button-active-background: var(--DFV-muted-active);
+		--DFV-button-focus: var(--DFV-muted-focus);
+	}
+
+	gap: var(--DFV-button-gap);
+	min-width: var(--DFV-button-width, auto);
+	height: var(--DFV-button-height);
+	padding: var(--DFV-button-padding);
+	border: 1px solid var(--DFV-button-border-color);
+	border-radius: var(--DFV-button-radius);
+	background: var(--DFV-button-background);
+	color: var(--DFV-button-foreground);
+	font-size: var(--DFV-button-font-size);
+	font-weight: var(--DFV-button-font-weight);
+	line-height: var(--DFV-button-line-height);
+	transition:
+		background-color var(--DFV-transition-fast),
+		border-color var(--DFV-transition-fast),
+		box-shadow var(--DFV-transition-fast),
+		transform var(--DFV-transition-fast);
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+
+	&:hover {
+		background: var(--DFV-button-hover-background);
+		border-color: var(--DFV-button-hover-border-color, var(--DFV-button-border-color));
+	}
+
+	&:focus-visible {
+		outline: none;
+		box-shadow: var(--DFV-button-shadow);
+	}
+
+	&:active {
+		background: var(--DFV-button-active-background);
+		transform: translateY(1px);
+	}
+
+	&:disabled {
+		opacity: var(--DFV-opacity-disabled);
+		cursor: not-allowed;
+	}
+}

@@ -18,6 +18,7 @@
     "build": "./.commands/build.sh",
     "test:types": "./.commands/test-types.sh",
     "test:lint": "./.commands/test-lint.sh",
+    "dev:vue": "vite ./dev/vue",
     "prepare": "husky"
   },
   "exports": {

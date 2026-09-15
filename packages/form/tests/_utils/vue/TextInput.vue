@@ -1,17 +1,17 @@
 <script setup lang="ts">
 interface Props {
-	tt: string;
+	id?: string;
 }
 
 defineProps<Props>();
 
-const t = 3;
+const model = defineModel<string>();
 
 </script>
 
 <template>
-	<div
-		b=""
-		a=""
+	<input
+		id="test-text-input"
+		v-model="model"
 	/>
 </template>

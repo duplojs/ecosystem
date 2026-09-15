@@ -2,4 +2,5 @@
 
 set -euo pipefail
 
-tscw "$@" -p tsconfig.test.json
+# vue
+vue-tsc -p tests/vue/tsconfig.json

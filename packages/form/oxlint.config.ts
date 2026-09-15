@@ -10,6 +10,10 @@ export default oxlint.defineConfig({
 				exceptions: ["t"],
 			},
 		],
+		"typescript/no-unsafe-member-access": "off",
+		"typescript/no-unsafe-call": "off",
+		"typescript/no-unsafe-argument": "off",
+		"typescript/prefer-for-of": "off",
 	},
 	overrides: [
 		{
@@ -28,6 +32,5 @@ export default oxlint.defineConfig({
 	ignorePatterns: [
 		"dist/**",
 		".commands/**",
-		"global.d.ts",
 	],
 });

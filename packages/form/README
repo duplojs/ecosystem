@@ -39,12 +39,12 @@ Provide your input components or use the ones already available, compose layouts
 - `currentValue` is the live raw form state.
 - `check()` executes validation for the full tree and returns checked output (or errors).
 - Templates control rendering only, not business logic.
-- Field validation is defined through `dataParser`; during `check()`, these parsers are executed and drive validation errors/messages.
+- Field validation is defined through `dataStructure`; during `check()`, these structures are checked and drive validation errors/messages.
 
 ## Install
 
 ```bash
-npm install @duplojs/form@0 @duplojs/utils@1
+npm install @duplojs/form
 ```
 
 ## Documentation
