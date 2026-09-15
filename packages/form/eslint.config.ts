@@ -1,9 +1,9 @@
-import { vueConfig, oxlintDisabler, type Config } from "@duplojs/eslint";
+import { createEslintConfig } from "@duplojs/eslint";
 
 export default [
-	{
-		...vueConfig,
+	createEslintConfig({
+		environment: "vue/ts",
 		files: ["**/*.vue"],
-	} satisfies Config,
-	...oxlintDisabler.configs["flat/all"],
+		ruleset: { base: false },
+	}),
 ];

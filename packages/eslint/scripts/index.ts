@@ -1,7 +1,3 @@
-export * as eslint from "eslint";
-export { default as oxlintDisabler } from "eslint-plugin-oxlint";
-export type * from "./types";
-export * from "./base";
-export * from "./open";
-export * from "./test";
-export * from "./vue";
+export * from "./config";
+export * from "./createEslintConfig";
+export * from "./rules";

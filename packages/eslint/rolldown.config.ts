@@ -4,12 +4,13 @@ import dts from "unplugin-dts/rolldown";
 export default defineConfig([
 	{
 		external: [
-			/^eslint/,
 			/^@stylistic\/eslint-plugin/,
 			/^@typescript-eslint/,
-			/^vue-eslint-parser/,
 			/^eslint-plugin-vue/,
-			/^eslint-plugin-oxlint/,
+			/^typescript-eslint/,
+			/^vue-eslint-parser/,
+			/^eslint/,
+			/^typescript/,
 		],
 		input: "scripts/index.ts",
 		platform: "neutral",
