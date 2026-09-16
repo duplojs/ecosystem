@@ -8,6 +8,16 @@ const options = [
 	{
 		paths: {
 			"@duplojs/lang/array": "DArray",
+			"@duplojs/lang/either": "DEither",
+		},
+	},
+];
+
+const ambiguousOptions = [
+	{
+		paths: {
+			"@duplojs/lang/either": "DEither",
+			"@duplojs/lang/other-either": "DEither",
 		},
 	},
 ];
@@ -62,6 +72,30 @@ ruleTester.run(
 					import "@duplojs/lang/array";
 				`,
 				options,
+			},
+			{
+				name: "ignores regular imports from parent barrel",
+				code: `
+					import { pipe } from "@duplojs/lang";
+					pipe(value);
+				`,
+				options,
+			},
+			{
+				name: "ignores string exports from parent barrel",
+				code: `
+					import { "DEither" as Either } from "@duplojs/lang";
+					Either;
+				`,
+				options,
+			},
+			{
+				name: "ignores ambiguous barrel namespaces",
+				code: `
+					import { DEither } from "@duplojs/lang";
+					DEither.left("value");
+				`,
+				options: ambiguousOptions,
 			},
 		],
 
@@ -257,6 +291,267 @@ ruleTester.run(
 					},
 				],
 			},
+
+			{
+				name: "converts namespace exported from parent barrel",
+				code: `
+					import { DEither } from "@duplojs/lang";
+
+					const result = DEither.left("value");
+				`,
+				output: `
+					import * as DEither from "@duplojs/lang/either";
+
+					const result = DEither.left("value");
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "converts multiple namespaces exported from parent barrel",
+				code: `
+					import { DEither, DArray } from "@duplojs/lang";
+
+					DEither.left("value");
+					DArray.first([]);
+				`,
+				output: `
+					import * as DEither from "@duplojs/lang/either";
+					import * as DArray from "@duplojs/lang/array";
+
+					DEither.left("value");
+					DArray.first([]);
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "preserves named imports from parent barrel",
+				code: `
+					import { pipe, DEither } from "@duplojs/lang";
+
+					pipe(DEither.left("value"));
+				`,
+				output: `
+					import { pipe } from "@duplojs/lang";
+					import * as DEither from "@duplojs/lang/either";
+
+					pipe(DEither.left("value"));
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "preserves default and named imports from parent barrel",
+				code: `
+					import lang, { pipe, DEither } from "@duplojs/lang";
+
+					lang();
+					pipe(DEither.left("value"));
+				`,
+				output: `
+					import lang, { pipe } from "@duplojs/lang";
+					import * as DEither from "@duplojs/lang/either";
+
+					lang();
+					pipe(DEither.left("value"));
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "rewrites aliased barrel namespace",
+				code: `
+					import { DEither as Either } from "@duplojs/lang";
+
+					const result = Either.left("value");
+				`,
+				output: `
+					import * as DEither from "@duplojs/lang/either";
+
+					const result = DEither.left("value");
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "rewrites aliased barrel namespace shorthand",
+				code: `
+					import { DEither as Either } from "@duplojs/lang";
+
+					const object = { Either };
+				`,
+				output: `
+					import * as DEither from "@duplojs/lang/either";
+
+					const object = { Either: DEither };
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "preserves barrel namespace references when name already matches",
+				code: `
+					import { DEither } from "@duplojs/lang";
+
+					export { DEither };
+				`,
+				output: `
+					import * as DEither from "@duplojs/lang/either";
+
+					export { DEither };
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "does not fix aliased re-exported barrel namespace",
+				code: `
+					import { DEither as Either } from "@duplojs/lang";
+
+					export { Either };
+				`,
+				output: null,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "does not fix barrel namespace collision",
+				code: `
+					import { DEither as Either } from "@duplojs/lang";
+
+					const DEither = {};
+					Either.left("value");
+				`,
+				output: null,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "converts type-only namespace from parent barrel",
+				code: `
+					import type { DEither } from "@duplojs/lang";
+
+					type TT = DEither.Left<string>;
+				`,
+				output: `
+					import type * as DEither from "@duplojs/lang/either";
+
+					type TT = DEither.Left<string>;
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "converts type-only namespace specifier from parent barrel",
+				code: `
+					import { type DEither, pipe } from "@duplojs/lang";
+
+					type TT = DEither.Left<string>;
+					pipe(value);
+				`,
+				output: `
+					import { pipe } from "@duplojs/lang";
+					import type * as DEither from "@duplojs/lang/either";
+
+					type TT = DEither.Left<string>;
+					pipe(value);
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "does not match similarly prefixed packages",
+				code: `
+					import { DEither } from "@duplojs/lang";
+
+					DEither.left("value");
+				`,
+				output: `
+					import * as DEither from "@duplojs/lang/either";
+
+					DEither.left("value");
+				`,
+				options: [
+					{
+						paths: {
+							"@duplojs/lang-extra/either": "DEither",
+							"@duplojs/lang/either": "DEither",
+						},
+					},
+				],
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "preserves only default import from parent barrel",
+				code: `
+					import lang, { DEither } from "@duplojs/lang";
+
+					lang();
+					DEither.left("value");
+				`,
+				output: `
+					import lang from "@duplojs/lang";
+					import * as DEither from "@duplojs/lang/either";
+
+					lang();
+					DEither.left("value");
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
 		],
 	},
 );
@@ -295,9 +590,10 @@ describe("prefer-namespace-import defensive branches", () => {
 		];
 
 		for (const [openingBrace, closingBrace] of invalidTokens) {
-			let reportDescriptor = undefined as | {
-				fix(fixer: unknown): unknown;
-			}
+			let reportDescriptor = undefined as
+				| {
+					fix(fixer: unknown): unknown;
+				}
 				| undefined;
 
 			const sourceCode = {
@@ -350,6 +646,7 @@ describe("prefer-namespace-import defensive branches", () => {
 			);
 
 			expect(reportDescriptor).toBeDefined();
+
 			expect(
 				reportDescriptor?.fix?.({}),
 			).toBeNull();
