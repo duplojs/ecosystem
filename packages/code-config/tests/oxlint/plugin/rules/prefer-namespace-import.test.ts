@@ -552,6 +552,123 @@ ruleTester.run(
 					},
 				],
 			},
+			{
+				name: "reuses existing namespace import",
+				code: `
+					import * as DArray from "@duplojs/lang/array";
+					import { MinElement, chunk as chunkArray } from "@duplojs/lang/array";
+
+					type TT = MinElement;
+					const result = chunkArray(values);
+				`,
+				output: `
+					import * as DArray from "@duplojs/lang/array";
+
+					type TT = DArray.MinElement;
+					const result = DArray.chunk(values);
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "preserves default import when reusing existing namespace import",
+				code: `
+					import * as DArray from "@duplojs/lang/array";
+					import array, { MinElement } from "@duplojs/lang/array";
+
+					array();
+					type TT = MinElement;
+				`,
+				output: `
+					import * as DArray from "@duplojs/lang/array";
+					import array from "@duplojs/lang/array";
+
+					array();
+					type TT = DArray.MinElement;
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "reuses existing namespace import from parent barrel",
+				code: `
+					import * as DEither from "@duplojs/lang/either";
+					import { DEither as Either } from "@duplojs/lang";
+
+					const result = Either.left("value");
+				`,
+				output: `
+					import * as DEither from "@duplojs/lang/either";
+					
+
+					const result = DEither.left("value");
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "reuses existing type namespace import",
+				code: `
+					import type * as DArray from "@duplojs/lang/array";
+					import type { MinElement } from "@duplojs/lang/array";
+
+					type TT = MinElement;
+				`,
+				output: `
+					import type * as DArray from "@duplojs/lang/array";
+
+					type TT = DArray.MinElement;
+				`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "does not reuse type namespace import for value import",
+				code: `
+					import type * as DArray from "@duplojs/lang/array";
+					import { chunk } from "@duplojs/lang/array";
+
+					const result = chunk(values);
+				`,
+				output: null,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
+			{
+				name: "removes reused import at end of file",
+				code: `
+					import * as DArray from "@duplojs/lang/array";
+					import { MinElement } from "@duplojs/lang/array";`,
+				output: `
+					import * as DArray from "@duplojs/lang/array";
+`,
+				options,
+				errors: [
+					{
+						messageId: "preferNamespaceImport",
+					},
+				],
+			},
 		],
 	},
 );
@@ -651,5 +768,46 @@ describe("prefer-namespace-import defensive branches", () => {
 				reportDescriptor?.fix?.({}),
 			).toBeNull();
 		}
+	});
+
+	it("ignores namespace import without declared variable", () => {
+		const sourceCode = {
+			getDeclaredVariables: () => [],
+		};
+
+		const context = {
+			options,
+			sourceCode,
+			report: () => undefined,
+		};
+
+		const importNode = {
+			type: "ImportDeclaration",
+			source: {
+				value: "@duplojs/lang/array",
+			},
+			specifiers: [
+				{
+					type: "ImportNamespaceSpecifier",
+					local: {
+						type: "Identifier",
+						name: "DArray",
+					},
+				},
+			],
+		};
+
+		const listeners = DOxlint.preferNamespaceImport.create(
+			context as never,
+		);
+
+		expect(() => {
+			listeners.Program?.(
+				{
+					type: "Program",
+					body: [importNode],
+				} as never,
+			);
+		}).not.toThrow();
 	});
 });

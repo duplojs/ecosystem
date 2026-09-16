@@ -3,9 +3,11 @@ export * from "./dot-notation";
 export * from "./no-unreachable-loop";
 export * from "./prefer-destructuring";
 export * from "./prefer-namespace-import";
+export * from "./no-restricted-import";
 
 import { camelcase } from "./camelcase";
 import { dotNotation } from "./dot-notation";
+import { noRestrictedImport } from "./no-restricted-import";
 import { noUnreachableLoop } from "./no-unreachable-loop";
 import { preferDestructuring } from "./prefer-destructuring";
 import { preferNamespaceImport } from "./prefer-namespace-import";
@@ -16,4 +18,5 @@ export const pluginRules = {
 	"no-unreachable-loop": noUnreachableLoop,
 	"prefer-destructuring": preferDestructuring,
 	"prefer-namespace-import": preferNamespaceImport,
+	"no-restricted-import": noRestrictedImport,
 } as const;

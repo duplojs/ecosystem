@@ -17,6 +17,7 @@ describe("plugin/index", () => {
 		expect(Object.keys(plugin.rules).sort()).toEqual([
 			"camelcase",
 			"dot-notation",
+			"no-restricted-import",
 			"no-unreachable-loop",
 			"prefer-destructuring",
 			"prefer-namespace-import",

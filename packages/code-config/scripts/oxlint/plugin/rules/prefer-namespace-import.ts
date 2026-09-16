@@ -44,7 +44,51 @@ export const preferNamespaceImport: Rule.RuleModule = {
 		const pathEntries = Object.entries(paths);
 
 		const importCounts = new Map<string, number>();
+
+		const existingNamespaceImports = new Map<
+			string,
+			Map<
+				string,
+				{
+					variable: unknown;
+					typeOnly: boolean;
+				}
+			>
+		>();
+
 		const topLevelVariables = new Map<string, unknown[]>();
+
+		const getImportKind = (
+			value: unknown,
+		) => (
+			value as {
+				importKind?: "type" | "value";
+			}
+		).importKind;
+
+		const getReusableNamespaceImport = (
+			path: string,
+			namespace: string,
+			typeOnly: boolean,
+		) => {
+			const namespaceImport = (
+				existingNamespaceImports
+					.get(path)
+					?.get(namespace)
+			);
+
+			if (
+				!namespaceImport
+				|| (
+					namespaceImport.typeOnly
+					&& !typeOnly
+				)
+			) {
+				return undefined;
+			}
+
+			return namespaceImport;
+		};
 
 		return {
 			Program(node) {
@@ -56,13 +100,54 @@ export const preferNamespaceImport: Rule.RuleModule = {
 							path,
 							(importCounts.get(path) ?? 0) + 1,
 						);
+
+						for (const specifier of statement.specifiers) {
+							if (
+								specifier.type
+									!== "ImportNamespaceSpecifier"
+							) {
+								continue;
+							}
+
+							const [variable] = (
+								sourceCode.getDeclaredVariables(
+									specifier,
+								)
+							);
+
+							if (!variable) {
+								continue;
+							}
+
+							const namespaceImports = (
+								existingNamespaceImports.get(path)
+								?? new Map()
+							);
+
+							namespaceImports.set(
+								specifier.local.name,
+								{
+									variable,
+									typeOnly:
+										getImportKind(statement)
+											=== "type",
+								},
+							);
+
+							existingNamespaceImports.set(
+								path,
+								namespaceImports as never,
+							);
+						}
 					}
 
 					for (
-						const variable of sourceCode.getDeclaredVariables(statement)
+						const variable of sourceCode
+							.getDeclaredVariables(statement)
 					) {
 						const variables = (
-							topLevelVariables.get(variable.name) ?? []
+							topLevelVariables.get(variable.name)
+							?? []
 						);
 
 						variables.push(variable);
@@ -82,15 +167,22 @@ export const preferNamespaceImport: Rule.RuleModule = {
 					(specifier) => {
 						if (
 							specifier.type !== "ImportSpecifier"
-							|| specifier.imported.type !== "Identifier"
+							|| specifier.imported.type
+								!== "Identifier"
 						) {
 							return [];
 						}
 
 						const matches = pathEntries.filter(
 							([targetPath, namespace]) => (
-								namespace === (specifier.imported as { name: string }).name
-								&& targetPath.startsWith(`${path}/`)
+								namespace === (
+									specifier.imported as {
+										name: string;
+									}
+								).name
+								&& targetPath.startsWith(
+									`${path}/`,
+								)
 							),
 						);
 
@@ -98,13 +190,23 @@ export const preferNamespaceImport: Rule.RuleModule = {
 							return [];
 						}
 
-						const [targetPath, namespace] = matches[0]!;
+						const [
+							targetPath,
+							namespace,
+						] = matches[0]!;
+
+						const typeOnly = (
+							getImportKind(node) === "type"
+							|| getImportKind(specifier)
+								=== "type"
+						);
 
 						return [
 							{
 								specifier,
 								targetPath,
 								namespace,
+								typeOnly,
 							},
 						];
 					},
@@ -113,7 +215,9 @@ export const preferNamespaceImport: Rule.RuleModule = {
 				if (barrelSpecifiers.length) {
 					const barrelVariables = barrelSpecifiers.flatMap(
 						({ specifier }) => (
-							sourceCode.getDeclaredVariables(specifier)
+							sourceCode.getDeclaredVariables(
+								specifier,
+							)
 						),
 					);
 
@@ -121,21 +225,46 @@ export const preferNamespaceImport: Rule.RuleModule = {
 						barrelVariables,
 					);
 
-					const hasNamespaceCollision = barrelSpecifiers.some(
-						({ namespace }) => (
-							(
-								topLevelVariables.get(namespace) ?? []
-							).some(
-								(variable) => (
-									!removableVariables.has(variable)
-								),
-							)
-						),
+					const hasNamespaceCollision = (
+						barrelSpecifiers.some(
+							({
+								targetPath,
+								namespace,
+								typeOnly,
+							}) => {
+								const reusableNamespaceImport = (
+									getReusableNamespaceImport(
+										targetPath,
+										namespace,
+										typeOnly,
+									)
+								);
+
+								return (
+									topLevelVariables.get(
+										namespace,
+									) ?? []
+								).some(
+									(variable) => (
+										!removableVariables.has(
+											variable,
+										)
+										&& variable
+											!== reusableNamespaceImport
+												?.variable
+									),
+								);
+							},
+						)
 					);
 
 					const references = barrelSpecifiers.flatMap(
 						({ specifier, namespace }) => {
-							const variable = sourceCode.getDeclaredVariables(specifier)[0]!;
+							const variable = (
+								sourceCode.getDeclaredVariables(
+									specifier,
+								)[0]!
+							);
 
 							return variable.references.map(
 								(reference) => ({
@@ -188,7 +317,9 @@ export const preferNamespaceImport: Rule.RuleModule = {
 
 								const barrelSpecifierSet = new Set(
 									barrelSpecifiers.map(
-										({ specifier }) => specifier,
+										({ specifier }) => (
+											specifier
+										),
 									),
 								);
 
@@ -202,18 +333,22 @@ export const preferNamespaceImport: Rule.RuleModule = {
 									)
 								);
 
-								const tokens = sourceCode.getTokens(node);
+								const tokens = (
+									sourceCode.getTokens(node)
+								);
 
 								const openingBrace = tokens.find(
-									(token) => token.value === "{",
+									(token) => (
+										token.value === "{"
+									),
 								)!;
 
 								const closingBrace = tokens.find(
 									(token) => (
 										token.value === "}"
-											&& openingBrace
-											&& token.range[0]
-												> openingBrace.range[0]
+										&& openingBrace
+										&& token.range[0]
+											> openingBrace.range[0]
 									),
 								)!;
 
@@ -221,8 +356,12 @@ export const preferNamespaceImport: Rule.RuleModule = {
 									remainingSpecifiers.filter(
 										(specifier) => (
 											specifier.range
-											&& specifier.range[0] > openingBrace.range[0]
-											&& specifier.range[1] < closingBrace.range[1]
+											&& specifier.range[0]
+												> openingBrace
+													.range[0]
+											&& specifier.range[1]
+												< closingBrace
+													.range[1]
 										),
 									)
 								);
@@ -231,14 +370,20 @@ export const preferNamespaceImport: Rule.RuleModule = {
 									remainingSpecifiers.filter(
 										(specifier) => (
 											specifier.range
-											&& specifier.range[1] < openingBrace.range[0]
+											&& specifier.range[1]
+												< openingBrace
+													.range[0]
 										),
 									)
 								);
 
-								let remainingImport: string | null = null;
+								let remainingImport:
+									| string
+									| null = null;
 
-								if (remainingNamedSpecifiers.length) {
+								if (
+									remainingNamedSpecifiers.length
+								) {
 									const beforeNamedImports = (
 										sourceCode.text.slice(
 											node.range![0],
@@ -259,9 +404,10 @@ export const preferNamespaceImport: Rule.RuleModule = {
 										remainingNamedSpecifiers
 											.map(
 												(specifier) => (
-													sourceCode.getText(
-														specifier,
-													)
+													sourceCode
+														.getText(
+															specifier,
+														)
 												),
 											)
 											.join(", ")
@@ -275,9 +421,13 @@ export const preferNamespaceImport: Rule.RuleModule = {
 										sourceCode.text
 											.slice(
 												node.range![0],
-												openingBrace.range[0],
+												openingBrace
+													.range[0],
 											)
-											.replace(/,\s*$/, "")
+											.replace(
+												/,\s*$/,
+												"",
+											)
 									);
 
 									const afterNamedImports = (
@@ -294,44 +444,38 @@ export const preferNamespaceImport: Rule.RuleModule = {
 									}`;
 								}
 
-								const importKind = (
-									node as typeof node & {
-										importKind?: "type" | "value";
-									}
-								).importKind;
-
 								const namespaceImports = (
-									barrelSpecifiers.map(
+									barrelSpecifiers.flatMap(
 										({
-											specifier,
 											targetPath,
 											namespace,
+											typeOnly,
 										}) => {
-											const specifierImportKind = (
-												specifier as (
-														typeof specifier & {
-															importKind?:
-																| "type"
-																| "value";
-														}
+											const reusableNamespaceImport = (
+												getReusableNamespaceImport(
+													targetPath,
+													namespace,
+													typeOnly,
 												)
-											).importKind;
-
-											const typeOnly = (
-												importKind === "type"
-													|| specifierImportKind
-														=== "type"
 											);
 
-											return `import${
-												typeOnly
-													? " type"
-													: ""
-											} * as ${
-												namespace
-											} from "${
-												targetPath
-											}";`;
+											if (
+												reusableNamespaceImport
+											) {
+												return [];
+											}
+
+											return [
+												`import${
+													typeOnly
+														? " type"
+														: ""
+												} * as ${
+													namespace
+												} from "${
+													targetPath
+												}";`,
+											];
 										},
 									)
 								);
@@ -384,18 +528,19 @@ export const preferNamespaceImport: Rule.RuleModule = {
 
 									const parent = (
 										identifier as (
-												typeof identifier & {
-													parent?: {
-														type?: string;
-														shorthand?: boolean;
-													};
-												}
+											typeof identifier & {
+												parent?: {
+													type?: string;
+													shorthand?: boolean;
+												};
+											}
 										)
 									).parent;
 
 									if (
-										parent?.type === "Property"
-											&& parent.shorthand
+										parent?.type
+											=== "Property"
+										&& parent.shorthand
 									) {
 										fixes.push(
 											fixer.replaceText(
@@ -447,22 +592,44 @@ export const preferNamespaceImport: Rule.RuleModule = {
 					variables,
 				);
 
+				const importKind = getImportKind(node);
+
+				const onlyTypeImports = specifiers.every(
+					(specifier) => (
+						importKind === "type"
+						|| getImportKind(specifier) === "type"
+					),
+				);
+
+				const reusableNamespaceImport = (
+					getReusableNamespaceImport(
+						path,
+						namespace,
+						onlyTypeImports,
+					)
+				);
+
 				const hasNamespaceCollision = (
 					topLevelVariables.get(namespace) ?? []
 				).some(
 					(variable) => (
 						!removableVariables.has(variable)
+						&& variable
+							!== reusableNamespaceImport?.variable
 					),
 				);
 
 				const hasMultipleImports = (
-					importCounts.get(path)! > 1
+					!reusableNamespaceImport
+					&& importCounts.get(path)! > 1
 				);
 
 				const references = specifiers.flatMap(
 					(specifier) => {
 						const [variable] = (
-							sourceCode.getDeclaredVariables(specifier)
+							sourceCode.getDeclaredVariables(
+								specifier,
+							)
 						);
 
 						return variable
@@ -507,7 +674,9 @@ export const preferNamespaceImport: Rule.RuleModule = {
 							const fixes: Rule.Fix[] = [];
 
 							const firstSpecifier = specifiers[0]!;
-							const lastSpecifier = specifiers.at(-1)!;
+							const lastSpecifier = (
+								specifiers.at(-1)!
+							);
 
 							const openingBrace = (
 								sourceCode.getTokenBefore(
@@ -523,59 +692,99 @@ export const preferNamespaceImport: Rule.RuleModule = {
 
 							if (
 								!openingBrace
-									|| !closingBrace
-									|| openingBrace.value !== "{"
-									|| closingBrace.value !== "}"
+								|| !closingBrace
+								|| openingBrace.value !== "{"
+								|| closingBrace.value !== "}"
 							) {
 								return null;
 							}
 
-							fixes.push(
-								fixer.replaceTextRange(
-									[
-										openingBrace.range[0],
-										closingBrace.range[1],
-									],
-									`* as ${namespace}`,
-								),
-							);
+							if (reusableNamespaceImport) {
+								if (
+									node.specifiers.length
+										=== specifiers.length
+								) {
+									const lineStart = (
+										sourceCode.text.lastIndexOf(
+											"\n",
+											node.range![0] - 1,
+										) + 1
+									);
 
-							const importKind = (
-								node as typeof node & {
-									importKind?: "type" | "value";
+									const lineEndIndex = (
+										sourceCode.text.indexOf(
+											"\n",
+											node.range![1],
+										)
+									);
+
+									const lineEnd = (
+										lineEndIndex === -1
+											? node.range![1]
+											: lineEndIndex + 1
+									);
+
+									fixes.push(
+										fixer.removeRange([
+											lineStart,
+											lineEnd,
+										]),
+									);
+								} else {
+									const previousToken = (
+										sourceCode.getTokenBefore(
+											openingBrace,
+										)!
+									);
+
+									fixes.push(
+										fixer.replaceTextRange(
+											[
+												previousToken.range[0],
+												closingBrace.range[1],
+											],
+											"",
+										),
+									);
 								}
-							).importKind;
+							} else {
+								fixes.push(
+									fixer.replaceTextRange(
+										[
+											openingBrace.range[0],
+											closingBrace.range[1],
+										],
+										`* as ${namespace}`,
+									),
+								);
 
-							const allTypeOnly = (
-								importKind !== "type"
+								const allTypeOnly = (
+									importKind !== "type"
 									&& node.specifiers.length
 										=== specifiers.length
 									&& specifiers.every(
 										(specifier) => (
-											(
-												specifier as (
-													typeof specifier & {
-														importKind?:
-															| "type"
-															| "value";
-													}
-												)
-											).importKind === "type"
+											getImportKind(
+												specifier,
+											) === "type"
 										),
 									)
-							);
-
-							if (allTypeOnly) {
-								const importToken = (
-									sourceCode.getFirstToken(node)
 								);
 
-								fixes.push(
-									fixer.insertTextAfter(
-										importToken,
-										" type",
-									),
-								);
+								if (allTypeOnly) {
+									const importToken = (
+										sourceCode.getFirstToken(
+											node,
+										)
+									);
+
+									fixes.push(
+										fixer.insertTextAfter(
+											importToken,
+											" type",
+										),
+									);
+								}
 							}
 
 							for (
@@ -600,18 +809,18 @@ export const preferNamespaceImport: Rule.RuleModule = {
 
 								const parent = (
 									identifier as (
-											typeof identifier & {
-												parent?: {
-													type?: string;
-													shorthand?: boolean;
-												};
-											}
+										typeof identifier & {
+											parent?: {
+												type?: string;
+												shorthand?: boolean;
+											};
+										}
 									)
 								).parent;
 
 								if (
 									parent?.type === "Property"
-										&& parent.shorthand
+									&& parent.shorthand
 								) {
 									fixes.push(
 										fixer.replaceText(
