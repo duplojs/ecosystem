@@ -1,19 +1,19 @@
 import type * as DArray from "@duplojs/lang/array";
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import { DServerCommand } from "@scripts";
+import { DSCommand } from "@scripts";
 
 describe("createArrayOption", () => {
 	it("creates an optional array option", () => {
 		const dataStructure = DDataStructure.string();
-		const option = DServerCommand.createArrayOption("tags", dataStructure, {
+		const option = DSCommand.createArrayOption("tags", dataStructure, {
 			description: "Release tags.",
 			aliases: ["t"],
 		});
 
 		type _CheckOption = DCommon.ExpectType<
 			typeof option,
-			DServerCommand.ArrayOption<"tags", readonly string[] | undefined>,
+			DSCommand.ArrayOption<"tags", readonly string[] | undefined>,
 			"strict"
 		>;
 
@@ -24,11 +24,11 @@ describe("createArrayOption", () => {
 		expect(option.separator).toBe(",");
 		expect(option.min).toBeUndefined();
 		expect(option.max).toBeUndefined();
-		expect(DServerCommand.arrayOptionKind.has(option)).toBe(true);
+		expect(DSCommand.arrayOptionKind.has(option)).toBe(true);
 	});
 
 	it("creates a required array option with constraints and a custom separator", () => {
-		const option = DServerCommand.createArrayOption("ids", DDataStructure.number(), {
+		const option = DSCommand.createArrayOption("ids", DDataStructure.number(), {
 			required: true,
 			min: 1,
 			max: 2,
@@ -37,7 +37,7 @@ describe("createArrayOption", () => {
 
 		type _CheckOption = DCommon.ExpectType<
 			typeof option,
-			DServerCommand.ArrayOption<"ids", readonly number[] & DArray.MinElements<1> & DArray.MaxElements<2>>,
+			DSCommand.ArrayOption<"ids", readonly number[] & DArray.MinElements<1> & DArray.MaxElements<2>>,
 			"strict"
 		>;
 
@@ -50,8 +50,8 @@ describe("createArrayOption", () => {
 	});
 
 	it("returns undefined when an optional array option is missing", async() => {
-		const option = DServerCommand.createArrayOption("tags", DDataStructure.string());
-		const error = DServerCommand.createError("root");
+		const option = DSCommand.createArrayOption("tags", DDataStructure.string());
+		const error = DSCommand.createError("root");
 
 		await expect(option.execute([], error)).resolves.toEqual({
 			result: undefined,
@@ -61,12 +61,12 @@ describe("createArrayOption", () => {
 	});
 
 	it("returns a command error when a required array option is missing", async() => {
-		const option = DServerCommand.createArrayOption("tags", DDataStructure.string(), {
+		const option = DSCommand.createArrayOption("tags", DDataStructure.string(), {
 			required: true,
 		});
-		const error = DServerCommand.createError("root");
+		const error = DSCommand.createError("root");
 
-		await expect(option.execute([], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(option.execute([], error)).resolves.toBe(DSCommand.SymbolCommandError);
 		expect(error.issues).toEqual([
 			expect.objectContaining({
 				optionName: "tags",
@@ -77,10 +77,10 @@ describe("createArrayOption", () => {
 	});
 
 	it("returns a command error when an array option value is missing", async() => {
-		const option = DServerCommand.createArrayOption("tags", DDataStructure.string());
-		const error = DServerCommand.createError("root");
+		const option = DSCommand.createArrayOption("tags", DDataStructure.string());
+		const error = DSCommand.createError("root");
 
-		await expect(option.execute(["--tags"], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(option.execute(["--tags"], error)).resolves.toBe(DSCommand.SymbolCommandError);
 		expect(error.issues).toEqual([
 			expect.objectContaining({
 				optionName: "tags",
@@ -91,8 +91,8 @@ describe("createArrayOption", () => {
 	});
 
 	it("decodes an array option with the default separator", async() => {
-		const option = DServerCommand.createArrayOption("ids", DDataStructure.number());
-		const error = DServerCommand.createError("root");
+		const option = DSCommand.createArrayOption("ids", DDataStructure.number());
+		const error = DSCommand.createError("root");
 
 		await expect(option.execute(["--ids", "1,2,3", "rest"], error)).resolves.toEqual({
 			result: [1, 2, 3],
@@ -102,10 +102,10 @@ describe("createArrayOption", () => {
 	});
 
 	it("decodes an array option with a custom separator", async() => {
-		const option = DServerCommand.createArrayOption("ids", DDataStructure.number(), {
+		const option = DSCommand.createArrayOption("ids", DDataStructure.number(), {
 			separator: "|",
 		});
-		const error = DServerCommand.createError("root");
+		const error = DSCommand.createError("root");
 
 		await expect(option.execute(["--ids=1|2|3"], error)).resolves.toEqual({
 			result: [1, 2, 3],
@@ -115,10 +115,10 @@ describe("createArrayOption", () => {
 	});
 
 	it("decodes an array option alias value", async() => {
-		const option = DServerCommand.createArrayOption("tags", DDataStructure.string(), {
+		const option = DSCommand.createArrayOption("tags", DDataStructure.string(), {
 			aliases: ["t"],
 		});
-		const error = DServerCommand.createError("root");
+		const error = DSCommand.createError("root");
 
 		await expect(option.execute(["-t=alpha,beta"], error)).resolves.toEqual({
 			result: ["alpha", "beta"],
@@ -128,10 +128,10 @@ describe("createArrayOption", () => {
 	});
 
 	it("returns a command error when an array item decoding fails", async() => {
-		const option = DServerCommand.createArrayOption("ids", DDataStructure.number());
-		const error = DServerCommand.createError("root");
+		const option = DSCommand.createArrayOption("ids", DDataStructure.number());
+		const error = DSCommand.createError("root");
 
-		await expect(option.execute(["--ids", "1,bad"], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(option.execute(["--ids", "1,bad"], error)).resolves.toBe(DSCommand.SymbolCommandError);
 		expect(error.issues).toEqual([
 			expect.objectContaining({
 				optionName: "ids",
@@ -142,13 +142,13 @@ describe("createArrayOption", () => {
 	});
 
 	it("returns a command error when array constraints fail", async() => {
-		const option = DServerCommand.createArrayOption("ids", DDataStructure.number(), {
+		const option = DSCommand.createArrayOption("ids", DDataStructure.number(), {
 			min: 2,
 			max: 3,
 		});
-		const error = DServerCommand.createError("root");
+		const error = DSCommand.createError("root");
 
-		await expect(option.execute(["--ids", "1"], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(option.execute(["--ids", "1"], error)).resolves.toBe(DSCommand.SymbolCommandError);
 		expect(error.issues).toEqual([
 			expect.objectContaining({
 				optionName: "ids",

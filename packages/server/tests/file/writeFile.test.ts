@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 import { setBunMock } from "@tests/_utils/bun.mock";
@@ -17,7 +17,7 @@ describe("writeFile", () => {
 			writeFile: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DServerFile.writeFile(DCommon.infer("/tmp/mock"), data);
+		const result = await DSFile.writeFile(DCommon.infer("/tmp/mock"), data);
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.writeFile).toHaveBeenCalledWith("/tmp/mock", data);
@@ -29,7 +29,7 @@ describe("writeFile", () => {
 			writeFile: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.writeFile(DCommon.infer("/tmp/mock"), new Uint8Array([1]));
+		const result = await DSFile.writeFile(DCommon.infer("/tmp/mock"), new Uint8Array([1]));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -42,7 +42,7 @@ describe("writeFile", () => {
 		});
 
 		const data = new Uint8Array([2]);
-		const result = await DServerFile.writeFile(DCommon.infer("/tmp/mock"), data);
+		const result = await DSFile.writeFile(DCommon.infer("/tmp/mock"), data);
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(spy).toHaveBeenCalledWith("/tmp/mock", data);
@@ -54,7 +54,7 @@ describe("writeFile", () => {
 			writeFile: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.writeFile(DCommon.infer("/tmp/mock"), new Uint8Array([3]));
+		const result = await DSFile.writeFile(DCommon.infer("/tmp/mock"), new Uint8Array([3]));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -67,7 +67,7 @@ describe("writeFile", () => {
 		});
 
 		const data = new Uint8Array([4]);
-		const result = await DServerFile.writeFile(DCommon.infer("/tmp/mock"), data);
+		const result = await DSFile.writeFile(DCommon.infer("/tmp/mock"), data);
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(writeSpy).toHaveBeenCalledWith(data);
@@ -81,7 +81,7 @@ describe("writeFile", () => {
 			}),
 		});
 
-		const result = await DServerFile.writeFile(DCommon.infer("/tmp/mock"), new Uint8Array([5]));
+		const result = await DSFile.writeFile(DCommon.infer("/tmp/mock"), new Uint8Array([5]));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

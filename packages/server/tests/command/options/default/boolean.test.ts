@@ -1,28 +1,28 @@
 import type * as DCommon from "@duplojs/lang/common";
-import { DServerCommand } from "@scripts";
+import { DSCommand } from "@scripts";
 
 describe("createBooleanOption", () => {
 	it("creates a boolean option", () => {
-		const option = DServerCommand.createBooleanOption("verbose", {
+		const option = DSCommand.createBooleanOption("verbose", {
 			description: "Enable verbose logs.",
 			aliases: ["v"],
 		});
 
 		type _CheckOption = DCommon.ExpectType<
 			typeof option,
-			DServerCommand.BooleanOption<"verbose">,
+			DSCommand.BooleanOption<"verbose">,
 			"strict"
 		>;
 
 		expect(option.name).toBe("verbose");
 		expect(option.description).toBe("Enable verbose logs.");
 		expect(option.aliases).toEqual(["v"]);
-		expect(DServerCommand.booleanOptionKind.has(option)).toBe(true);
+		expect(DSCommand.booleanOptionKind.has(option)).toBe(true);
 	});
 
 	it("returns false when a boolean option is missing", async() => {
-		const option = DServerCommand.createBooleanOption("verbose");
-		const error = DServerCommand.createError("root");
+		const option = DSCommand.createBooleanOption("verbose");
+		const error = DSCommand.createError("root");
 
 		await expect(option.execute(["positional", "--other"], error)).resolves.toEqual({
 			result: false,
@@ -32,8 +32,8 @@ describe("createBooleanOption", () => {
 	});
 
 	it("returns true when a boolean option is present", async() => {
-		const option = DServerCommand.createBooleanOption("verbose");
-		const error = DServerCommand.createError("root");
+		const option = DSCommand.createBooleanOption("verbose");
+		const error = DSCommand.createError("root");
 
 		await expect(option.execute(["--verbose", "--rest"], error)).resolves.toEqual({
 			result: true,
@@ -43,10 +43,10 @@ describe("createBooleanOption", () => {
 	});
 
 	it("returns true when a boolean alias is present", async() => {
-		const option = DServerCommand.createBooleanOption("verbose", {
+		const option = DSCommand.createBooleanOption("verbose", {
 			aliases: ["v"],
 		});
-		const error = DServerCommand.createError("root");
+		const error = DSCommand.createError("root");
 
 		await expect(option.execute(["-v"], error)).resolves.toEqual({
 			result: true,
@@ -56,10 +56,10 @@ describe("createBooleanOption", () => {
 	});
 
 	it("returns a command error when a boolean option receives a value", async() => {
-		const option = DServerCommand.createBooleanOption("verbose");
-		const error = DServerCommand.createError("root");
+		const option = DSCommand.createBooleanOption("verbose");
+		const error = DSCommand.createError("root");
 
-		await expect(option.execute(["--verbose=true"], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(option.execute(["--verbose=true"], error)).resolves.toBe(DSCommand.SymbolCommandError);
 		expect(error.issues).toEqual([
 			expect.objectContaining({
 				optionName: "verbose",

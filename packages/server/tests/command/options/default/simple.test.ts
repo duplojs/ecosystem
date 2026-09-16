@@ -1,18 +1,18 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import { DServerCommand } from "@scripts";
+import { DSCommand } from "@scripts";
 
 describe("createOption", () => {
 	it("creates an optional simple option", () => {
 		const dataStructure = DDataStructure.string();
-		const option = DServerCommand.createOption("name", dataStructure, {
+		const option = DSCommand.createOption("name", dataStructure, {
 			description: "User name.",
 			aliases: ["n"],
 		});
 
 		type _CheckOption = DCommon.ExpectType<
 			typeof option,
-			DServerCommand.SimpleOption<"name", string | undefined>,
+			DSCommand.SimpleOption<"name", string | undefined>,
 			"strict"
 		>;
 
@@ -21,17 +21,17 @@ describe("createOption", () => {
 		expect(option.description).toBe("User name.");
 		expect(option.aliases).toEqual(["n"]);
 		expect(option.required).toBe(false);
-		expect(DServerCommand.simpleOptionKind.has(option)).toBe(true);
+		expect(DSCommand.simpleOptionKind.has(option)).toBe(true);
 	});
 
 	it("creates a required simple option", () => {
-		const option = DServerCommand.createOption("count", DDataStructure.number(), {
+		const option = DSCommand.createOption("count", DDataStructure.number(), {
 			required: true,
 		});
 
 		type _CheckOption = DCommon.ExpectType<
 			typeof option,
-			DServerCommand.SimpleOption<"count", number>,
+			DSCommand.SimpleOption<"count", number>,
 			"strict"
 		>;
 
@@ -41,8 +41,8 @@ describe("createOption", () => {
 	});
 
 	it("returns undefined when an optional simple option is missing", async() => {
-		const option = DServerCommand.createOption("name", DDataStructure.string());
-		const error = DServerCommand.createError("root");
+		const option = DSCommand.createOption("name", DDataStructure.string());
+		const error = DSCommand.createError("root");
 
 		await expect(option.execute([], error)).resolves.toEqual({
 			result: undefined,
@@ -52,12 +52,12 @@ describe("createOption", () => {
 	});
 
 	it("returns a command error when a required simple option is missing", async() => {
-		const option = DServerCommand.createOption("name", DDataStructure.string(), {
+		const option = DSCommand.createOption("name", DDataStructure.string(), {
 			required: true,
 		});
-		const error = DServerCommand.createError("root");
+		const error = DSCommand.createError("root");
 
-		await expect(option.execute([], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(option.execute([], error)).resolves.toBe(DSCommand.SymbolCommandError);
 		expect(error.issues).toEqual([
 			expect.objectContaining({
 				optionName: "name",
@@ -68,10 +68,10 @@ describe("createOption", () => {
 	});
 
 	it("returns a command error when a simple option value is missing", async() => {
-		const option = DServerCommand.createOption("name", DDataStructure.string());
-		const error = DServerCommand.createError("root");
+		const option = DSCommand.createOption("name", DDataStructure.string());
+		const error = DSCommand.createError("root");
 
-		await expect(option.execute(["--name"], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(option.execute(["--name"], error)).resolves.toBe(DSCommand.SymbolCommandError);
 		expect(error.issues).toEqual([
 			expect.objectContaining({
 				optionName: "name",
@@ -82,8 +82,8 @@ describe("createOption", () => {
 	});
 
 	it("decodes a simple option value", async() => {
-		const option = DServerCommand.createOption("count", DDataStructure.number());
-		const error = DServerCommand.createError("root");
+		const option = DSCommand.createOption("count", DDataStructure.number());
+		const error = DSCommand.createError("root");
 
 		await expect(option.execute(["--count", "42", "rest"], error)).resolves.toEqual({
 			result: 42,
@@ -93,10 +93,10 @@ describe("createOption", () => {
 	});
 
 	it("decodes a simple option alias value", async() => {
-		const option = DServerCommand.createOption("name", DDataStructure.string(), {
+		const option = DSCommand.createOption("name", DDataStructure.string(), {
 			aliases: ["n"],
 		});
-		const error = DServerCommand.createError("root");
+		const error = DSCommand.createError("root");
 
 		await expect(option.execute(["-n=duplo"], error)).resolves.toEqual({
 			result: "duplo",
@@ -106,10 +106,10 @@ describe("createOption", () => {
 	});
 
 	it("returns a command error when simple option decoding fails", async() => {
-		const option = DServerCommand.createOption("count", DDataStructure.number());
-		const error = DServerCommand.createError("root");
+		const option = DSCommand.createOption("count", DDataStructure.number());
+		const error = DSCommand.createError("root");
 
-		await expect(option.execute(["--count", "bad"], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(option.execute(["--count", "bad"], error)).resolves.toBe(DSCommand.SymbolCommandError);
 		expect(error.issues).toEqual([
 			expect.objectContaining({
 				optionName: "count",

@@ -3,7 +3,7 @@ import * as DEither from "@duplojs/lang/either";
 import * as DGenerator from "@duplojs/lang/generator";
 import * as DObject from "@duplojs/lang/object";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
-import * as DServerCommon from "@scripts/common";
+import * as DSCommon from "@scripts/common";
 import { createError, interpretExecOptionsError, SymbolCommandError, type Error } from "./error";
 import { logExecOptionHelp, helpOption } from "./help";
 import type { Option } from "./options";
@@ -44,7 +44,7 @@ export async function execOptions(
 	options: DCommon.AnyTuple<Option>,
 	params?: ExecOptionsParams,
 ) {
-	const processArguments = DServerCommon.getProcessArguments();
+	const processArguments = DSCommon.getProcessArguments();
 	const error = createError("root");
 	const help = await helpOption.execute(processArguments, error);
 

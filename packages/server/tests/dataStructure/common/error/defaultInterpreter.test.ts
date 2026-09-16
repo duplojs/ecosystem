@@ -1,9 +1,9 @@
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import { DServerDataStructure } from "@scripts";
+import { DSDataStructure } from "@scripts";
 
 describe("defaultInterpreter", () => {
 	it("interprets server file data structure issues", () => {
-		const dataStructureDictionary = DServerDataStructure.defaultErrorInterpreterDataStructureDictionary;
+		const dataStructureDictionary = DSDataStructure.defaultErrorInterpreterDataStructureDictionary;
 
 		expect(dataStructureDictionary["@DuplojsServerDataStructure/file-type"]()).toBe("Expected a valid file.");
 		expect(dataStructureDictionary["@DuplojsServerDataStructure/exist-constraint"]()).toBe("Expected the file to exist.");
@@ -15,7 +15,7 @@ describe("defaultInterpreter", () => {
 	});
 
 	it("interprets server file size constraints", () => {
-		const sizeInterpreter = DServerDataStructure.defaultErrorInterpreterDataStructureDictionary["@DuplojsServerDataStructure/size-constraint"];
+		const sizeInterpreter = DSDataStructure.defaultErrorInterpreterDataStructureDictionary["@DuplojsServerDataStructure/size-constraint"];
 
 		expect(sizeInterpreter({
 			definition: {
@@ -44,8 +44,8 @@ describe("defaultInterpreter", () => {
 	});
 
 	it("interprets server file json codec issues", () => {
-		const codecInterpreter = DServerDataStructure.defaultErrorInterpreterCodecDictionary.find(
-			([codec]) => codec === DServerDataStructure.codecsJson.definition.file,
+		const codecInterpreter = DSDataStructure.defaultErrorInterpreterCodecDictionary.find(
+			([codec]) => codec === DSDataStructure.codecsJson.definition.file,
 		)?.[1];
 
 		if (!codecInterpreter) {

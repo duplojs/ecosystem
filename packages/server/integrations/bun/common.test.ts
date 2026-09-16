@@ -2,7 +2,7 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
-import { DServerFile, environmentVariable, getCurrentWorkDirectory, getProcessArguments, setCurrentWorkingDirectory } from "@duplojs/server";
+import { DSFile, environmentVariable, getCurrentWorkDirectory, getProcessArguments, setCurrentWorkingDirectory } from "@duplojs/server";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 
 const initialWorkingDirectory = process.cwd();
@@ -17,13 +17,13 @@ describe("common feature on bun", () => {
 		process.chdir(initialWorkingDirectory);
 		process.env = { ...initialProcessEnv };
 		process.argv = ["bun", "integration.ts", "--runtime", "bun"];
-		await DServerFile.remove(rootPath, { recursive: true });
+		await DSFile.remove(rootPath, { recursive: true });
 	});
 
 	afterEach(async() => {
 		process.chdir(initialWorkingDirectory);
 		process.env = { ...initialProcessEnv };
-		await DServerFile.remove(rootPath, { recursive: true });
+		await DSFile.remove(rootPath, { recursive: true });
 	});
 
 	it("reads environment files with override and expansion", async() => {
@@ -116,7 +116,7 @@ describe("common feature on bun", () => {
 	});
 
 	it("reads and changes the current working directory", async() => {
-		const makeDirectoryResult = await DServerFile.ensureDirectory(rootPath);
+		const makeDirectoryResult = await DSFile.ensureDirectory(rootPath);
 		expect(DEither.isRight(makeDirectoryResult)).toBe(true);
 		expect(DEither.unwrapRight(makeDirectoryResult)).toBeUndefined();
 

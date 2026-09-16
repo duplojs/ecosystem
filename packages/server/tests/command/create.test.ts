@@ -1,6 +1,6 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import { DServerCommand, TESTImplementation, setEnvironment } from "@scripts";
+import { DSCommand, TESTImplementation, setEnvironment } from "@scripts";
 
 describe("create", () => {
 	afterEach(() => {
@@ -11,20 +11,20 @@ describe("create", () => {
 	});
 
 	it("identifies command tuples", () => {
-		const command = DServerCommand.create("child", () => undefined);
-		const argument = DServerCommand.createArgument("id", DDataStructure.string());
+		const command = DSCommand.create("child", () => undefined);
+		const argument = DSCommand.createArgument("id", DDataStructure.string());
 
-		expect(DServerCommand.isCommands([command])).toBe(true);
-		expect(DServerCommand.isCommands([argument])).toBe(false);
-		expect(DServerCommand.isCommands("command")).toBe(false);
+		expect(DSCommand.isCommands([command])).toBe(true);
+		expect(DSCommand.isCommands([argument])).toBe(false);
+		expect(DSCommand.isCommands("command")).toBe(false);
 	});
 
 	it("creates a command without params", () => {
-		const command = DServerCommand.create("root", () => undefined);
+		const command = DSCommand.create("root", () => undefined);
 
 		type _CheckCommand = DCommon.ExpectType<
 			typeof command,
-			DServerCommand.Command<"root">,
+			DSCommand.Command<"root">,
 			"strict"
 		>;
 
@@ -35,17 +35,17 @@ describe("create", () => {
 	});
 
 	it("creates a command with options and argument subjects", () => {
-		const verbose = DServerCommand.createBooleanOption("verbose", {
+		const verbose = DSCommand.createBooleanOption("verbose", {
 			description: "Enable verbose logs.",
 			aliases: ["v"],
 		});
-		const id = DServerCommand.createArgument(
+		const id = DSCommand.createArgument(
 			"id",
 			DDataStructure.number(),
 			{ description: "Resource id." },
 		);
 
-		const command = DServerCommand.create(
+		const command = DSCommand.create(
 			"read",
 			{
 				description: "Read a resource.",
@@ -64,9 +64,9 @@ describe("create", () => {
 	});
 
 	it("creates a command with sub-command subjects", () => {
-		const child = DServerCommand.create("child", () => undefined);
+		const child = DSCommand.create("child", () => undefined);
 
-		const command = DServerCommand.create(
+		const command = DSCommand.create(
 			"root",
 			{ subjects: [child] },
 			() => undefined,
@@ -81,8 +81,8 @@ describe("create", () => {
 	it("executes a command without params", async() => {
 		setEnvironment("TEST");
 		const executeSpy = vi.fn();
-		const command = DServerCommand.create("root", executeSpy);
-		const error = DServerCommand.createError("root");
+		const command = DSCommand.create("root", executeSpy);
+		const error = DSCommand.createError("root");
 
 		await expect(command.execute([], error)).resolves.toBeUndefined();
 
@@ -94,16 +94,16 @@ describe("create", () => {
 		setEnvironment("TEST");
 		const executeSpy = vi.fn();
 
-		const command = DServerCommand.create(
+		const command = DSCommand.create(
 			"root",
 			{
 				options: [
-					DServerCommand.createBooleanOption("verbose"),
-					DServerCommand.createOption("name", DDataStructure.string(), { required: true }),
+					DSCommand.createBooleanOption("verbose"),
+					DSCommand.createOption("name", DDataStructure.string(), { required: true }),
 				],
 				subjects: [
-					DServerCommand.createArgument("id", DDataStructure.number()),
-					DServerCommand.createArgument("tag", DDataStructure.string(), { optional: true }),
+					DSCommand.createArgument("id", DDataStructure.number()),
+					DSCommand.createArgument("tag", DDataStructure.string(), { optional: true }),
 				],
 			},
 			({ options, args }) => {
@@ -133,7 +133,7 @@ describe("create", () => {
 		);
 
 		await expect(
-			command.execute(["--verbose", "--name", "duplo", "42", "release"], DServerCommand.createError("root")),
+			command.execute(["--verbose", "--name", "duplo", "42", "release"], DSCommand.createError("root")),
 		).resolves.toBeUndefined();
 
 		expect(executeSpy).toHaveBeenCalledWith({
@@ -152,7 +152,7 @@ describe("create", () => {
 		setEnvironment("TEST");
 		const executeSpy = vi.fn();
 
-		const command = DServerCommand.create(
+		const command = DSCommand.create(
 			"root",
 			{},
 			(params) => {
@@ -166,7 +166,7 @@ describe("create", () => {
 			},
 		);
 
-		await expect(command.execute([], DServerCommand.createError("root"))).resolves.toBeUndefined();
+		await expect(command.execute([], DSCommand.createError("root"))).resolves.toBeUndefined();
 
 		expect(executeSpy).toHaveBeenCalledWith({
 			options: {},
@@ -177,16 +177,16 @@ describe("create", () => {
 		setEnvironment("TEST");
 		const childSpy = vi.fn();
 		const rootSpy = vi.fn();
-		const error = DServerCommand.createError("root");
+		const error = DSCommand.createError("root");
 
-		const child = DServerCommand.create(
+		const child = DSCommand.create(
 			"child",
 			{
-				subjects: [DServerCommand.createArgument("id", DDataStructure.number())],
+				subjects: [DSCommand.createArgument("id", DDataStructure.number())],
 			},
 			({ args }) => childSpy(args),
 		);
-		const root = DServerCommand.create("root", { subjects: [child] }, () => rootSpy());
+		const root = DSCommand.create("root", { subjects: [child] }, () => rootSpy());
 
 		await expect(root.execute(["child", "42"], error)).resolves.toBeUndefined();
 
@@ -198,11 +198,11 @@ describe("create", () => {
 
 	it("reports unexpected arguments when no sub-command matches", async() => {
 		setEnvironment("TEST");
-		const error = DServerCommand.createError("root");
-		const child = DServerCommand.create("child", () => undefined);
-		const root = DServerCommand.create("root", { subjects: [child] }, () => undefined);
+		const error = DSCommand.createError("root");
+		const child = DSCommand.create("child", () => undefined);
+		const root = DSCommand.create("root", { subjects: [child] }, () => undefined);
 
-		await expect(root.execute(["unknown"], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(root.execute(["unknown"], error)).resolves.toBe(DSCommand.SymbolCommandError);
 
 		expect(error.currentPath).toEqual(["root"]);
 		expect(error.issues).toEqual([
@@ -216,10 +216,10 @@ describe("create", () => {
 
 	it("reports unexpected arguments when the command has no subject", async() => {
 		setEnvironment("TEST");
-		const error = DServerCommand.createError("root");
-		const command = DServerCommand.create("root", () => undefined);
+		const error = DSCommand.createError("root");
+		const command = DSCommand.create("root", () => undefined);
 
-		await expect(command.execute(["extra", "args"], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(command.execute(["extra", "args"], error)).resolves.toBe(DSCommand.SymbolCommandError);
 
 		expect(error.issues).toEqual([
 			expect.objectContaining({
@@ -234,17 +234,17 @@ describe("create", () => {
 		const executeSpy = vi.fn();
 		const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
 
-		const command = DServerCommand.create(
+		const command = DSCommand.create(
 			"root",
 			{
 				description: "Root command.",
-				options: [DServerCommand.createBooleanOption("verbose")],
-				subjects: [DServerCommand.createArgument("name", DDataStructure.string())],
+				options: [DSCommand.createBooleanOption("verbose")],
+				subjects: [DSCommand.createArgument("name", DDataStructure.string())],
 			},
 			executeSpy,
 		);
 
-		await expect(command.execute(["-h"], DServerCommand.createError("root"))).resolves.toBeUndefined();
+		await expect(command.execute(["-h"], DSCommand.createError("root"))).resolves.toBeUndefined();
 
 		expect(executeSpy).not.toHaveBeenCalled();
 		expect(consoleLogSpy).toHaveBeenCalledTimes(1);
@@ -254,10 +254,10 @@ describe("create", () => {
 
 	it("returns a command error when the help option is malformed", async() => {
 		setEnvironment("TEST");
-		const error = DServerCommand.createError("root");
-		const command = DServerCommand.create("root", () => undefined);
+		const error = DSCommand.createError("root");
+		const command = DSCommand.create("root", () => undefined);
 
-		await expect(command.execute(["--help=true"], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(command.execute(["--help=true"], error)).resolves.toBe(DSCommand.SymbolCommandError);
 
 		expect(error.issues).toEqual([
 			expect.objectContaining({
@@ -271,16 +271,16 @@ describe("create", () => {
 	it("returns a command error when an option fails", async() => {
 		setEnvironment("TEST");
 		const executeSpy = vi.fn();
-		const error = DServerCommand.createError("root");
-		const command = DServerCommand.create(
+		const error = DSCommand.createError("root");
+		const command = DSCommand.create(
 			"root",
 			{
-				options: [DServerCommand.createOption("name", DDataStructure.string(), { required: true })],
+				options: [DSCommand.createOption("name", DDataStructure.string(), { required: true })],
 			},
 			executeSpy,
 		);
 
-		await expect(command.execute([], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(command.execute([], error)).resolves.toBe(DSCommand.SymbolCommandError);
 
 		expect(executeSpy).not.toHaveBeenCalled();
 		expect(error.issues).toEqual([
@@ -294,19 +294,19 @@ describe("create", () => {
 	it("returns a command error when the argument count mismatches", async() => {
 		setEnvironment("TEST");
 		const executeSpy = vi.fn();
-		const error = DServerCommand.createError("root");
-		const command = DServerCommand.create(
+		const error = DSCommand.createError("root");
+		const command = DSCommand.create(
 			"root",
 			{
 				subjects: [
-					DServerCommand.createArgument("first", DDataStructure.string()),
-					DServerCommand.createArgument("second", DDataStructure.string()),
+					DSCommand.createArgument("first", DDataStructure.string()),
+					DSCommand.createArgument("second", DDataStructure.string()),
 				],
 			},
 			executeSpy,
 		);
 
-		await expect(command.execute(["only-one"], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(command.execute(["only-one"], error)).resolves.toBe(DSCommand.SymbolCommandError);
 
 		expect(executeSpy).not.toHaveBeenCalled();
 		expect(error.issues).toEqual([
@@ -320,16 +320,16 @@ describe("create", () => {
 	it("returns a command error when an argument fails", async() => {
 		setEnvironment("TEST");
 		const executeSpy = vi.fn();
-		const error = DServerCommand.createError("root");
-		const command = DServerCommand.create(
+		const error = DSCommand.createError("root");
+		const command = DSCommand.create(
 			"root",
 			{
-				subjects: [DServerCommand.createArgument("id", DDataStructure.number())],
+				subjects: [DSCommand.createArgument("id", DDataStructure.number())],
 			},
 			executeSpy,
 		);
 
-		await expect(command.execute(["bad-id"], error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(command.execute(["bad-id"], error)).resolves.toBe(DSCommand.SymbolCommandError);
 
 		expect(executeSpy).not.toHaveBeenCalled();
 		expect(error.issues).toEqual([
@@ -344,21 +344,21 @@ describe("create", () => {
 	it("does not catch execution errors", async() => {
 		setEnvironment("TEST");
 		const userError = new Error("user crash");
-		const command = DServerCommand.create("root", () => {
+		const command = DSCommand.create("root", () => {
 			throw userError;
 		});
 
-		await expect(command.execute([], DServerCommand.createError("root"))).rejects.toThrow(userError);
+		await expect(command.execute([], DSCommand.createError("root"))).rejects.toThrow(userError);
 	});
 
 	it("forbids duplicate option names", () => {
-		DServerCommand.create(
+		DSCommand.create(
 			"root",
 			{
 				// @ts-expect-error duplicate option name must be rejected
 				options: [
-					DServerCommand.createOption("same", DDataStructure.string()),
-					DServerCommand.createBooleanOption("same"),
+					DSCommand.createOption("same", DDataStructure.string()),
+					DSCommand.createBooleanOption("same"),
 				],
 			},
 			() => undefined,
@@ -366,13 +366,13 @@ describe("create", () => {
 	});
 
 	it("forbids duplicate subject names", () => {
-		DServerCommand.create(
+		DSCommand.create(
 			"root",
 			{
 				// @ts-expect-error duplicate argument name must be rejected
 				subjects: [
-					DServerCommand.createArgument("id", DDataStructure.number()),
-					DServerCommand.createArgument("id", DDataStructure.string()),
+					DSCommand.createArgument("id", DDataStructure.number()),
+					DSCommand.createArgument("id", DDataStructure.string()),
 				],
 			},
 			() => undefined,
@@ -380,13 +380,13 @@ describe("create", () => {
 	});
 
 	it("forbids optional arguments before required arguments", () => {
-		DServerCommand.create(
+		DSCommand.create(
 			"root",
 			{
 				// @ts-expect-error optional argument cannot be declared before a required argument
 				subjects: [
-					DServerCommand.createArgument("maybe", DDataStructure.string(), { optional: true }),
-					DServerCommand.createArgument("required", DDataStructure.string()),
+					DSCommand.createArgument("maybe", DDataStructure.string(), { optional: true }),
+					DSCommand.createArgument("required", DDataStructure.string()),
 				],
 			},
 			() => undefined,
@@ -394,10 +394,10 @@ describe("create", () => {
 	});
 
 	it("does not expose sub-commands as execute arguments", () => {
-		DServerCommand.create(
+		DSCommand.create(
 			"root",
 			{
-				subjects: [DServerCommand.create("child", () => undefined)],
+				subjects: [DSCommand.create("child", () => undefined)],
 			},
 			(params) => {
 				type _CheckParams = DCommon.ExpectType<

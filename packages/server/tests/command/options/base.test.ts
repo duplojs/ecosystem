@@ -1,19 +1,19 @@
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
-import { DServerCommand } from "@scripts";
+import { DSCommand } from "@scripts";
 
 describe("constructOption", () => {
 	it("binds function properties to the created option", () => {
 		interface CustomOption extends DCommon.Forward<
-			& DServerCommand.Option<"target", "value">
-			& DKind.Kind<typeof DServerCommand.booleanOptionKind>
+			& DSCommand.Option<"target", "value">
+			& DKind.Kind<typeof DSCommand.booleanOptionKind>
 		> {
 			format(prefix: string): string;
 			readonly readonlyValue: string;
 		}
 
-		const createCustomOption = DServerCommand.constructOption(
-			DServerCommand.booleanOptionKind,
+		const createCustomOption = DSCommand.constructOption(
+			DSCommand.booleanOptionKind,
 			({ init }) => () => init<CustomOption>(
 				"target",
 				() => "value",
@@ -32,18 +32,18 @@ describe("constructOption", () => {
 
 		expect(option.format("option:")).toBe("option:target");
 		expect(option.readonlyValue).toBe("static");
-		expect(DServerCommand.optionKind.has(option)).toBe(true);
-		expect(DServerCommand.booleanOptionKind.has(option)).toBe(true);
+		expect(DSCommand.optionKind.has(option)).toBe(true);
+		expect(DSCommand.booleanOptionKind.has(option)).toBe(true);
 	});
 
 	it("uses default metadata when params are missing", () => {
 		interface CustomOption extends DCommon.Forward<
-			& DServerCommand.Option<"target", "value">
-			& DKind.Kind<typeof DServerCommand.booleanOptionKind>
+			& DSCommand.Option<"target", "value">
+			& DKind.Kind<typeof DSCommand.booleanOptionKind>
 		> {}
 
-		const createCustomOption = DServerCommand.constructOption(
-			DServerCommand.booleanOptionKind,
+		const createCustomOption = DSCommand.constructOption(
+			DSCommand.booleanOptionKind,
 			({ init }) => () => init<CustomOption>(
 				"target",
 				() => "value",

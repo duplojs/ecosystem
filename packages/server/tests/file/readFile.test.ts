@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
@@ -17,7 +17,7 @@ describe("readFile", () => {
 			readFile: vi.fn().mockResolvedValue(new Uint8Array([1, 2, 3])),
 		});
 
-		const result = await DServerFile.readFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.readFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		if (DEither.isRight(result)) {
@@ -31,7 +31,7 @@ describe("readFile", () => {
 			readFile: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.readFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.readFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -42,7 +42,7 @@ describe("readFile", () => {
 			readFile: vi.fn().mockResolvedValue(new Uint8Array([4, 5])),
 		});
 
-		const result = await DServerFile.readFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.readFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		if (DEither.isRight(result)) {
@@ -56,7 +56,7 @@ describe("readFile", () => {
 			readFile: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.readFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.readFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -69,7 +69,7 @@ describe("readFile", () => {
 			}),
 		});
 
-		const result = await DServerFile.readFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.readFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		if (DEither.isRight(result)) {
@@ -85,7 +85,7 @@ describe("readFile", () => {
 			}),
 		});
 
-		const result = await DServerFile.readFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.readFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

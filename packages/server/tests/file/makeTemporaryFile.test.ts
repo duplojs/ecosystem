@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 import { setOsMock } from "@tests/_utils/os.mock";
@@ -21,7 +21,7 @@ describe("makeTemporaryFile", () => {
 			}),
 		});
 
-		const result = await DServerFile.makeTemporaryFile(DCommon.infer("pre-"), DCommon.cast(".txt"));
+		const result = await DSFile.makeTemporaryFile(DCommon.infer("pre-"), DCommon.cast(".txt"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.open).toHaveBeenCalledWith("/tmp/pre-uuid.txt", "wx");
@@ -40,7 +40,7 @@ describe("makeTemporaryFile", () => {
 			}),
 		});
 
-		const result = await DServerFile.makeTemporaryFile(DCommon.infer("pre-"));
+		const result = await DSFile.makeTemporaryFile(DCommon.infer("pre-"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.open).toHaveBeenCalledWith("/tmp/pre-uuid", "wx");
@@ -57,7 +57,7 @@ describe("makeTemporaryFile", () => {
 			open: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.makeTemporaryFile(DCommon.infer("pre-"), DCommon.cast(".txt"));
+		const result = await DSFile.makeTemporaryFile(DCommon.infer("pre-"), DCommon.cast(".txt"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -67,7 +67,7 @@ describe("makeTemporaryFile", () => {
 		const makeTempFile = vi.fn().mockResolvedValue("/tmp/deno-file");
 		setDenoMock({ makeTempFile });
 
-		const result = await DServerFile.makeTemporaryFile(DCommon.infer("pre-"), DCommon.cast(".txt"));
+		const result = await DSFile.makeTemporaryFile(DCommon.infer("pre-"), DCommon.cast(".txt"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(makeTempFile).toHaveBeenCalledWith({
@@ -82,7 +82,7 @@ describe("makeTemporaryFile", () => {
 			makeTempFile: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.makeTemporaryFile(DCommon.infer("pre-"), DCommon.cast(".txt"));
+		const result = await DSFile.makeTemporaryFile(DCommon.infer("pre-"), DCommon.cast(".txt"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

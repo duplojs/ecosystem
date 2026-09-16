@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 
@@ -16,7 +16,7 @@ describe("appendFile", () => {
 			appendFile: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DServerFile.appendFile(DCommon.infer("/tmp/mock"), data);
+		const result = await DSFile.appendFile(DCommon.infer("/tmp/mock"), data);
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.appendFile).toHaveBeenCalledWith("/tmp/mock", data);
@@ -28,7 +28,7 @@ describe("appendFile", () => {
 			appendFile: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.appendFile(DCommon.infer("/tmp/mock"), new Uint8Array([2]));
+		const result = await DSFile.appendFile(DCommon.infer("/tmp/mock"), new Uint8Array([2]));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -41,7 +41,7 @@ describe("appendFile", () => {
 		});
 
 		const data = new Uint8Array([3]);
-		const result = await DServerFile.appendFile(DCommon.infer("/tmp/mock"), data);
+		const result = await DSFile.appendFile(DCommon.infer("/tmp/mock"), data);
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(spy).toHaveBeenCalledWith("/tmp/mock", data, { append: true });
@@ -53,7 +53,7 @@ describe("appendFile", () => {
 			writeFile: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.appendFile(DCommon.infer("/tmp/mock"), new Uint8Array([4]));
+		const result = await DSFile.appendFile(DCommon.infer("/tmp/mock"), new Uint8Array([4]));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

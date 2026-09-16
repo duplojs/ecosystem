@@ -1,7 +1,7 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerDataStructure, type DServerFile, environmentVariable, setEnvironment } from "@scripts";
+import { DSDataStructure, type DSFile, environmentVariable, setEnvironment } from "@scripts";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 
@@ -59,7 +59,7 @@ describe("environmentVariable", () => {
 
 		const result = await environmentVariable(
 			{
-				APP_FILE: DServerDataStructure.file(),
+				APP_FILE: DSDataStructure.file(),
 			},
 			{
 				includedEnvironmentFiles: [DCommon.infer("/tmp/app.env")],
@@ -75,7 +75,7 @@ describe("environmentVariable", () => {
 			type _CheckOut = DCommon.ExpectType<
 				typeof env,
 				{
-					readonly APP_FILE: DServerFile.FileInterface;
+					readonly APP_FILE: DSFile.FileInterface;
 				},
 				"strict"
 			>;

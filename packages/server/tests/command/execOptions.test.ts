@@ -1,7 +1,7 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
-import { DServerCommand, TESTImplementation, setEnvironment } from "@scripts";
+import { DSCommand, TESTImplementation, setEnvironment } from "@scripts";
 
 describe("execOptions", () => {
 	afterEach(() => {
@@ -16,9 +16,9 @@ describe("execOptions", () => {
 		const getProcessArgumentsSpy = vi.fn().mockReturnValue(["--verbose", "--name=duplo"]);
 		TESTImplementation.set("getProcessArguments", getProcessArgumentsSpy);
 
-		const result = await DServerCommand.execOptions([
-			DServerCommand.createBooleanOption("verbose"),
-			DServerCommand.createOption("name", DDataStructure.string()),
+		const result = await DSCommand.execOptions([
+			DSCommand.createBooleanOption("verbose"),
+			DSCommand.createOption("name", DDataStructure.string()),
 		]);
 
 		type _CheckResult = DCommon.ExpectType<
@@ -29,7 +29,7 @@ describe("execOptions", () => {
 					readonly name: string | undefined;
 				}>
 				| DEither.Right<"log-help">
-				| DEither.Error<DServerCommand.Error>
+				| DEither.Error<DSCommand.Error>
 			),
 			"strict"
 		>;
@@ -47,9 +47,9 @@ describe("execOptions", () => {
 		const getProcessArgumentsSpy = vi.fn().mockReturnValue(["remaining", "args"]);
 		TESTImplementation.set("getProcessArguments", getProcessArgumentsSpy);
 
-		const result = await DServerCommand.execOptions([
-			DServerCommand.createBooleanOption("verbose"),
-			DServerCommand.createOption("name", DDataStructure.string()),
+		const result = await DSCommand.execOptions([
+			DSCommand.createBooleanOption("verbose"),
+			DSCommand.createOption("name", DDataStructure.string()),
 		]);
 
 		expect(DEither.isRight(result)).toBe(true);
@@ -66,7 +66,7 @@ describe("execOptions", () => {
 		const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
 		TESTImplementation.set("getProcessArguments", getProcessArgumentsSpy);
 
-		const result = await DServerCommand.execOptions([DServerCommand.createBooleanOption("verbose")]);
+		const result = await DSCommand.execOptions([DSCommand.createBooleanOption("verbose")]);
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(DEither.unwrapRight(result)).toBeUndefined();
@@ -81,7 +81,7 @@ describe("execOptions", () => {
 		const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
 		TESTImplementation.set("getProcessArguments", getProcessArgumentsSpy);
 
-		const result = await DServerCommand.execOptions([DServerCommand.createBooleanOption("verbose")]);
+		const result = await DSCommand.execOptions([DSCommand.createBooleanOption("verbose")]);
 
 		if (!DEither.isLeft(result)) {
 			throw new Error("Expected execOptions to return a left.");
@@ -104,7 +104,7 @@ describe("execOptions", () => {
 		const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
 		TESTImplementation.set("getProcessArguments", getProcessArgumentsSpy);
 
-		const result = await DServerCommand.execOptions([DServerCommand.createOption("count", DDataStructure.number())]);
+		const result = await DSCommand.execOptions([DSCommand.createOption("count", DDataStructure.number())]);
 
 		if (!DEither.isLeft(result)) {
 			throw new Error("Expected execOptions to return a left.");
@@ -135,8 +135,8 @@ describe("execOptions", () => {
 		]);
 		TESTImplementation.set("getProcessArguments", getProcessArgumentsSpy);
 
-		const result = await DServerCommand.execOptions(
-			[DServerCommand.createOption("count", DDataStructure.number())],
+		const result = await DSCommand.execOptions(
+			[DSCommand.createOption("count", DDataStructure.number())],
 			{ dataStructureErrorInterpreter },
 		);
 
@@ -150,9 +150,9 @@ describe("execOptions", () => {
 
 	it("forbids duplicate option names", async() => {
 		// @ts-expect-error duplicate option name must be rejected
-		await DServerCommand.execOptions([
-			DServerCommand.createBooleanOption("same"),
-			DServerCommand.createOption("same", DDataStructure.string()),
+		await DSCommand.execOptions([
+			DSCommand.createBooleanOption("same"),
+			DSCommand.createOption("same", DDataStructure.string()),
 		]);
 	});
 });

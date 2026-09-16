@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 
@@ -15,7 +15,7 @@ describe("symlink", () => {
 			symlink: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DServerFile.symlink(DCommon.infer("/tmp/old"), DCommon.infer("/tmp/new"), { type: "file" });
+		const result = await DSFile.symlink(DCommon.infer("/tmp/old"), DCommon.infer("/tmp/new"), { type: "file" });
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.symlink).toHaveBeenCalledWith("/tmp/old", "/tmp/new", "file");
@@ -27,7 +27,7 @@ describe("symlink", () => {
 			symlink: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.symlink(DCommon.infer("/tmp/old"), DCommon.infer("/tmp/new"));
+		const result = await DSFile.symlink(DCommon.infer("/tmp/old"), DCommon.infer("/tmp/new"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -37,7 +37,7 @@ describe("symlink", () => {
 		const symlink = vi.fn().mockResolvedValue(undefined);
 		setDenoMock({ symlink });
 
-		const result = await DServerFile.symlink(DCommon.infer("/tmp/old"), DCommon.infer("/tmp/new"), { type: "dir" });
+		const result = await DSFile.symlink(DCommon.infer("/tmp/old"), DCommon.infer("/tmp/new"), { type: "dir" });
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(symlink).toHaveBeenCalledWith("/tmp/old", "/tmp/new", { type: "dir" });
@@ -49,7 +49,7 @@ describe("symlink", () => {
 			symlink: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.symlink(DCommon.infer("/tmp/old"), DCommon.infer("/tmp/new"));
+		const result = await DSFile.symlink(DCommon.infer("/tmp/old"), DCommon.infer("/tmp/new"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

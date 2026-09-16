@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
@@ -17,7 +17,7 @@ describe("ensureFile", () => {
 			open: vi.fn().mockResolvedValue({ close }),
 		});
 
-		const result = await DServerFile.ensureFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.ensureFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.open).toHaveBeenCalledWith("/tmp/mock", "a");
@@ -30,7 +30,7 @@ describe("ensureFile", () => {
 			open: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.ensureFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.ensureFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -41,7 +41,7 @@ describe("ensureFile", () => {
 		const open = vi.fn().mockResolvedValue({ close });
 		setDenoMock({ open });
 
-		const result = await DServerFile.ensureFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.ensureFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(open).toHaveBeenCalledWith("/tmp/mock", {
@@ -58,7 +58,7 @@ describe("ensureFile", () => {
 			open: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.ensureFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.ensureFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

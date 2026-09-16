@@ -1,7 +1,7 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
-import { DServerCommand, TESTImplementation, setEnvironment } from "@scripts";
+import { DSCommand, TESTImplementation, setEnvironment } from "@scripts";
 
 describe("exec", () => {
 	afterEach(() => {
@@ -17,11 +17,11 @@ describe("exec", () => {
 		const executeSpy = vi.fn();
 		TESTImplementation.set("getProcessArguments", getProcessArgumentsSpy);
 
-		const result = await DServerCommand.exec(executeSpy);
+		const result = await DSCommand.exec(executeSpy);
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			DEither.Error<DServerCommand.Error> | DEither.Ok,
+			DEither.Error<DSCommand.Error> | DEither.Ok,
 			"strict"
 		>;
 
@@ -39,11 +39,11 @@ describe("exec", () => {
 		const executeSpy = vi.fn();
 		TESTImplementation.set("getProcessArguments", getProcessArgumentsSpy);
 
-		const result = await DServerCommand.exec(
+		const result = await DSCommand.exec(
 			{
 				displayName: "read",
-				options: [DServerCommand.createBooleanOption("verbose")],
-				subjects: [DServerCommand.createArgument("name", DDataStructure.string())],
+				options: [DSCommand.createBooleanOption("verbose")],
+				subjects: [DSCommand.createArgument("name", DDataStructure.string())],
 			},
 			(params) => {
 				type _CheckOptions = DCommon.ExpectType<
@@ -75,10 +75,10 @@ describe("exec", () => {
 		const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
 		TESTImplementation.set("getProcessArguments", getProcessArgumentsSpy);
 
-		const result = await DServerCommand.exec(
+		const result = await DSCommand.exec(
 			{
 				displayName: "read",
-				subjects: [DServerCommand.createArgument("id", DDataStructure.number())],
+				subjects: [DSCommand.createArgument("id", DDataStructure.number())],
 			},
 			() => undefined,
 		);
@@ -115,10 +115,10 @@ describe("exec", () => {
 		]);
 		TESTImplementation.set("getProcessArguments", getProcessArgumentsSpy);
 
-		const result = await DServerCommand.exec(
+		const result = await DSCommand.exec(
 			{
 				dataStructureErrorInterpreter,
-				subjects: [DServerCommand.createArgument("id", DDataStructure.number())],
+				subjects: [DSCommand.createArgument("id", DDataStructure.number())],
 			},
 			() => undefined,
 		);

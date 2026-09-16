@@ -1,7 +1,7 @@
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import type * as DServerFile from "@scripts/file";
+import type * as DSFile from "@scripts/file";
 import * as FundamentalType from "../fundamentalType";
 import { createKind } from "../kind";
 
@@ -12,7 +12,7 @@ export interface TimeTypeDefinition extends DDataStructure.TypeDefinition {}
 export interface FileType extends DCommon.UnionToIntersection<
 	& DDataStructure.Type<
 		FundamentalType.TheFile,
-		DServerFile.FileInterface,
+		DSFile.FileInterface,
 		TimeTypeDefinition
 	>
 	& DKind.Kind<typeof fileTypeKind>

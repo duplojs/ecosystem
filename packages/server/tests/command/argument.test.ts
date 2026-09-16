@@ -1,7 +1,7 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
-import { DServerCommand, DServerDataStructure, TESTImplementation, setEnvironment } from "@scripts";
+import { DSCommand, DSDataStructure, TESTImplementation, setEnvironment } from "@scripts";
 
 describe("createArgument", () => {
 	afterEach(() => {
@@ -13,11 +13,11 @@ describe("createArgument", () => {
 
 	it("creates a required argument", () => {
 		const dataStructure = DDataStructure.number();
-		const argument = DServerCommand.createArgument("id", dataStructure);
+		const argument = DSCommand.createArgument("id", dataStructure);
 
 		type _CheckArgument = DCommon.ExpectType<
 			typeof argument,
-			DServerCommand.Argument<"id", number>,
+			DSCommand.Argument<"id", number>,
 			"strict"
 		>;
 
@@ -25,11 +25,11 @@ describe("createArgument", () => {
 		expect(argument.dataStructure).toBe(dataStructure);
 		expect(argument.description).toBeNull();
 		expect(argument.optional).toBe(false);
-		expect(DServerCommand.argumentKind.has(argument)).toBe(true);
+		expect(DSCommand.argumentKind.has(argument)).toBe(true);
 	});
 
 	it("creates an optional argument with a description", () => {
-		const argument = DServerCommand.createArgument(
+		const argument = DSCommand.createArgument(
 			"tag",
 			DDataStructure.string(),
 			{
@@ -40,7 +40,7 @@ describe("createArgument", () => {
 
 		type _CheckArgument = DCommon.ExpectType<
 			typeof argument,
-			DServerCommand.Argument<"tag", string | undefined>,
+			DSCommand.Argument<"tag", string | undefined>,
 			"strict"
 		>;
 
@@ -49,10 +49,10 @@ describe("createArgument", () => {
 	});
 
 	it("returns a command error when a required argument is missing", async() => {
-		const argument = DServerCommand.createArgument("id", DDataStructure.number());
-		const error = DServerCommand.createError("root");
+		const argument = DSCommand.createArgument("id", DDataStructure.number());
+		const error = DSCommand.createError("root");
 
-		await expect(argument.execute(undefined, error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(argument.execute(undefined, error)).resolves.toBe(DSCommand.SymbolCommandError);
 
 		expect(error.issues).toEqual([
 			expect.objectContaining({
@@ -64,8 +64,8 @@ describe("createArgument", () => {
 	});
 
 	it("returns undefined when an optional argument is missing", async() => {
-		const argument = DServerCommand.createArgument("tag", DDataStructure.string(), { optional: true });
-		const error = DServerCommand.createError("root");
+		const argument = DSCommand.createArgument("tag", DDataStructure.string(), { optional: true });
+		const error = DSCommand.createError("root");
 
 		await expect(argument.execute(undefined, error)).resolves.toBeUndefined();
 
@@ -73,8 +73,8 @@ describe("createArgument", () => {
 	});
 
 	it("decodes an argument", async() => {
-		const argument = DServerCommand.createArgument("id", DDataStructure.number());
-		const error = DServerCommand.createError("root");
+		const argument = DSCommand.createArgument("id", DDataStructure.number());
+		const error = DSCommand.createError("root");
 
 		await expect(argument.execute("42", error)).resolves.toBe(42);
 
@@ -82,10 +82,10 @@ describe("createArgument", () => {
 	});
 
 	it("returns a command error when decoding fails", async() => {
-		const argument = DServerCommand.createArgument("id", DDataStructure.number());
-		const error = DServerCommand.createError("root");
+		const argument = DSCommand.createArgument("id", DDataStructure.number());
+		const error = DSCommand.createError("root");
 
-		await expect(argument.execute("bad-id", error)).resolves.toBe(DServerCommand.SymbolCommandError);
+		await expect(argument.execute("bad-id", error)).resolves.toBe(DSCommand.SymbolCommandError);
 
 		expect(error.issues).toEqual([
 			expect.objectContaining({
@@ -106,11 +106,11 @@ describe("createArgument", () => {
 			} as never)),
 		);
 
-		const argument = DServerCommand.createArgument(
+		const argument = DSCommand.createArgument(
 			"file",
-			DServerDataStructure.file().addConstraint(DServerDataStructure.exist()),
+			DSDataStructure.file().addConstraint(DSDataStructure.exist()),
 		);
-		const error = DServerCommand.createError("root");
+		const error = DSCommand.createError("root");
 
 		await expect(argument.execute("/tmp/demo.txt", error)).resolves.toMatchObject({
 			path: "/tmp/demo.txt",

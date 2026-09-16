@@ -9,6 +9,10 @@
 			"path": "../packages/server"
 		},
 		{
+			"name": "@duplojs/http",
+			"path": "../packages/http"
+		},
+		{
 			"name": "@duplojs/form",
 			"path": "../packages/form"
 		},

@@ -1,10 +1,10 @@
 import * as DCommon from "@duplojs/lang/common";
-import { DServerDataStructure, DServerFile } from "@scripts";
+import { DSDataStructure, DSFile } from "@scripts";
 
 describe("file default codecs", () => {
 	it("encodes and decodes files with the string codec", () => {
-		const fileCodec = DServerDataStructure.codecsString.definition.file;
-		const file = DServerFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
+		const fileCodec = DSDataStructure.codecsString.definition.file;
+		const file = DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
 
 		expect(fileCodec.predicateEncode("/tmp/avatar.png")).toBe(true);
 		expect(fileCodec.predicateEncode(42)).toBe(false);
@@ -15,8 +15,8 @@ describe("file default codecs", () => {
 	});
 
 	it("encodes and decodes files with the json codec", () => {
-		const fileCodec = DServerDataStructure.codecsJson.definition.file;
-		const file = DServerFile.createFileInterface(DCommon.infer("/tmp/config.json"));
+		const fileCodec = DSDataStructure.codecsJson.definition.file;
+		const file = DSFile.createFileInterface(DCommon.infer("/tmp/config.json"));
 
 		expect(fileCodec.predicateEncode("/tmp/config.json")).toBe(true);
 		expect(fileCodec.predicateEncode(42)).toBe(false);

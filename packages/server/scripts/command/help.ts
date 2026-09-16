@@ -5,7 +5,7 @@ import * as DString from "@duplojs/lang/string";
 import * as DPrinter from "@duplojs/lang/printer";
 import * as DPattern from "@duplojs/lang/pattern";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import * as DServerDataStructure from "@scripts/dataStructure";
+import * as DSDataStructure from "@scripts/dataStructure";
 import type { Command } from "./create";
 import type { Argument } from "./argument";
 import { arrayOptionKind, booleanOptionKind, createBooleanOption, simpleOptionKind, type Options } from "./options";
@@ -110,7 +110,7 @@ function renderType(
 			DCommon.justReturn([typeLabel("time")]),
 		)
 		.when(
-			DDataStructure.typeIdentifier(DServerDataStructure.fileTypeKind),
+			DDataStructure.typeIdentifier(DSDataStructure.fileTypeKind),
 			DCommon.justReturn([typeLabel("file")]),
 		)
 		.otherwise(
@@ -294,7 +294,7 @@ function renderSimpleConstraint(
 			DCommon.justReturn([constraintLabel("path segment")]),
 		)
 		.when(
-			DDataStructure.constraintIdentifier(DServerDataStructure.existConstraintKind),
+			DDataStructure.constraintIdentifier(DSDataStructure.existConstraintKind),
 			DCommon.justReturn([constraintLabel("exists")]),
 		)
 		.when(
@@ -322,11 +322,11 @@ function renderSimpleConstraint(
 			({ definition }) => [constraintLabel("pattern "), literal(definition.regex.toString())],
 		)
 		.when(
-			DDataStructure.constraintIdentifier(DServerDataStructure.mimeTypeConstraintKind),
+			DDataStructure.constraintIdentifier(DSDataStructure.mimeTypeConstraintKind),
 			({ definition }) => [constraintLabel("mime "), literal(definition.regex.toString())],
 		)
 		.when(
-			DDataStructure.constraintIdentifier(DServerDataStructure.sizeConstraintKind),
+			DDataStructure.constraintIdentifier(DSDataStructure.sizeConstraintKind),
 			(constraint) => {
 				const { min, max } = constraint.definition;
 

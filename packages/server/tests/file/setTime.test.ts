@@ -1,7 +1,7 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DChrono from "@duplojs/lang/chrono";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 
@@ -18,7 +18,7 @@ describe("setTime", () => {
 		const accessTime = DChrono.createDate("2020-01-01");
 		const modifiedTime = DChrono.createDate("2020-01-02");
 
-		const result = await DServerFile.setTime(DCommon.infer("/tmp/mock"), {
+		const result = await DSFile.setTime(DCommon.infer("/tmp/mock"), {
 			accessTime,
 			modifiedTime,
 		});
@@ -39,7 +39,7 @@ describe("setTime", () => {
 		const accessTime = DChrono.now();
 		const modifiedTime = DChrono.now();
 
-		const result = await DServerFile.setTime(DCommon.infer("/tmp/mock"), {
+		const result = await DSFile.setTime(DCommon.infer("/tmp/mock"), {
 			accessTime,
 			modifiedTime,
 		});
@@ -54,7 +54,7 @@ describe("setTime", () => {
 		const accessTime = DChrono.createDateOrThrow(1704067200000);
 		const modifiedTime = DChrono.createDateOrThrow(1704153600000);
 
-		const result = await DServerFile.setTime(DCommon.infer("/tmp/mock"), {
+		const result = await DSFile.setTime(DCommon.infer("/tmp/mock"), {
 			accessTime,
 			modifiedTime,
 		});
@@ -75,7 +75,7 @@ describe("setTime", () => {
 		const accessTime = DChrono.now();
 		const modifiedTime = DChrono.now();
 
-		const result = await DServerFile.setTime(DCommon.infer("/tmp/mock"), {
+		const result = await DSFile.setTime(DCommon.infer("/tmp/mock"), {
 			accessTime,
 			modifiedTime,
 		});

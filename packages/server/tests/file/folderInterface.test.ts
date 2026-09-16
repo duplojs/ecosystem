@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 
 function createNodeStatsMock() {
@@ -36,28 +36,28 @@ describe("folderInterface", () => {
 	});
 
 	it("detects folder interface with predicate", () => {
-		const folder = DServerFile.createFolderInterface(DCommon.infer("/tmp/demo"));
-		const file = DServerFile.createFileInterface(DCommon.infer("/tmp/example.json"));
-		const unknown = DServerFile.createUnknownInterface(DCommon.infer("/tmp/entry"));
+		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
+		const file = DSFile.createFileInterface(DCommon.infer("/tmp/example.json"));
+		const unknown = DSFile.createUnknownInterface(DCommon.infer("/tmp/entry"));
 
 		const unknownValue: unknown = undefined;
 
-		if (DServerFile.isFolderInterface(unknownValue)) {
+		if (DSFile.isFolderInterface(unknownValue)) {
 			type check = DCommon.ExpectType<
 				typeof unknownValue,
-				DServerFile.FolderInterface,
+				DSFile.FolderInterface,
 				"strict"
 			>;
 		}
 
-		expect(DServerFile.isFolderInterface(folder)).toBe(true);
-		expect(DServerFile.isFolderInterface(file)).toBe(false);
-		expect(DServerFile.isFolderInterface(unknown)).toBe(false);
-		expect(DServerFile.isFolderInterface({})).toBe(false);
+		expect(DSFile.isFolderInterface(folder)).toBe(true);
+		expect(DSFile.isFolderInterface(file)).toBe(false);
+		expect(DSFile.isFolderInterface(unknown)).toBe(false);
+		expect(DSFile.isFolderInterface({})).toBe(false);
 	});
 
 	it("creates interface with name and parent path", () => {
-		const folder = DServerFile.createFolderInterface(DCommon.infer("/tmp/demo"));
+		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
 
 		expect(folder.getName()).toBe("demo");
 		expect(folder.path).toBe("/tmp/demo");
@@ -65,7 +65,7 @@ describe("folderInterface", () => {
 	});
 
 	it("returns current directory as parent path when no separator is present", () => {
-		const folder = DServerFile.createFolderInterface(DCommon.infer("folder"));
+		const folder = DSFile.createFolderInterface(DCommon.infer("folder"));
 
 		expect(folder.getName()).toBe("folder");
 		expect(folder.getParentPath()).toBe(".");
@@ -76,7 +76,7 @@ describe("folderInterface", () => {
 		const fs = setFsPromisesMock({
 			rename: vi.fn().mockResolvedValue(undefined),
 		});
-		const folder = DServerFile.createFolderInterface(DCommon.infer("/tmp/demo"));
+		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
 
 		const result = await folder.rename(DCommon.infer("next"));
 
@@ -92,7 +92,7 @@ describe("folderInterface", () => {
 		const fs = setFsPromisesMock({
 			rename: vi.fn().mockResolvedValue(undefined),
 		});
-		const folder = DServerFile.createFolderInterface(DCommon.infer("/tmp/demo"));
+		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
 
 		const result = await folder.relocate(DCommon.infer("/new/parent"));
 
@@ -108,7 +108,7 @@ describe("folderInterface", () => {
 		const fs = setFsPromisesMock({
 			rename: vi.fn().mockResolvedValue(undefined),
 		});
-		const folder = DServerFile.createFolderInterface(DCommon.infer("/tmp/demo"));
+		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
 
 		const result = await folder.move(DCommon.infer("/new/path/demo"));
 
@@ -124,7 +124,7 @@ describe("folderInterface", () => {
 		const fs = setFsPromisesMock({
 			access: vi.fn().mockResolvedValue(undefined),
 		});
-		const folder = DServerFile.createFolderInterface(DCommon.infer("/tmp/demo"));
+		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
 
 		const result = await folder.exists();
 
@@ -137,7 +137,7 @@ describe("folderInterface", () => {
 		const fs = setFsPromisesMock({
 			rm: vi.fn().mockResolvedValue(undefined),
 		});
-		const folder = DServerFile.createFolderInterface(DCommon.infer("/tmp/demo"));
+		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
 
 		const result = await folder.remove();
 
@@ -153,7 +153,7 @@ describe("folderInterface", () => {
 		const fs = setFsPromisesMock({
 			readdir: vi.fn().mockResolvedValue(["a", "b"]),
 		});
-		const folder = DServerFile.createFolderInterface(DCommon.infer("/tmp/demo"));
+		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
 
 		const result = await folder.getChildren();
 
@@ -169,7 +169,7 @@ describe("folderInterface", () => {
 		const fs = setFsPromisesMock({
 			stat: vi.fn().mockResolvedValue(createNodeStatsMock()),
 		});
-		const folder = DServerFile.createFolderInterface(DCommon.infer("/tmp/demo"));
+		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
 
 		const result = await folder.stat();
 
@@ -192,7 +192,7 @@ describe("folderInterface", () => {
 				},
 			]),
 		});
-		const folder = DServerFile.createFolderInterface(DCommon.infer("/tmp/demo"));
+		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
 
 		const result = await folder.walk();
 

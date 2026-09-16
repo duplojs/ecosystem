@@ -2,7 +2,7 @@ import type * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
 import * as DEither from "@duplojs/lang/either";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
-import * as DServerDataStructure from "@scripts/dataStructure";
+import * as DSDataStructure from "@scripts/dataStructure";
 import { createKind } from "./kind";
 import { type Error, type SymbolCommandError } from "./error";
 import { type EligibleType } from "./types";
@@ -74,7 +74,7 @@ export function createArgument(
 			}
 
 			const result = await self.dataStructure.asyncDecode(
-				DServerDataStructure.codecsString,
+				DSDataStructure.codecsString,
 				argument,
 			);
 

@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 
@@ -15,7 +15,7 @@ describe("relocate", () => {
 			rename: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DServerFile.relocate(DCommon.infer("/tmp/file.txt"), DCommon.infer("/new/parent"));
+		const result = await DSFile.relocate(DCommon.infer("/tmp/file.txt"), DCommon.infer("/new/parent"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.rename).toHaveBeenCalledWith("/tmp/file.txt", "/new/parent/file.txt");
@@ -31,7 +31,7 @@ describe("relocate", () => {
 			rename: vi.fn().mockRejectedValue(error),
 		});
 
-		const result = await DServerFile.relocate(DCommon.infer("/tmp/file.txt"), DCommon.infer("/new/parent"));
+		const result = await DSFile.relocate(DCommon.infer("/tmp/file.txt"), DCommon.infer("/new/parent"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 		if (DEither.isLeft(result)) {
@@ -45,7 +45,7 @@ describe("relocate", () => {
 			rename: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DServerFile.relocate(DCommon.infer("/"), DCommon.infer("/new/parent"));
+		const result = await DSFile.relocate(DCommon.infer("/"), DCommon.infer("/new/parent"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 		expect(fs.rename).not.toHaveBeenCalled();
@@ -59,7 +59,7 @@ describe("relocate", () => {
 		const rename = vi.fn().mockResolvedValue(undefined);
 		setDenoMock({ rename });
 
-		const result = await DServerFile.relocate(DCommon.infer("/tmp/file.txt"), DCommon.infer("/new/parent"));
+		const result = await DSFile.relocate(DCommon.infer("/tmp/file.txt"), DCommon.infer("/new/parent"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(rename).toHaveBeenCalledWith("/tmp/file.txt", "/new/parent/file.txt");
@@ -74,7 +74,7 @@ describe("relocate", () => {
 			rename: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.relocate(DCommon.infer("/tmp/file.txt"), DCommon.infer("/new/parent"));
+		const result = await DSFile.relocate(DCommon.infer("/tmp/file.txt"), DCommon.infer("/new/parent"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -84,7 +84,7 @@ describe("relocate", () => {
 		const rename = vi.fn().mockResolvedValue(undefined);
 		setDenoMock({ rename });
 
-		const result = await DServerFile.relocate(DCommon.infer("/"), DCommon.infer("/new/parent"));
+		const result = await DSFile.relocate(DCommon.infer("/"), DCommon.infer("/new/parent"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 		expect(rename).not.toHaveBeenCalled();

@@ -3,7 +3,7 @@ import type * as DPath from "@duplojs/lang/path";
 import * as DGenerator from "@duplojs/lang/generator";
 import * as DString from "@duplojs/lang/string";
 import * as DEither from "@duplojs/lang/either";
-import * as DServerFile from "@scripts/file";
+import * as DSFile from "@scripts/file";
 
 const lineRegex = /^(?:export\s+)?(?<key>[A-Z_][A-Z0-9_]*)=(?<value>'(?:\\'|[^'])*'|"(?:\\"|[^"])*"|`(?:\\`|[^`])*`|[^\s#\r\n][^#\r\n]*|)\s*(?:#.*)?$/mg;
 const endLineBreakerRegex = /\r\n?/mg;
@@ -55,7 +55,7 @@ export function parseEnvironmentFiles(
 	return DGenerator.asyncReduce(
 		paths,
 		DGenerator.reduceFrom<Record<string, string>[]>([baseEnv]),
-		({ lastValue, item, nextPush, exit }) => DServerFile
+		({ lastValue, item, nextPush, exit }) => DSFile
 			.readTextFile(item)
 			.then(
 				DCommon.innerPipe(

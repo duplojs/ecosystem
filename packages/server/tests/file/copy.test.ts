@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 
 describe("copy", () => {
@@ -14,7 +14,7 @@ describe("copy", () => {
 			cp: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DServerFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
+		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.cp).toHaveBeenCalledWith("/tmp/from", "/tmp/to", { recursive: true });
@@ -26,7 +26,7 @@ describe("copy", () => {
 			cp: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
+		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

@@ -1,11 +1,11 @@
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import { DServerCommand, DServerDataStructure } from "@scripts";
+import { DSCommand, DSDataStructure } from "@scripts";
 
 describe("help", () => {
 	it("renders command help without subject or options", () => {
-		const command = DServerCommand.create("root", () => undefined);
+		const command = DSCommand.create("root", () => undefined);
 
-		const help = DServerCommand.renderCommandHelp(command, 0).join("\n");
+		const help = DSCommand.renderCommandHelp(command, 0).join("\n");
 
 		expect(help).toContain("COMMAND");
 		expect(help).toContain("root");
@@ -13,15 +13,15 @@ describe("help", () => {
 	});
 
 	it("renders command help with arguments", () => {
-		const command = DServerCommand.create(
+		const command = DSCommand.create(
 			"root",
 			{
 				description: "Root command.",
 				subjects: [
-					DServerCommand.createArgument("required", DDataStructure.string(), {
+					DSCommand.createArgument("required", DDataStructure.string(), {
 						description: "Required argument.",
 					}),
-					DServerCommand.createArgument("optional", DDataStructure.number(), {
+					DSCommand.createArgument("optional", DDataStructure.number(), {
 						description: "Optional argument.",
 						optional: true,
 					}),
@@ -30,7 +30,7 @@ describe("help", () => {
 			() => undefined,
 		);
 
-		const help = DServerCommand.renderCommandHelp(command, 0).join("\n");
+		const help = DSCommand.renderCommandHelp(command, 0).join("\n");
 
 		expect(help).toContain("Root command.");
 		expect(help).toContain("ARGUMENTS");
@@ -41,19 +41,19 @@ describe("help", () => {
 	});
 
 	it("renders command help with sub-commands", () => {
-		const childWithDescription = DServerCommand.create(
+		const childWithDescription = DSCommand.create(
 			"serve",
 			{ description: "Start server." },
 			() => undefined,
 		);
-		const childWithoutDescription = DServerCommand.create("build", () => undefined);
-		const command = DServerCommand.create(
+		const childWithoutDescription = DSCommand.create("build", () => undefined);
+		const command = DSCommand.create(
 			"root",
 			{ subjects: [childWithDescription, childWithoutDescription] },
 			() => undefined,
 		);
 
-		const help = DServerCommand.renderCommandHelp(command, 0).join("\n");
+		const help = DSCommand.renderCommandHelp(command, 0).join("\n");
 
 		expect(help).toContain("COMMANDS");
 		expect(help).toContain("serve");
@@ -63,20 +63,20 @@ describe("help", () => {
 	});
 
 	it("renders options help for default option kinds", () => {
-		const help = DServerCommand.renderOptionsHelp(
+		const help = DSCommand.renderOptionsHelp(
 			[
-				DServerCommand.createOption("name", DDataStructure.string(), {
+				DSCommand.createOption("name", DDataStructure.string(), {
 					description: "User name.",
 					aliases: ["n"],
 					required: true,
 				}),
-				DServerCommand.createArrayOption("ids", DDataStructure.number(), {
+				DSCommand.createArrayOption("ids", DDataStructure.number(), {
 					description: "Resource ids.",
 					aliases: ["i"],
 					min: 1,
 					max: 3,
 				}),
-				DServerCommand.createBooleanOption("verbose", {
+				DSCommand.createBooleanOption("verbose", {
 					description: "Enable verbose logs.",
 					aliases: ["v"],
 				}),
@@ -99,7 +99,7 @@ describe("help", () => {
 	});
 
 	it("renders fallback option details for unknown option kinds", () => {
-		const help = DServerCommand.renderOptionsHelp(
+		const help = DSCommand.renderOptionsHelp(
 			[
 				{
 					name: "custom",
@@ -115,21 +115,21 @@ describe("help", () => {
 	});
 
 	it("renders supported data structure types", () => {
-		const help = DServerCommand.renderArgumentsHelp(
+		const help = DSCommand.renderArgumentsHelp(
 			[
-				DServerCommand.createArgument("string", DDataStructure.string()),
-				DServerCommand.createArgument("number", DDataStructure.number()),
-				DServerCommand.createArgument("bigint", DDataStructure.bigint()),
-				DServerCommand.createArgument("boolean", DDataStructure.boolean()),
-				DServerCommand.createArgument("date", DDataStructure.date()),
-				DServerCommand.createArgument("time", DDataStructure.time()),
-				DServerCommand.createArgument("file", DServerDataStructure.file()),
-				DServerCommand.createArgument("stringLiteral", DDataStructure.literal("value")),
-				DServerCommand.createArgument("numberLiteral", DDataStructure.literal(42)),
-				DServerCommand.createArgument("bigintLiteral", DDataStructure.literal(42n)),
-				DServerCommand.createArgument("booleanLiteral", DDataStructure.literal(true)),
-				DServerCommand.createArgument("nullLiteral", DDataStructure.literal(null)),
-				DServerCommand.createArgument("undefinedLiteral", DDataStructure.literal(undefined)),
+				DSCommand.createArgument("string", DDataStructure.string()),
+				DSCommand.createArgument("number", DDataStructure.number()),
+				DSCommand.createArgument("bigint", DDataStructure.bigint()),
+				DSCommand.createArgument("boolean", DDataStructure.boolean()),
+				DSCommand.createArgument("date", DDataStructure.date()),
+				DSCommand.createArgument("time", DDataStructure.time()),
+				DSCommand.createArgument("file", DSDataStructure.file()),
+				DSCommand.createArgument("stringLiteral", DDataStructure.literal("value")),
+				DSCommand.createArgument("numberLiteral", DDataStructure.literal(42)),
+				DSCommand.createArgument("bigintLiteral", DDataStructure.literal(42n)),
+				DSCommand.createArgument("booleanLiteral", DDataStructure.literal(true)),
+				DSCommand.createArgument("nullLiteral", DDataStructure.literal(null)),
+				DSCommand.createArgument("undefinedLiteral", DDataStructure.literal(undefined)),
 			],
 			0,
 		);
@@ -150,21 +150,21 @@ describe("help", () => {
 	});
 
 	it("renders string, array and number constraints", () => {
-		const help = DServerCommand.renderArgumentsHelp(
+		const help = DSCommand.renderArgumentsHelp(
 			[
-				DServerCommand.createArgument("lengthEqual", DDataStructure.string([DDataStructure.stringLengthEqual(3)])),
-				DServerCommand.createArgument("lengthRange", DDataStructure.string([DDataStructure.minCharacters(2), DDataStructure.maxCharacters(4)])),
-				DServerCommand.createArgument("minLength", DDataStructure.string([DDataStructure.minCharacters(2)])),
-				DServerCommand.createArgument("maxLength", DDataStructure.string([DDataStructure.maxCharacters(4)])),
-				DServerCommand.createArgument("arrayEqual", DDataStructure.array(DDataStructure.string(), [DDataStructure.arrayLengthEqual(2)]) as never),
-				DServerCommand.createArgument("arrayRange", DDataStructure.array(DDataStructure.string(), [DDataStructure.minElements(1), DDataStructure.maxElements(3)]) as never),
-				DServerCommand.createArgument("arrayMin", DDataStructure.array(DDataStructure.string(), [DDataStructure.minElements(1)]) as never),
-				DServerCommand.createArgument("arrayMax", DDataStructure.array(DDataStructure.string(), [DDataStructure.maxElements(3)]) as never),
-				DServerCommand.createArgument("arrayItem", DDataStructure.array(DDataStructure.string([DDataStructure.minCharacters(2)])) as never),
-				DServerCommand.createArgument("greater", DDataStructure.number([DDataStructure.greaterThan(1)])),
-				DServerCommand.createArgument("greaterEqual", DDataStructure.number([DDataStructure.greaterThanOrEqual(1)])),
-				DServerCommand.createArgument("less", DDataStructure.number([DDataStructure.lessThan(5)])),
-				DServerCommand.createArgument("lessEqual", DDataStructure.number([DDataStructure.lessThanOrEqual(5)])),
+				DSCommand.createArgument("lengthEqual", DDataStructure.string([DDataStructure.stringLengthEqual(3)])),
+				DSCommand.createArgument("lengthRange", DDataStructure.string([DDataStructure.minCharacters(2), DDataStructure.maxCharacters(4)])),
+				DSCommand.createArgument("minLength", DDataStructure.string([DDataStructure.minCharacters(2)])),
+				DSCommand.createArgument("maxLength", DDataStructure.string([DDataStructure.maxCharacters(4)])),
+				DSCommand.createArgument("arrayEqual", DDataStructure.array(DDataStructure.string(), [DDataStructure.arrayLengthEqual(2)]) as never),
+				DSCommand.createArgument("arrayRange", DDataStructure.array(DDataStructure.string(), [DDataStructure.minElements(1), DDataStructure.maxElements(3)]) as never),
+				DSCommand.createArgument("arrayMin", DDataStructure.array(DDataStructure.string(), [DDataStructure.minElements(1)]) as never),
+				DSCommand.createArgument("arrayMax", DDataStructure.array(DDataStructure.string(), [DDataStructure.maxElements(3)]) as never),
+				DSCommand.createArgument("arrayItem", DDataStructure.array(DDataStructure.string([DDataStructure.minCharacters(2)])) as never),
+				DSCommand.createArgument("greater", DDataStructure.number([DDataStructure.greaterThan(1)])),
+				DSCommand.createArgument("greaterEqual", DDataStructure.number([DDataStructure.greaterThanOrEqual(1)])),
+				DSCommand.createArgument("less", DDataStructure.number([DDataStructure.lessThan(5)])),
+				DSCommand.createArgument("lessEqual", DDataStructure.number([DDataStructure.lessThanOrEqual(5)])),
 			],
 			0,
 		);
@@ -184,32 +184,32 @@ describe("help", () => {
 	});
 
 	it("renders simple constraints", () => {
-		const help = DServerCommand.renderArgumentsHelp(
+		const help = DSCommand.renderArgumentsHelp(
 			[
-				DServerCommand.createArgument("email", DDataStructure.string([DDataStructure.email()])),
-				DServerCommand.createArgument("url", DDataStructure.string([DDataStructure.url()])),
-				DServerCommand.createArgument("uuid", DDataStructure.string([DDataStructure.uuid()])),
-				DServerCommand.createArgument("integer", DDataStructure.number([DDataStructure.integer()])),
-				DServerCommand.createArgument("trimmed", DDataStructure.string([DDataStructure.trimmed()])),
-				DServerCommand.createArgument("notEmpty", DDataStructure.string([DDataStructure.notEmpty()])),
-				DServerCommand.createArgument("numberInString", DDataStructure.string([DDataStructure.numberInString()])),
-				DServerCommand.createArgument("even", DDataStructure.number([DDataStructure.even()])),
-				DServerCommand.createArgument("odd", DDataStructure.number([DDataStructure.odd()])),
-				DServerCommand.createArgument("positive", DDataStructure.number([DDataStructure.positive()])),
-				DServerCommand.createArgument("negative", DDataStructure.number([DDataStructure.negative()])),
-				DServerCommand.createArgument("notZero", DDataStructure.number([DDataStructure.notZero()])),
-				DServerCommand.createArgument("safe", DDataStructure.number([DDataStructure.safe()])),
-				DServerCommand.createArgument("path", DDataStructure.string([DDataStructure.path()])),
-				DServerCommand.createArgument("absolutePath", DDataStructure.string([DDataStructure.absolutePath()])),
-				DServerCommand.createArgument("segmentPath", DDataStructure.string([DDataStructure.segmentPath()])),
-				DServerCommand.createArgument("strictPositive", DDataStructure.number([DDataStructure.strictPositive()])),
-				DServerCommand.createArgument("strictNegative", DDataStructure.number([DDataStructure.strictNegative()])),
-				DServerCommand.createArgument("between", DDataStructure.number([DDataStructure.betweenThan(1, 5)])),
-				DServerCommand.createArgument("range", DDataStructure.number([DDataStructure.betweenThanOrEqual(1, 5)])),
-				DServerCommand.createArgument("multiple", DDataStructure.number([DDataStructure.multipleOf(3)])),
-				DServerCommand.createArgument("regex", DDataStructure.string([DDataStructure.regex(/^a/)])),
-				DServerCommand.createArgument("exist", DServerDataStructure.file([DServerDataStructure.exist()])),
-				DServerCommand.createArgument("mime", DServerDataStructure.file([DServerDataStructure.mimeType(/^text\//)])),
+				DSCommand.createArgument("email", DDataStructure.string([DDataStructure.email()])),
+				DSCommand.createArgument("url", DDataStructure.string([DDataStructure.url()])),
+				DSCommand.createArgument("uuid", DDataStructure.string([DDataStructure.uuid()])),
+				DSCommand.createArgument("integer", DDataStructure.number([DDataStructure.integer()])),
+				DSCommand.createArgument("trimmed", DDataStructure.string([DDataStructure.trimmed()])),
+				DSCommand.createArgument("notEmpty", DDataStructure.string([DDataStructure.notEmpty()])),
+				DSCommand.createArgument("numberInString", DDataStructure.string([DDataStructure.numberInString()])),
+				DSCommand.createArgument("even", DDataStructure.number([DDataStructure.even()])),
+				DSCommand.createArgument("odd", DDataStructure.number([DDataStructure.odd()])),
+				DSCommand.createArgument("positive", DDataStructure.number([DDataStructure.positive()])),
+				DSCommand.createArgument("negative", DDataStructure.number([DDataStructure.negative()])),
+				DSCommand.createArgument("notZero", DDataStructure.number([DDataStructure.notZero()])),
+				DSCommand.createArgument("safe", DDataStructure.number([DDataStructure.safe()])),
+				DSCommand.createArgument("path", DDataStructure.string([DDataStructure.path()])),
+				DSCommand.createArgument("absolutePath", DDataStructure.string([DDataStructure.absolutePath()])),
+				DSCommand.createArgument("segmentPath", DDataStructure.string([DDataStructure.segmentPath()])),
+				DSCommand.createArgument("strictPositive", DDataStructure.number([DDataStructure.strictPositive()])),
+				DSCommand.createArgument("strictNegative", DDataStructure.number([DDataStructure.strictNegative()])),
+				DSCommand.createArgument("between", DDataStructure.number([DDataStructure.betweenThan(1, 5)])),
+				DSCommand.createArgument("range", DDataStructure.number([DDataStructure.betweenThanOrEqual(1, 5)])),
+				DSCommand.createArgument("multiple", DDataStructure.number([DDataStructure.multipleOf(3)])),
+				DSCommand.createArgument("regex", DDataStructure.string([DDataStructure.regex(/^a/)])),
+				DSCommand.createArgument("exist", DSDataStructure.file([DSDataStructure.exist()])),
+				DSCommand.createArgument("mime", DSDataStructure.file([DSDataStructure.mimeType(/^text\//)])),
 			],
 			0,
 		);
@@ -238,17 +238,17 @@ describe("help", () => {
 	});
 
 	it("renders file size constraints", () => {
-		const help = DServerCommand.renderArgumentsHelp(
+		const help = DSCommand.renderArgumentsHelp(
 			[
-				DServerCommand.createArgument("sizeRange", DServerDataStructure.file([
-					DServerDataStructure.size({
+				DSCommand.createArgument("sizeRange", DSDataStructure.file([
+					DSDataStructure.size({
 						min: 1024,
 						max: 2048,
 					}),
 				])),
-				DServerCommand.createArgument("sizeMin", DServerDataStructure.file([DServerDataStructure.size({ min: 1024 })])),
-				DServerCommand.createArgument("sizeMax", DServerDataStructure.file([DServerDataStructure.size({ max: 1536 })])),
-				DServerCommand.createArgument("sizeAny", DServerDataStructure.file([DServerDataStructure.size({})])),
+				DSCommand.createArgument("sizeMin", DSDataStructure.file([DSDataStructure.size({ min: 1024 })])),
+				DSCommand.createArgument("sizeMax", DSDataStructure.file([DSDataStructure.size({ max: 1536 })])),
+				DSCommand.createArgument("sizeAny", DSDataStructure.file([DSDataStructure.size({})])),
 			],
 			0,
 		);
@@ -261,12 +261,12 @@ describe("help", () => {
 	});
 
 	it("renders nested and union structures", () => {
-		const help = DServerCommand.renderArgumentsHelp(
+		const help = DSCommand.renderArgumentsHelp(
 			[
-				DServerCommand.createArgument("lazy", DDataStructure.lazy(() => DDataStructure.string([DDataStructure.minCharacters(2)]), [DDataStructure.maxCharacters(4)])),
-				DServerCommand.createArgument("optionalOnly", DDataStructure.union([DDataStructure.undefined()])),
-				DServerCommand.createArgument("optionalString", DDataStructure.union([DDataStructure.string(), DDataStructure.undefined()])),
-				DServerCommand.createArgument("stringOrNumber", DDataStructure.union([DDataStructure.string(), DDataStructure.number()])),
+				DSCommand.createArgument("lazy", DDataStructure.lazy(() => DDataStructure.string([DDataStructure.minCharacters(2)]), [DDataStructure.maxCharacters(4)])),
+				DSCommand.createArgument("optionalOnly", DDataStructure.union([DDataStructure.undefined()])),
+				DSCommand.createArgument("optionalString", DDataStructure.union([DDataStructure.string(), DDataStructure.undefined()])),
+				DSCommand.createArgument("stringOrNumber", DDataStructure.union([DDataStructure.string(), DDataStructure.number()])),
 			],
 			0,
 		);
@@ -294,10 +294,10 @@ describe("help", () => {
 			[DDataStructure.typeStructureKind.runTimeKey]: null,
 		};
 
-		const help = DServerCommand.renderArgumentsHelp(
+		const help = DSCommand.renderArgumentsHelp(
 			[
-				DServerCommand.createArgument("unknownStructure", unknownStructure as never),
-				DServerCommand.createArgument("unknownType", unknownTypeStructure as never),
+				DSCommand.createArgument("unknownStructure", unknownStructure as never),
+				DSCommand.createArgument("unknownType", unknownTypeStructure as never),
 			],
 			0,
 		);
@@ -309,16 +309,16 @@ describe("help", () => {
 
 	it("logs command and exec option help", () => {
 		const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
-		const command = DServerCommand.create(
+		const command = DSCommand.create(
 			"root",
 			{
-				options: [DServerCommand.createBooleanOption("verbose")],
+				options: [DSCommand.createBooleanOption("verbose")],
 			},
 			() => undefined,
 		);
 
-		DServerCommand.logCommandHelp(command);
-		DServerCommand.logExecOptionHelp([DServerCommand.createBooleanOption("verbose")]);
+		DSCommand.logCommandHelp(command);
+		DSCommand.logExecOptionHelp([DSCommand.createBooleanOption("verbose")]);
 
 		expect(consoleLogSpy).toHaveBeenCalledTimes(2);
 		expect(String(consoleLogSpy.mock.calls[0]?.[0])).toContain("COMMAND");

@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
@@ -16,7 +16,7 @@ describe("remove", () => {
 			rm: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DServerFile.remove<string & DPath.Path>(DCommon.infer("/tmp/mock"), { recursive: true });
+		const result = await DSFile.remove<string & DPath.Path>(DCommon.infer("/tmp/mock"), { recursive: true });
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.rm).toHaveBeenCalledWith("/tmp/mock", {
@@ -31,7 +31,7 @@ describe("remove", () => {
 			rm: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.remove<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.remove<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -41,7 +41,7 @@ describe("remove", () => {
 		const remove = vi.fn().mockResolvedValue(undefined);
 		setDenoMock({ remove });
 
-		const result = await DServerFile.remove<string & DPath.Path>(DCommon.infer("/tmp/mock"), { recursive: false });
+		const result = await DSFile.remove<string & DPath.Path>(DCommon.infer("/tmp/mock"), { recursive: false });
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(remove).toHaveBeenCalledWith("/tmp/mock", { recursive: false });
@@ -53,7 +53,7 @@ describe("remove", () => {
 			remove: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.remove<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.remove<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

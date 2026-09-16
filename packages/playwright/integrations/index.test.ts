@@ -1,6 +1,6 @@
 import test from "playwright/test";
 import { Actions, Assertions, createComponent, createPage, createWebsite, type Website } from "@duplojs/playwright";
-import * as DServerCommon from "@duplojs/server/common";
+import * as DSCommon from "@duplojs/server/common";
 
 interface TestFixtures {
 	website: Website;
@@ -40,7 +40,7 @@ const homePage = createPage(
 	"home",
 	{
 		makePath() {
-			return `${DServerCommon.getCurrentWorkDirectoryOrThrow()}/index.html`;
+			return `${DSCommon.getCurrentWorkDirectoryOrThrow()}/index.html`;
 		},
 		getMainElement({ body }) {
 			return body.locator("[data-page='home']");

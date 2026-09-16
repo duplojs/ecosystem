@@ -1,7 +1,7 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
 import * as DPath from "@duplojs/lang/path";
-import { DServerFile } from "@duplojs/server";
+import { DSFile } from "@duplojs/server";
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, describe, it } from "node:test";
 
@@ -20,7 +20,7 @@ void describe("file feature on deno", () => {
 	beforeEach(async() => {
 		await Deno.remove(rootPath, { recursive: true }).catch(() => undefined);
 
-		const result = await DServerFile.ensureDirectory(paths.workspace);
+		const result = await DSFile.ensureDirectory(paths.workspace);
 
 		DCommon.asserts(result, DEither.isRight);
 		assert.equal(DEither.unwrapRight(result), undefined);
@@ -31,27 +31,27 @@ void describe("file feature on deno", () => {
 	});
 
 	void it("writes, appends, reads and stats a text file", async() => {
-		const ensureFileResult = await DServerFile.ensureFile(paths.text);
+		const ensureFileResult = await DSFile.ensureFile(paths.text);
 		DCommon.asserts(ensureFileResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(ensureFileResult), undefined);
 
-		const writeResult = await DServerFile.writeTextFile(paths.text, "hello");
+		const writeResult = await DSFile.writeTextFile(paths.text, "hello");
 		DCommon.asserts(writeResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(writeResult), undefined);
 
-		const appendResult = await DServerFile.appendTextFile(paths.text, " deno");
+		const appendResult = await DSFile.appendTextFile(paths.text, " deno");
 		DCommon.asserts(appendResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(appendResult), undefined);
 
-		const readResult = await DServerFile.readTextFile(paths.text);
+		const readResult = await DSFile.readTextFile(paths.text);
 		DCommon.asserts(readResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(readResult), "hello deno");
 
-		const existsResult = await DServerFile.exists(paths.text);
+		const existsResult = await DSFile.exists(paths.text);
 		DCommon.asserts(existsResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(existsResult), undefined);
 
-		const statResult = await DServerFile.stat(paths.text);
+		const statResult = await DSFile.stat(paths.text);
 		DCommon.asserts(statResult, DEither.isRight);
 
 		const stat = DEither.unwrapRight(statResult);
@@ -60,21 +60,21 @@ void describe("file feature on deno", () => {
 	});
 
 	void it("writes, appends and reads binary content", async() => {
-		const writeResult = await DServerFile.writeFile(paths.bytes, new Uint8Array([4, 5]));
+		const writeResult = await DSFile.writeFile(paths.bytes, new Uint8Array([4, 5]));
 		DCommon.asserts(writeResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(writeResult), undefined);
 
-		const appendResult = await DServerFile.appendFile(paths.bytes, new Uint8Array([6]));
+		const appendResult = await DSFile.appendFile(paths.bytes, new Uint8Array([6]));
 		DCommon.asserts(appendResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(appendResult), undefined);
 
-		const readResult = await DServerFile.readFile(paths.bytes);
+		const readResult = await DSFile.readFile(paths.bytes);
 		DCommon.asserts(readResult, DEither.isRight);
 		assert.deepEqual([...DEither.unwrapRight(readResult)], [4, 5, 6]);
 	});
 
 	void it("writes and reads JSON content", async() => {
-		const writeResult = await DServerFile.writeJsonFile(
+		const writeResult = await DSFile.writeJsonFile(
 			paths.json,
 			{
 				runtime: "deno",
@@ -85,7 +85,7 @@ void describe("file feature on deno", () => {
 		DCommon.asserts(writeResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(writeResult), undefined);
 
-		const readResult = await DServerFile.readJsonFile(paths.json);
+		const readResult = await DSFile.readJsonFile(paths.json);
 		DCommon.asserts(readResult, DEither.isRight);
 		assert.deepEqual(DEither.unwrapRight(readResult), {
 			runtime: "deno",
@@ -94,43 +94,43 @@ void describe("file feature on deno", () => {
 	});
 
 	void it("links, renames, relocates and truncates a file", async() => {
-		const writeResult = await DServerFile.writeTextFile(paths.text, "hello deno");
+		const writeResult = await DSFile.writeTextFile(paths.text, "hello deno");
 		DCommon.asserts(writeResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(writeResult), undefined);
 
-		const linkResult = await DServerFile.link(paths.text, paths.hardLink);
+		const linkResult = await DSFile.link(paths.text, paths.hardLink);
 		DCommon.asserts(linkResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(linkResult), undefined);
 
-		const readLinkContentResult = await DServerFile.readTextFile(paths.hardLink);
+		const readLinkContentResult = await DSFile.readTextFile(paths.hardLink);
 		DCommon.asserts(readLinkContentResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(readLinkContentResult), "hello deno");
 
-		const renamedResult = await DServerFile.rename(paths.hardLink, DCommon.infer("renamed.txt"));
+		const renamedResult = await DSFile.rename(paths.hardLink, DCommon.infer("renamed.txt"));
 		DCommon.asserts(renamedResult, DEither.isRight);
 
 		const renamedPath = DEither.unwrapRight(renamedResult);
-		const readRenamedResult = await DServerFile.readTextFile(renamedPath);
+		const readRenamedResult = await DSFile.readTextFile(renamedPath);
 		DCommon.asserts(readRenamedResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(readRenamedResult), "hello deno");
 
-		const ensureRelocatedParentResult = await DServerFile.ensureDirectory(paths.relocatedParent);
+		const ensureRelocatedParentResult = await DSFile.ensureDirectory(paths.relocatedParent);
 		DCommon.asserts(ensureRelocatedParentResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(ensureRelocatedParentResult), undefined);
 
-		const relocatedResult = await DServerFile.relocate(renamedPath, paths.relocatedParent);
+		const relocatedResult = await DSFile.relocate(renamedPath, paths.relocatedParent);
 		DCommon.asserts(relocatedResult, DEither.isRight);
 
 		const relocatedPath = DEither.unwrapRight(relocatedResult);
-		const readRelocatedResult = await DServerFile.readTextFile(relocatedPath);
+		const readRelocatedResult = await DSFile.readTextFile(relocatedPath);
 		DCommon.asserts(readRelocatedResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(readRelocatedResult), "hello deno");
 
-		const truncateResult = await DServerFile.truncate(relocatedPath, 5);
+		const truncateResult = await DSFile.truncate(relocatedPath, 5);
 		DCommon.asserts(truncateResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(truncateResult), undefined);
 
-		const readTruncateResult = await DServerFile.readTextFile(relocatedPath);
+		const readTruncateResult = await DSFile.readTextFile(relocatedPath);
 		DCommon.asserts(readTruncateResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(readTruncateResult), "hello");
 	});

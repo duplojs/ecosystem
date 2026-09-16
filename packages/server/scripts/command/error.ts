@@ -5,7 +5,7 @@ import * as DModeling from "@duplojs/lang/modeling";
 import * as DArray from "@duplojs/lang/array";
 import * as DPattern from "@duplojs/lang/pattern";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import { DServerDataStructure } from "@scripts";
+import * as DSDataStructure from "@scripts/dataStructure";
 
 export interface OptionIssueBase {
 	readonly data: unknown;
@@ -345,8 +345,8 @@ export function interpretErrorIssues(
 }
 
 const defaultDataStructureErrorInterpreter = DDataStructure.createErrorInterpreter(
-	DServerDataStructure.defaultErrorInterpreterDataStructureDictionary,
-	DServerDataStructure.defaultErrorInterpreterCodecDictionary,
+	DSDataStructure.defaultErrorInterpreterDataStructureDictionary,
+	DSDataStructure.defaultErrorInterpreterCodecDictionary,
 );
 
 export function interpretExecCommandError(

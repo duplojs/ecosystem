@@ -1,5 +1,5 @@
 import * as DEither from "@duplojs/lang/either";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 
@@ -14,7 +14,7 @@ describe("makeTemporaryDirectory", () => {
 			mkdtemp: vi.fn().mockResolvedValue("/tmp/prefix-abc"),
 		});
 
-		const result = await DServerFile.makeTemporaryDirectory("prefix-");
+		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.mkdtemp).toHaveBeenCalledWith("prefix-");
@@ -29,7 +29,7 @@ describe("makeTemporaryDirectory", () => {
 			mkdtemp: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.makeTemporaryDirectory("prefix-");
+		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -39,7 +39,7 @@ describe("makeTemporaryDirectory", () => {
 		const makeTempDir = vi.fn().mockResolvedValue("/tmp/deno-dir");
 		setDenoMock({ makeTempDir });
 
-		const result = await DServerFile.makeTemporaryDirectory("prefix-");
+		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(makeTempDir).toHaveBeenCalledWith({ prefix: "prefix-" });
@@ -51,7 +51,7 @@ describe("makeTemporaryDirectory", () => {
 			makeTempDir: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.makeTemporaryDirectory("prefix-");
+		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

@@ -1,7 +1,7 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
 import type * as DPath from "@duplojs/lang/path";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 
@@ -16,7 +16,7 @@ describe("readLink", () => {
 			readlink: vi.fn().mockResolvedValue("/tmp/target"),
 		});
 
-		const result = await DServerFile.readLink<string & DPath.Path>(DCommon.infer("/tmp/link"));
+		const result = await DSFile.readLink<string & DPath.Path>(DCommon.infer("/tmp/link"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.readlink).toHaveBeenCalledWith("/tmp/link", { encoding: "utf-8" });
@@ -31,7 +31,7 @@ describe("readLink", () => {
 			readlink: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.readLink<string & DPath.Path>(DCommon.infer("/tmp/link"));
+		const result = await DSFile.readLink<string & DPath.Path>(DCommon.infer("/tmp/link"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -41,7 +41,7 @@ describe("readLink", () => {
 		const readLink = vi.fn().mockResolvedValue("/tmp/deno-target");
 		setDenoMock({ readLink });
 
-		const result = await DServerFile.readLink<string & DPath.Path>(DCommon.infer("/tmp/link"));
+		const result = await DSFile.readLink<string & DPath.Path>(DCommon.infer("/tmp/link"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(readLink).toHaveBeenCalledWith("/tmp/link");
@@ -53,7 +53,7 @@ describe("readLink", () => {
 			readLink: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.readLink<string & DPath.Path>(DCommon.infer("/tmp/link"));
+		const result = await DSFile.readLink<string & DPath.Path>(DCommon.infer("/tmp/link"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

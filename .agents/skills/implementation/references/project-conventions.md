@@ -77,7 +77,7 @@ La manière dont les domaines sont exposés depuis l'index racine dépend du pac
 Lorsqu'une implémentation utilise un autre domaine du même package, elle doit passer par l'index du domaine avec `@scripts/<domain>` :
 
 ```ts
-import * as DServerCommon from "@scripts/common";
+import * as DSCommon from "@scripts/common";
 ```
 
 Ne pas traverser l'arborescence avec un chemin relatif pour atteindre directement l'implémentation d'un autre domaine.

@@ -1,7 +1,7 @@
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
-import { DServerCommand, TESTImplementation, setEnvironment } from "@duplojs/server";
+import { DSCommand, TESTImplementation, setEnvironment } from "@duplojs/server";
 import { afterEach, describe, expect, it, mock, spyOn } from "bun:test";
 
 describe("command feature on bun", () => {
@@ -16,15 +16,15 @@ describe("command feature on bun", () => {
 		TESTImplementation.set("getProcessArguments", mock(() => ["build", "--verbose", "--count", "3", "--tags", "api,http"]));
 
 		const executeSpy = mock(() => undefined);
-		const result = await DServerCommand.exec(
+		const result = await DSCommand.exec(
 			{
 				displayName: "tool",
 				options: [
-					DServerCommand.createBooleanOption("verbose"),
-					DServerCommand.createOption("count", DDataStructure.number(), { required: true }),
-					DServerCommand.createArrayOption("tags", DDataStructure.string()),
+					DSCommand.createBooleanOption("verbose"),
+					DSCommand.createOption("count", DDataStructure.number(), { required: true }),
+					DSCommand.createArrayOption("tags", DDataStructure.string()),
 				],
-				subjects: [DServerCommand.createArgument("task", DDataStructure.string())],
+				subjects: [DSCommand.createArgument("task", DDataStructure.string())],
 			},
 			executeSpy,
 		);
@@ -45,16 +45,16 @@ describe("command feature on bun", () => {
 	it("routes to a sub command", async() => {
 		const rootSpy = mock(() => undefined);
 		const deploySpy = mock(() => undefined);
-		const error = DServerCommand.createError("tool");
-		const command = DServerCommand.create(
+		const error = DSCommand.createError("tool");
+		const command = DSCommand.create(
 			"tool",
 			{
 				subjects: [
-					DServerCommand.create(
+					DSCommand.create(
 						"deploy",
 						{
-							options: [DServerCommand.createBooleanOption("dry-run")],
-							subjects: [DServerCommand.createArgument("target", DDataStructure.string())],
+							options: [DSCommand.createBooleanOption("dry-run")],
+							subjects: [DSCommand.createArgument("target", DDataStructure.string())],
 						},
 						deploySpy,
 					),
@@ -80,10 +80,10 @@ describe("command feature on bun", () => {
 		const consoleErrorSpy = spyOn(console, "error").mockImplementation(() => undefined);
 		const executeSpy = mock(() => undefined);
 
-		const result = await DServerCommand.exec(
+		const result = await DSCommand.exec(
 			{
 				displayName: "read",
-				subjects: [DServerCommand.createArgument("id", DDataStructure.number())],
+				subjects: [DSCommand.createArgument("id", DDataStructure.number())],
 			},
 			executeSpy,
 		);
@@ -107,12 +107,12 @@ describe("command feature on bun", () => {
 		const consoleLogSpy = spyOn(console, "log").mockImplementation(() => undefined);
 		const executeSpy = mock(() => undefined);
 
-		const result = await DServerCommand.exec(
+		const result = await DSCommand.exec(
 			{
 				displayName: "cli",
 				description: "Integration command.",
-				options: [DServerCommand.createBooleanOption("verbose", { aliases: ["v"] })],
-				subjects: [DServerCommand.createArgument("target", DDataStructure.string())],
+				options: [DSCommand.createBooleanOption("verbose", { aliases: ["v"] })],
+				subjects: [DSCommand.createArgument("target", DDataStructure.string())],
 			},
 			executeSpy,
 		);

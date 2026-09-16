@@ -1,7 +1,7 @@
 import * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import type * as DServerFile from "@scripts/file";
+import type * as DSFile from "@scripts/file";
 import { createKind } from "../kind";
 
 export const mimeTypeConstraintKind = createKind("mime-type-constraint");
@@ -12,8 +12,8 @@ export interface MimeTypeConstraintDefinition extends DDataStructure.ConstraintD
 
 export interface MimeTypeConstraint extends DCommon.UnionToIntersection<
 	& DDataStructure.Constraint<
-		DServerFile.FileInterface,
-		DServerFile.FileInterface,
+		DSFile.FileInterface,
+		DSFile.FileInterface,
 		MimeTypeConstraintDefinition
 	>
 	& DKind.Kind<typeof mimeTypeConstraintKind>

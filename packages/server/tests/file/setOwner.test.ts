@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 
@@ -15,7 +15,7 @@ describe("setOwner", () => {
 			chown: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DServerFile.setOwner(DCommon.infer("/tmp/mock"), {
+		const result = await DSFile.setOwner(DCommon.infer("/tmp/mock"), {
 			userId: 1,
 			groupId: 2,
 		});
@@ -30,7 +30,7 @@ describe("setOwner", () => {
 			chown: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.setOwner(DCommon.infer("/tmp/mock"), {
+		const result = await DSFile.setOwner(DCommon.infer("/tmp/mock"), {
 			userId: 1,
 			groupId: 2,
 		});
@@ -43,7 +43,7 @@ describe("setOwner", () => {
 		const chown = vi.fn().mockResolvedValue(undefined);
 		setDenoMock({ chown });
 
-		const result = await DServerFile.setOwner(DCommon.infer("/tmp/mock"), {
+		const result = await DSFile.setOwner(DCommon.infer("/tmp/mock"), {
 			userId: 3,
 			groupId: 4,
 		});
@@ -58,7 +58,7 @@ describe("setOwner", () => {
 			chown: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.setOwner(DCommon.infer("/tmp/mock"), {
+		const result = await DSFile.setOwner(DCommon.infer("/tmp/mock"), {
 			userId: 3,
 			groupId: 4,
 		});

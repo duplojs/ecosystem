@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
@@ -98,7 +98,7 @@ describe("stat", () => {
 			stat: vi.fn().mockResolvedValue(stats),
 		});
 
-		const result = await DServerFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		if (DEither.isRight(result)) {
@@ -124,7 +124,7 @@ describe("stat", () => {
 			stat: vi.fn().mockResolvedValue(stats),
 		});
 
-		const result = await DServerFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		if (DEither.isRight(result)) {
@@ -142,7 +142,7 @@ describe("stat", () => {
 			stat: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -154,7 +154,7 @@ describe("stat", () => {
 			stat: vi.fn().mockResolvedValue(fileInfo),
 		});
 
-		const result = await DServerFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		if (DEither.isRight(result)) {
@@ -179,7 +179,7 @@ describe("stat", () => {
 			stat: vi.fn().mockResolvedValue(fileInfo),
 		});
 
-		const result = await DServerFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		if (DEither.isRight(result)) {
@@ -197,7 +197,7 @@ describe("stat", () => {
 			stat: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -211,7 +211,7 @@ describe("stat", () => {
 			}),
 		});
 
-		const result = await DServerFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		if (DEither.isRight(result)) {
@@ -227,7 +227,7 @@ describe("stat", () => {
 			}),
 		});
 
-		const result = await DServerFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.stat<string & DPath.Path>(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

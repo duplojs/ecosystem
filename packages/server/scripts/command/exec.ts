@@ -1,6 +1,6 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
-import * as DServerCommon from "@scripts/common";
+import * as DSCommon from "@scripts/common";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import { type CreateCommandExecuteParams, type CreateCommandParams, type Subjects, create } from "./create";
 import { createError, interpretExecCommandError, SymbolCommandError, type Error } from "./error";
@@ -63,7 +63,7 @@ export async function exec(
 		params,
 		execute,
 	).execute(
-		DServerCommon.getProcessArguments(),
+		DSCommon.getProcessArguments(),
 		error,
 	);
 

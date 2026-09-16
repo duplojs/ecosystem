@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 
@@ -15,7 +15,7 @@ describe("rename", () => {
 			rename: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DServerFile.rename(DCommon.infer("/tmp/file.txt"), DCommon.infer("new.txt"));
+		const result = await DSFile.rename(DCommon.infer("/tmp/file.txt"), DCommon.infer("new.txt"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.rename).toHaveBeenCalledWith("/tmp/file.txt", "/tmp/new.txt");
@@ -30,7 +30,7 @@ describe("rename", () => {
 			rename: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.rename(DCommon.infer("/tmp/file.txt"), DCommon.infer("new.txt"));
+		const result = await DSFile.rename(DCommon.infer("/tmp/file.txt"), DCommon.infer("new.txt"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -41,7 +41,7 @@ describe("rename", () => {
 			rename: vi.fn(),
 		});
 
-		const result = await DServerFile.rename(DCommon.infer("/"), DCommon.infer("new.txt"));
+		const result = await DSFile.rename(DCommon.infer("/"), DCommon.infer("new.txt"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 		expect(fs.rename).not.toHaveBeenCalled();
@@ -53,7 +53,7 @@ describe("rename", () => {
 			rename: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DServerFile.rename(DCommon.infer("/tmp/file.txt"), DCommon.infer("newname.txt"));
+		const result = await DSFile.rename(DCommon.infer("/tmp/file.txt"), DCommon.infer("newname.txt"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.rename).toHaveBeenCalledWith("/tmp/file.txt", "/tmp/newname.txt");
@@ -67,7 +67,7 @@ describe("rename", () => {
 		const rename = vi.fn().mockResolvedValue(undefined);
 		setDenoMock({ rename });
 
-		const result = await DServerFile.rename(DCommon.infer("/tmp/file.txt"), DCommon.infer("new.txt"));
+		const result = await DSFile.rename(DCommon.infer("/tmp/file.txt"), DCommon.infer("new.txt"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(rename).toHaveBeenCalledWith("/tmp/file.txt", "/tmp/new.txt");
@@ -82,7 +82,7 @@ describe("rename", () => {
 			rename: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.rename(DCommon.infer("/tmp/file.txt"), DCommon.infer("new.txt"));
+		const result = await DSFile.rename(DCommon.infer("/tmp/file.txt"), DCommon.infer("new.txt"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -92,7 +92,7 @@ describe("rename", () => {
 		const rename = vi.fn();
 		setDenoMock({ rename });
 
-		const result = await DServerFile.rename(DCommon.infer("/"), DCommon.infer("new.txt"));
+		const result = await DSFile.rename(DCommon.infer("/"), DCommon.infer("new.txt"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 		expect(rename).not.toHaveBeenCalled();
@@ -103,7 +103,7 @@ describe("rename", () => {
 		const rename = vi.fn().mockResolvedValue(undefined);
 		setDenoMock({ rename });
 
-		const result = await DServerFile.rename(DCommon.infer("/tmp/file.txt"), DCommon.infer("newname.txt"));
+		const result = await DSFile.rename(DCommon.infer("/tmp/file.txt"), DCommon.infer("newname.txt"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(rename).toHaveBeenCalledWith("/tmp/file.txt", "/tmp/newname.txt");

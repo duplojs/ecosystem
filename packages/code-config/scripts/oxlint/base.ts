@@ -19,6 +19,11 @@ export const defaultPreferNamespaceImportPaths = {
 	"@duplojs/lang/invocation": "DInvocation",
 	"@duplojs/lang/path": "DPath",
 	"@duplojs/lang/printer": "DPrinter",
+
+	"@duplojs/server/file": "DSFile",
+	"@duplojs/server/common": "DSCommon",
+	"@duplojs/server/dataStructure": "DSDataStructure",
+	"@duplojs/server/command": "DSCommand",
 };
 
 export const basePreset = {

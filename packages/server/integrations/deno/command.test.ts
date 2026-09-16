@@ -1,7 +1,7 @@
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
-import { DServerCommand, TESTImplementation, setEnvironment } from "@duplojs/server";
+import { DSCommand, TESTImplementation, setEnvironment } from "@duplojs/server";
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, describe, it } from "node:test";
 
@@ -35,15 +35,15 @@ void describe("command feature on deno", () => {
 		TESTImplementation.set("getProcessArguments", () => ["build", "--verbose", "--count", "3", "--tags", "api,http"]);
 
 		let executeParams: unknown = undefined;
-		const result = await DServerCommand.exec(
+		const result = await DSCommand.exec(
 			{
 				displayName: "tool",
 				options: [
-					DServerCommand.createBooleanOption("verbose"),
-					DServerCommand.createOption("count", DDataStructure.number(), { required: true }),
-					DServerCommand.createArrayOption("tags", DDataStructure.string()),
+					DSCommand.createBooleanOption("verbose"),
+					DSCommand.createOption("count", DDataStructure.number(), { required: true }),
+					DSCommand.createArrayOption("tags", DDataStructure.string()),
 				],
-				subjects: [DServerCommand.createArgument("task", DDataStructure.string())],
+				subjects: [DSCommand.createArgument("task", DDataStructure.string())],
 			},
 			(params) => {
 				executeParams = params;
@@ -66,16 +66,16 @@ void describe("command feature on deno", () => {
 	void it("routes to a sub command", async() => {
 		let rootCalled = false;
 		let deployParams: unknown = undefined;
-		const error = DServerCommand.createError("tool");
-		const command = DServerCommand.create(
+		const error = DSCommand.createError("tool");
+		const command = DSCommand.create(
 			"tool",
 			{
 				subjects: [
-					DServerCommand.create(
+					DSCommand.create(
 						"deploy",
 						{
-							options: [DServerCommand.createBooleanOption("dry-run")],
-							subjects: [DServerCommand.createArgument("target", DDataStructure.string())],
+							options: [DSCommand.createBooleanOption("dry-run")],
+							subjects: [DSCommand.createArgument("target", DDataStructure.string())],
 						},
 						(params) => {
 							deployParams = params;
@@ -103,10 +103,10 @@ void describe("command feature on deno", () => {
 		TESTImplementation.set("getProcessArguments", () => ["wrong"]);
 		let executeCalled = false;
 
-		const result = await DServerCommand.exec(
+		const result = await DSCommand.exec(
 			{
 				displayName: "read",
-				subjects: [DServerCommand.createArgument("id", DDataStructure.number())],
+				subjects: [DSCommand.createArgument("id", DDataStructure.number())],
 			},
 			() => {
 				executeCalled = true;
@@ -126,12 +126,12 @@ void describe("command feature on deno", () => {
 		TESTImplementation.set("getProcessArguments", () => ["--help"]);
 		let executeCalled = false;
 
-		const result = await DServerCommand.exec(
+		const result = await DSCommand.exec(
 			{
 				displayName: "cli",
 				description: "Integration command.",
-				options: [DServerCommand.createBooleanOption("verbose", { aliases: ["v"] })],
-				subjects: [DServerCommand.createArgument("target", DDataStructure.string())],
+				options: [DSCommand.createBooleanOption("verbose", { aliases: ["v"] })],
+				subjects: [DSCommand.createArgument("target", DDataStructure.string())],
 			},
 			() => {
 				executeCalled = true;

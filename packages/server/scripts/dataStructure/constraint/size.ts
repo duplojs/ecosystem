@@ -2,7 +2,7 @@ import * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
 import * as DEither from "@duplojs/lang/either";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import type * as DServerFile from "@scripts/file";
+import type * as DSFile from "@scripts/file";
 import { createKind } from "../kind";
 
 export const sizeConstraintKind = createKind("size-constraint");
@@ -19,8 +19,8 @@ export interface SizeConstraintParams {
 
 export interface SizeConstraint extends DCommon.UnionToIntersection<
 	& DDataStructure.Constraint<
-		DServerFile.FileInterface,
-		DServerFile.FileInterface,
+		DSFile.FileInterface,
+		DSFile.FileInterface,
 		SizeConstraintDefinition
 	>
 	& DKind.Kind<typeof sizeConstraintKind>

@@ -4,8 +4,8 @@ import * as DEither from "@duplojs/lang/either";
 import * as DObject from "@duplojs/lang/object";
 import * as DArray from "@duplojs/lang/array";
 import type * as DPath from "@duplojs/lang/path";
-import type * as DServerFile from "@scripts/file";
-import * as DServerDataStructure from "@scripts/dataStructure";
+import type * as DSFile from "@scripts/file";
+import * as DSDataStructure from "@scripts/dataStructure";
 import { implementFunction } from "@scripts/implementor";
 import { parseEnvironmentFiles } from "./parseEnvironmentFiles";
 import { expandEnvironmentVariables } from "./expandEnvironmentVariables";
@@ -27,7 +27,7 @@ declare module "@scripts/implementor" {
 			envFileParams?: EnvironmentVariableFileParams,
 		): Promise<
 			| DEither.Right<"decode-success", DDataStructure.ShapeObjectStructureValue<GenericShape>>
-			| DServerFile.FileSystemLeft<"read-text-file">
+			| DSFile.FileSystemLeft<"read-text-file">
 			| DEither.Left<"decode-error", DDataStructure.Error>
 		>;
 	}
@@ -68,7 +68,7 @@ export const environmentVariable = implementFunction(
 			);
 
 			const checkedEnvResult = await structure.asyncUnsafeDecode(
-				envFileParams?.codecs ?? DServerDataStructure.codecsString,
+				envFileParams?.codecs ?? DSDataStructure.codecsString,
 				envResult,
 			);
 

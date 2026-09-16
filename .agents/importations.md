@@ -11,7 +11,7 @@ Lorsqu'un package importe un autre package de l'écosystème DuploJS, l'import d
 ```ts
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import * as DServerCommon from "@duplojs/server/common";
+import * as DSCommon from "@duplojs/server/common";
 ```
 
 Il ne faut pas importer les namespaces depuis l'index principal du package :

@@ -1,6 +1,6 @@
 import * as DPath from "@duplojs/lang/path";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import * as DServerFile from "@scripts/file";
+import * as DSFile from "@scripts/file";
 import * as FundamentalType from "../../../fundamentalType";
 
 export const codecsString = DDataStructure.createCodecs({
@@ -9,6 +9,6 @@ export const codecsString = DDataStructure.createCodecs({
 		FundamentalType.TheFile,
 		(data) => typeof data === "string" && DPath.is(data),
 		(data) => data.path,
-		(data) => DServerFile.createFileInterface(data),
+		(data) => DSFile.createFileInterface(data),
 	),
 });

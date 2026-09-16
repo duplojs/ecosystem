@@ -1,6 +1,6 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DServerFile, setEnvironment } from "@scripts";
+import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 
@@ -15,7 +15,7 @@ describe("move", () => {
 			rename: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DServerFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
+		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.rename).toHaveBeenCalledWith("/tmp/from", "/tmp/to");
@@ -27,7 +27,7 @@ describe("move", () => {
 			rename: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
+		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -37,7 +37,7 @@ describe("move", () => {
 		const rename = vi.fn().mockResolvedValue(undefined);
 		setDenoMock({ rename });
 
-		const result = await DServerFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
+		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(rename).toHaveBeenCalledWith("/tmp/from", "/tmp/to");
@@ -49,7 +49,7 @@ describe("move", () => {
 			rename: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DServerFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
+		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

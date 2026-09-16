@@ -1,10 +1,10 @@
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import * as DServerCommon from "@duplojs/server/common";
+import * as DSCommon from "@duplojs/server/common";
 import { defineConfig, devices } from "playwright/test";
 
-const envs = await DServerCommon.environmentVariableOrThrow(
+const envs = await DSCommon.environmentVariableOrThrow(
 	{
 		CI: DDataStructure.boolean(),
 		RETRIES: DDataStructure.number([DDataStructure.integer()]),

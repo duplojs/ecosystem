@@ -3,7 +3,7 @@ import { afterEach, describe, it, mock } from "node:test";
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
-import { DServerCommand, TESTImplementation, setEnvironment } from "@duplojs/server";
+import { DSCommand, TESTImplementation, setEnvironment } from "@duplojs/server";
 
 const escapeCode = String.fromCharCode(27);
 const ansiEscapeCodePattern = new RegExp(`${escapeCode}\\[[0-9;]*m`, "g");
@@ -20,15 +20,15 @@ void describe("command feature on node", () => {
 		TESTImplementation.set("getProcessArguments", mock.fn(() => ["build", "--verbose", "--count", "3", "--tags", "api,http"]));
 
 		const executeSpy = mock.fn();
-		const result = await DServerCommand.exec(
+		const result = await DSCommand.exec(
 			{
 				displayName: "tool",
 				options: [
-					DServerCommand.createBooleanOption("verbose"),
-					DServerCommand.createOption("count", DDataStructure.number(), { required: true }),
-					DServerCommand.createArrayOption("tags", DDataStructure.string()),
+					DSCommand.createBooleanOption("verbose"),
+					DSCommand.createOption("count", DDataStructure.number(), { required: true }),
+					DSCommand.createArrayOption("tags", DDataStructure.string()),
 				],
-				subjects: [DServerCommand.createArgument("task", DDataStructure.string())],
+				subjects: [DSCommand.createArgument("task", DDataStructure.string())],
 			},
 			executeSpy,
 		);
@@ -51,16 +51,16 @@ void describe("command feature on node", () => {
 	void it("routes to a sub command", async() => {
 		const rootSpy = mock.fn();
 		const deploySpy = mock.fn();
-		const error = DServerCommand.createError("tool");
-		const command = DServerCommand.create(
+		const error = DSCommand.createError("tool");
+		const command = DSCommand.create(
 			"tool",
 			{
 				subjects: [
-					DServerCommand.create(
+					DSCommand.create(
 						"deploy",
 						{
-							options: [DServerCommand.createBooleanOption("dry-run")],
-							subjects: [DServerCommand.createArgument("target", DDataStructure.string())],
+							options: [DSCommand.createBooleanOption("dry-run")],
+							subjects: [DSCommand.createArgument("target", DDataStructure.string())],
 						},
 						deploySpy,
 					),
@@ -87,10 +87,10 @@ void describe("command feature on node", () => {
 		const consoleErrorSpy = mock.method(console, "error", () => undefined);
 		const executeSpy = mock.fn();
 
-		const result = await DServerCommand.exec(
+		const result = await DSCommand.exec(
 			{
 				displayName: "read",
-				subjects: [DServerCommand.createArgument("id", DDataStructure.number())],
+				subjects: [DSCommand.createArgument("id", DDataStructure.number())],
 			},
 			executeSpy,
 		);
@@ -122,16 +122,16 @@ void describe("command feature on node", () => {
 		const consoleLogSpy = mock.method(console, "log", () => undefined);
 		const executeSpy = mock.fn();
 
-		const result = await DServerCommand.exec(
+		const result = await DSCommand.exec(
 			{
 				displayName: "cli",
 				description: "Integration command.",
 				options: [
-					DServerCommand.createBooleanOption("verbose", {
+					DSCommand.createBooleanOption("verbose", {
 						description: "Print detailed logs.",
 						aliases: ["v"],
 					}),
-					DServerCommand.createOption(
+					DSCommand.createOption(
 						"count",
 						DDataStructure.number([DDataStructure.integer(), DDataStructure.greaterThanOrEqual(1)]),
 						{
@@ -139,7 +139,7 @@ void describe("command feature on node", () => {
 							required: true,
 						},
 					),
-					DServerCommand.createArrayOption(
+					DSCommand.createArrayOption(
 						"tags",
 						DDataStructure.string([DDataStructure.minCharacters(2)]),
 						{
@@ -151,7 +151,7 @@ void describe("command feature on node", () => {
 					),
 				],
 				subjects: [
-					DServerCommand.createArgument(
+					DSCommand.createArgument(
 						"target",
 						DDataStructure.string([DDataStructure.notEmpty()]),
 						{ description: "Deployment target." },

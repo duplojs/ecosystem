@@ -3,9 +3,9 @@ import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DChrono from "@duplojs/lang/chrono";
 import * as DCommon from "@duplojs/lang/common";
 import type * as DPath from "@duplojs/lang/path";
-import { DServerDataStructure, DServerFile } from "@scripts";
+import { DSDataStructure, DSFile } from "@scripts";
 
-function createStatInfo(params?: Partial<DServerFile.StatInfo>): DServerFile.StatInfo {
+function createStatInfo(params?: Partial<DSFile.StatInfo>): DSFile.StatInfo {
 	const now = DChrono.createDateOrThrow(new Date("2020-01-01T00:00:00Z"));
 
 	return {
@@ -36,16 +36,16 @@ function createStatInfo(params?: Partial<DServerFile.StatInfo>): DServerFile.Sta
 
 describe("dataStructure file", () => {
 	it("creates a file structure that decodes strings into file interfaces", async() => {
-		const structure = DServerDataStructure.file();
+		const structure = DSDataStructure.file();
 
 		const result = await structure.asyncUnsafeDecode(
-			DServerDataStructure.codecsString,
+			DSDataStructure.codecsString,
 			"/tmp/avatar.png",
 		);
 
 		type _CheckStructure = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
-			DServerFile.FileInterface,
+			DSFile.FileInterface,
 			"strict"
 		>;
 
@@ -59,10 +59,10 @@ describe("dataStructure file", () => {
 	});
 
 	it("rejects values that are not valid encoded file paths", async() => {
-		const structure = DServerDataStructure.file();
+		const structure = DSDataStructure.file();
 
 		const result = await structure.asyncUnsafeDecode(
-			DServerDataStructure.codecsString,
+			DSDataStructure.codecsString,
 			42,
 		);
 
@@ -70,15 +70,15 @@ describe("dataStructure file", () => {
 	});
 
 	it("encodes file interfaces with string and json codecs", async() => {
-		const structure = DServerDataStructure.file();
-		const file = DServerFile.createFileInterface(DCommon.infer("/tmp/config.json"));
+		const structure = DSDataStructure.file();
+		const file = DSFile.createFileInterface(DCommon.infer("/tmp/config.json"));
 
 		const stringResult = await structure.asyncEncode(
-			DServerDataStructure.codecsString,
+			DSDataStructure.codecsString,
 			file,
 		);
 		const jsonResult = await structure.asyncEncode(
-			DServerDataStructure.codecsJson,
+			DSDataStructure.codecsJson,
 			file,
 		);
 
@@ -98,10 +98,10 @@ describe("dataStructure file", () => {
 	});
 
 	it("decodes file interfaces with json codecs", async() => {
-		const structure = DServerDataStructure.file();
+		const structure = DSDataStructure.file();
 
 		const result = await structure.asyncDecode(
-			DServerDataStructure.codecsJson,
+			DSDataStructure.codecsJson,
 			DCommon.infer("/tmp/config.json"),
 		);
 
@@ -112,9 +112,9 @@ describe("dataStructure file", () => {
 	});
 
 	it("checks file interfaces through the server fundamental type and file type", async() => {
-		const structure = DServerDataStructure.file();
-		const file = DServerFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
-		const fileType = DServerDataStructure.FileType();
+		const structure = DSDataStructure.file();
+		const file = DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
+		const fileType = DSDataStructure.FileType();
 
 		const success = await structure.asyncCheck(file);
 		const failure = await structure.asyncCheck({ path: "/tmp/avatar.png" });
@@ -126,52 +126,52 @@ describe("dataStructure file", () => {
 	});
 
 	it("checks server file constraints without retesting lang structure composition", async() => {
-		const file = DServerFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
+		const file = DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
 		const stat = vi.fn().mockResolvedValue(DEither.success(createStatInfo()));
 		file.stat = stat;
 
-		const success = await DServerDataStructure.file([
-			DServerDataStructure.exist(),
-			DServerDataStructure.size({
+		const success = await DSDataStructure.file([
+			DSDataStructure.exist(),
+			DSDataStructure.size({
 				min: "1kb",
 				max: "2kb",
 			}),
-			DServerDataStructure.mimeType(/^text\//),
+			DSDataStructure.mimeType(/^text\//),
 		]).asyncCheck(file);
 
 		expect(DEither.isRight(success)).toBe(true);
 		expect(stat).toHaveBeenCalledTimes(2);
-		expect(DServerDataStructure.exist().isAsynchronous()).toBe(true);
-		expect(DServerDataStructure.size({}).isAsynchronous()).toBe(true);
-		expect(DServerDataStructure.mimeType("text/plain").isAsynchronous()).toBe(false);
+		expect(DSDataStructure.exist().isAsynchronous()).toBe(true);
+		expect(DSDataStructure.size({}).isAsynchronous()).toBe(true);
+		expect(DSDataStructure.mimeType("text/plain").isAsynchronous()).toBe(false);
 	});
 
 	it("rejects when server file constraints fail", async() => {
-		const missing = DServerFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
+		const missing = DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
 		missing.stat = vi.fn().mockResolvedValue(DEither.left("file-system-stat", new Error("missing")));
 
-		const directory = DServerFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
+		const directory = DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
 		directory.stat = vi.fn().mockResolvedValue(DEither.success(createStatInfo({
 			isFile: false,
 			isDirectory: true,
 		})));
 
-		const tooSmall = DServerFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
+		const tooSmall = DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
 		tooSmall.stat = vi.fn().mockResolvedValue(DEither.success(createStatInfo({
 			sizeBytes: 10,
 		})));
 
-		const tooLarge = DServerFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
+		const tooLarge = DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
 		tooLarge.stat = vi.fn().mockResolvedValue(DEither.success(createStatInfo({
 			sizeBytes: 3000,
 		})));
 
-		const existStructure = DServerDataStructure.file([DServerDataStructure.exist()]);
-		const directoryStructure = DServerDataStructure.file([DServerDataStructure.size({ min: 1 })]);
-		const sizeStructure = DServerDataStructure.file([DServerDataStructure.size({ min: "1kb" })]);
-		const maxSizeStructure = DServerDataStructure.file([DServerDataStructure.size({ max: "2kb" })]);
-		const mimeTypeStructure = DServerDataStructure.file([DServerDataStructure.mimeType("image/png")]);
-		const nullableMimeTypeStructure = DServerDataStructure.file([DServerDataStructure.mimeType("image/png")]);
+		const existStructure = DSDataStructure.file([DSDataStructure.exist()]);
+		const directoryStructure = DSDataStructure.file([DSDataStructure.size({ min: 1 })]);
+		const sizeStructure = DSDataStructure.file([DSDataStructure.size({ min: "1kb" })]);
+		const maxSizeStructure = DSDataStructure.file([DSDataStructure.size({ max: "2kb" })]);
+		const mimeTypeStructure = DSDataStructure.file([DSDataStructure.mimeType("image/png")]);
+		const nullableMimeTypeStructure = DSDataStructure.file([DSDataStructure.mimeType("image/png")]);
 
 		const existResult = await existStructure.asyncCheck(missing);
 		const directoryExistResult = await existStructure.asyncCheck(directory);
@@ -179,10 +179,10 @@ describe("dataStructure file", () => {
 		const sizeResult = await sizeStructure.asyncCheck(tooSmall);
 		const maxSizeResult = await maxSizeStructure.asyncCheck(tooLarge);
 		const mimeTypeResult = await mimeTypeStructure.asyncCheck(
-			DServerFile.createFileInterface(DCommon.infer("/tmp/avatar.png")),
+			DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png")),
 		);
 		const nullableMimeTypeResult = await nullableMimeTypeStructure.asyncCheck(
-			DServerFile.createFileInterface(DCommon.infer("/tmp/README")),
+			DSFile.createFileInterface(DCommon.infer("/tmp/README")),
 		);
 
 		expect(DEither.isLeft(existResult)).toBe(true);

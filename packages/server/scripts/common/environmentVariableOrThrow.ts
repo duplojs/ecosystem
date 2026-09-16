@@ -2,7 +2,7 @@ import * as DEither from "@duplojs/lang/either";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DKind from "@duplojs/lang/kind";
 import { createKind } from "@scripts/kind";
-import type * as DServerFile from "@scripts/file";
+import type * as DSFile from "@scripts/file";
 import { type EnvironmentVariableFileParams, environmentVariable } from "./environmentVariable";
 
 export class EnvironmentVariableError extends DKind.parentClass(
@@ -11,7 +11,7 @@ export class EnvironmentVariableError extends DKind.parentClass(
 ) {
 	public constructor(
 		public error: (
-			| DServerFile.FileSystemLeft<"read-text-file">
+			| DSFile.FileSystemLeft<"read-text-file">
 			| DEither.Left<"decode-error", DDataStructure.Error>
 		),
 	) {
