@@ -1,3 +1,3 @@
-export function timeout(millieSeconde?: number) {
-	return new Promise<void>((resolve) => void setTimeout(resolve, millieSeconde));
+export function timeout(milliSeconds?: number) {
+	return new Promise<void>((resolve) => void setTimeout(resolve, milliSeconds));
 }

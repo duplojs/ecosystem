@@ -1,4 +1,4 @@
-import type { ExpectType } from "@duplojs/lang";
+import type * as DCommon from "@duplojs/lang/common";
 import { Cipher } from "@scripts";
 
 describe("factory", () => {
@@ -12,7 +12,7 @@ describe("factory", () => {
 		);
 		const cipher = createCipher({ prefix: "value" });
 
-		type check = ExpectType<typeof createCipher.algorithm, "TEST", "strict">;
+		type check = DCommon.ExpectType<typeof createCipher.algorithm, "TEST", "strict">;
 
 		expect(createCipher.algorithm).toBe("TEST");
 		expect(cipher.encrypt("hello")).toBe("TEST:value:hello");

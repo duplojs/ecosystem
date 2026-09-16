@@ -1,4 +1,4 @@
-import { innerPipe } from "@duplojs/lang";
+import * as DCommon from "@duplojs/lang/common";
 import type * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import * as DChrono from "@duplojs/lang/chrono";
@@ -96,7 +96,7 @@ export const linkStat = implementFunction(
 			const fs = await nodeFileSystem.value;
 			return fs.lstat(path)
 				.then(
-					innerPipe(
+					DCommon.innerPipe(
 						createStatInfoWithFsSource,
 						DEither.success,
 					),
@@ -106,7 +106,7 @@ export const linkStat = implementFunction(
 		DENO: (path) => Deno
 			.lstat(path)
 			.then(
-				innerPipe(
+				DCommon.innerPipe(
 					createStatInfoWithDeno,
 					DEither.success,
 				),

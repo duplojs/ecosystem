@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { setCurrentWorkingDirectory } from "@duplojs/server";
+import * as DSCommon from "@duplojs/server/common";
 import * as DCommon from "@duplojs/lang/common";
 import * as DChrono from "@duplojs/lang/chrono";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -7,7 +7,7 @@ import * as DEither from "@duplojs/lang/either";
 import { Cipher, Signer, createTokenHandler, decodeBase64Url, decodeText, encodeBase64Url } from "@duplojs/json-web-token";
 
 describe("createTokenHandler", () => {
-	setCurrentWorkingDirectory(import.meta.dirname as never);
+	DSCommon.setCurrentWorkingDirectory(import.meta.dirname as never);
 
 	async function readKeyPair(directory: string) {
 		return {

@@ -1,4 +1,4 @@
-import { type Json } from "@duplojs/lang";
+import type * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -10,7 +10,7 @@ declare module "@scripts/implementor" {
 			GenericPath extends string & DPath.Path,
 		>(
 			path: GenericPath,
-		): Promise<FileSystemLeft<"read-json-file"> | DEither.Success<Json>>;
+		): Promise<FileSystemLeft<"read-json-file"> | DEither.Success<DCommon.Json>>;
 	}
 }
 

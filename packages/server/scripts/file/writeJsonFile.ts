@@ -1,4 +1,4 @@
-import { pipe } from "@duplojs/lang";
+import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -23,7 +23,7 @@ export const writeJsonFile = implementFunction(
 	{
 		NODE: async(path, data, params) => {
 			const fs = await nodeFileSystem.value;
-			return pipe(
+			return DCommon.pipe(
 				DEither.safeCallback(
 					() => JSON.stringify(
 						data,
@@ -44,7 +44,7 @@ export const writeJsonFile = implementFunction(
 				}),
 			);
 		},
-		DENO: async(path, data, params) => pipe(
+		DENO: async(path, data, params) => DCommon.pipe(
 			DEither.safeCallback(
 				() => JSON.stringify(
 					data,
@@ -63,7 +63,7 @@ export const writeJsonFile = implementFunction(
 					.catch((value) => DEither.left("file-system-write-json-file", value)),
 			}),
 		),
-		BUN: async(path, data, params) => pipe(
+		BUN: async(path, data, params) => DCommon.pipe(
 			DEither.safeCallback(
 				() => JSON.stringify(
 					data,

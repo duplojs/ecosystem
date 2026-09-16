@@ -2,7 +2,7 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
-import { environmentVariable, getCurrentWorkDirectory, getProcessArguments, setCurrentWorkingDirectory } from "@duplojs/server";
+import * as DSCommon from "@duplojs/server/common";
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, describe, it } from "node:test";
 
@@ -36,7 +36,7 @@ void describe("common feature on deno", () => {
 	});
 
 	void it("reads environment files with override and expansion", async() => {
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 				BASE_NAME: DDataStructure.string(),
@@ -82,7 +82,7 @@ void describe("common feature on deno", () => {
 		Deno.env.set("API_HOST", "process.local");
 		Deno.env.set("API_PREFIX", "/process");
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 				BASE_NAME: DDataStructure.string(),
@@ -121,17 +121,17 @@ void describe("common feature on deno", () => {
 	void it("reads and changes the current working directory", async() => {
 		await Deno.mkdir(rootPath, { recursive: true });
 
-		const setResult = setCurrentWorkingDirectory(rootPath);
+		const setResult = DSCommon.setCurrentWorkingDirectory(rootPath);
 		assert.equal(DEither.isRight(setResult), true);
 		assert.equal(DEither.unwrapRight(setResult), undefined);
 
-		const getResult = getCurrentWorkDirectory();
+		const getResult = DSCommon.getCurrentWorkDirectory();
 		DCommon.asserts(getResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(getResult), rootPath);
 	});
 
 	void it("reads process arguments", () => {
-		const result = getProcessArguments();
+		const result = DSCommon.getProcessArguments();
 
 		assert.deepEqual(result, Deno.args);
 	});

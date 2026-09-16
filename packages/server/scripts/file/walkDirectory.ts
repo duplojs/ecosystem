@@ -1,4 +1,4 @@
-import { forwardAsserts, innerPipe } from "@duplojs/lang";
+import * as DCommon from "@duplojs/lang/common";
 import * as DPath from "@duplojs/lang/path";
 import * as DGenerator from "@duplojs/lang/generator";
 import * as DEither from "@duplojs/lang/either";
@@ -43,24 +43,24 @@ export const walkDirectory = implementFunction(
 				},
 			)
 				.then(
-					innerPipe(
+					DCommon.innerPipe(
 						DGenerator.map(
-							innerPipe(
+							DCommon.innerPipe(
 								DPattern.when(
 									(dirent) => dirent.isFile(),
 									({ parentPath, name }) => createFileInterface(
-										forwardAsserts(`${parentPath}/${name}`, DPath.is),
+										DCommon.forwardAsserts(`${parentPath}/${name}`, DPath.is),
 									),
 								),
 								DPattern.when(
 									(dirent) => dirent.isDirectory(),
 									({ parentPath, name }) => createFolderInterface(
-										forwardAsserts(`${parentPath}/${name}`, DPath.is),
+										DCommon.forwardAsserts(`${parentPath}/${name}`, DPath.is),
 									),
 								),
 								DPattern.otherwise(
 									({ parentPath, name }) => createUnknownInterface(
-										forwardAsserts(`${parentPath}/${name}`, DPath.is),
+										DCommon.forwardAsserts(`${parentPath}/${name}`, DPath.is),
 									),
 								),
 							),

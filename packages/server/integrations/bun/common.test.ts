@@ -2,7 +2,8 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
-import { DSFile, environmentVariable, getCurrentWorkDirectory, getProcessArguments, setCurrentWorkingDirectory } from "@duplojs/server";
+import * as DSCommon from "@duplojs/server/common";
+import * as DSFile from "@duplojs/server/file";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 
 const initialWorkingDirectory = process.cwd();
@@ -32,7 +33,7 @@ describe("common feature on bun", () => {
 			TOKEN: "secret",
 		};
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 				BASE_NAME: DDataStructure.string(),
@@ -81,7 +82,7 @@ describe("common feature on bun", () => {
 			API_PREFIX: "/process",
 		};
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 				BASE_NAME: DDataStructure.string(),
@@ -120,17 +121,17 @@ describe("common feature on bun", () => {
 		expect(DEither.isRight(makeDirectoryResult)).toBe(true);
 		expect(DEither.unwrapRight(makeDirectoryResult)).toBeUndefined();
 
-		const setResult = setCurrentWorkingDirectory(rootPath);
+		const setResult = DSCommon.setCurrentWorkingDirectory(rootPath);
 		expect(DEither.isRight(setResult)).toBe(true);
 		expect(DEither.unwrapRight(setResult)).toBeUndefined();
 
-		const getResult = getCurrentWorkDirectory();
+		const getResult = DSCommon.getCurrentWorkDirectory();
 		DCommon.asserts(getResult, DEither.isRight);
 		expect(DEither.unwrapRight(getResult)).toBe(rootPath);
 	});
 
 	it("reads process arguments", () => {
-		const result = getProcessArguments();
+		const result = DSCommon.getProcessArguments();
 
 		expect(result).toEqual(["--runtime", "bun"]);
 	});

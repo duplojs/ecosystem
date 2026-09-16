@@ -3,7 +3,8 @@ import { createInput, useDisabledLayout, createForm, useMultiLayout, useCheckLay
 import { createGridTemplates } from "@V/templates/grid";
 import { TheCheckbox, DateInput, FileInput, NumberInput, RadioGroup, RangeInput, PrimaryButton, TextareaInput, TextInput, TimeInput, DualRangeInput, CheckboxPolicy, RangeDateInput, RangeTimeInput, templateFormRemoveButton, templateFormResetButton, templateFormNextButton, templateFormPreviousButton, templateFormSelect, templateFormAddButton } from "@V/designSystem";
 import { ref } from "vue";
-import { C, DS } from "@duplojs/lang";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DChrono from "@duplojs/lang/chrono";
 
 const gridTemplates = createGridTemplates({
 	repeat: {
@@ -110,10 +111,10 @@ const useRangeInput = createInput(
 const useDateInput = createInput(
 	DateInput,
 	{
-		defaultValue: () => C.now(),
+		defaultValue: () => DChrono.now(),
 		props: {
-			min: C.createDate("1900-01-01"),
-			max: C.createDate("2100-12-31"),
+			min: DChrono.createDate("1900-01-01"),
+			max: DChrono.createDate("2100-12-31"),
 		},
 	},
 );
@@ -122,8 +123,8 @@ const useRangeDateInput = createInput(
 	RangeDateInput,
 	{
 		defaultValue: () => ({
-			to: C.now(),
-			from: C.tomorrow(),
+			to: DChrono.now(),
+			from: DChrono.tomorrow(),
 		}),
 	},
 );
@@ -131,10 +132,10 @@ const useRangeDateInput = createInput(
 const useTimeInput = createInput(
 	TimeInput,
 	{
-		defaultValue: () => C.createTime(9.5, "hour"),
+		defaultValue: () => DChrono.createTime(9.5, "hour"),
 		props: {
-			min: C.createTime(8, "hour"),
-			max: C.createTime(20, "hour"),
+			min: DChrono.createTime(8, "hour"),
+			max: DChrono.createTime(20, "hour"),
 		},
 	},
 );
@@ -143,12 +144,12 @@ const useRangeTimeInput = createInput(
 	RangeTimeInput,
 	{
 		defaultValue: () => ({
-			from: C.createTime(8, "hour"),
-			to: C.createTime(20, "hour"),
+			from: DChrono.createTime(8, "hour"),
+			to: DChrono.createTime(20, "hour"),
 		}),
 		props: {
-			min: C.createTime(6, "hour"),
-			max: C.createTime(22, "hour"),
+			min: DChrono.createTime(6, "hour"),
+			max: DChrono.createTime(22, "hour"),
 		},
 	},
 );
@@ -200,7 +201,7 @@ const { component: Form, currentValue, check } = useForm(
 										useTextInput({
 											label: "Name",
 											defaultValue: "Default value",
-											dataStructure: DS.string().addMessage("need number"),
+											dataStructure: DDataStructure.string().addMessage("need number"),
 										}),
 										{
 											max: 10,
@@ -214,7 +215,10 @@ const { component: Form, currentValue, check } = useForm(
 											defaultValue: 26,
 										}),
 										{
-											dataStructure: DS.number([DS.positive(), DS.lessThan(30)]),
+											dataStructure: DDataStructure.number([
+												DDataStructure.positive(),
+												DDataStructure.lessThan(30),
+											]),
 											template: gridTemplates.useCheckTemplate({
 												columns: 2,
 												hideEmptyMessageError: true,

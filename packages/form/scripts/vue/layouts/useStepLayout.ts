@@ -180,9 +180,9 @@ export function useStepLayout(
 
 			const getErrorMessageNotAtLastStep = () => errorMessageNotAtLastStep.value;
 
-			const onNextStep = () => {
+			const onNextStep = async() => {
 				errorMessageNotAtLastStep.value = null;
-				const result = formFieldInstances[modelValue.value.currentStep]!().check();
+				const result = await formFieldInstances[modelValue.value.currentStep]!().check();
 
 				if (DEither.isLeft(result)) {
 					return;

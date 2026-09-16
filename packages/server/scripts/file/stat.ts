@@ -1,4 +1,4 @@
-import { innerPipe } from "@duplojs/lang";
+import * as DCommon from "@duplojs/lang/common";
 import type * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import * as DChrono from "@duplojs/lang/chrono";
@@ -135,7 +135,7 @@ export const stat = implementFunction(
 			const fs = await nodeFileSystem.value;
 			return fs.stat(path)
 				.then(
-					innerPipe(
+					DCommon.innerPipe(
 						createStatInfoWithFsSource,
 						DEither.success,
 					),
@@ -145,7 +145,7 @@ export const stat = implementFunction(
 		DENO: (path) => Deno
 			.stat(path)
 			.then(
-				innerPipe(
+				DCommon.innerPipe(
 					createStatInfoWithDeno,
 					DEither.success,
 				),
@@ -154,7 +154,7 @@ export const stat = implementFunction(
 		BUN: (path) => Bun.file(path)
 			.stat()
 			.then(
-				innerPipe(
+				DCommon.innerPipe(
 					createStatInfoWithFsSource,
 					DEither.success,
 				),

@@ -1,4 +1,4 @@
-import { instanceOf, pipe, when } from "@duplojs/lang";
+import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -24,10 +24,10 @@ export const truncate = implementFunction(
 				.then(DEither.ok)
 				.catch((value) => DEither.left("file-system-truncate", value));
 		},
-		DENO: (path, size) => pipe(
+		DENO: (path, size) => DCommon.pipe(
 			path,
-			when(
-				instanceOf(URL),
+			DCommon.when(
+				DCommon.instanceOf(URL),
 				({ pathname }) => decodeURIComponent(pathname),
 			),
 			(stringPath) => Deno

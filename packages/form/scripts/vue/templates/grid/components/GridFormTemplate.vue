@@ -8,10 +8,7 @@ export type Props = (
 	& GridTemplateContainerProps
 );
 
-const props = withDefaults(
-	defineProps<Props>(),
-	{},
-);
+const props = defineProps<Props>();
 
 defineSlots<FormTemplateProperties["slots"]>();
 

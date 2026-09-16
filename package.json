@@ -20,12 +20,12 @@
     "@duplojs/code-config": "workspace:*",
     "@typescript/native": "npm:typescript@7.0.2",
     "typescript": "6.0.3",
-    "@vitest/coverage-istanbul": "5.0.0",
+    "@vitest/coverage-istanbul": "5.0.1",
     "husky": "9.1.7",
     "rolldown": "1.2.7",
     "tscw-config": "1.1.2",
     "unplugin-dts": "1.1.0",
-    "vitest": "5.0.0"
+    "vitest": "5.0.1"
   },
   "workspaces": [
     "packages/*"

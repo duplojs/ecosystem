@@ -1,10 +1,10 @@
 /* oxlint-disable @typescript-eslint/consistent-type-imports */
-import { type AnyFunction, createEnum, createGlobalStore, type GetEnumValue, memoPromise } from "@duplojs/lang";
+import * as DCommon from "@duplojs/lang/common";
 
 export interface ServerFunction {}
 
-export const SupportedEnvironment = createEnum(["BUN", "DENO", "NODE", "TEST"]);
-export type SupportedEnvironment = GetEnumValue<typeof SupportedEnvironment>;
+export const SupportedEnvironment = DCommon.createEnum(["BUN", "DENO", "NODE", "TEST"]);
+export type SupportedEnvironment = DCommon.GetEnumValue<typeof SupportedEnvironment>;
 
 const SymbolEnvironmentStore = Symbol("environmentStore");
 type SymbolEnvironmentStore = typeof SymbolEnvironmentStore;
@@ -15,7 +15,7 @@ declare module "@duplojs/lang" {
 	}
 }
 
-const environmentStoreHandler = createGlobalStore(
+const environmentStoreHandler = DCommon.createGlobalStore(
 	SymbolEnvironmentStore,
 	(() => {
 		if (typeof Deno !== "undefined") {
@@ -37,7 +37,7 @@ export function setEnvironment(environment: SupportedEnvironment) {
 }
 
 export namespace TESTImplementation {
-	const store = new Map<string, AnyFunction>();
+	const store = new Map<string, DCommon.AnyFunction>();
 
 	export function clear() {
 		store.clear();
@@ -75,7 +75,7 @@ export function implementFunction<
 ): ServerFunction[GenericFunctionName] {
 	const environmentFunctions: Record<
 		SupportedEnvironment,
-		AnyFunction
+		DCommon.AnyFunction
 	> = {
 		NODE: theFunctions.NODE,
 		BUN: theFunctions.BUN ||= theFunctions.NODE,
@@ -94,6 +94,6 @@ export function implementFunction<
 	return (...args: unknown[]) => environmentFunctions[environmentStoreHandler.value](...args);
 }
 
-export const nodeFileSystem = memoPromise(() => import("node:fs/promises") as Promise<typeof import("node:fs/promises")>);
-export const nodeCrypto = memoPromise(() => import("node:crypto") as Promise<typeof import("node:crypto")>);
-export const nodeOs = memoPromise(() => import("node:os") as Promise<typeof import("node:os")>);
+export const nodeFileSystem = DCommon.memoPromise(() => import("node:fs/promises") as Promise<typeof import("node:fs/promises")>);
+export const nodeCrypto = DCommon.memoPromise(() => import("node:crypto") as Promise<typeof import("node:crypto")>);
+export const nodeOs = DCommon.memoPromise(() => import("node:os") as Promise<typeof import("node:os")>);

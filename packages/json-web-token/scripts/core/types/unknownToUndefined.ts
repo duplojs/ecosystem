@@ -1,4 +1,4 @@
-import type * as DCommon from "@duplojs/lang";
+import type * as DCommon from "@duplojs/lang/common";
 
 export type UnknownToUndefined<
 	GenericValue extends unknown,

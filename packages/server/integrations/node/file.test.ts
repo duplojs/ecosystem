@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, it } from "node:test";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
-import { DSFile } from "@duplojs/server";
+import * as DSFile from "@duplojs/server/file";
 
 const rootPath = DPath.createOrThrow(`${process.cwd()}/.tmp-file-node`);
 const fixturesPath = DPath.createOrThrow(`${process.cwd()}/fixtures/file`);

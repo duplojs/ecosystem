@@ -1,7 +1,7 @@
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
-import { DSFile } from "@duplojs/server";
+import * as DSFile from "@duplojs/server/file";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 
 const rootPath = DPath.createOrThrow(`${process.cwd()}/.tmp-file-bun`);

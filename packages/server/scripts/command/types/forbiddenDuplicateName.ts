@@ -1,4 +1,4 @@
-import type { ComputedTypeError } from "@duplojs/lang";
+import type * as DCommon from "@duplojs/lang/common";
 
 export type ForbiddenDuplicateName<
 	GenericItems extends readonly { readonly name: string }[],
@@ -9,7 +9,7 @@ export type ForbiddenDuplicateName<
 	...infer InferredRestItems extends { readonly name: string }[],
 ]
 	? InferredFirstItem["name"] extends GenericSeenNames
-		? ComputedTypeError<`Duplicate ${GenericType} name "${InferredFirstItem["name"]}"`>
+		? DCommon.ComputedTypeError<`Duplicate ${GenericType} name "${InferredFirstItem["name"]}"`>
 		: ForbiddenDuplicateName<
 			InferredRestItems,
 			GenericType,

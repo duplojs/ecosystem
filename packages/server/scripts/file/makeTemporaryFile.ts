@@ -1,4 +1,4 @@
-import { forwardAsserts } from "@duplojs/lang";
+import * as DCommon from "@duplojs/lang/common";
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeCrypto, nodeFileSystem, nodeOs } from "@scripts/implementor";
@@ -21,8 +21,8 @@ export const makeTemporaryFile = implementFunction(
 			const os = await nodeOs.value;
 			const crypto = await nodeCrypto.value;
 
-			const tempPath = forwardAsserts(os.tmpdir(), DPath.is);
-			const fileName = forwardAsserts(`${prefix}${crypto.randomUUID()}${suffix ?? ""}`, DPath.isSegment);
+			const tempPath = DCommon.forwardAsserts(os.tmpdir(), DPath.is);
+			const fileName = DCommon.forwardAsserts(`${prefix}${crypto.randomUUID()}${suffix ?? ""}`, DPath.isSegment);
 
 			const fileTemporaryPath = DPath.resolveRelative([
 				tempPath,

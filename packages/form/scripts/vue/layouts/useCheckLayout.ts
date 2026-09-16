@@ -99,7 +99,7 @@ export function useCheckLayout(
 			})!;
 
 			const check: FormFieldInstance["check"] = async() => {
-				const fieldResult = formFieldInstance.check();
+				const fieldResult = await formFieldInstance.check();
 
 				if (DEither.isLeft(fieldResult)) {
 					return fieldResult;
@@ -118,7 +118,7 @@ export function useCheckLayout(
 
 				const result = params.dataStructure === undefined
 					? DEither.success(fieldValue)
-					: params.dataStructure.asyncParse(
+					: await params.dataStructure.asyncParse(
 						fieldValue,
 						params.codecs ?? context.codecs,
 					);

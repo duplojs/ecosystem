@@ -7,13 +7,6 @@ export default defineConfig({
 			"tests/**/*.test.ts",
 			"integrations/**/*.test.ts",
 		],
-		coverage: {
-			include: ["scripts/**/*.ts"],
-			exclude: [
-				"**/*.test.ts",
-				"dist",
-			],
-		},
 		benchmark: {
 			include: [
 				"tests/**/*.bench.ts",

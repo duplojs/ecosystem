@@ -58,7 +58,8 @@
     "sass-embedded": "1.104.1",
     "@vue/language-core": "3.3.11",
     "@vue/test-utils": "2.5.0",
-    "vue-tsc": "3.3.11"
+    "vue-tsc": "3.3.11",
+    "@vitest/browser-playwright": "5.0.1"
   },
   "keywords": [
     "duplojs",

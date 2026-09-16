@@ -1,9 +1,10 @@
 import { readFile } from "node:fs/promises";
-import { setCurrentWorkingDirectory } from "@duplojs/server";
+import * as DSCommon from "@duplojs/server/common";
 import { Signer } from "@duplojs/json-web-token";
+import * as DPath from "@duplojs/lang/path";
 
 describe("Signer", () => {
-	setCurrentWorkingDirectory(import.meta.dirname as never);
+	DSCommon.setCurrentWorkingDirectory(DPath.createOrThrow(import.meta.dirname));
 
 	async function readKeyPair(directory: string) {
 		return {

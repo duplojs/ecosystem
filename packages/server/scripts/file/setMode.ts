@@ -1,4 +1,4 @@
-import { isType } from "@duplojs/lang";
+import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -33,7 +33,7 @@ function calculatePermissions(permissions?: Permissions): number {
 }
 
 function toMode(mode: SetMode): number {
-	if (isType(mode, "number")) {
+	if (DCommon.isType(mode, "number")) {
 		return mode;
 	}
 

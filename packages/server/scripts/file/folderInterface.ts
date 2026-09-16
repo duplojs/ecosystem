@@ -1,4 +1,4 @@
-import { asyncPipe, innerPipe } from "@duplojs/lang";
+import * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
@@ -43,10 +43,10 @@ export function createFolderInterface(path: string & DPath.Path): FolderInterfac
 	}
 
 	function localRename(newName: string & DPath.Segment) {
-		return asyncPipe(
+		return DCommon.asyncPipe(
 			rename(path, newName),
 			DEither.whenIsRight(
-				innerPipe(
+				DCommon.innerPipe(
 					createFolderInterface,
 					DEither.success,
 				),
@@ -55,10 +55,10 @@ export function createFolderInterface(path: string & DPath.Path): FolderInterfac
 	}
 
 	function localRelocate(newParentPath: string & DPath.Path) {
-		return asyncPipe(
+		return DCommon.asyncPipe(
 			relocate(path, newParentPath),
 			DEither.whenIsRight(
-				innerPipe(
+				DCommon.innerPipe(
 					createFolderInterface,
 					DEither.success,
 				),
@@ -67,7 +67,7 @@ export function createFolderInterface(path: string & DPath.Path): FolderInterfac
 	}
 
 	function localMove(newPath: string & DPath.Path) {
-		return asyncPipe(
+		return DCommon.asyncPipe(
 			move(path, newPath),
 			DEither.whenIsRight(
 				() => DEither.success(

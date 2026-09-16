@@ -1,4 +1,4 @@
-import type { ExpectType } from "@duplojs/lang";
+import type * as DCommon from "@duplojs/lang/common";
 import { Signer } from "@scripts";
 
 describe("factory", () => {
@@ -12,7 +12,7 @@ describe("factory", () => {
 		);
 		const signer = createSigner({ prefix: "value" });
 
-		type check = ExpectType<typeof createSigner.algorithm, "TEST", "strict">;
+		type check = DCommon.ExpectType<typeof createSigner.algorithm, "TEST", "strict">;
 
 		expect(createSigner.algorithm).toBe("TEST");
 		expect(signer.sign("hello")).toBe("TEST:value:hello");

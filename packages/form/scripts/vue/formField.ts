@@ -21,11 +21,13 @@ export type FormFieldSlots = Record<
 	FormFieldSlotParams
 >;
 
-export interface FormFieldInstanceContext {
+export interface FormFieldInstanceContext<
+	GenericValue extends unknown = unknown,
+> {
 	templates: Templates;
 	getSlot(
 		name: string,
-		params: FormFieldSlotParams,
+		params: FormFieldSlotParams<GenericValue>,
 	): VNode | null;
 	errorInterpreter: DDataStructure.ErrorInterpreter;
 	codecs: DDataStructure.Codecs | undefined;
@@ -36,7 +38,7 @@ export type FormFieldInstanceParams<
 > = [
 	modelValue: Ref<GenericValue>,
 	parentKey: string,
-	context: FormFieldInstanceContext,
+	context: FormFieldInstanceContext<GenericValue>,
 ];
 
 export interface ErrorProperties {

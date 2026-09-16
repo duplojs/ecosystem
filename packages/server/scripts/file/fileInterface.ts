@@ -1,4 +1,4 @@
-import { asyncPipe, mimeType, innerPipe } from "@duplojs/lang";
+import * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
@@ -47,7 +47,7 @@ export function createFileInterface(
 			return null;
 		}
 
-		return mimeType.get(extension) ?? null;
+		return DCommon.mimeType.get(extension) ?? null;
 	}
 
 	function getParentPath() {
@@ -59,10 +59,10 @@ export function createFileInterface(
 	}
 
 	function localRename(newName: string & DPath.Segment) {
-		return asyncPipe(
+		return DCommon.asyncPipe(
 			rename(path, newName),
 			DEither.whenIsRight(
-				innerPipe(
+				DCommon.innerPipe(
 					createFileInterface,
 					DEither.success,
 				),
@@ -71,10 +71,10 @@ export function createFileInterface(
 	}
 
 	function localRelocate(newParentPath: string & DPath.Path) {
-		return asyncPipe(
+		return DCommon.asyncPipe(
 			relocate(path, newParentPath),
 			DEither.whenIsRight(
-				innerPipe(
+				DCommon.innerPipe(
 					createFileInterface,
 					DEither.success,
 				),
@@ -83,7 +83,7 @@ export function createFileInterface(
 	}
 
 	function localMove(newPath: string & DPath.Path) {
-		return asyncPipe(
+		return DCommon.asyncPipe(
 			move(path, newPath),
 			DEither.whenIsRight(
 				() => DEither.success(

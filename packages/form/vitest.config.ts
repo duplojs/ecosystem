@@ -1,6 +1,7 @@
 import { defineConfig } from "vitest/config";
 import vue from "@vitejs/plugin-vue";
 import * as DPath from "@duplojs/lang/path";
+import { playwright } from "@vitest/browser-playwright";
 
 export default defineConfig({
 	resolve: {
@@ -13,20 +14,23 @@ export default defineConfig({
 		},
 	},
 	plugins: [vue()],
+	optimizeDeps: {
+		include: ["@vue/reactivity"],
+	},
 	test: {
+		browser: {
+			provider: playwright(),
+			enabled: true,
+			headless: true,
+			instances: [{ browser: "chromium" }],
+		},
 		environment: "jsdom",
 		globals: true,
 		include: [
 			"tests/**/*.test.ts",
 			"integrations/**/*.test.ts",
 		],
-		coverage: {
-			include: ["scripts"],
-			exclude: [
-				"**/*.test.ts",
-				"dist",
-			],
-		},
+		exclude: ["**/node_modules/**"],
 		benchmark: {
 			include: [
 				"tests/**/*.bench.ts",

@@ -5,7 +5,7 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
-import { environmentVariable, getCurrentWorkDirectory, getProcessArguments, setCurrentWorkingDirectory } from "@duplojs/server";
+import * as DSCommon from "@duplojs/server/common";
 
 const initialWorkingDirectory = process.cwd();
 const initialProcessEnv = { ...process.env };
@@ -40,7 +40,7 @@ void describe("common feature on node", () => {
 			TOKEN: "secret",
 		};
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 				BASE_NAME: DDataStructure.string(),
@@ -90,7 +90,7 @@ void describe("common feature on node", () => {
 			API_PREFIX: "/process",
 		};
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 				BASE_NAME: DDataStructure.string(),
@@ -127,17 +127,17 @@ void describe("common feature on node", () => {
 	void it("reads and changes the current working directory", async() => {
 		await mkdir(rootPath, { recursive: true });
 
-		const setResult = setCurrentWorkingDirectory(rootPath);
+		const setResult = DSCommon.setCurrentWorkingDirectory(rootPath);
 		assert.equal(DEither.isRight(setResult), true);
 		assert.equal(DEither.unwrapRight(setResult), undefined);
 
-		const getResult = getCurrentWorkDirectory();
+		const getResult = DSCommon.getCurrentWorkDirectory();
 		DCommon.asserts(getResult, DEither.isRight);
 		assert.equal(DEither.unwrapRight(getResult), rootPath);
 	});
 
 	void it("reads process arguments", () => {
-		const result = getProcessArguments();
+		const result = DSCommon.getProcessArguments();
 
 		assert.deepEqual(result, ["--runtime", "node"]);
 	});

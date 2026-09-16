@@ -1,7 +1,7 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
 import * as DPath from "@duplojs/lang/path";
-import { DSFile } from "@duplojs/server";
+import * as DSFile from "@duplojs/server/file";
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, describe, it } from "node:test";
 
