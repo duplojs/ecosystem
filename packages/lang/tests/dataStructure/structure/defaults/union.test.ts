@@ -19,7 +19,7 @@ describe("UnionStructure", () => {
 		type _CheckSuccess = ExpectType<
 			typeof success,
 			| DEither.Right<"check-success", string | number>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"check-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -185,7 +185,7 @@ describe("UnionStructure", () => {
 		type _CheckEncodedString = ExpectType<
 			typeof encodedString,
 			| DEither.Right<"encode-success", string | number>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -198,7 +198,7 @@ describe("UnionStructure", () => {
 		type _CheckDecodedString = ExpectType<
 			typeof decodedString,
 			| DEither.Right<"decode-success", string | number>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -508,19 +508,19 @@ describe("UnionStructure", () => {
 		], []);
 
 		expect(structure.check("value")).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 		expect(await structure.asyncCheck("value")).toStrictEqual(
 			DEither.right("check-success", "value"),
 		);
 		expect(structure.encode(DDataStructure.createCodecs({}), "value")).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 		expect(await structure.asyncEncode(DDataStructure.createCodecs({}), "value")).toStrictEqual(
 			DEither.right("encode-success", "value"),
 		);
 		expect(structure.decode(DDataStructure.createCodecs({}), "value")).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 		expect(await structure.asyncDecode(DDataStructure.createCodecs({}), "value")).toStrictEqual(
 			DEither.right("decode-success", "value"),

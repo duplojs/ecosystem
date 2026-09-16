@@ -80,7 +80,7 @@ describe("whenIsSelectedOtherwise", () => {
 			(value) => {
 				type _CheckValue = ExpectType<
 					typeof value,
-					| DEither.Left<"async-error", undefined>
+					| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 					| DEither.Left<"map-error", DDataStructure.Error>,
 					"strict"
 				>;

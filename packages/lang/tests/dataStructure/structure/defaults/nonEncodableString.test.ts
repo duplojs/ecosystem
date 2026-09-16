@@ -16,7 +16,7 @@ describe("NonEncodableStringStructure", () => {
 		type _CheckSuccess = ExpectType<
 			typeof success,
 			| DEither.Right<"check-success", String>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"check-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -119,7 +119,7 @@ describe("NonEncodableStringStructure", () => {
 		type _CheckEncoded = ExpectType<
 			typeof encoded,
 			| DEither.Right<"encode-success", String>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -132,7 +132,7 @@ describe("NonEncodableStringStructure", () => {
 		type _CheckDecoded = ExpectType<
 			typeof decoded,
 			| DEither.Right<"decode-success", String>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -184,7 +184,7 @@ describe("NonEncodableStringStructure", () => {
 					readonly privateKey: String;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;

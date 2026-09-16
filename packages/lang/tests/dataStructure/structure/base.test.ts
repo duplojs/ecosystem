@@ -443,7 +443,7 @@ describe("createStructure", () => {
 		expect(
 			DEither.unwrapByInformationOrThrow(failure, "check-error").issues,
 		).toHaveLength(1);
-		expect(asyncFailure).toStrictEqual(DEither.left("async-error", undefined));
+		expect(asyncFailure).toStrictEqual(DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)));
 		expect(asyncSuccess).toStrictEqual(DEither.right("check-success", "value"));
 		expect(
 			DEither.unwrapByInformationOrThrow(
@@ -590,7 +590,7 @@ describe("createStructure", () => {
 
 		expect(success).toStrictEqual(DEither.right("encode-success", "ABCD"));
 		expect(fallbackSuccess).toStrictEqual(DEither.right("encode-success", "value"));
-		expect(asyncFailure).toStrictEqual(DEither.left("async-error", undefined));
+		expect(asyncFailure).toStrictEqual(DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)));
 		expect(asyncSuccess).toStrictEqual(DEither.right("encode-success", "encoded"));
 		expect(asyncUnsafeSuccess).toStrictEqual(DEither.right("encode-success", "encoded"));
 	});
@@ -703,11 +703,11 @@ describe("createStructure", () => {
 		);
 
 		expect(success).toStrictEqual(DEither.right("decode-success", "123"));
-		expect(asyncFailure).toStrictEqual(DEither.left("async-error", undefined));
+		expect(asyncFailure).toStrictEqual(DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)));
 		expect(asyncSuccess).toStrictEqual(DEither.right("decode-success", "decoded"));
 		expect(asyncUnsafeSuccess).toStrictEqual(DEither.right("decode-success", "decoded"));
 		expect(parseSuccess).toStrictEqual(DEither.right("parse-success", "123"));
-		expect(asyncParseFailure).toStrictEqual(DEither.left("async-error", undefined));
+		expect(asyncParseFailure).toStrictEqual(DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)));
 		expect(asyncParseSuccess).toStrictEqual(DEither.right("parse-success", "parsed"));
 	});
 

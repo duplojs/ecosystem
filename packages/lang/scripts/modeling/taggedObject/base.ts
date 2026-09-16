@@ -142,7 +142,7 @@ export interface TaggedObjectStructure<
 			"map-success",
 			DDataStructure.StructureValue<this>
 		>
-		| DEither.Left<"async-error", undefined>
+		| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	);
 	decodeMap<
@@ -162,7 +162,7 @@ export interface TaggedObjectStructure<
 			"map-success",
 			DDataStructure.StructureValue<this>
 		>
-		| DEither.Left<"async-error", undefined>
+		| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	);
 	map(
@@ -176,7 +176,7 @@ export interface TaggedObjectStructure<
 			"map-success",
 			DDataStructure.StructureValue<this>
 		>
-		| DEither.Left<"async-error", undefined>
+		| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	);
 
@@ -337,7 +337,7 @@ export const TaggedObjectStructure = DDataStructure.createStructure(
 				);
 
 				if (result instanceof Promise) {
-					return DEither.left("async-error", undefined);
+					return DEither.left("async-error", new DDataStructure.ErrorPromise());
 				}
 
 				if (result === DDataStructure.ErrorSymbol) {
@@ -365,7 +365,7 @@ export const TaggedObjectStructure = DDataStructure.createStructure(
 				);
 
 				if (result instanceof Promise) {
-					return DEither.left("async-error", undefined);
+					return DEither.left("async-error", new DDataStructure.ErrorPromise());
 				}
 
 				if (result === DDataStructure.ErrorSymbol) {

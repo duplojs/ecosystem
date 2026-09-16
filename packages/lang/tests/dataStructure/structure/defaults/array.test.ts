@@ -18,7 +18,7 @@ describe("ArrayStructure", () => {
 		type _CheckSuccess = ExpectType<
 			typeof success,
 			| DEither.Right<"check-success", readonly string[]>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"check-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -115,7 +115,7 @@ describe("ArrayStructure", () => {
 		type _CheckEncoded = ExpectType<
 			typeof encoded,
 			| DEither.Right<"encode-success", readonly number[]>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -128,7 +128,7 @@ describe("ArrayStructure", () => {
 		type _CheckDecoded = ExpectType<
 			typeof decoded,
 			| DEither.Right<"decode-success", readonly string[]>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -433,13 +433,13 @@ describe("ArrayStructure", () => {
 		);
 
 		expect(structure.encode(DDataStructure.createCodecs({ codec }), ["Jane"])).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 		expect(await structure.asyncEncode(DDataStructure.createCodecs({ codec }), ["Jane"])).toStrictEqual(
 			DEither.right("encode-success", [4]),
 		);
 		expect(structure.decode(DDataStructure.createCodecs({ codec }), [4])).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 		expect(await structure.asyncDecode(DDataStructure.createCodecs({ codec }), [4])).toStrictEqual(
 			DEither.right("decode-success", ["4"]),

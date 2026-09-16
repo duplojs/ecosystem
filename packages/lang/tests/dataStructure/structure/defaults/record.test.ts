@@ -22,7 +22,7 @@ describe("RecordStructure", () => {
 		type _CheckSuccess = ExpectType<
 			typeof success,
 			| DEither.Right<"check-success", Partial<{ readonly [Prop in string]: number }>>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"check-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -279,7 +279,7 @@ describe("RecordStructure", () => {
 				"encode-success",
 				EncodedRecord
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -301,7 +301,7 @@ describe("RecordStructure", () => {
 					readonly second: string;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -538,13 +538,13 @@ describe("RecordStructure", () => {
 
 		expect(structure.isAsynchronous()).toBe(true);
 		expect(structure.check({ name: "Jane" })).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 		expect(structure.encode(DDataStructure.createCodecs({}), { name: "Jane" })).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 		expect(structure.decode(DDataStructure.createCodecs({}), { name: "Jane" })).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 	});
 });

@@ -292,7 +292,7 @@ describe("EntityStructure", () => {
 					readonly name: string & DModeling.NewType<"user-name", DString.MinCharacters<3>>;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -330,7 +330,7 @@ describe("EntityStructure", () => {
 					readonly name: string & DModeling.NewType<"user-name", DString.MinCharacters<3>>;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -378,7 +378,7 @@ describe("EntityStructure", () => {
 					readonly name: string & DModeling.NewType<"user-name", DString.MinCharacters<3>>;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -424,7 +424,7 @@ describe("EntityStructure", () => {
 					readonly name: string & DModeling.NewType<"user-name", DString.MinCharacters<3>>;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -462,7 +462,7 @@ describe("EntityStructure", () => {
 		);
 
 		expect(structure.map({ name: "Jane" })).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 	});
 
@@ -486,7 +486,7 @@ describe("EntityStructure", () => {
 		const codecs = DDataStructure.createCodecs({ string: codec });
 
 		expect(structure.decodeMap(codecs, { name: 4 })).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 	});
 

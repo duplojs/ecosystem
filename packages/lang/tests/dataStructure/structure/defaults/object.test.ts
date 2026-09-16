@@ -31,7 +31,7 @@ describe("ObjectStructure", () => {
 					readonly age: number;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"check-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -227,7 +227,7 @@ describe("ObjectStructure", () => {
 		}, []);
 
 		expect(structure.check({ name: "Jane" })).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 		expect(await structure.asyncCheck({ name: "Jane" })).toStrictEqual(
 			DEither.right("check-success", { name: "Jane" }),
@@ -281,7 +281,7 @@ describe("ObjectStructure", () => {
 					readonly age: string;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -520,7 +520,7 @@ describe("ObjectStructure", () => {
 		);
 
 		expect(structure.encode(DDataStructure.createCodecs({ codec }), { name: "Jane" })).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 		expect(await structure.asyncEncode(DDataStructure.createCodecs({ codec }), { name: "Jane" })).toStrictEqual(
 			DEither.right("encode-success", { name: 4 }),
@@ -572,7 +572,7 @@ describe("ObjectStructure", () => {
 					readonly age: number;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -791,7 +791,7 @@ describe("ObjectStructure", () => {
 		);
 
 		expect(structure.decode(DDataStructure.createCodecs({ codec }), { name: 4 })).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 		expect(await structure.asyncDecode(DDataStructure.createCodecs({ codec }), { name: 4 })).toStrictEqual(
 			DEither.right("decode-success", { name: "name-4" }),

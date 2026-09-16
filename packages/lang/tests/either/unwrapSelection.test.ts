@@ -85,7 +85,7 @@ describe("unwrapSelection", () => {
 		type _CheckResult = ExpectType<
 			typeof result,
 			| (string & DModeling.NewType<"user-name">)
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;

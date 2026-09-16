@@ -1,5 +1,5 @@
 import type * as DCommon from "@scripts/common";
-import type * as DKind from "@scripts/kind";
+import * as DKind from "@scripts/kind";
 import { type Constraint } from "../../constraint";
 import { type Structure } from "../../structure";
 import { type Type } from "../../type";
@@ -46,8 +46,24 @@ export interface PathStageErrorHandler {
 	close(): void;
 }
 
-export interface Error {
-	readonly issues: readonly Issues[];
+export class Error extends DKind.parentClass(
+	createKind("error"),
+	globalThis.Error,
+) {
+	public constructor(
+		public readonly issues: readonly Issues[],
+	) {
+		super(null, "DataStructure Error.");
+	}
+}
+
+export class ErrorPromise extends DKind.parentClass(
+	createKind("error-promise"),
+	globalThis.Error,
+) {
+	public constructor() {
+		super(null, "DataStructure Error Promise.");
+	}
 }
 
 export interface ErrorHandler {
@@ -141,7 +157,7 @@ export function createErrorHandler(defaultPath?: string[]): ErrorHandler {
 				[decodeIssueKind.runTimeKey]: null,
 			} satisfies DKind.Remove<DecodeIssue> as never);
 		},
-		createError: () => ({ issues }),
+		createError: () => new Error(issues),
 		importIssues: (errorHandler) => void errorHandler.forEach(
 			(value) => void issues.push(
 				...(

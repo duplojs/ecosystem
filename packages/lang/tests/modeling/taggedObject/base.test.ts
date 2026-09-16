@@ -309,7 +309,7 @@ describe("TaggedObjectStructure", () => {
 					typeof codecs
 				>
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -323,7 +323,7 @@ describe("TaggedObjectStructure", () => {
 					readonly age: number;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -375,7 +375,7 @@ describe("TaggedObjectStructure", () => {
 					readonly name: string & DModeling.NewType<"user-name", DString.MinCharacters<3>>;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -413,7 +413,7 @@ describe("TaggedObjectStructure", () => {
 					readonly name: string & DModeling.NewType<"user-name", DString.MinCharacters<3>>;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -509,7 +509,7 @@ describe("TaggedObjectStructure", () => {
 					readonly name: string & DModeling.NewType<"user-name", DString.MinCharacters<3>>;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -555,7 +555,7 @@ describe("TaggedObjectStructure", () => {
 					readonly name: string & DModeling.NewType<"user-name", DString.MinCharacters<3>>;
 				}
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -589,7 +589,7 @@ describe("TaggedObjectStructure", () => {
 		);
 
 		expect(structure.map({ name: "Jane" })).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 	});
 
@@ -609,7 +609,7 @@ describe("TaggedObjectStructure", () => {
 		const codecs = DDataStructure.createCodecs({ string: codec });
 
 		expect(structure.decodeMap(codecs, { name: 4 })).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 	});
 

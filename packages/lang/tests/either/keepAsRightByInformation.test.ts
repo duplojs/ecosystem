@@ -57,7 +57,7 @@ describe("keepAsRightByInformation", () => {
 				"map-success",
 				number & DModeling.NewType<"nested-number">
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;

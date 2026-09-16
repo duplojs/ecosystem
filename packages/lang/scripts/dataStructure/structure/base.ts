@@ -2,7 +2,7 @@ import type * as DKind from "@scripts/kind";
 import * as DEither from "@scripts/either";
 import * as DCommon from "@scripts/common";
 import { createKind } from "../kind";
-import { createGetErrorHandler, ErrorSymbol, type GetErrorHandler, SuccessSymbol, type EncodedValue, type CodecContext, type Error, type Codecs } from "../common";
+import { createGetErrorHandler, ErrorPromise, ErrorSymbol, type GetErrorHandler, SuccessSymbol, type EncodedValue, type CodecContext, type Error, type Codecs } from "../common";
 import { type Constraint } from "../constraint";
 import { type StructureConstraintsValue, type StructureValue } from "./types";
 
@@ -102,7 +102,7 @@ export interface Structure<
 	isAsynchronous(): boolean;
 	check(data: unknown): (
 		| DEither.Right<"check-success", StructureValue<this>>
-		| DEither.Left<"async-error", undefined>
+		| DEither.Left<"async-error", ErrorPromise>
 		| DEither.Left<"check-error", Error>
 	);
 	asyncCheck(data: unknown): Promise<
@@ -122,7 +122,7 @@ export interface Structure<
 			"encode-success",
 			EncodedValue<StructureValue<this>, GenericCodecs>
 		>
-		| DEither.Left<"async-error", undefined>
+		| DEither.Left<"async-error", ErrorPromise>
 		| DEither.Left<"encode-error", Error>
 	);
 	asyncEncode<
@@ -147,7 +147,7 @@ export interface Structure<
 			"encode-success",
 			EncodedValue<StructureValue<this>, GenericCodecs>
 		>
-		| DEither.Left<"async-error", undefined>
+		| DEither.Left<"async-error", ErrorPromise>
 		| DEither.Left<"encode-error", Error>
 	);
 	asyncUnsafeEncode<
@@ -172,7 +172,7 @@ export interface Structure<
 			"decode-success",
 			StructureValue<this>
 		>
-		| DEither.Left<"async-error", undefined>
+		| DEither.Left<"async-error", ErrorPromise>
 		| DEither.Left<"decode-error", Error>
 	);
 	asyncDecode<
@@ -195,7 +195,7 @@ export interface Structure<
 			"decode-success",
 			StructureValue<this>
 		>
-		| DEither.Left<"async-error", undefined>
+		| DEither.Left<"async-error", ErrorPromise>
 		| DEither.Left<"decode-error", Error>
 	);
 	asyncUnsafeDecode(
@@ -216,7 +216,7 @@ export interface Structure<
 			"parse-success",
 			StructureValue<this>
 		>
-		| DEither.Left<"async-error", undefined>
+		| DEither.Left<"async-error", ErrorPromise>
 		| DEither.Left<"parse-error", Error>
 	);
 	asyncParse(
@@ -417,7 +417,7 @@ export function createStructure<
 				);
 
 				if (result instanceof Promise) {
-					return DEither.left("async-error", undefined);
+					return DEither.left("async-error", new ErrorPromise());
 				}
 
 				if (result === ErrorSymbol) {
@@ -457,7 +457,7 @@ export function createStructure<
 				);
 
 				if (result instanceof Promise) {
-					return DEither.left("async-error", undefined);
+					return DEither.left("async-error", new ErrorPromise());
 				}
 
 				if (result === ErrorSymbol) {
@@ -491,7 +491,7 @@ export function createStructure<
 				);
 
 				if (result instanceof Promise) {
-					return DEither.left("async-error", undefined);
+					return DEither.left("async-error", new ErrorPromise());
 				}
 
 				if (result === ErrorSymbol) {
@@ -523,7 +523,7 @@ export function createStructure<
 				);
 
 				if (result instanceof Promise) {
-					return DEither.left("async-error", undefined);
+					return DEither.left("async-error", new ErrorPromise());
 				}
 
 				if (result === ErrorSymbol) {

@@ -18,7 +18,7 @@ describe("LazyStructure", () => {
 		type _CheckSuccess = ExpectType<
 			typeof success,
 			| DEither.Right<"check-success", string>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"check-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -181,7 +181,7 @@ describe("LazyStructure", () => {
 		type _CheckEncoded = ExpectType<
 			typeof encoded,
 			| DEither.Right<"encode-success", { readonly name: number }>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -194,7 +194,7 @@ describe("LazyStructure", () => {
 		type _CheckDecoded = ExpectType<
 			typeof decoded,
 			| DEither.Right<"decode-success", { readonly name: string }>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -420,17 +420,17 @@ describe("LazyStructure", () => {
 
 		expect(structure.isAsynchronous()).toBe(true);
 		expect(structure.check("value")).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 		expect(await structure.asyncCheck("value")).toStrictEqual(
 			DEither.right("check-success", "value"),
 		);
 		expect(structure.is("value")).toBe(false);
 		expect(structure.encode(DDataStructure.createCodecs({}), "value")).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 		expect(structure.decode(DDataStructure.createCodecs({}), "value")).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 	});
 });

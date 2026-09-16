@@ -490,7 +490,7 @@ describe("NewTypeStructure", () => {
 				"map-success",
 				string & DModeling.NewType<"user-name", DString.MinCharacters<3>>
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -520,7 +520,7 @@ describe("NewTypeStructure", () => {
 				"map-success",
 				string & DModeling.NewType<"user-name", DString.MinCharacters<3>>
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -556,7 +556,7 @@ describe("NewTypeStructure", () => {
 				"map-success",
 				string & DModeling.NewType<"user-name", DString.MinCharacters<3>>
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -594,7 +594,7 @@ describe("NewTypeStructure", () => {
 				"map-success",
 				string & DModeling.NewType<"user-name", DString.MinCharacters<3>>
 			>
-			| DEither.Left<"async-error", undefined>
+			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"map-error", DDataStructure.Error>,
 			"strict"
 		>;
@@ -633,7 +633,7 @@ describe("NewTypeStructure", () => {
 		>;
 
 		expect(structure.map("Jane")).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 	});
 
@@ -652,7 +652,7 @@ describe("NewTypeStructure", () => {
 		const codecs = DDataStructure.createCodecs({ string: codec });
 
 		expect(structure.decodeMap(codecs, 4)).toStrictEqual(
-			DEither.left("async-error", undefined),
+			DEither.left("async-error", expect.any(DDataStructure.ErrorPromise)),
 		);
 	});
 

@@ -1,6 +1,14 @@
 import { DDataStructure } from "@scripts";
 
 describe("createErrorHandler", () => {
+	it("creates a promise error for asynchronous data structures used through synchronous APIs", () => {
+		const error = new DDataStructure.ErrorPromise();
+
+		expect(error).toBeInstanceOf(globalThis.Error);
+		expect(error).toBeInstanceOf(DDataStructure.ErrorPromise);
+		expect(error.message).toBe("DataStructure Error Promise.");
+	});
+
 	it("collects structure issues with their source, sub source, data and path", () => {
 		const errorHandler = DDataStructure.createErrorHandler();
 		const pathStage = errorHandler.createPathStage();
@@ -96,9 +104,12 @@ describe("createErrorHandler", () => {
 
 		errorHandler.addIssue(structure, 123);
 
-		expect(errorHandler.createError()).toStrictEqual({
-			issues: errorHandler.issues,
-		});
+		const error = errorHandler.createError();
+
+		expect(error).toBeInstanceOf(globalThis.Error);
+		expect(error).toBeInstanceOf(DDataStructure.Error);
+		expect(error.message).toBe("DataStructure Error.");
+		expect(error.issues).toBe(errorHandler.issues);
 	});
 
 	it("imports issues from error handlers and lazy error handlers", () => {
