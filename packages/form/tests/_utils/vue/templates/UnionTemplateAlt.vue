@@ -14,7 +14,9 @@ defineSlots<UnionTemplateProperties["slots"]>();
 
 <template>
 	<section id="local-union-template">
-		<header id="local-union-kind">{{ props.getCurrentKind() }}</header>
+		<header id="local-union-kind">
+			{{ props.getCurrentKind() }}
+		</header>
 
 		<small id="local-union-value">{{ JSON.stringify(props.getCurrentValue()) }}</small>
 

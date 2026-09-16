@@ -19,6 +19,7 @@ describe("plugin/index", () => {
 			"dot-notation",
 			"no-unreachable-loop",
 			"prefer-destructuring",
+			"prefer-namespace-import",
 		]);
 	});
 });

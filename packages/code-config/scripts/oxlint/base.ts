@@ -2,6 +2,25 @@ import { defineConfig, type OxlintConfig, type OxlintOverride } from "oxlint";
 import { defineRules } from "./defineRules";
 import { pluginSpecifier } from "./plugin";
 
+export const defaultPreferNamespaceImportPaths = {
+	"@duplojs/lang/common": "DCommon",
+	"@duplojs/lang/kind": "DKind",
+	"@duplojs/lang/object": "DObject",
+	"@duplojs/lang/string": "DString",
+	"@duplojs/lang/either": "DEither",
+	"@duplojs/lang/dataStructure": "DDataStructure",
+	"@duplojs/lang/array": "DArray",
+	"@duplojs/lang/chrono": "DChrono",
+	"@duplojs/lang/tuple": "DTuple",
+	"@duplojs/lang/number": "DNumber",
+	"@duplojs/lang/modeling": "DModeling",
+	"@duplojs/lang/pattern": "DPattern",
+	"@duplojs/lang/generator": "DGenerator",
+	"@duplojs/lang/invocation": "DInvocation",
+	"@duplojs/lang/path": "DPath",
+	"@duplojs/lang/printer": "DPrinter",
+};
+
 export const basePreset = {
 	plugins: ["typescript", "eslint"],
 	jsPlugins: [
@@ -644,6 +663,12 @@ export const basePreset = {
 				array: true,
 			},
 		],
+		"duplojs-plugin/prefer-namespace-import": [
+			"error",
+			{
+				paths: defaultPreferNamespaceImportPaths,
+			},
+		],
 	}),
 } as const satisfies Omit<OxlintOverride, "files">;
 
@@ -662,7 +687,6 @@ export const basePresetConfig = {
 	},
 	options: {
 		typeAware: true,
-		typeCheck: true,
 		reportUnusedDisableDirectives: "error",
 		respectEslintDisableDirectives: true,
 	},
