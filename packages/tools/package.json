@@ -56,7 +56,7 @@
     "@duplojs/lang": "workspace:*"
   },
   "dependencies": {
-    "@typescript/typescript6": "6.0.2"
+    "typescript": "6.0.3"
   },
   "devDependencies": {
     "@duplojs/code-config": "workspace:*",

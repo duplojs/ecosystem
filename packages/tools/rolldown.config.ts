@@ -5,7 +5,7 @@ export default defineConfig({
 	input: "scripts/index.ts",
 	external: [
 		/^@duplojs\/lang(?:\/.*)?$/,
-		"@typescript/typescript6",
+		"typescript",
 	],
 	platform: "neutral",
 	tsconfig: "tsconfig.build.json",

@@ -47,6 +47,7 @@
 		"editor.formatOnSave": false, 
 		"editor.defaultFormatter": "oxc.oxc-vscode",
 		"editor.codeActionsOnSave": {
+			"source.fixAll.eslint": "explicit",
 			"source.format.oxc": "always",
 			"source.fixAll.oxc": "always",
 		},
@@ -63,7 +64,7 @@
 
 		"js/ts.tsdk.path": "node_modules/typescript/lib",
 		"js/ts.format.enabled": false,
-		"js/ts.experimental.useTsgo": true,
+		"js/ts.experimental.useTsgo": false,
 		"js/ts.tsdk.promptToUseWorkspaceVersion": true,
 		"js/ts.updateImportsOnFileMove.enabled": "prompt",
 

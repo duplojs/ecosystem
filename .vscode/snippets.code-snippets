@@ -34,4 +34,24 @@
 		],
 		"description": "template ut",
 	},
+
+	"vue-template": {
+		"prefix": "vuet",
+		"scope": "vue",
+		"body": [
+			"<script setup lang=\"ts\">",
+			"interface Props {",
+			"",
+			"}",
+			"",
+			"defineProps<Props>();",
+			"$1",
+			"</script>",
+			"",
+			"<template>",
+			"   <div></div>",
+			"</template>"
+		],
+		"description": "vue template"
+	},
 }

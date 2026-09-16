@@ -1,3 +1,3 @@
-import * as Typescript from "@typescript/typescript6";
+import * as Typescript from "typescript";
 
 export { Typescript };

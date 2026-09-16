@@ -8,7 +8,3 @@ allowBuilds:
   bun: true
   deno: true
   esbuild: true
-packageExtensions:
-  "eslint-plugin-vue@10.11.0":
-    dependencies:
-      typescript: "6.0.3"
