@@ -26,6 +26,11 @@ export const defaultPreferNamespaceImportPaths = {
 	"@duplojs/server/command": "DSCommand",
 };
 
+const defaultNoRestrictedImportPaths = {
+	"@duplojs/lang": "@duplojs/lang/common",
+	"@duplojs/server": "@duplojs/server/common",
+};
+
 export const basePreset = {
 	plugins: ["typescript", "eslint"],
 	jsPlugins: [
@@ -672,6 +677,12 @@ export const basePreset = {
 			"error",
 			{
 				paths: defaultPreferNamespaceImportPaths,
+			},
+		],
+		"duplojs-plugin/no-restricted-import": [
+			"error",
+			{
+				paths: defaultNoRestrictedImportPaths,
 			},
 		],
 	}),
