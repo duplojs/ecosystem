@@ -26,8 +26,8 @@ export function createTokenHandlerCreateMethod(
 		},
 	): Promise<
 		| DEither.Right<"token-created", string>
-		| DEither.Left<"header-encode-error", DDataStructure.Error>
-		| DEither.Left<"payload-encode-error", DDataStructure.Error>
+		| DEither.Left<"header-encode-error", DDataStructure.Error | DDataStructure.ErrorPromise>
+		| DEither.Left<"payload-encode-error", DDataStructure.Error | DDataStructure.ErrorPromise>
 	> {
 		const signer = resolveSigner(config.signer, params?.signer);
 		const cipher = resolveCipher(config.cipher, params?.cipher);

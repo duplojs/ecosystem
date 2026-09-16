@@ -28,9 +28,9 @@ export type DecodeTokenContentResult = (
 	}
 	| DEither.Left<"token-format">
 	| DEither.Left<"header-json-error">
-	| DEither.Left<"header-decode-error", DDataStructure.Error>
+	| DEither.Left<"header-decode-error", DDataStructure.Error | DDataStructure.ErrorPromise>
 	| DEither.Left<"payload-json-error">
-	| DEither.Left<"payload-decode-error", DDataStructure.Error>
+	| DEither.Left<"payload-decode-error", DDataStructure.Error | DDataStructure.ErrorPromise>
 );
 
 export type DecodeTokenContent = (
