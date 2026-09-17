@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { createInput, useDisabledLayout, createForm, useMultiLayout, useCheckLayout, useRepeatLayout, useUnionLayout, useStepLayout, useSectionLayout, useSlotLayout } from "@V";
 import { createGridTemplates } from "@V/templates/grid";
-import { TheCheckbox, DateInput, FileInput, NumberInput, RadioGroup, RangeInput, PrimaryButton, TextareaInput, TextInput, TimeInput, DualRangeInput, CheckboxPolicy, RangeDateInput, RangeTimeInput, templateFormRemoveButton, templateFormResetButton, templateFormNextButton, templateFormPreviousButton, templateFormSelect, templateFormAddButton } from "@V/designSystem";
+import { SelectInput, TheCheckbox, DateInput, FileInput, NumberInput, RadioGroup, RangeInput, PrimaryButton, TextareaInput, TextInput, TimeInput, DualRangeInput, CheckboxPolicy, RangeDateInput, RangeTimeInput, templateFormRemoveButton, templateFormResetButton, templateFormNextButton, templateFormPreviousButton, templateFormSelect, templateFormAddButton } from "@V/designSystem";
 import { ref } from "vue";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DChrono from "@duplojs/lang/chrono";
@@ -181,6 +181,25 @@ const useDualRangeInput = createInput(
 	},
 );
 
+const useSelectInput = createInput(
+	SelectInput,
+	{
+		defaultValue: () => "1",
+		props: {
+			options: [
+				{
+					label: "Value1",
+					value: "1",
+				},
+				{
+					label: "Value2",
+					value: "2",
+				},
+			],
+		},
+	},
+);
+
 const disabled = ref(false);
 
 const useForm = createForm(
@@ -238,6 +257,9 @@ const { component: Form, currentValue, check } = useForm(
 										"testSlot",
 										{ defaultValue: "" },
 									),
+									select: useSelectInput({
+										label: "test",
+									}),
 								}),
 							],
 							[
