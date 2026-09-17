@@ -21,7 +21,7 @@ describe("values", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			("Duplo" | 1)[],
+			readonly ("Duplo" | 1)[],
 			"strict"
 		>;
 	});

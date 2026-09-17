@@ -4,6 +4,7 @@ import { bigintLiteralTypeTransformer } from "./bigintLiteral";
 import { booleanTypeTransformer } from "./boolean";
 import { booleanLiteralTypeTransformer } from "./booleanLiteral";
 import { dateTypeTransformer } from "./date";
+import { fileTypeTransformer } from "./file";
 import { nullTypeTransformer } from "./null";
 import { numberTypeTransformer } from "./number";
 import { numberLiteralTypeTransformer } from "./numberLiteral";
@@ -17,6 +18,7 @@ export * from "./bigintLiteral";
 export * from "./boolean";
 export * from "./booleanLiteral";
 export * from "./date";
+export * from "./file";
 export * from "./null";
 export * from "./number";
 export * from "./numberLiteral";
@@ -31,6 +33,7 @@ export const defaultTypeTransformers = [
 	booleanTypeTransformer,
 	booleanLiteralTypeTransformer,
 	dateTypeTransformer,
+	fileTypeTransformer,
 	nullTypeTransformer,
 	numberTypeTransformer,
 	numberLiteralTypeTransformer,

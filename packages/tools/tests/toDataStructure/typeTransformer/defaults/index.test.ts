@@ -9,6 +9,7 @@ describe("defaultTypeTransformers", () => {
 			DStoDS.booleanTypeTransformer,
 			DStoDS.booleanLiteralTypeTransformer,
 			DStoDS.dateTypeTransformer,
+			DStoDS.fileTypeTransformer,
 			DStoDS.nullTypeTransformer,
 			DStoDS.numberTypeTransformer,
 			DStoDS.numberLiteralTypeTransformer,

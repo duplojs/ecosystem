@@ -10,6 +10,7 @@ import type {
 	JsonSchemaBooleanLiteral,
 	JsonSchemaBigint,
 	JsonSchemaBigintLiteral,
+	JsonSchemaFile,
 	JsonSchemaUndefined,
 	JsonSchemaNull,
 } from "./defaults";
@@ -23,6 +24,7 @@ export type TypeJsonSchema = (
 	| JsonSchemaBooleanLiteral
 	| JsonSchemaBigint
 	| JsonSchemaBigintLiteral
+	| JsonSchemaFile
 	| JsonSchemaUndefined
 	| JsonSchemaNull
 );

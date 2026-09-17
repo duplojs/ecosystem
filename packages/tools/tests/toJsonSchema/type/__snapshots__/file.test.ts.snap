@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`fileTypeTransformer > renders a file type 1`] = `
+{
+  "format": "binary",
+  "type": "string",
+}
+`;

@@ -6,6 +6,7 @@ export * from "./boolean";
 export * from "./booleanLiteral";
 export * from "./bigint";
 export * from "./bigintLiteral";
+export * from "./file";
 export * from "./undefined";
 export * from "./null";
 
@@ -19,6 +20,7 @@ import { booleanTypeTransformer } from "./boolean";
 import { booleanLiteralTypeTransformer } from "./booleanLiteral";
 import { bigintTypeTransformer } from "./bigint";
 import { bigintLiteralTypeTransformer } from "./bigintLiteral";
+import { fileTypeTransformer } from "./file";
 import { undefinedTypeTransformer } from "./undefined";
 import { nullTypeTransformer } from "./null";
 
@@ -31,6 +33,7 @@ export const defaultTypeTransformers = [
 	booleanLiteralTypeTransformer,
 	bigintTypeTransformer,
 	bigintLiteralTypeTransformer,
+	fileTypeTransformer,
 	undefinedTypeTransformer,
 	nullTypeTransformer,
 ] as const satisfies readonly TypeTransformer[];

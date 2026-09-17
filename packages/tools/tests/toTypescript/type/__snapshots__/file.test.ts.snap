@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`fileTypeTransformer > renders a file type and its import 1`] = `
+"import * as DSFile from "@duplojs/server/file";
+
+export type Value = DSFile.FileInterface;"
+`;

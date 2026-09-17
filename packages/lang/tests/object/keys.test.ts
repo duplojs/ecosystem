@@ -23,7 +23,7 @@ describe("keys", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			("name" | "version")[],
+			readonly ("name" | "version")[],
 			"strict"
 		>;
 	});

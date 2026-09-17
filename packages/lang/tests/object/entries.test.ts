@@ -26,7 +26,7 @@ describe("entries", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			(["name", string] | ["version", number])[],
+			readonly (readonly ["name", string] | readonly ["version", number])[],
 			"strict"
 		>;
 	});
@@ -41,7 +41,7 @@ describe("entries", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			[DString.Number, "a" | "b"][],
+			readonly(readonly [DString.Number, "a" | "b"])[],
 			"strict"
 		>;
 	});

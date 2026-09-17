@@ -58,7 +58,8 @@
     }
   },
   "peerDependencies": {
-    "@duplojs/lang": "workspace:*"
+    "@duplojs/lang": "workspace:*",
+    "@duplojs/server": "workspace:*"
   },
   "dependencies": {
     "typescript": "6.0.3"
