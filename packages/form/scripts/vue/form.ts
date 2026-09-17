@@ -127,7 +127,7 @@ export type GetCheckedValue<
 	GenericCheck extends FormProperties["check"],
 > = DEither.GetValue<
 	Extract<
-		ReturnType<GenericCheck>,
+		Awaited<ReturnType<GenericCheck>>,
 		DEither.Right
 	>
 >;
