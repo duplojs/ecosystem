@@ -8,7 +8,7 @@ describe("flat", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			(1 | 2 | 3)[],
+			readonly (1 | 2 | 3)[],
 			"strict"
 		>;
 	});
@@ -20,7 +20,7 @@ describe("flat", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			(1 | 2 | 3)[],
+			readonly (1 | 2 | 3)[],
 			"strict"
 		>;
 	});

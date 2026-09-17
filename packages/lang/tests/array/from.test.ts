@@ -8,7 +8,7 @@ describe("from", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			string[],
+			readonly string[],
 			"strict"
 		>;
 	});
@@ -34,7 +34,7 @@ describe("from", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			Promise<("a" | "b")[]>,
+			Promise<readonly ("a" | "b")[]>,
 			"strict"
 		>;
 

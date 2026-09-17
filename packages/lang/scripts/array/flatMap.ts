@@ -17,7 +17,7 @@ export function flatMap<
 	) => GenericOutput,
 ): (
 	array: GenericArray,
-) => FlatArray<GenericOutput, 1>[];
+) => readonly FlatArray<GenericOutput, 1>[];
 
 export function flatMap<
 	GenericArray extends readonly unknown[],
@@ -28,7 +28,7 @@ export function flatMap<
 		element: GenericArray[number],
 		params: FlatMapTheFunctionParams<GenericArray>,
 	) => GenericOutput,
-): FlatArray<GenericOutput, 1>[];
+): readonly FlatArray<GenericOutput, 1>[];
 
 export function flatMap(
 	...args:

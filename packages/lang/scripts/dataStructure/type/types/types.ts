@@ -15,6 +15,7 @@ import type {
 } from "../defaults";
 
 export interface TypesStore {
+	base: Type;
 	bigint: BigintType;
 	bigintLiteral: BigintLiteralType;
 	boolean: BooleanType;

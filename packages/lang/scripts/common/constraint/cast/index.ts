@@ -6,7 +6,7 @@ import { type UnbundlesConstraint, type BaseConstraint, type RemoveConstraint } 
 import { type CastError, type RemoveCastError } from "./error";
 import { type ComputeCastConstraintNumberRule } from "./number";
 import { type ComputeCastConstraintStringRule } from "./string";
-import { type IsExtends, type BreakGenericLink, type NeverCoalescing, type UnionContain, type IsEqual } from "../../types";
+import { type IsExtends, type BreakGenericLink, type NeverCoalescing, type UnionContain, type IsEqual, type AnyTuple } from "../../types";
 
 export type * from "./array";
 export type * from "./error";
@@ -86,13 +86,15 @@ export type ComputeCastConstraint<
 
 type ComputeTransformCastValue<
 	GenericValue extends unknown,
-> = GenericValue extends readonly unknown[]
-	? DArray.ExtractLengthEqual<GenericValue, unknown> extends DArray.LengthEqual<infer InferredLength>
-		? DTuple.Create<GenericValue[number], InferredLength>
-		: DArray.ExtractMinElements<GenericValue, unknown> extends DArray.MinElements<infer InferredMin>
-			? readonly [...DTuple.Create<GenericValue[number], InferredMin>, ...GenericValue]
-			: RemoveConstraint<GenericValue>
-	: RemoveConstraint<GenericValue>;
+> = GenericValue extends AnyTuple
+	? RemoveConstraint<GenericValue>
+	: GenericValue extends readonly unknown[]
+		? DArray.ExtractLengthEqual<GenericValue, unknown> extends DArray.LengthEqual<infer InferredLength>
+			? DTuple.Create<GenericValue[number], InferredLength>
+			: DArray.ExtractMinElements<GenericValue, unknown> extends DArray.MinElements<infer InferredMin>
+				? readonly [...DTuple.Create<GenericValue[number], InferredMin>, ...GenericValue[number][]]
+				: RemoveConstraint<GenericValue>
+		: RemoveConstraint<GenericValue>;
 
 export type ComputeCastValue<
 	GenericValue extends unknown,

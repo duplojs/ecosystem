@@ -11,6 +11,7 @@ import type {
 } from "../defaults";
 
 export interface FundamentalTypesStore {
+	base: FundamentalType;
 	bigint: TheBigint;
 	boolean: TheBoolean;
 	date: TheDate;

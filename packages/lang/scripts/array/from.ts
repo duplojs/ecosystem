@@ -4,11 +4,11 @@ type Enumerable = | ArrayLike<unknown> | Iterable<unknown> | AsyncIterable<unkno
 type FromOutput<
 	GenericEnumerable extends Enumerable,
 > = GenericEnumerable extends AsyncIterable<infer InferredValue>
-	? Promise<InferredValue[]>
+	? Promise<readonly InferredValue[]>
 	: GenericEnumerable extends Iterable<infer InferredValue>
-		? InferredValue[]
+		? readonly InferredValue[]
 		: GenericEnumerable extends ArrayLike<infer InferredValue>
-			? InferredValue[]
+			? readonly InferredValue[]
 			: never;
 
 export function from<

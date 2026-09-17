@@ -2,6 +2,8 @@ import { type Constraint } from "../base";
 import type * as DDefaults from "../defaults";
 
 export interface ConstraintsStore {
+	base: Constraint;
+
 	allowedCharacters: DDefaults.AllowedCharactersConstraint;
 	email: DDefaults.EmailConstraint;
 	url: DDefaults.UrlConstraint;

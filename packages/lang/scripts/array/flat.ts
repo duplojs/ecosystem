@@ -4,7 +4,7 @@ export function flat<
 >(
 	array: GenericArray,
 	depth?: Depth,
-): FlatArray<GenericArray, Depth>[];
+): readonly FlatArray<GenericArray, Depth>[];
 
 export function flat(array: readonly unknown[], depth?: number): any {
 	return array.flat(depth);

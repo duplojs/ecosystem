@@ -15,7 +15,7 @@ describe("flatMap", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			number[],
+			readonly number[],
 			"strict"
 		>;
 	});
