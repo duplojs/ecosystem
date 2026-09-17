@@ -2,7 +2,7 @@ import * as DKind from "@scripts/kind";
 
 export function keys<
 	GenericObject extends object,
->(object: GenericObject): `${Exclude<keyof GenericObject, symbol>}`[];
+>(object: GenericObject): readonly `${Exclude<keyof GenericObject, symbol>}`[];
 
 export function keys(object: object): string[] {
 	const result = [];

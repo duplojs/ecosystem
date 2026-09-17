@@ -51,6 +51,7 @@ export * from "./string";
 export * from "./stringLengthEqual";
 export * from "./time";
 export * from "./trimmed";
+export * from "./typeStructureIdentifier";
 export * from "./undefined";
 export * from "./union";
 export * from "./unwrapLazy";

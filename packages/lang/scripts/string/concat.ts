@@ -29,23 +29,25 @@ type ConcatOutput<
 export function concat<
 	GenericString extends string,
 	GenericElement extends string,
-	GenericOutput = ConcatOutput<GenericString, GenericElement>,
 >(
 	element: GenericElement,
 ): (
 	string: GenericString,
-) => DCommon.BreakGenericLink<GenericOutput>;
+) => DCommon.BreakGenericLink<
+	ConcatOutput<GenericString, GenericElement>
+>;
 
 export function concat<
 	GenericString extends string,
 	GenericElement extends string,
 	GenericElementsRest extends readonly string[],
-	GenericOutput = ConcatOutput<GenericString, GenericElement, GenericElementsRest>,
 >(
 	string: GenericString,
 	element: GenericElement,
 	...elementsRest: GenericElementsRest
-): DCommon.BreakGenericLink<GenericOutput>;
+): DCommon.BreakGenericLink<
+	ConcatOutput<GenericString, GenericElement, GenericElementsRest>
+>;
 
 export function concat(
 	...args:

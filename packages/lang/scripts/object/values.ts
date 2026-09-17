@@ -5,7 +5,7 @@ export function values<
 	GenericObject extends Record<string, DCommon.AnyValue>,
 >(
 	object: GenericObject,
-): GenericObject[keyof GenericObject][];
+): readonly GenericObject[keyof GenericObject][];
 
 export function values(
 	object: Record<string, DCommon.AnyValue>,

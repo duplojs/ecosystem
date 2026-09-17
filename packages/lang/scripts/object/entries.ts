@@ -7,24 +7,24 @@ export type GetEntry<
 	GenericValue extends unknown,
 > = GenericValue extends any
 	? GenericKey extends string | number
-		? [`${GenericKey}`, GenericValue]
+		? readonly [`${GenericKey}`, GenericValue]
 		: never
 	: never;
 
 export type GetEntries<
 	GenericObject extends object,
 > = GenericObject extends readonly any[]
-	? [DString.Number, GenericObject[number]][]
+	? readonly(readonly [DString.Number, GenericObject[number]])[]
 	: DCommon.IsEqual<GenericObject, object> extends true
-		? [string, DCommon.AnyValue][]
+		? readonly [string, DCommon.AnyValue][]
 		: (
 			{
 				[Prop in keyof GenericObject]-?: GetEntry<Prop, GenericObject[Prop]>
 			}[keyof GenericObject]
 		) extends infer InferredResult extends DCommon.ObjectEntry
 			? DCommon.IsEqual<InferredResult, never> extends true
-				? []
-				: InferredResult[]
+				? readonly []
+				: readonly InferredResult[]
 			: never;
 
 export function entries<
@@ -33,7 +33,7 @@ export function entries<
 	object: GenericObject,
 ): DCommon.SimplifyTopLevel<GetEntries<GenericObject>>;
 
-export function entries(object: object) {
+export function entries(object: object): any {
 	const result: [key: unknown, value: unknown][] = [];
 
 	for (const key in object) {
