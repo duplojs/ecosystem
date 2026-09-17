@@ -9,6 +9,7 @@ describe("minElementsConstraintTransformer", () => {
 
 		expect(DStoDS.render(checkout, {
 			identifier: "Checkout",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.minElementsConstraintTransformer],
 			toTypescript: {

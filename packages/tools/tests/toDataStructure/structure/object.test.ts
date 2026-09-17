@@ -23,6 +23,7 @@ describe("objectStructureTransformer", () => {
 
 		expect(DStoDS.render(productSheet, {
 			identifier: "ProductSheet",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [
 				DStoDS.arrayStructureTransformer,
 				DStoDS.newTypeStructureTransformer,
@@ -40,33 +41,10 @@ describe("objectStructureTransformer", () => {
 		})).toMatchSnapshot();
 	});
 
-	it("renders a structure identifier with keepIdentifier", () => {
-		const address = DDataStructure.object({
-			line1: DDataStructure.string([DDataStructure.notEmpty()]),
-			city: DDataStructure.string([DDataStructure.notEmpty()]),
-			country: DDataStructure.string([DDataStructure.stringLengthEqual(2)]),
-		}).addIdentifier("PostalAddress");
-		const customer = DDataStructure.object({
-			billingAddress: address,
-			shippingAddress: address,
-		}).addIdentifier("CustomerAddresses");
-
-		expect(DStoDS.render(customer, {
-			identifier: "CustomerAddresses",
-			structureTransformers: [DStoDS.objectStructureTransformer, DStoDS.typeStructureTransformer],
-			constraintTransformers: DStoDS.defaultConstraintTransformers,
-			keepIdentifier: true,
-			toTypescript: {
-				typeTransformers: DStoTS.defaultTypeTransformers,
-				structureTransformers: DStoTS.defaultStructureTransformers,
-				constraintTransformers: DStoTS.defaultConstraintTransformers,
-			},
-		})).toMatchSnapshot();
-	});
-
 	it("propagates unsupported object property and constraints", () => {
 		const unsupportedProperty = () => DStoDS.render(DDataStructure.object({ id: DDataStructure.string() }), {
 			identifier: "ObjectValue",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [DStoDS.objectStructureTransformer],
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -79,6 +57,7 @@ describe("objectStructureTransformer", () => {
 			DDataStructure.object({ id: DDataStructure.string() }, [DDataStructure.minElements(1) as never]),
 			{
 				identifier: "ObjectValue",
+				typeTransformers: DStoDS.defaultTypeTransformers,
 				structureTransformers: [DStoDS.objectStructureTransformer, DStoDS.typeStructureTransformer],
 				constraintTransformers: [],
 				toTypescript: {

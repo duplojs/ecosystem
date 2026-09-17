@@ -9,6 +9,7 @@ describe("oddConstraintTransformer", () => {
 
 		expect(DStoDS.render(pickingZone, {
 			identifier: "PickingZone",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.oddConstraintTransformer],
 			toTypescript: {

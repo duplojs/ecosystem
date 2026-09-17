@@ -19,6 +19,7 @@ describe("toDataStructure override", () => {
 		expect(structure).not.toBe(sourceStructure);
 		expect(DStoDS.render(structure, {
 			identifier: "ExternalSku",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -37,6 +38,7 @@ describe("toDataStructure override", () => {
 
 		expect(DStoDS.render(structure, {
 			identifier: "SearchScore",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -71,6 +73,7 @@ describe("toDataStructure override", () => {
 		expect(constraint).not.toBe(sourceConstraint);
 		expect(DStoDS.render(DDataStructure.string([constraint]), {
 			identifier: "CustomerEmail",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -98,6 +101,7 @@ describe("toDataStructure override", () => {
 
 		expect(DStoDS.render(DDataStructure.string([constraint]), {
 			identifier: "CustomerName",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -124,6 +128,7 @@ describe("toDataStructure override", () => {
 
 		expect(() => DStoDS.render(structure, {
 			identifier: "OrderProjection",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -143,6 +148,7 @@ describe("toDataStructure override", () => {
 
 		expect(() => DStoDS.render(structure, {
 			identifier: "CustomerId",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {

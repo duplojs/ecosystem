@@ -16,11 +16,3 @@ export const priceAmountStructureDataStructure = DModeling.NewTypeStructure("Pri
 
 export const productSheetDataStructure = DDataStructure.ObjectStructure({ sku: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]), name: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.MinCharactersConstraint(3), DDataStructure.MaxCharactersConstraint(120)]), price: priceAmountStructureDataStructure, tags: DDataStructure.ArrayStructure(DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.TrimmedConstraint()]), []), status: DDataStructure.UnionStructure([DDataStructure.TypeStructure(DDataStructure.StringLiteralType("draft"), []), DDataStructure.TypeStructure(DDataStructure.StringLiteralType("published"), []), DDataStructure.TypeStructure(DDataStructure.StringLiteralType("archived"), [])], []), stockByWarehouse: DDataStructure.RecordStructure(DDataStructure.UnionStructure([DDataStructure.TypeStructure(DDataStructure.StringLiteralType("main"), []), DDataStructure.TypeStructure(DDataStructure.StringLiteralType("outlet"), [])], []), DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.IntegerConstraint(), DDataStructure.GreaterThanOrEqualConstraint(0)]), []) }, []);"
 `;
-
-exports[`objectStructureTransformer > renders a structure identifier with keepIdentifier 1`] = `
-"import * as DDataStructure from "@duplojs/lang/dataStructure";
-
-export const postalAddressDataStructure = DDataStructure.ObjectStructure({ line1: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]), city: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]), country: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.StringLengthEqualConstraint(2)]) }, []);
-
-export const customerAddressesDataStructure = DDataStructure.ObjectStructure({ billingAddress: postalAddressDataStructure, shippingAddress: postalAddressDataStructure }, []);"
-`;

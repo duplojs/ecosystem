@@ -9,6 +9,7 @@ describe("notEmptyConstraintTransformer", () => {
 
 		expect(DStoDS.render(productReference, {
 			identifier: "ProductReference",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.notEmptyConstraintTransformer],
 			toTypescript: {

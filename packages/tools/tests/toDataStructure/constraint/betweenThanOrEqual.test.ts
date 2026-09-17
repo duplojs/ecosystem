@@ -9,6 +9,7 @@ describe("betweenThanOrEqualConstraintTransformer", () => {
 
 		expect(DStoDS.render(customerProfile, {
 			identifier: "CustomerProfile",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.betweenThanOrEqualConstraintTransformer],
 			toTypescript: {

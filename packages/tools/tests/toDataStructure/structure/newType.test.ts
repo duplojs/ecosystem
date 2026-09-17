@@ -15,6 +15,7 @@ describe("newTypeStructureTransformer", () => {
 
 		expect(DStoDS.render(money, {
 			identifier: "RenderedMoney",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [
 				DStoDS.newTypeStructureTransformer,
 				DStoDS.typeStructureTransformer,
@@ -31,6 +32,7 @@ describe("newTypeStructureTransformer", () => {
 	it("propagates unsupported inner structure and new type constraints", () => {
 		const unsupportedInner = () => DStoDS.render(DModeling.NewTypeStructure("Sku", DDataStructure.string(), []), {
 			identifier: "SkuValue",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [DStoDS.newTypeStructureTransformer],
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -43,6 +45,7 @@ describe("newTypeStructureTransformer", () => {
 			DModeling.NewTypeStructure("Quantity", DDataStructure.number(), [DDataStructure.integer()]),
 			{
 				identifier: "QuantityValue",
+				typeTransformers: DStoDS.defaultTypeTransformers,
 				structureTransformers: [DStoDS.newTypeStructureTransformer, DStoDS.typeStructureTransformer],
 				constraintTransformers: [],
 				toTypescript: {

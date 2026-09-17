@@ -9,6 +9,7 @@ describe("absolutePathConstraintTransformer", () => {
 
 		expect(DStoDS.render(documentStorageConfig, {
 			identifier: "DocumentStorageConfig",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.absolutePathConstraintTransformer],
 			toTypescript: {

@@ -9,6 +9,7 @@ describe("lessThanConstraintTransformer", () => {
 
 		expect(DStoDS.render(fraudSignal, {
 			identifier: "FraudSignal",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.lessThanConstraintTransformer],
 			toTypescript: {

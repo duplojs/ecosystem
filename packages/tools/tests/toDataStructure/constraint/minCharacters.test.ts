@@ -9,6 +9,7 @@ describe("minCharactersConstraintTransformer", () => {
 
 		expect(DStoDS.render(customerIdentity, {
 			identifier: "CustomerIdentity",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.minCharactersConstraintTransformer],
 			toTypescript: {

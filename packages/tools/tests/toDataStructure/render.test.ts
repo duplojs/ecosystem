@@ -17,6 +17,7 @@ describe("toDataStructure render", () => {
 
 		expect(DStoDS.render(catalogPage, {
 			identifier: "CatalogPage",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [
 				DStoDS.objectStructureTransformer,
 				DStoDS.typeStructureTransformer,
@@ -74,6 +75,7 @@ describe("toDataStructure render", () => {
 
 		const result = DStoDS.buildContext(root, {
 			identifier: "Root",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -155,6 +157,7 @@ describe("toDataStructure render", () => {
 
 		expect(DStoDS.render(structure, {
 			identifier: "SharedValue",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -166,11 +169,29 @@ describe("toDataStructure render", () => {
 		})).toMatchSnapshot();
 	});
 
+	it("renders an identified root when its identifier matches the requested identifier", () => {
+		const customerName = DDataStructure.string([DDataStructure.notEmpty()])
+			.addIdentifier("CustomerName");
+
+		expect(DStoDS.render(customerName, {
+			identifier: "CustomerName",
+			typeTransformers: DStoDS.defaultTypeTransformers,
+			structureTransformers: DStoDS.defaultStructureTransformers,
+			constraintTransformers: DStoDS.defaultConstraintTransformers,
+			toTypescript: {
+				typeTransformers: DStoTS.defaultTypeTransformers,
+				structureTransformers: DStoTS.defaultStructureTransformers,
+				constraintTransformers: DStoTS.defaultConstraintTransformers,
+			},
+		})).toMatchSnapshot();
+	});
+
 	it("throws when no constraint transformer supports a constraint", () => {
 		expect(() => DStoDS.render(
 			DDataStructure.string([DDataStructure.notEmpty()]),
 			{
 				identifier: "CustomerName",
+				typeTransformers: DStoDS.defaultTypeTransformers,
 				structureTransformers: [DStoDS.typeStructureTransformer],
 				constraintTransformers: [],
 				toTypescript: {
@@ -187,6 +208,7 @@ describe("toDataStructure render", () => {
 			DDataStructure.string([DDataStructure.notEmpty()]),
 			{
 				identifier: "CustomerName",
+				typeTransformers: DStoDS.defaultTypeTransformers,
 				structureTransformers: [DStoDS.typeStructureTransformer],
 				constraintTransformers: [(_constraint, { buildError }) => buildError()],
 				toTypescript: {
@@ -211,6 +233,7 @@ describe("toDataStructure render", () => {
 
 		expect(() => DStoDS.render(stockCategory, {
 			identifier: "StockCategory",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [
 				DStoDS.arrayStructureTransformer,
 				DStoDS.lazyStructureTransformer,

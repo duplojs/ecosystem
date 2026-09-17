@@ -24,6 +24,12 @@ import { FirstDirectImport, SecondDirectImport } from "@acme/direct-only";
 export const sharedValueDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
 `;
 
+exports[`toDataStructure render > renders an identified root when its identifier matches the requested identifier 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const customerNameDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]);"
+`;
+
 exports[`toDataStructure render > throws when a constraint transformer fails 1`] = `[Error: Error during the render of dataStructure in dataStructure.]`;
 
 exports[`toDataStructure render > throws when no constraint transformer supports a constraint 1`] = `[Error: Error during the render of dataStructure in dataStructure.]`;

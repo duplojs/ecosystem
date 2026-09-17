@@ -6,14 +6,17 @@ import * as DStoTS from "@scripts/toTypescript";
 import { Typescript } from "@scripts/typescript";
 import type { DependenciesContext, MapContext, MapContextValue, StructureTransformer, StructureTransformerParams } from "./create";
 import type { ConstraintTransformer } from "../constraintTransformer";
+import type { TypeTransformer } from "../typeTransformer";
 import type { TransformerHook } from "./hook";
 import { createIdentifier } from "./createIdentifier";
 import type { TransformerEither } from "../result";
 import { constraintTransformer } from "../constraintTransformer/transformer";
+import { typeTransformer } from "../typeTransformer/transformer";
 import { createImportContext } from "./createImportContext";
 
 export interface StructureTransformerFunctionParams {
 	readonly structureTransformers: readonly StructureTransformer[];
+	readonly typeTransformers: readonly TypeTransformer[];
 	readonly constraintTransformers: readonly ConstraintTransformer[];
 
 	readonly context: MapContext;
@@ -23,7 +26,6 @@ export interface StructureTransformerFunctionParams {
 
 	readonly hooks: readonly TransformerHook[];
 	readonly recursiveDataStructures: readonly DDataStructure.Structure[];
-	readonly keepIdentifier: boolean;
 
 	readonly toTypescript: {
 		readonly typeTransformers: readonly DStoTS.TypeTransformer[];
@@ -106,6 +108,7 @@ export function structureTransformer(
 
 	const importContext = newIdentifiedStructure?.import
 			?? params.importContext;
+	const addImport = DStoTS.createAddImport(importContext);
 
 	const structureTransformerParams: StructureTransformerParams = {
 		success: (result) => DEither.right("buildSuccess", result),
@@ -142,8 +145,15 @@ export function structureTransformer(
 				),
 			),
 		),
+		transformType: (type) => typeTransformer(
+			type,
+			{
+				transformers: params.typeTransformers,
+				importContext,
+			},
+		),
 		buildError: () => DEither.left("buildDataStructureError", currentStructure),
-		addImport: DStoTS.createAddImport(importContext),
+		addImport,
 		context: params.context,
 		importContext,
 	};
@@ -177,8 +187,10 @@ export function structureTransformer(
 					if (
 						DEither.hasInformation(result, [
 							"buildDataStructureError",
+							"buildDataStructureTypeError",
 							"buildConstraintError",
 							"constraintNotSupport",
+							"dataStructureTypeNotSupport",
 						])
 					) {
 						return exit(result);

@@ -9,6 +9,7 @@ describe("maxElementsConstraintTransformer", () => {
 
 		expect(DStoDS.render(cart, {
 			identifier: "Cart",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.maxElementsConstraintTransformer],
 			toTypescript: {

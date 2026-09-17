@@ -21,6 +21,7 @@ describe("typeStructureTransformer", () => {
 
 		expect(DStoDS.render(featureFlagSnapshot, {
 			identifier: "FeatureFlagSnapshot",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [DStoDS.objectStructureTransformer, DStoDS.typeStructureTransformer],
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -34,6 +35,7 @@ describe("typeStructureTransformer", () => {
 	it("propagates unsupported type constraints", () => {
 		expect(() => DStoDS.render(DDataStructure.string([DDataStructure.notEmpty()]), {
 			identifier: "TypeValue",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [DStoDS.typeStructureTransformer],
 			constraintTransformers: [],
 			toTypescript: {

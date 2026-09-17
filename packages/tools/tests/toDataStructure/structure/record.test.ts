@@ -17,6 +17,7 @@ describe("recordStructureTransformer", () => {
 
 		expect(DStoDS.render(inventoryByWarehouse, {
 			identifier: "RenderedInventory",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [
 				DStoDS.objectStructureTransformer,
 				DStoDS.recordStructureTransformer,
@@ -37,6 +38,7 @@ describe("recordStructureTransformer", () => {
 			DDataStructure.record(DDataStructure.string(), DDataStructure.number()),
 			{
 				identifier: "RecordKeyValue",
+				typeTransformers: DStoDS.defaultTypeTransformers,
 				structureTransformers: [DStoDS.recordStructureTransformer],
 				constraintTransformers: DStoDS.defaultConstraintTransformers,
 				toTypescript: {
@@ -51,6 +53,7 @@ describe("recordStructureTransformer", () => {
 			DDataStructure.object({ id: DDataStructure.string() }),
 		), {
 			identifier: "RecordInnerValue",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [DStoDS.recordStructureTransformer, DStoDS.typeStructureTransformer],
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -65,6 +68,7 @@ describe("recordStructureTransformer", () => {
 			[DDataStructure.minElements(1) as never],
 		), {
 			identifier: "RecordValue",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [DStoDS.recordStructureTransformer, DStoDS.typeStructureTransformer],
 			constraintTransformers: [],
 			toTypescript: {

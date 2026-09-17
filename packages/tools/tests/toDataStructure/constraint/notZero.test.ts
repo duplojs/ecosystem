@@ -9,6 +9,7 @@ describe("notZeroConstraintTransformer", () => {
 
 		expect(DStoDS.render(inventoryAdjustment, {
 			identifier: "InventoryAdjustment",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.notZeroConstraintTransformer],
 			toTypescript: {

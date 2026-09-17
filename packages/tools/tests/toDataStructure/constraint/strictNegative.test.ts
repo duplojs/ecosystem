@@ -9,6 +9,7 @@ describe("strictNegativeConstraintTransformer", () => {
 
 		expect(DStoDS.render(debitMovement, {
 			identifier: "DebitMovement",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.strictNegativeConstraintTransformer],
 			toTypescript: {

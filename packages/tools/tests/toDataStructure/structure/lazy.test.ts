@@ -31,6 +31,7 @@ describe("lazyStructureTransformer", () => {
 
 		expect(DStoDS.render(catalogCategory, {
 			identifier: "RenderedCatalogCategory",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [
 				DStoDS.arrayStructureTransformer,
 				DStoDS.lazyStructureTransformer,
@@ -50,6 +51,7 @@ describe("lazyStructureTransformer", () => {
 	it("propagates unsupported lazy getter and constraints", () => {
 		const unsupportedGetter = () => DStoDS.render(DDataStructure.lazy(() => DDataStructure.string()), {
 			identifier: "LazyValue",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [DStoDS.lazyStructureTransformer],
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -62,6 +64,7 @@ describe("lazyStructureTransformer", () => {
 			DDataStructure.lazy(() => DDataStructure.string(), [DDataStructure.minElements(1) as never]),
 			{
 				identifier: "LazyValue",
+				typeTransformers: DStoDS.defaultTypeTransformers,
 				structureTransformers: [DStoDS.lazyStructureTransformer, DStoDS.typeStructureTransformer],
 				constraintTransformers: [],
 				toTypescript: {

@@ -9,6 +9,7 @@ describe("maxCharactersConstraintTransformer", () => {
 
 		expect(DStoDS.render(productSummary, {
 			identifier: "ProductSummary",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.maxCharactersConstraintTransformer],
 			toTypescript: {

@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`typeTransformer > uses the first successful transformer with its import context 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+import { ExternalStringType } from "@acme/custom-types";
+
+export const externalStringDataStructure = DDataStructure.TypeStructure(ExternalStringType, []);"
+`;

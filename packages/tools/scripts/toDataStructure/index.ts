@@ -1,6 +1,7 @@
 export * from "./kind";
 export type * from "./result";
 export * from "./constraintTransformer";
+export * from "./typeTransformer";
 export * from "./structureTransformer";
 // oxlint-disable-next-line typescript/consistent-type-exports
 export * from "./override";

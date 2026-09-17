@@ -9,6 +9,7 @@ describe("trimmedConstraintTransformer", () => {
 
 		expect(DStoDS.render(customerDisplay, {
 			identifier: "CustomerDisplay",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.trimmedConstraintTransformer],
 			toTypescript: {

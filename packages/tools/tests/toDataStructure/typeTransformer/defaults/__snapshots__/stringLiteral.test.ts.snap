@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`stringLiteralTypeTransformer > renders a string literal type 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const stringLiteralValueDataStructure = DDataStructure.TypeStructure(DDataStructure.StringLiteralType("active"), []);"
+`;

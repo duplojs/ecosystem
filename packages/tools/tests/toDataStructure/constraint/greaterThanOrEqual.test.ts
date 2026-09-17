@@ -9,6 +9,7 @@ describe("greaterThanOrEqualConstraintTransformer", () => {
 
 		expect(DStoDS.render(stockLevel, {
 			identifier: "StockLevel",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.greaterThanOrEqualConstraintTransformer],
 			toTypescript: {

@@ -9,6 +9,7 @@ describe("urlConstraintTransformer", () => {
 
 		expect(DStoDS.render(productLink, {
 			identifier: "ProductLink",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.urlConstraintTransformer],
 			toTypescript: {

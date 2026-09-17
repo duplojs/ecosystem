@@ -5,11 +5,11 @@ import { Typescript } from "@scripts/typescript";
 import { getRecursiveDataStructure } from "@scripts/utils";
 import type { ConstraintTransformer } from "./constraintTransformer";
 import { createIdentifier, structureTransformer, type DependenciesContext, type MapContext, type StructureTransformer, type TransformerHook, createImportContext } from "./structureTransformer";
-import type { ConstraintErrorEither, ConstraintNotSupportedEither, DataStructureErrorEither, DataStructureNotSupportedEither } from "./result";
+import type { TypeTransformer } from "./typeTransformer";
+import type { ConstraintErrorEither, ConstraintNotSupportedEither, DataStructureErrorEither, DataStructureNotSupportedEither, DataStructureTypeErrorEither, DataStructureTypeNotSupportedEither } from "./result";
 
 export interface BuildedContext {
 	readonly context: MapContext;
-	readonly keepIdentifier?: boolean;
 	readonly toTypescript: {
 		readonly context: DStoTS.MapContext;
 		readonly importContext: DStoTS.MapImportContext;
@@ -19,12 +19,12 @@ export interface BuildedContext {
 export interface BuildContextParams {
 	readonly identifier: string;
 	readonly structureTransformers: readonly StructureTransformer[];
+	readonly typeTransformers: readonly TypeTransformer[];
 	readonly constraintTransformers: readonly ConstraintTransformer[];
 
 	readonly context?: MapContext;
 
 	readonly hooks?: readonly TransformerHook[];
-	readonly keepIdentifier?: boolean;
 
 	readonly toTypescript: {
 		readonly typeTransformers: readonly DStoTS.TypeTransformer[];
@@ -42,6 +42,8 @@ export function buildContext(
 	| DEither.Success<BuildedContext>
 	| DataStructureNotSupportedEither
 	| DataStructureErrorEither
+	| DataStructureTypeNotSupportedEither
+	| DataStructureTypeErrorEither
 	| ConstraintNotSupportedEither
 	| ConstraintErrorEither
 ) {
@@ -52,8 +54,6 @@ export function buildContext(
 	const toTypescriptContext: DStoTS.MapContext = params.toTypescript.context ?? new Map();
 	const toTypescriptImportContext: DStoTS.MapImportContext = params.toTypescript.importContext ?? new Map();
 
-	const keepIdentifier = params.keepIdentifier ?? false;
-
 	const result = structureTransformer(
 		structure,
 		{
@@ -63,7 +63,6 @@ export function buildContext(
 			hooks: params.hooks ?? [],
 			recursiveDataStructures: getRecursiveDataStructure(structure),
 			dependenciesContext,
-			keepIdentifier,
 			toTypescript: {
 				...params.toTypescript,
 				context: toTypescriptContext,
@@ -105,7 +104,6 @@ export function buildContext(
 	return DEither.success({
 		context,
 		importContext,
-		keepIdentifier,
 		toTypescript: {
 			context: toTypescriptContext,
 			importContext: toTypescriptImportContext,

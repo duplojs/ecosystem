@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`stringTypeTransformer > renders a string type 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const stringValueDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
+`;

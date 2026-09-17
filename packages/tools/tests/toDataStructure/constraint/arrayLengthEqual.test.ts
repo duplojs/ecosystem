@@ -12,6 +12,7 @@ describe("arrayLengthEqualConstraintTransformer", () => {
 
 		expect(DStoDS.render(purchaseApproval, {
 			identifier: "PurchaseApproval",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.arrayLengthEqualConstraintTransformer],
 			toTypescript: {

@@ -9,6 +9,7 @@ describe("strictPositiveConstraintTransformer", () => {
 
 		expect(DStoDS.render(invoiceTotal, {
 			identifier: "InvoiceTotal",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.strictPositiveConstraintTransformer],
 			toTypescript: {

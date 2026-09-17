@@ -23,6 +23,22 @@ export type ConstraintTransformerEither = (
 	| ConstraintErrorEither
 );
 
+export type DataStructureTypeNotSupportedEither = DEither.Left<
+	"dataStructureTypeNotSupport",
+	DDataStructure.Type
+>;
+
+export type DataStructureTypeErrorEither = DEither.Left<
+	"buildDataStructureTypeError",
+	DDataStructure.Type
+>;
+
+export type DataStructureTypeTransformerEither = (
+	| TransformerSuccessEither
+	| DataStructureTypeNotSupportedEither
+	| DataStructureTypeErrorEither
+);
+
 export type DataStructureNotSupportedEither = DEither.Left<
 	"dataStructureNotSupport",
 	DDataStructure.Structure
@@ -38,4 +54,5 @@ export type TransformerEither = (
 	| DataStructureNotSupportedEither
 	| DataStructureErrorEither
 	| ConstraintTransformerEither
+	| DataStructureTypeTransformerEither
 );

@@ -9,6 +9,7 @@ describe("emailConstraintTransformer", () => {
 
 		expect(DStoDS.render(supportContact, {
 			identifier: "SupportContact",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.emailConstraintTransformer],
 			toTypescript: {

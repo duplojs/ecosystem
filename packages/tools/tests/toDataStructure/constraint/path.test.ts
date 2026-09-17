@@ -9,6 +9,7 @@ describe("pathConstraintTransformer", () => {
 
 		expect(DStoDS.render(invoiceDocument, {
 			identifier: "InvoiceDocument",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.pathConstraintTransformer],
 			toTypescript: {

@@ -2,7 +2,7 @@ import * as DKind from "@duplojs/lang/kind";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import { createKind } from "./kind";
-import type { ConstraintErrorEither, ConstraintNotSupportedEither, DataStructureErrorEither, DataStructureNotSupportedEither } from "./result";
+import type { ConstraintErrorEither, ConstraintNotSupportedEither, DataStructureErrorEither, DataStructureNotSupportedEither, DataStructureTypeErrorEither, DataStructureTypeNotSupportedEither } from "./result";
 import { buildContext, type BuildContextParams } from "./buildContext";
 import { printer } from "./printer";
 
@@ -15,6 +15,8 @@ export class DataStructureToDataStructureRenderError extends DKind.parentClass(
 		public error: (
 			| DataStructureNotSupportedEither
 			| DataStructureErrorEither
+			| DataStructureTypeNotSupportedEither
+			| DataStructureTypeErrorEither
 			| ConstraintNotSupportedEither
 			| ConstraintErrorEither
 		),
@@ -35,8 +37,10 @@ export function render(
 		DEither.hasInformation(result, [
 			"buildConstraintError",
 			"buildDataStructureError",
+			"buildDataStructureTypeError",
 			"constraintNotSupport",
 			"dataStructureNotSupport",
+			"dataStructureTypeNotSupport",
 		])
 	) {
 		throw new DataStructureToDataStructureRenderError(

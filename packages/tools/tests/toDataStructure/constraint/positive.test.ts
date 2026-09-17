@@ -9,6 +9,7 @@ describe("positiveConstraintTransformer", () => {
 
 		expect(DStoDS.render(subscriptionPlan, {
 			identifier: "SubscriptionPlan",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.positiveConstraintTransformer],
 			toTypescript: {

@@ -9,6 +9,7 @@ describe("integerConstraintTransformer", () => {
 
 		expect(DStoDS.render(productQuantity, {
 			identifier: "ProductQuantity",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.integerConstraintTransformer],
 			toTypescript: {

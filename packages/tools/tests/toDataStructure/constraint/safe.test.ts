@@ -9,6 +9,7 @@ describe("safeConstraintTransformer", () => {
 
 		expect(DStoDS.render(accountingEntry, {
 			identifier: "AccountingEntry",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.safeConstraintTransformer],
 			toTypescript: {

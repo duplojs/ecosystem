@@ -8,6 +8,7 @@ describe("nonEncodableStringStructureTransformer", () => {
 
 		expect(DStoDS.render(generatedInvoicePdf, {
 			identifier: "RenderedInvoicePdf",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [DStoDS.nonEncodableStringStructureTransformer],
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {

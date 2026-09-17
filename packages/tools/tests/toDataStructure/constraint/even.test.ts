@@ -9,6 +9,7 @@ describe("evenConstraintTransformer", () => {
 
 		expect(DStoDS.render(warehouseAisle, {
 			identifier: "WarehouseAisle",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.evenConstraintTransformer],
 			toTypescript: {

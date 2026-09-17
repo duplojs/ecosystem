@@ -9,6 +9,7 @@ describe("stringLengthEqualConstraintTransformer", () => {
 
 		expect(DStoDS.render(countryReference, {
 			identifier: "CountryReference",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.stringLengthEqualConstraintTransformer],
 			toTypescript: {

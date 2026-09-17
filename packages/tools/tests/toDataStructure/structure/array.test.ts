@@ -28,6 +28,7 @@ describe("arrayStructureTransformer", () => {
 
 		expect(DStoDS.render(stockMovements, {
 			identifier: "StockMovements",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [
 				DStoDS.arrayStructureTransformer,
 				DStoDS.newTypeStructureTransformer,
@@ -48,6 +49,7 @@ describe("arrayStructureTransformer", () => {
 	it("propagates unsupported element and constraints", () => {
 		const unsupportedElement = () => DStoDS.render(DDataStructure.array(DDataStructure.string()), {
 			identifier: "ArrayValue",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [DStoDS.arrayStructureTransformer],
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -60,6 +62,7 @@ describe("arrayStructureTransformer", () => {
 			DDataStructure.array(DDataStructure.string(), [DDataStructure.minElements(1)]),
 			{
 				identifier: "ArrayValue",
+				typeTransformers: DStoDS.defaultTypeTransformers,
 				structureTransformers: [DStoDS.arrayStructureTransformer, DStoDS.typeStructureTransformer],
 				constraintTransformers: [],
 				toTypescript: {

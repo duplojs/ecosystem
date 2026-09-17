@@ -9,6 +9,7 @@ describe("uuidConstraintTransformer", () => {
 
 		expect(DStoDS.render(customerReference, {
 			identifier: "CustomerReference",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.uuidConstraintTransformer],
 			toTypescript: {

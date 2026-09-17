@@ -2,7 +2,7 @@ import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import type { Typescript } from "@scripts/typescript";
 import type * as DStoTS from "@scripts/toTypescript";
-import type { ConstraintErrorEither, ConstraintNotSupportedEither, DataStructureErrorEither, TransformerEither, TransformerSuccessEither } from "../result";
+import type { ConstraintErrorEither, ConstraintNotSupportedEither, DataStructureErrorEither, DataStructureTypeTransformerEither, TransformerEither, TransformerSuccessEither } from "../result";
 
 export type DependenciesContext = Set<DDataStructure.Structure>;
 
@@ -33,6 +33,10 @@ export interface StructureTransformerParams {
 		| ConstraintNotSupportedEither
 		| ConstraintErrorEither
 	);
+
+	transformType(
+		type: DDataStructure.Type,
+	): DataStructureTypeTransformerEither;
 
 	buildError(): DataStructureErrorEither;
 

@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`createTypeTransformer > creates a type transformer used by render 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const customStringLiteralDataStructure = DDataStructure.TypeStructure(DDataStructure.StringLiteralType("custom:sku"), []);"
+`;

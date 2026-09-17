@@ -20,6 +20,7 @@ describe("entityStructureTransformer", () => {
 
 		expect(DStoDS.render(order, {
 			identifier: "RenderedOrderEntity",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [
 				DStoDS.entityStructureTransformer,
 				DStoDS.newTypeStructureTransformer,
@@ -44,6 +45,7 @@ describe("entityStructureTransformer", () => {
 
 		expect(() => DStoDS.render(user, {
 			identifier: "UserEntity",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [DStoDS.entityStructureTransformer],
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {

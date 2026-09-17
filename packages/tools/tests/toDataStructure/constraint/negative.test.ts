@@ -9,6 +9,7 @@ describe("negativeConstraintTransformer", () => {
 
 		expect(DStoDS.render(balanceAdjustment, {
 			identifier: "BalanceAdjustment",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.negativeConstraintTransformer],
 			toTypescript: {

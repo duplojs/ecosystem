@@ -9,6 +9,7 @@ describe("multipleOfConstraintTransformer", () => {
 
 		expect(DStoDS.render(priceRule, {
 			identifier: "PriceRule",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.multipleOfConstraintTransformer],
 			toTypescript: {

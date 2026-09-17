@@ -10,6 +10,7 @@ describe("allowedCharactersConstraintTransformer", () => {
 
 		expect(DStoDS.render(inviteCode, {
 			identifier: "InviteCode",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.allowedCharactersConstraintTransformer],
 			toTypescript: {

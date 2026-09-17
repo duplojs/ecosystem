@@ -9,6 +9,7 @@ describe("lessThanOrEqualConstraintTransformer", () => {
 
 		expect(DStoDS.render(reservationRule, {
 			identifier: "ReservationRule",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.lessThanOrEqualConstraintTransformer],
 			toTypescript: {

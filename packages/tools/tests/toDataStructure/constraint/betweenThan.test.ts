@@ -9,6 +9,7 @@ describe("betweenThanConstraintTransformer", () => {
 
 		expect(DStoDS.render(promotionRule, {
 			identifier: "PromotionRule",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.betweenThanConstraintTransformer],
 			toTypescript: {

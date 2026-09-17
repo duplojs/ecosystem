@@ -9,6 +9,7 @@ describe("greaterThanConstraintTransformer", () => {
 
 		expect(DStoDS.render(orderLine, {
 			identifier: "OrderLine",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.greaterThanConstraintTransformer],
 			toTypescript: {

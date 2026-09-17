@@ -17,6 +17,7 @@ describe("unionStructureTransformer", () => {
 
 		expect(DStoDS.render(paymentMethod, {
 			identifier: "RenderedPaymentMethod",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [
 				DStoDS.objectStructureTransformer,
 				DStoDS.typeStructureTransformer,
@@ -34,6 +35,7 @@ describe("unionStructureTransformer", () => {
 	it("propagates unsupported union value and constraints", () => {
 		const unsupportedValue = () => DStoDS.render(DDataStructure.union([DDataStructure.string()]), {
 			identifier: "UnionValue",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [DStoDS.unionStructureTransformer],
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {
@@ -46,6 +48,7 @@ describe("unionStructureTransformer", () => {
 			DDataStructure.union([DDataStructure.string()], [DDataStructure.minElements(1) as never]),
 			{
 				identifier: "UnionValue",
+				typeTransformers: DStoDS.defaultTypeTransformers,
 				structureTransformers: [DStoDS.typeStructureTransformer, DStoDS.unionStructureTransformer],
 				constraintTransformers: [],
 				toTypescript: {

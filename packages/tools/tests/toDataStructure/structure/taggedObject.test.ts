@@ -13,6 +13,7 @@ describe("taggedObjectStructureTransformer", () => {
 
 		expect(DStoDS.render(auditEvent, {
 			identifier: "RenderedAuditEvent",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [
 				DStoDS.newTypeStructureTransformer,
 				DStoDS.nonEncodableStringStructureTransformer,
@@ -36,6 +37,7 @@ describe("taggedObjectStructureTransformer", () => {
 
 		expect(() => DStoDS.render(event, {
 			identifier: "TaggedEvent",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: [DStoDS.taggedObjectStructureTransformer],
 			constraintTransformers: DStoDS.defaultConstraintTransformers,
 			toTypescript: {

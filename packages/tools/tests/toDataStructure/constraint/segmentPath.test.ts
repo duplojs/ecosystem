@@ -9,6 +9,7 @@ describe("segmentPathConstraintTransformer", () => {
 
 		expect(DStoDS.render(catalogCategory, {
 			identifier: "CatalogCategory",
+			typeTransformers: DStoDS.defaultTypeTransformers,
 			structureTransformers: DStoDS.defaultStructureTransformers,
 			constraintTransformers: [DStoDS.segmentPathConstraintTransformer],
 			toTypescript: {
