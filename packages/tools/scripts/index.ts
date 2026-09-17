@@ -7,5 +7,7 @@ export * as DStoJsonSchema from "./toJsonSchema";
 export * as DStoDS from "./toDataStructure";
 export * as DataStructureToDataStructure from "./toDataStructure";
 
+export * as StructureFinder from "./structureFinder";
+
 export * from "./typescript";
 export * from "./utils";

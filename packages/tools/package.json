@@ -46,6 +46,11 @@
       "require": "./dist/toDataStructure/index.cjs",
       "types": "./dist/toDataStructure/index.d.ts"
     },
+    "./structureFinder": {
+      "import": "./dist/structureFinder/index.mjs",
+      "require": "./dist/structureFinder/index.cjs",
+      "types": "./dist/structureFinder/index.d.ts"
+    },
     "./typescript": {
       "import": "./dist/typescript/index.mjs",
       "require": "./dist/typescript/index.cjs",
