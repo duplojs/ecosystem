@@ -23,7 +23,7 @@ export const taggedObjectStructureTransformer = createStructureTransformer(
 		},
 	) => {
 		const shape = DCommon.pipe(
-			structure.definition.inner.definition.shape.value,
+			structure.definition.inner.definition.optimizedShape.value,
 			DArray.select(
 				({ element, select, skip }) => {
 					if (element.key === DModeling.objectTagKind.runTimeKey) {

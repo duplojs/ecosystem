@@ -2,10 +2,12 @@ import { DDataStructure, DEither, type DString, type ExpectType } from "@scripts
 
 describe("partial", () => {
 	it("makes every object property optional", () => {
+		const name = DDataStructure.string();
+		const age = DDataStructure.number();
 		const structure = DDataStructure.partial(
 			DDataStructure.object({
-				name: DDataStructure.string(),
-				age: DDataStructure.number(),
+				name,
+				age,
 			}),
 		);
 
@@ -18,6 +20,10 @@ describe("partial", () => {
 			"strict"
 		>;
 
+		expect(Object.keys(structure.definition.shape)).toStrictEqual([
+			"name",
+			"age",
+		]);
 		expect(structure.check({})).toStrictEqual(
 			DEither.right("check-success", {}),
 		);
@@ -51,7 +57,7 @@ describe("partial", () => {
 		expect(structure.is({ email: "not-an-email" })).toBe(false);
 	});
 
-	it("resolves lazy property structures before adding undefined", () => {
+	it("builds an optimized shape that resolves lazy properties before adding undefined", () => {
 		const getStructure = vi.fn(
 			() => DDataStructure.string(),
 		);
@@ -72,7 +78,7 @@ describe("partial", () => {
 		expect(getStructure).not.toHaveBeenCalled();
 		expect(
 			(
-				(structure.definition.shape.value[0]!.value as DDataStructure.LazyStructure)
+				(structure.definition.optimizedShape.value[0]!.value as DDataStructure.LazyStructure)
 					.definition.getter.value as DDataStructure.UnionStructure
 			).definition.values.value,
 		).toHaveLength(2);
@@ -85,7 +91,7 @@ describe("partial", () => {
 		);
 	});
 
-	it("does not add undefined twice inside an existing union", () => {
+	it("builds an optimized shape without adding undefined twice inside an existing union", () => {
 		const structure = DDataStructure.partial(
 			DDataStructure.object({
 				value: DDataStructure.optional(
@@ -104,7 +110,7 @@ describe("partial", () => {
 
 		expect(
 			(
-				(structure.definition.shape.value[0]!.value as DDataStructure.LazyStructure)
+				(structure.definition.optimizedShape.value[0]!.value as DDataStructure.LazyStructure)
 					.definition.getter.value as DDataStructure.UnionStructure
 			).definition.values.value,
 		).toHaveLength(2);
@@ -113,7 +119,7 @@ describe("partial", () => {
 		);
 	});
 
-	it("adds undefined to an existing union without an undefined branch", () => {
+	it("builds an optimized shape that adds undefined to a union without an undefined branch", () => {
 		const structure = DDataStructure.partial(
 			DDataStructure.object({
 				value: DDataStructure.union([
@@ -133,7 +139,7 @@ describe("partial", () => {
 
 		expect(
 			(
-				(structure.definition.shape.value[0]!.value as DDataStructure.LazyStructure)
+				(structure.definition.optimizedShape.value[0]!.value as DDataStructure.LazyStructure)
 					.definition.getter.value as DDataStructure.UnionStructure
 			).definition.values.value,
 		).toHaveLength(3);
@@ -142,7 +148,7 @@ describe("partial", () => {
 		);
 	});
 
-	it("keeps an undefined structure unchanged", () => {
+	it("keeps an undefined structure unchanged in the optimized shape", () => {
 		const structure = DDataStructure.partial(
 			DDataStructure.object({
 				value: DDataStructure.undefined(),
@@ -158,7 +164,7 @@ describe("partial", () => {
 		>;
 
 		expect(
-			"values" in (structure.definition.shape.value[0]!.value as DDataStructure.LazyStructure)
+			"values" in (structure.definition.optimizedShape.value[0]!.value as DDataStructure.LazyStructure)
 				.definition.getter.value.definition,
 		).toBe(false);
 		expect(structure.check({})).toStrictEqual(

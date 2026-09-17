@@ -14,7 +14,7 @@ export function memo<
 			const value = theFunction();
 
 			Object.defineProperty(
-				this,
+				payload,
 				"value",
 				{
 					value,

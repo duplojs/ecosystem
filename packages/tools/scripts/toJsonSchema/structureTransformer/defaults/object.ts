@@ -24,7 +24,7 @@ export const objectStructureTransformer = createStructureTransformer(
 		const properties: Record<string, JsonSchema> = {};
 		const required: string[] = [];
 
-		for (const entry of structure.definition.shape.value) {
+		for (const entry of structure.definition.optimizedShape.value) {
 			const valueResult = transformer(entry.value);
 
 			if (DEither.isLeft(valueResult)) {

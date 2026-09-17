@@ -102,7 +102,7 @@ export function getRecursiveDataStructure(
 					}
 
 					DArray.map(
-						structure.definition.shape.value,
+						structure.definition.optimizedShape.value,
 						(entry) => void countDataStructure(entry.value),
 					);
 

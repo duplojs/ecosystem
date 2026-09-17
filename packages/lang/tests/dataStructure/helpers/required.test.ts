@@ -2,14 +2,16 @@ import { DDataStructure, DEither, type ExpectType } from "@scripts";
 
 describe("required", () => {
 	it("makes every object property required", () => {
+		const name = DDataStructure.optional(
+			DDataStructure.string(),
+		);
+		const age = DDataStructure.optional(
+			DDataStructure.number(),
+		);
 		const structure = DDataStructure.required(
 			DDataStructure.object({
-				name: DDataStructure.optional(
-					DDataStructure.string(),
-				),
-				age: DDataStructure.optional(
-					DDataStructure.number(),
-				),
+				name,
+				age,
 			}),
 		);
 		const input = {
@@ -26,6 +28,10 @@ describe("required", () => {
 			"strict"
 		>;
 
+		expect(Object.keys(structure.definition.shape)).toStrictEqual([
+			"name",
+			"age",
+		]);
 		expect(structure.check(input)).toStrictEqual(
 			DEither.right("check-success", input),
 		);
@@ -36,7 +42,7 @@ describe("required", () => {
 		})).toBe(false);
 	});
 
-	it("resolves lazy property structures before removing undefined", () => {
+	it("builds an optimized shape that resolves lazy properties before removing undefined", () => {
 		const getStructure = vi.fn(
 			() => DDataStructure.optional(DDataStructure.string()),
 		);
@@ -56,7 +62,7 @@ describe("required", () => {
 
 		expect(getStructure).not.toHaveBeenCalled();
 		expect(
-			"values" in (structure.definition.shape.value[0]!.value as DDataStructure.LazyStructure)
+			"values" in (structure.definition.optimizedShape.value[0]!.value as DDataStructure.LazyStructure)
 				.definition.getter.value.definition,
 		).toBe(false);
 		expect(getStructure).toHaveBeenCalledTimes(1);
@@ -66,7 +72,7 @@ describe("required", () => {
 		expect(structure.is({ name: undefined })).toBe(false);
 	});
 
-	it("keeps a union only when more than one value remains", () => {
+	it("builds an optimized shape that keeps a union only when more than one value remains", () => {
 		const structure = DDataStructure.required(
 			DDataStructure.object({
 				alone: DDataStructure.optional(
@@ -90,12 +96,12 @@ describe("required", () => {
 		>;
 
 		expect(
-			"values" in (structure.definition.shape.value[0]!.value as DDataStructure.LazyStructure)
+			"values" in (structure.definition.optimizedShape.value[0]!.value as DDataStructure.LazyStructure)
 				.definition.getter.value.definition,
 		).toBe(false);
 		expect(
 			(
-				(structure.definition.shape.value[1]!.value as DDataStructure.LazyStructure)
+				(structure.definition.optimizedShape.value[1]!.value as DDataStructure.LazyStructure)
 					.definition.getter.value as DDataStructure.UnionStructure
 			).definition.values.value,
 		).toHaveLength(2);
@@ -110,7 +116,7 @@ describe("required", () => {
 		);
 	});
 
-	it("keeps already required structures unchanged", () => {
+	it("keeps already required structures unchanged in the optimized shape", () => {
 		const structure = DDataStructure.required(
 			DDataStructure.object({
 				name: DDataStructure.string(),
@@ -131,12 +137,12 @@ describe("required", () => {
 		>;
 
 		expect(
-			"values" in (structure.definition.shape.value[0]!.value as DDataStructure.LazyStructure)
+			"values" in (structure.definition.optimizedShape.value[0]!.value as DDataStructure.LazyStructure)
 				.definition.getter.value.definition,
 		).toBe(false);
 		expect(
 			(
-				(structure.definition.shape.value[1]!.value as DDataStructure.LazyStructure)
+				(structure.definition.optimizedShape.value[1]!.value as DDataStructure.LazyStructure)
 					.definition.getter.value as DDataStructure.UnionStructure
 			).definition.values.value,
 		).toHaveLength(2);

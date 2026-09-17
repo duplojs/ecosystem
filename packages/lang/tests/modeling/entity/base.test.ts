@@ -43,7 +43,7 @@ describe("EntityStructure", () => {
 
 		expect(DModeling.entityStructureKind.has(structure)).toBe(true);
 		expect(structure.name).toBe("user");
-		expect(structure.definition.inner.value.definition.shape.value).toEqual([
+		expect(structure.definition.inner.value.definition.optimizedShape.value).toEqual([
 			{
 				key: "name",
 				value: name,

@@ -1,7 +1,7 @@
 import { DDataStructure, DEither, type DCommon, type DKind, type ExpectType } from "@scripts";
 
 describe("ObjectStructure", () => {
-	it("checks shaped objects and narrows with is", async() => {
+	it("keeps the input shape, exposes an optimized shape and narrows with is", async() => {
 		const shape = {
 			name: DDataStructure.TypeStructure(DDataStructure.StringType(), []),
 			age: DDataStructure.TypeStructure(DDataStructure.NumberType(), []),
@@ -48,6 +48,17 @@ describe("ObjectStructure", () => {
 			"strict"
 		>;
 
+		expect(structure.definition.shape).toBe(shape);
+		expect(structure.definition.optimizedShape.value).toStrictEqual([
+			{
+				key: "name",
+				value: shape.name,
+			},
+			{
+				key: "age",
+				value: shape.age,
+			},
+		]);
 		expect(success).toStrictEqual(DEither.right("check-success", input));
 		expect(asyncSuccess).toStrictEqual(DEither.right("check-success", input));
 		expect(structure.is(input)).toBe(true);

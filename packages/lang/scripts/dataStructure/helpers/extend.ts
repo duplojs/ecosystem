@@ -22,7 +22,7 @@ export function extend(
 	return ObjectStructure(
 		{
 			...Object.fromEntries(
-				structure.definition.shape.value.map(
+				structure.definition.optimizedShape.value.map(
 					(entry) => [
 						entry.key,
 						entry.value,

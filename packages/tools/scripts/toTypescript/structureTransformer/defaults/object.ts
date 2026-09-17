@@ -20,7 +20,7 @@ export const objectStructureTransformer = createStructureTransformer(
 	) => {
 		const typeElements: Typescript.TypeElement[] = [];
 
-		for (const entry of structure.definition.shape.value) {
+		for (const entry of structure.definition.optimizedShape.value) {
 			const valueResult = transformer(entry.value);
 
 			if (DEither.isLeft(valueResult)) {

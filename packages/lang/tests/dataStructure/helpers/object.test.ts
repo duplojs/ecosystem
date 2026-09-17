@@ -1,11 +1,12 @@
 import { DDataStructure, DEither, type DString, type ExpectType } from "@scripts";
 
 describe("object", () => {
-	it("creates an object structure from helper shapes", () => {
-		const structure = DDataStructure.object({
+	it("keeps the helper shape and exposes an optimized shape", () => {
+		const shape = {
 			name: DDataStructure.string(),
 			age: DDataStructure.number(),
-		});
+		};
+		const structure = DDataStructure.object(shape);
 		const input = {
 			name: "Jane",
 			age: 30,
@@ -20,7 +21,8 @@ describe("object", () => {
 			"strict"
 		>;
 
-		expect(structure.definition.shape.value).toHaveLength(2);
+		expect(structure.definition.shape).toBe(shape);
+		expect(structure.definition.optimizedShape.value).toHaveLength(2);
 		expect(structure.definition.constraints).toStrictEqual([]);
 		expect(structure.check(input)).toStrictEqual(
 			DEither.right("check-success", input),

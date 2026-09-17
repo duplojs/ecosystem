@@ -19,7 +19,7 @@ export const taggedObjectStructureTransformer = createStructureTransformer(
 		},
 	) => {
 		const entries = DCommon.pipe(
-			structure.definition.inner.definition.shape.value,
+			structure.definition.inner.definition.optimizedShape.value,
 			DArray.reduce(
 				DArray.reduceFrom<Typescript.PropertyAssignment[]>([]),
 				({

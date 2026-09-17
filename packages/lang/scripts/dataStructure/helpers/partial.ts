@@ -49,7 +49,7 @@ export function partial(
 ): ObjectStructure {
 	return object(
 		Object.fromEntries(
-			structure.definition.shape.value.map(
+			structure.definition.optimizedShape.value.map(
 				(entry) => [
 					entry.key,
 					lazy(() => partialStructure(entry.value)),

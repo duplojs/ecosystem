@@ -32,7 +32,7 @@ describe("TaggedObjectStructure", () => {
 		expect(DModeling.taggedObjectStructureKind.has(structure)).toBe(true);
 		expect(structure.name).toBe("user-created");
 		expect(structure.isAsynchronous()).toBe(false);
-		expect(structure.definition.inner.definition.shape.value).toEqual([
+		expect(structure.definition.inner.definition.optimizedShape.value).toEqual([
 			{
 				key: "name",
 				value: name,

@@ -56,7 +56,8 @@ export const objectStructureKind = createKind("object-structure");
 export interface ObjectStructureDefinition<
 	GenericConstraints extends readonly Constraint[] = readonly Constraint[],
 > extends StructureDefinition<GenericConstraints> {
-	readonly shape: DCommon.Memoized<readonly EntryShapeObjectStructure[]>;
+	readonly optimizedShape: DCommon.Memoized<readonly EntryShapeObjectStructure[]>;
+	readonly shape: Readonly<Record<string, Structure>>;
 	readonly keys: readonly string[];
 }
 
@@ -98,7 +99,7 @@ export const ObjectStructure = createStructure(
 		>
 	>(
 		{
-			shape: DCommon.memo(
+			optimizedShape: DCommon.memo(
 				() => Object
 					.entries(shape)
 					.map(
@@ -108,6 +109,7 @@ export const ObjectStructure = createStructure(
 						}),
 					),
 			),
+			shape,
 			keys: Object.keys(shape),
 			constraints: constraints,
 		},
@@ -129,7 +131,7 @@ export const ObjectStructure = createStructure(
 
 				const pathStage = errorHandler?.().createPathStage();
 
-				const result = self.definition.shape.value.reduce<
+				const result = self.definition.optimizedShape.value.reduce<
 					DCommon.MaybePromise<SuccessSymbol | ErrorSymbol>
 				>(
 					(accumulator, entry) => DCommon.callThen(
@@ -169,7 +171,7 @@ export const ObjectStructure = createStructure(
 
 				const pathStage = errorHandler?.().createPathStage();
 
-				const encodedData = self.definition.shape.value.reduce<unknown>(
+				const encodedData = self.definition.optimizedShape.value.reduce<unknown>(
 					(accumulator, entry) => DCommon.callThen(
 						accumulator,
 						(awaitedAccumulator) => pathStage?.setCurrentPath(entry.key) ?? DCommon.callThen(
@@ -221,7 +223,7 @@ export const ObjectStructure = createStructure(
 
 				const pathStage = errorHandler?.().createPathStage();
 
-				const decodedData = self.definition.shape.value.reduce<unknown>(
+				const decodedData = self.definition.optimizedShape.value.reduce<unknown>(
 					(accumulator, entry) => DCommon.callThen(
 						accumulator,
 						(awaitedAccumulator) => pathStage?.setCurrentPath(entry.key) ?? DCommon.callThen(
@@ -263,7 +265,7 @@ export const ObjectStructure = createStructure(
 
 				const pathStage = errorHandler?.().createPathStage();
 
-				const parsedData = self.definition.shape.value.reduce<unknown>(
+				const parsedData = self.definition.optimizedShape.value.reduce<unknown>(
 					(accumulator, entry) => DCommon.callThen(
 						accumulator,
 						(awaitedAccumulator) => pathStage?.setCurrentPath(entry.key) ?? DCommon.callThen(
@@ -298,7 +300,9 @@ export const ObjectStructure = createStructure(
 					),
 				);
 			},
-			isAsynchronous: (self) => self.definition.shape.value.some((entry) => entry.value.isAsynchronous()),
+			isAsynchronous: (self) => self.definition.optimizedShape.value.some(
+				(entry) => entry.value.isAsynchronous(),
+			),
 		},
 	),
 );

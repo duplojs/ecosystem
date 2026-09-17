@@ -1,14 +1,16 @@
 import { DDataStructure, DEither, type ExpectType } from "@scripts";
 
 describe("extend", () => {
-	it("extends an object structure with additional properties", () => {
+	it("extends an object structure shape with additional properties", () => {
+		const name = DDataStructure.string();
+		const age = DDataStructure.number();
 		const base = DDataStructure.object({
-			name: DDataStructure.string(),
+			name,
 		});
 		const structure = DDataStructure.extend(
 			base,
 			{
-				age: DDataStructure.number(),
+				age,
 			},
 		);
 		const input = {
@@ -25,7 +27,11 @@ describe("extend", () => {
 			"strict"
 		>;
 
-		expect(structure.definition.shape.value).toHaveLength(2);
+		expect(structure.definition.shape).toStrictEqual({
+			name,
+			age,
+		});
+		expect(structure.definition.optimizedShape.value).toHaveLength(2);
 		expect(structure.definition.keys).toStrictEqual([
 			"name",
 			"age",
@@ -35,14 +41,16 @@ describe("extend", () => {
 		);
 	});
 
-	it("overrides existing properties with the added shape", () => {
+	it("overrides existing properties in the extended shape", () => {
+		const sourceValue = DDataStructure.string();
+		const addedValue = DDataStructure.number();
 		const base = DDataStructure.object({
-			value: DDataStructure.string(),
+			value: sourceValue,
 		});
 		const structure = DDataStructure.extend(
 			base,
 			{
-				value: DDataStructure.number(),
+				value: addedValue,
 			},
 		);
 		const input = {
@@ -57,6 +65,7 @@ describe("extend", () => {
 			"strict"
 		>;
 
+		expect(structure.definition.shape.value).toBe(addedValue);
 		expect(structure.check(input)).toStrictEqual(
 			DEither.right("check-success", input),
 		);
