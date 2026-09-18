@@ -23,8 +23,5 @@ export default oxlint.defineConfig({
 			},
 		},
 	],
-	ignorePatterns: [
-		"dist/**",
-		".commands/**",
-	],
+	ignorePatterns: ["dist/**"],
 });

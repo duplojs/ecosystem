@@ -30,3 +30,6 @@ pnpm --filter @duplojs/playwright test:lint
 
 printf "\n${GREEN}@duplojs/form${RESET}\n"
 pnpm --filter @duplojs/form test:lint
+
+printf "\n${GREEN}@duplojs/http${RESET}\n"
+pnpm --filter @duplojs/http test:lint

@@ -16,9 +16,5 @@ export default oxlint.defineConfig({
 			},
 		},
 	],
-	ignorePatterns: [
-		"dist/**",
-		".commands/**",
-		"global.d.ts",
-	],
+	ignorePatterns: ["dist/**"],
 });

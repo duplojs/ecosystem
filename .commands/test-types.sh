@@ -30,3 +30,6 @@ pnpm --filter @duplojs/playwright test:types
 
 printf "\n${GREEN}@duplojs/form${RESET}\n"
 pnpm --filter @duplojs/form test:types
+
+printf "\n${GREEN}@duplojs/http${RESET}\n"
+pnpm --filter @duplojs/http test:types

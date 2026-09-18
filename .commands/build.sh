@@ -28,3 +28,6 @@ pnpm --filter @duplojs/playwright build
 
 printf "\n${GREEN}@duplojs/form${RESET}\n"
 pnpm --filter @duplojs/form build
+
+printf "\n${GREEN}@duplojs/http${RESET}\n"
+pnpm --filter @duplojs/http build
