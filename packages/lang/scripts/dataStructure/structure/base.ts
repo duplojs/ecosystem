@@ -231,7 +231,7 @@ export interface Structure<
 	>;
 	contract<
 		GenericValue extends unknown,
-		GenericThis extends this,
+		GenericThis extends this = this,
 	>(
 		...args: DCommon.IsEqual<StructureValue<GenericThis>, GenericValue> extends true
 			? []

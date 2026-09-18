@@ -1,4 +1,4 @@
-import { cast, type DArray, type DCommon, type DNumber, type CastError, type DPath, type DString, shameOnYou, type ExpectType } from "@scripts";
+import { cast, type DArray, type DCommon, type DNumber, type CastError, type DPath, type DString, shameOnYou, type ExpectType, type ComputeCastConstraint } from "@scripts";
 
 describe("cast", () => {
 	it("cast maxCharacters", () => {
@@ -1227,6 +1227,54 @@ describe("cast", () => {
 				& DArray.LengthEqual<5>
 			),
 		);
+
+		const value15: (
+			| undefined
+			| (string & DPath.Path)
+		) = cast(
+			"./test.json" as (
+				& "./test.json"
+				& CastError<
+					"Impossible to cast on Path because value ./test.json is not path.",
+					"./test.json",
+					DPath.Path
+				>
+			),
+		);
+		const value155: (
+			| undefined
+			| (string & DPath.Path)
+		) = cast(
+			// @ts-expect-error cause error
+			"./test.json",
+		);
+
+		const value16: (
+			| null
+			| (number & DNumber.GreaterThan<20>)
+		) = cast(
+			12 as (
+				& 12
+				& CastError<
+					"Impossible to cast on GreaterThan<20> because constraint GreaterThanOrEqual<12> from the value is less than or equal.",
+					12,
+					DNumber.GreaterThan<20>
+				>
+			),
+		);
+		const value165: (
+			| null
+			| (number & DNumber.GreaterThan<20>)
+		) = cast(
+			// @ts-expect-error cause error
+			12,
+		);
+
+		type tt = ComputeCastConstraint<
+			12,
+			| null
+			| (number & DNumber.GreaterThan<20>)
+		>;
 	});
 
 	it("does not combine constraints from different expected union branches", () => {

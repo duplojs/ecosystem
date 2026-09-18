@@ -6,7 +6,7 @@ import { type UnbundlesConstraint, type BaseConstraint, type RemoveConstraint } 
 import { type CastError, type RemoveCastError } from "./error";
 import { type ComputeCastConstraintNumberRule } from "./number";
 import { type ComputeCastConstraintStringRule } from "./string";
-import { type IsExtends, type BreakGenericLink, type NeverCoalescing, type UnionContain, type IsEqual, type AnyTuple } from "../../types";
+import { type IsExtends, type BreakGenericLink, type NeverCoalescing, type UnionContain, type IsEqual, type AnyTuple, type IsNever } from "../../types";
 
 export type * from "./array";
 export type * from "./error";
@@ -48,28 +48,30 @@ export type ComputeCastConstraint<
 				GenericValue extends any
 					? (
 						InferredComputedExpectedValue extends [infer InferredConstraint extends BaseConstraint]
-							? NeverCoalescing<
-								Extract<
-									InferredConstraint extends any
-										? [
-											GenericValue extends InferredConstraint
-												? unknown
-												: NeverCoalescing<
-													DObject.Values<
-														ComputeCastConstraintRule<GenericValue, InferredConstraint>
+							? IsNever<InferredConstraint> extends true
+								? never
+								: NeverCoalescing<
+									Extract<
+										InferredConstraint extends any
+											? [
+												GenericValue extends InferredConstraint
+													? unknown
+													: NeverCoalescing<
+														DObject.Values<
+															ComputeCastConstraintRule<GenericValue, InferredConstraint>
+														>,
+														CastError<
+															"None of the intended constraints is possible on the current value.",
+															GenericValue,
+															InferredConstraint
+														>
 													>,
-													CastError<
-														"None of the intended constraints is possible on the current value.",
-														GenericValue,
-														InferredConstraint
-													>
-												>,
-										]
-										: never,
-									[CastError<any, any, any>]
-								>,
-								[unknown]
-							>
+											]
+											: never,
+										[CastError<any, any, any>]
+									>,
+									[unknown]
+								>
 							: never
 					) extends infer InferredResult
 						? UnionContain<InferredResult, [unknown]> extends true

@@ -1,5 +1,6 @@
 import * as DChrono from "@scripts/chrono";
 import { escapeRegExp } from "./escapeRegExp";
+import { type Constraint } from "./constraint";
 
 export type EligibleFormDataValue = (
 	| boolean
@@ -10,6 +11,7 @@ export type EligibleFormDataValue = (
 	| undefined
 	| DChrono.TheDate
 	| DChrono.TheTime
+	| Constraint
 	| { [key: string]: EligibleFormDataValue }
 	| EligibleFormDataValue[]
 );
