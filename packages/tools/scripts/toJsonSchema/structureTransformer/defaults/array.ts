@@ -36,7 +36,7 @@ export const arrayStructureTransformer = createStructureTransformer(
 			DArray.reduce(
 				DArray.reduceFrom<JsonSchemaArray>({
 					type: "array",
-					items: DEither.unwrapRight(elementResult),
+					items: DEither.unwrapRight(elementResult).schema,
 				}),
 				({
 					element: constraint,

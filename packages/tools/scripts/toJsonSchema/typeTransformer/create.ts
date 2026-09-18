@@ -1,6 +1,6 @@
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
-import type { JsonSchema, SupportedVersions, TransformerSuccessEither, DataStructureTypeTransformerEither, DataStructureTypeErrorEither } from "../result";
+import type { JsonSchema, SupportedVersions, DataStructureTypeTransformerEither, DataStructureTypeErrorEither, DataStructureTypeSuccessEither } from "../result";
 import type {
 	JsonSchemaString,
 	JsonSchemaStringLiteral,
@@ -32,7 +32,7 @@ export type TypeJsonSchema = (
 export interface TypeTransformerParams {
 	readonly version: SupportedVersions;
 
-	success(result: JsonSchema): TransformerSuccessEither;
+	success(schema: JsonSchema): DataStructureTypeSuccessEither;
 
 	buildError(): DataStructureTypeErrorEither;
 }

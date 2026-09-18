@@ -37,7 +37,7 @@ export const newTypeStructureTransformer = createStructureTransformer(
 		return success(
 			{
 				title: structure.name,
-				...innerType,
+				...innerType.schema,
 			},
 		);
 	},

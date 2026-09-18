@@ -1,5 +1,44 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`objectStructureTransformer > keeps referenced optional properties out of required 1`] = `
+{
+  "$ref": "#/definitions/Value",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Nickname": {
+      "anyOf": [
+        {
+          "not": {},
+        },
+        {
+          "type": "string",
+        },
+      ],
+    },
+    "Value": {
+      "additionalProperties": false,
+      "properties": {
+        "displayName": {
+          "$ref": "#/definitions/Nickname",
+        },
+        "id": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "type": "string",
+        },
+        "nickname": {
+          "$ref": "#/definitions/Nickname",
+        },
+      },
+      "required": [
+        "id",
+      ],
+      "type": "object",
+    },
+  },
+}
+`;
+
 exports[`objectStructureTransformer > renders a complex API response object 1`] = `
 {
   "$ref": "#/definitions/Value",
@@ -220,6 +259,39 @@ exports[`objectStructureTransformer > renders an object structure 1`] = `
         "id",
         "email",
         "enabled",
+      ],
+      "type": "object",
+    },
+  },
+}
+`;
+
+exports[`objectStructureTransformer > renders optional properties without marking them as required 1`] = `
+{
+  "$ref": "#/definitions/Value",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Value": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "type": "string",
+        },
+        "nickname": {
+          "anyOf": [
+            {
+              "not": {},
+            },
+            {
+              "type": "string",
+            },
+          ],
+        },
+      },
+      "required": [
+        "id",
       ],
       "type": "object",
     },

@@ -31,8 +31,13 @@ export const objectStructureTransformer = createStructureTransformer(
 				return valueResult;
 			}
 
-			properties[entry.key] = DEither.unwrapRight(valueResult);
-			required.push(entry.key);
+			const { schema, isOptional } = DEither.unwrapRight(valueResult);
+
+			properties[entry.key] = schema;
+
+			if (!isOptional) {
+				required.push(entry.key);
+			}
 		}
 
 		return success({

@@ -4,7 +4,7 @@ import * as DGenerator from "@duplojs/lang/generator";
 import type * as DCommon from "@duplojs/lang/common";
 import * as DKind from "@duplojs/lang/kind";
 import { createKind } from "./kind";
-import { type DataStructureTypeErrorEither, type DataStructureTypeNotSupportedEither, supportedVersions, type DataStructureErrorEither, type DataStructureNotSupportedEither, type JsonSchema, type MapperSupportedVersions, type SupportedVersions } from "./result";
+import { supportedVersions, type DataStructureErrorEither, type DataStructureNotSupportedEither, type JsonSchema, type MapperSupportedVersions, type SupportedVersions } from "./result";
 import { type MapContext } from "./context";
 import { type StructureTransformer } from "./structureTransformer";
 import { type TypeTransformer } from "./typeTransformer";
@@ -103,24 +103,22 @@ export function render(
 		);
 	}
 
-	const jsonSchema = DEither.unwrapRight(result);
+	const { schema } = DEither.unwrapRight(result);
 
 	const definitions = DGenerator.reduce(
 		context.values(),
 		DGenerator.reduceFrom<Record<string, JsonSchema>>({}),
-		({ item, lastValue, next }) => item.schema
-			? next({
-				...lastValue,
-				[item.name]: item.schema,
-			})
-			: next(lastValue),
+		({ item, lastValue, next }) => next({
+			...lastValue,
+			[item.name]: item.schema,
+		}),
 	);
 
 	const definitionsWithIdentifier = definitions[params.identifier]
 		? definitions
 		: {
 			...definitions,
-			[params.identifier]: jsonSchema,
+			[params.identifier]: schema,
 		};
 
 	if (

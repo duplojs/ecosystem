@@ -55,22 +55,6 @@ describe("toJsonSchema render", () => {
 		)).toMatchSnapshot();
 	});
 
-	it("ignores context declarations without schema", () => {
-		const declaredOnly = DDataStructure.string().addIdentifier("DeclaredOnly");
-		const context: DStoJS.MapContext = new Map([[declaredOnly, { name: "DeclaredOnly" }]]);
-
-		expect(DStoJS.render(
-			DDataStructure.boolean(),
-			{
-				identifier: "Value",
-				structureTransformers: DStoJS.defaultStructureTransformers,
-				typeTransformers: DStoJS.defaultTypeTransformers,
-				context,
-				version: "jsonSchema7",
-			},
-		)).toMatchSnapshot();
-	});
-
 	it("throws when a type transformer builds an error", () => {
 		expect(() => DStoJS.render(
 			DDataStructure.string(),

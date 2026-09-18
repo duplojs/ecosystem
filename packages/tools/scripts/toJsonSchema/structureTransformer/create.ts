@@ -1,7 +1,7 @@
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import type { MapContext } from "../context";
-import type { DataStructureErrorEither, JsonSchema, SupportedVersions, DataStructureTransformerEither, TransformerSuccessEither, DataStructureTypeTransformerEither } from "../result";
+import type { DataStructureErrorEither, JsonSchema, SupportedVersions, DataStructureTransformerEither, DataStructureSuccessEither, DataStructureTypeTransformerEither } from "../result";
 import type {
 	JsonSchemaNewType,
 	JsonSchemaArray,
@@ -28,7 +28,7 @@ export interface StructureTransformerParams {
 
 	transformer(structure: DDataStructure.Structure): DataStructureTransformerEither;
 
-	success(result: JsonSchema): TransformerSuccessEither;
+	success(schema: JsonSchema): DataStructureSuccessEither;
 
 	buildError(): DataStructureErrorEither;
 

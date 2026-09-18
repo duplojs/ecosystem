@@ -18,8 +18,8 @@ export type JsonSchema = (
 	| TypeJsonSchema
 );
 
-export type TransformerSuccessEither = DEither.Right<
-	"buildSuccess",
+export type DataStructureTypeSuccessEither = DEither.Right<
+	"buildDataStructureTypeSuccess",
 	JsonSchema
 >;
 
@@ -34,10 +34,18 @@ export type DataStructureTypeErrorEither = DEither.Left<
 >;
 
 export type DataStructureTypeTransformerEither = (
-	| TransformerSuccessEither
+	| DataStructureTypeSuccessEither
 	| DataStructureTypeNotSupportedEither
 	| DataStructureTypeErrorEither
 );
+
+export type DataStructureSuccessEither = DEither.Right<
+	"buildDataStructureSuccess",
+	{
+		readonly schema: JsonSchema;
+		readonly isOptional: boolean;
+	}
+>;
 
 export type DataStructureNotSupportedEither = DEither.Left<
 	"dataStructureNotSupport",
@@ -50,7 +58,7 @@ export type DataStructureErrorEither = DEither.Left<
 >;
 
 export type DataStructureTransformerEither = (
-	| TransformerSuccessEither
+	| DataStructureSuccessEither
 	| DataStructureNotSupportedEither
 	| DataStructureErrorEither
 );

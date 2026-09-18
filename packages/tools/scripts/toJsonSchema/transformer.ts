@@ -1,4 +1,4 @@
-import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
@@ -8,6 +8,7 @@ import type { SupportedVersions, DataStructureTransformerEither } from "./result
 import { structureTransformer, type StructureTransformerParams, type StructureTransformer } from "./structureTransformer";
 import { typeTransformer, type TypeTransformer, type TypeTransformerParams } from "./typeTransformer";
 
+const defaultPlaceholderJsonSchema = { not: {} };
 export interface TransformerFunctionParams {
 	readonly identifier?: string;
 	readonly structureTransformers: readonly StructureTransformer[];
@@ -47,10 +48,15 @@ export function transformer(
 
 	if (currentDeclaration) {
 		return DEither.right(
-			"buildSuccess",
-			{ $ref: buildRef(currentDeclaration.name, params.version) },
+			"buildDataStructureSuccess",
+			{
+				schema: { $ref: buildRef(currentDeclaration.name, params.version) },
+				isOptional: currentDeclaration.isOptional,
+			},
 		);
 	}
+
+	const currentDataStructureIsOptional = DDataStructure.isOptional(currentDataStructure);
 
 	const currentIdentifier = DCommon.justExec(() => {
 		if (
@@ -66,6 +72,8 @@ export function transformer(
 			currentDataStructure,
 			{
 				name: identifier,
+				schema: defaultPlaceholderJsonSchema,
+				isOptional: currentDataStructureIsOptional,
 			},
 		);
 
@@ -74,7 +82,7 @@ export function transformer(
 
 	const typeTransformerParams: TypeTransformerParams = {
 		success(result) {
-			return DEither.right("buildSuccess", result);
+			return DEither.right("buildDataStructureTypeSuccess", result);
 		},
 		buildError() {
 			return DEither.left("buildDataStructureTypeError");
@@ -83,8 +91,11 @@ export function transformer(
 	};
 
 	const structureTransformerParams: StructureTransformerParams = {
-		success(result) {
-			return DEither.right("buildSuccess", result);
+		success(schema) {
+			return DEither.right("buildDataStructureSuccess", {
+				schema,
+				isOptional: currentDataStructureIsOptional,
+			});
 		},
 		transformer(structure) {
 			return transformer(
@@ -132,7 +143,7 @@ export function transformer(
 	}
 
 	if (currentIdentifier) {
-		const jsonSchema = DEither.unwrapRight(result);
+		const { schema, isOptional } = DEither.unwrapRight(result);
 
 		params.context.delete(currentDataStructure);
 
@@ -140,7 +151,8 @@ export function transformer(
 			currentDataStructure,
 			{
 				name: currentIdentifier,
-				schema: jsonSchema,
+				schema,
+				isOptional,
 			},
 		);
 

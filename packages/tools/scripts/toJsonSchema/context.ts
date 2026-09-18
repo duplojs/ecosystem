@@ -3,7 +3,8 @@ import type { JsonSchema } from "./result";
 
 export interface MapContextValue {
 	readonly name: string;
-	readonly schema?: JsonSchema;
+	readonly schema: JsonSchema;
+	readonly isOptional: boolean;
 }
 
 export type MapContext = Map<

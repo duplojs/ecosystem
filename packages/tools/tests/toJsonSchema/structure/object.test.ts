@@ -19,6 +19,41 @@ describe("objectStructureTransformer", () => {
 		)).toMatchSnapshot();
 	});
 
+	it("renders optional properties without marking them as required", () => {
+		expect(DStoJS.render(
+			DDataStructure.object({
+				id: DDataStructure.string([DDataStructure.uuid()]),
+				nickname: DDataStructure.optional(DDataStructure.string()),
+			}),
+			{
+				identifier: "Value",
+				structureTransformers: DStoJS.defaultStructureTransformers,
+				typeTransformers: DStoJS.defaultTypeTransformers,
+				version: "jsonSchema7",
+			},
+		)).toMatchSnapshot();
+	});
+
+	it("keeps referenced optional properties out of required", () => {
+		const nickname = DDataStructure.optional(
+			DDataStructure.string(),
+		).addIdentifier("Nickname");
+
+		expect(DStoJS.render(
+			DDataStructure.object({
+				id: DDataStructure.string([DDataStructure.uuid()]),
+				nickname,
+				displayName: nickname,
+			}),
+			{
+				identifier: "Value",
+				structureTransformers: DStoJS.defaultStructureTransformers,
+				typeTransformers: DStoJS.defaultTypeTransformers,
+				version: "jsonSchema7",
+			},
+		)).toMatchSnapshot();
+	});
+
 	it("renders a complex API response object", () => {
 		expect(DStoJS.render(
 			DDataStructure.object({

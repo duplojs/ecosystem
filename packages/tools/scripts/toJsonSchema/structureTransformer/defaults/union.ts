@@ -27,7 +27,7 @@ export const unionStructureTransformer = createStructureTransformer(
 				return valueResult;
 			}
 
-			anyOf.push(DEither.unwrapRight(valueResult));
+			anyOf.push(DEither.unwrapRight(valueResult).schema);
 		}
 
 		return success({ anyOf });

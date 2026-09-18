@@ -28,7 +28,7 @@ export const entityStructureTransformer = createStructureTransformer(
 		return success(
 			{
 				title: structure.name,
-				...innerType,
+				...innerType.schema,
 			},
 		);
 	},

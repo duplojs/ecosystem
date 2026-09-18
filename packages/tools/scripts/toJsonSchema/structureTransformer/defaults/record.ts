@@ -38,8 +38,8 @@ export const recordStructureTransformer = createStructureTransformer(
 
 		return success({
 			type: "object",
-			propertyNames: DEither.unwrapRight(keyResult),
-			additionalProperties: DEither.unwrapRight(valueResult),
+			propertyNames: DEither.unwrapRight(keyResult).schema,
+			additionalProperties: DEither.unwrapRight(valueResult).schema,
 			...requiredKeys?.length
 				? {
 					required: requiredKeys,

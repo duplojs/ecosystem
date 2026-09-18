@@ -10,6 +10,7 @@ export const typeStructureTransformer = createStructureTransformer(
 		{
 			transformType,
 			buildError,
+			success,
 		},
 	) => DCommon.pipe(
 		transformType(
@@ -19,6 +20,9 @@ export const typeStructureTransformer = createStructureTransformer(
 		DCommon.when(
 			DEither.isLeft,
 			() => buildError(),
+		),
+		DEither.whenIsRight(
+			success,
 		),
 	),
 );
