@@ -1,0 +1,6 @@
+{	
+	"extends": ["./tsconfig.app.json", "@duplojs/code-config/tsconfig/build.json"],
+	"compilerOptions": {
+		"rootDir": "./scripts"
+	}
+}

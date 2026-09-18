@@ -1,0 +1,147 @@
+import { ResponseContract, useProcessBuilder, useRouteBuilder, Request, defaultHandlerStepFunctionBuilder, defaultProcessStepFunctionBuilder, PredictedResponse } from "@core";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import { createBodyReader } from "@test-utils/bodyReader";
+import { useTestRouteFunctionBuilder } from "@test-utils/useTestRouteFunctionBuilder";
+
+describe("process function builder", () => {
+	const spyResponse = vi.fn();
+
+	beforeEach(() => {
+		spyResponse.mockClear();
+	});
+
+	it("build step not support", async() => {
+		const process = useProcessBuilder()
+			.extract({ origin: DDataStructure.number() })
+			.exports(["origin"]);
+
+		const route = useRouteBuilder("GET", "/users", { hooks: [{ afterSendResponse: spyResponse }] })
+			.exec(process, { imports: ["origin"] })
+			.handler(
+				ResponseContract.ok("good", DDataStructure.number()),
+				(floor, { response }) => response("good", floor.origin),
+			);
+
+		await expect(
+			useTestRouteFunctionBuilder(route, {
+				stepFunctionBuilders: [
+					defaultHandlerStepFunctionBuilder,
+					defaultProcessStepFunctionBuilder,
+				],
+			}),
+		).rejects.toThrowError();
+	});
+
+	it("response from process", async() => {
+		const process = useProcessBuilder()
+			.extract({ origin: DDataStructure.number() })
+			.exports(["origin"]);
+
+		const route = useRouteBuilder("GET", "/users", { hooks: [{ afterSendResponse: spyResponse }] })
+			.exec(process, { imports: ["origin"] })
+			.handler(
+				ResponseContract.ok("good", DDataStructure.number()),
+				(floor, { response }) => response("good", floor.origin),
+			);
+
+		const buildedRoute = await useTestRouteFunctionBuilder(route);
+
+		await buildedRoute(
+			new Request({
+				headers: {},
+				host: "",
+				matchedPath: "",
+				method: "",
+				origin: "test",
+				path: "",
+				params: {},
+				query: {},
+				url: "",
+				bodyReader: createBodyReader(),
+
+			}),
+		);
+
+		expect(spyResponse).toHaveBeenCalledWith(
+			expect.objectContaining({
+				currentResponse: new PredictedResponse("422", "extract-error", expect.any(Object))
+					.setHeader("extract-key", "request.origin"),
+			}),
+		);
+	});
+
+	it("route pickup process value", async() => {
+		const process = useProcessBuilder()
+			.extract({ origin: DDataStructure.string() })
+			.cut([], ({ origin }, { output }) => output({ newOrigin: origin }))
+			.exports(["newOrigin"]);
+
+		const route = useRouteBuilder("GET", "/users", { hooks: [{ afterSendResponse: spyResponse }] })
+			.exec(process, { imports: ["newOrigin"] })
+			.handler(
+				ResponseContract.ok("good", DDataStructure.string()),
+				(floor, { response }) => response("good", floor.newOrigin),
+			);
+
+		const buildedRoute = await useTestRouteFunctionBuilder(route);
+
+		await buildedRoute(
+			new Request({
+				headers: {},
+				host: "",
+				matchedPath: "",
+				method: "",
+				origin: "myOrigin",
+				path: "",
+				params: {},
+				query: {},
+				url: "",
+				bodyReader: createBodyReader(),
+
+			}),
+		);
+
+		expect(spyResponse).toHaveBeenCalledWith(
+			expect.objectContaining({
+				currentResponse: new PredictedResponse("200", "good", "myOrigin"),
+			}),
+		);
+	});
+
+	it("route not pickup process value", async() => {
+		const process = useProcessBuilder()
+			.extract({ origin: DDataStructure.string() })
+			.exports(["origin"]);
+
+		const route = useRouteBuilder("GET", "/users", { hooks: [{ afterSendResponse: spyResponse }] })
+			.exec(process)
+			.handler(
+				ResponseContract.noContent("good"),
+				(floor, { response }) => response("good"),
+			);
+
+		const buildedRoute = await useTestRouteFunctionBuilder(route);
+
+		await buildedRoute(
+			new Request({
+				headers: {},
+				host: "",
+				matchedPath: "",
+				method: "",
+				origin: "myOrigin",
+				path: "",
+				params: {},
+				query: {},
+				url: "",
+				bodyReader: createBodyReader(),
+
+			}),
+		);
+
+		expect(spyResponse).toHaveBeenCalledWith(
+			expect.objectContaining({
+				currentResponse: new PredictedResponse("204", "good", undefined),
+			}),
+		);
+	});
+});

@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+	  "@core": ["../../../dist/core/index.d.ts"],
+	  "@core/*": ["../../../dist/core/*"],
+	  "@plugin-cookie": ["../../../dist/plugins/cookie/index.d.ts"],
+	  "@plugin-cookie/*": ["../../../dist/plugins/cookie/*"],
+	  "@test-utils/*": ["../../_utils/*"],
+    },
+  },
+  "include": ["**/*.ts"],
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tsconfig.app.json",
+  "compilerOptions": {
+    "paths": {
+	  "@core/*": ["../../core/*"],
+	  "@plugin-cookie/*": ["./*"],
+    },
+  },
+  "include": ["**/*.ts", "../../core/**/*.ts"],
+}

@@ -1,0 +1,132 @@
+import type * as DCommon from "@duplojs/lang/common";
+import { type ClientEventsResponse, type ServerEvent, type AllClientResponse, type AllNotPredictedClientResponse, type ClientStreamResponse } from "./clientResponse";
+import { type PromiseRequestParams } from "./promiseRequestParams";
+import { type ServerRouteResponseFlux } from "./serverRoute";
+
+export type RequestHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (requestParams: PromiseRequestParams<GenericHookParams>) => DCommon.MaybePromise<
+	PromiseRequestParams<GenericHookParams>
+>;
+
+export type ResponseHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	response: AllClientResponse<GenericHookParams>,
+) => DCommon.MaybePromise<AllClientResponse<GenericHookParams>>;
+
+export type InformationHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	response: AllClientResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export type ResponseTypeHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	response: AllClientResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export type ExpectedResponseHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	response: AllClientResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export type CodeHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	response: AllClientResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export type NotPredictedResponseHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	response: AllNotPredictedClientResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export type ErrorHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (error: unknown, requestParams: PromiseRequestParams<GenericHookParams>) => DCommon.MaybePromise<void>;
+
+export type CloseServerEventHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	response: ClientEventsResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export type BeforeRetryServerEventHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	response: ClientEventsResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export type ErrorServerEventHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	error: unknown,
+	response: ClientEventsResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export type StartServerEventHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	response: ClientEventsResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export type ReceiveEventServerEventHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	event: ServerEvent,
+	response: ClientEventsResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export type CloseStreamHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	response: ClientStreamResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export type ReceiveDataStreamHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	data: ServerRouteResponseFlux,
+	response: ClientStreamResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export type ErrorStreamHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	error: unknown,
+	response: ClientStreamResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export type StartStreamHook<
+	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
+> = (
+	response: ClientStreamResponse<GenericHookParams>,
+) => DCommon.MaybePromise<void>;
+
+export interface Hooks {
+	request: RequestHook[];
+	response: ResponseHook[];
+	information: Record<string, InformationHook[]>;
+	code: Record<string, CodeHook[]>;
+	informationalResponseType: ResponseTypeHook[];
+	successfulResponseType: ResponseTypeHook[];
+	redirectionResponseType: ResponseTypeHook[];
+	clientErrorResponseType: ResponseTypeHook[];
+	serverErrorResponseType: ResponseTypeHook[];
+	expectedResponse: ExpectedResponseHook[];
+	notPredictedResponse: NotPredictedResponseHook[];
+	error: ErrorHook[];
+	closeServerEvent: CloseServerEventHook[];
+	beforeRetryServerEvent: BeforeRetryServerEventHook[];
+	errorServerEvent: ErrorServerEventHook[];
+	startServerEvent: StartServerEventHook[];
+	receiveEventServerEvent: ReceiveEventServerEventHook[];
+	closeStream: CloseStreamHook[];
+	receiveDataStream: ReceiveDataStreamHook[];
+	errorStream: ErrorStreamHook[];
+	startStream: StartStreamHook[];
+}

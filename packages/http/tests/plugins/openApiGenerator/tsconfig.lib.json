@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+	  "@core": ["../../../dist/core/index.d.ts"],
+	  "@core/*": ["../../../dist/core/*"],
+	  "@plugin-openApiGenerator": ["../../../dist/plugins/openApiGenerator/index.d.ts"],
+	  "@plugin-openApiGenerator/*": ["../../../dist/plugins/openApiGenerator/*"],
+	  "@plugin-codeGenerator": ["../../../dist/plugins/codeGenerator/index.d.ts"],
+	  "@plugin-codeGenerator/*": ["../../../dist/plugins/codeGenerator/*"],
+	  "@test-utils/*": ["../../_utils/*"],
+    },
+  },
+  "include": ["**/*.ts"],
+}

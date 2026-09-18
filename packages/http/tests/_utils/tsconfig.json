@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.test.json",
+  "compilerOptions": {
+    "paths": {
+	  "@core": ["../../scripts/core/index.ts"],
+	  "@core/*": ["../../scripts/core/*"],
+    },
+  },
+  "include": ["**/*.ts"],
+}

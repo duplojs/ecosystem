@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+	  "@client": ["../../dist/client/index.d.ts"],
+	  "@client/*": ["../../dist/client/*"],
+	  "@test-utils/*": ["../_utils/*"],
+    },
+	"types": ["web", "vitest/globals"],
+  },
+  "include": ["**/*.ts"],
+}

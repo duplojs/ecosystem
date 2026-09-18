@@ -1,0 +1,297 @@
+import { createKind } from "../kind";
+import { type ResponseCode, type PredictedResponse, type ServerSentEventsPredictedResponse, type SuccessResponseCode, type StreamTextPredictedResponse } from ".";
+import { type StreamPredictedResponse } from "./streamPredicted";
+import type * as DCommon from "@duplojs/lang/common";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DKind from "@duplojs/lang/kind";
+
+const ErrorClass = Error;
+
+export namespace ResponseContract {
+	type SupportedStructure = DDataStructure.Structure;
+
+	export const contractKind = createKind("response-contract");
+	export interface Contract<
+		GenericCode extends ResponseCode = ResponseCode,
+		GenericInformation extends string = string,
+		GenericSchema extends SupportedStructure = SupportedStructure,
+	> extends DKind.Kind<typeof contractKind> {
+		code: GenericCode;
+		information: GenericInformation;
+		body: GenericSchema;
+	}
+
+	function createContractBuilder<
+		GenericCode extends ResponseCode,
+		GenericOptionsNoSchema extends boolean = never,
+		GenericOptionsDefaultSchema extends SupportedStructure = never,
+	>(
+		code: GenericCode,
+		options?: {
+			noSchema?: GenericOptionsNoSchema;
+			defaultSchema?: GenericOptionsDefaultSchema;
+		},
+	) {
+		return <
+			GenericInformation extends string,
+			GenericSchema extends SupportedStructure = GenericOptionsDefaultSchema,
+		>(
+			information: GenericInformation,
+			...[schema]: DCommon.IsEqual<GenericOptionsNoSchema, true> extends true
+				? []
+				: DCommon.IsEqual<GenericOptionsDefaultSchema, never> extends true
+					? [schema: GenericSchema]
+					: [schema?: GenericSchema]
+		): NoInfer<
+			Contract<
+				GenericCode,
+				GenericInformation,
+				DCommon.NeverCoalescing<GenericSchema, DDataStructure.TypeStructure<undefined, readonly []>>
+			>
+		> => contractKind.setTo(
+			{
+				code,
+				information,
+				body: (schema ?? options?.defaultSchema ?? DDataStructure.undefined()) as never,
+			},
+			null,
+		);
+	}
+
+	const defaultSchema = DDataStructure.undefined();
+
+	export const http100Continue = createContractBuilder("100", { defaultSchema });
+	export const switchingProtocols = createContractBuilder("101", { defaultSchema });
+	export const processing = createContractBuilder("102", { defaultSchema });
+	export const earlyHints = createContractBuilder("103", { defaultSchema });
+
+	export const ok = createContractBuilder("200");
+	export const created = createContractBuilder("201", { defaultSchema });
+	export const accepted = createContractBuilder("202", { defaultSchema });
+	export const nonAuthoritativeInformation = createContractBuilder("203", { defaultSchema });
+	export const noContent = createContractBuilder("204", { noSchema: true });
+	export const resetContent = createContractBuilder("205", { defaultSchema });
+	export const partialContent = createContractBuilder("206", { defaultSchema });
+	export const multiStatus = createContractBuilder("207", { defaultSchema });
+	export const alreadyReported = createContractBuilder("208", { defaultSchema });
+	export const imUsed = createContractBuilder("226", { defaultSchema });
+
+	export const multipleChoices = createContractBuilder("300", { noSchema: true });
+	export const movedPermanently = createContractBuilder("301", { noSchema: true });
+	export const found = createContractBuilder("302", { noSchema: true });
+	export const seeOther = createContractBuilder("303", { noSchema: true });
+	export const notModified = createContractBuilder("304", { noSchema: true });
+	export const useProxy = createContractBuilder("305", { noSchema: true });
+	export const switchProxy = createContractBuilder("306", { noSchema: true });
+	export const temporaryRedirect = createContractBuilder("307", { noSchema: true });
+	export const permanentRedirect = createContractBuilder("308", { noSchema: true });
+
+	export const badRequest = createContractBuilder("400", { defaultSchema });
+	export const unauthorized = createContractBuilder("401", { defaultSchema });
+	export const paymentRequired = createContractBuilder("402", { defaultSchema });
+	export const forbidden = createContractBuilder("403", { defaultSchema });
+	export const notFound = createContractBuilder("404", { defaultSchema });
+	export const methodNotAllowed = createContractBuilder("405", { defaultSchema });
+	export const notAcceptable = createContractBuilder("406", { defaultSchema });
+	export const proxyAuthenticationRequired = createContractBuilder("407", { defaultSchema });
+	export const requestTimeout = createContractBuilder("408", { defaultSchema });
+	export const conflict = createContractBuilder("409", { defaultSchema });
+	export const gone = createContractBuilder("410", { defaultSchema });
+	export const lengthRequired = createContractBuilder("411", { defaultSchema });
+	export const preconditionFailed = createContractBuilder("412", { defaultSchema });
+	export const contentTooLarge = createContractBuilder("413", { defaultSchema });
+	export const uriTooLong = createContractBuilder("414", { defaultSchema });
+	export const unsupportedMediaType = createContractBuilder("415", { defaultSchema });
+	export const rangeNotSatisfiable = createContractBuilder("416", { defaultSchema });
+	export const expectationFailed = createContractBuilder("417", { defaultSchema });
+	export const imATeapot = createContractBuilder("418", { defaultSchema });
+	export const misdirectedRequest = createContractBuilder("421", { defaultSchema });
+	export const unprocessableContent = createContractBuilder("422", { defaultSchema });
+	export const locked = createContractBuilder("423", { defaultSchema });
+	export const failedDependency = createContractBuilder("424", { defaultSchema });
+	export const tooEarly = createContractBuilder("425", { defaultSchema });
+	export const upgradeRequired = createContractBuilder("426", { defaultSchema });
+	export const preconditionRequired = createContractBuilder("428", { defaultSchema });
+	export const tooManyRequests = createContractBuilder("429", { defaultSchema });
+	export const requestHeaderFieldsTooLarge = createContractBuilder("431", { defaultSchema });
+	export const unavailableForLegalReasons = createContractBuilder("451", { defaultSchema });
+
+	export const internalServerError = createContractBuilder("500", { defaultSchema });
+	export const notImplemented = createContractBuilder("501", { defaultSchema });
+	export const badGateway = createContractBuilder("502", { defaultSchema });
+	export const serviceUnavailable = createContractBuilder("503", { defaultSchema });
+	export const gatewayTimeout = createContractBuilder("504", { defaultSchema });
+	export const httpVersionNotSupported = createContractBuilder("505", { defaultSchema });
+	export const variantAlsoNegotiates = createContractBuilder("506", { defaultSchema });
+	export const insufficientStorage = createContractBuilder("507", { defaultSchema });
+	export const loopDetected = createContractBuilder("508", { defaultSchema });
+	export const notExtended = createContractBuilder("510", { defaultSchema });
+	export const networkAuthenticationRequired = createContractBuilder("511", { defaultSchema });
+
+	export const serverSentEventsContractKind = createKind("server-sent-events-response-contract");
+	export interface ServerSentEventsContract<
+		GenericCode extends SuccessResponseCode = SuccessResponseCode,
+		GenericInformation extends string = string,
+		GenericEvents extends Record<string, SupportedStructure> = Record<string, SupportedStructure>,
+		GenericSchema extends SupportedStructure = SupportedStructure,
+	> extends DKind.Kind<typeof serverSentEventsContractKind> {
+		code: GenericCode;
+		information: GenericInformation;
+		events: GenericEvents;
+		body: GenericSchema;
+	}
+
+	export function serverSentEvents<
+		GenericInformation extends string,
+		GenericMainEventSchema extends SupportedStructure,
+		GenericEvents extends Record<string, SupportedStructure> = {},
+	>(
+		information: GenericInformation,
+		mainEventSchema: GenericMainEventSchema,
+		events: GenericEvents = {} as GenericEvents,
+	): ServerSentEventsContract<
+		"200",
+		GenericInformation,
+			& (
+				DCommon.IsEqual<GenericEvents, Record<string, SupportedStructure>> extends true
+					? {}
+					: GenericEvents
+			)
+			& { message: GenericMainEventSchema },
+			typeof defaultSchema
+	> {
+		return serverSentEventsContractKind.setTo(
+			{
+				code: <const>"200",
+				information,
+				events: {
+					...events,
+					message: mainEventSchema,
+				},
+				body: defaultSchema,
+			},
+			null,
+		);
+	}
+
+	export const streamContractKind = createKind("stream-response-contract");
+	export interface StreamContract<
+		GenericCode extends SuccessResponseCode = SuccessResponseCode,
+		GenericInformation extends string = string,
+		GenericFlux extends SupportedStructure = SupportedStructure,
+		GenericSchema extends SupportedStructure = SupportedStructure,
+	> extends DKind.Kind<typeof streamContractKind> {
+		code: GenericCode;
+		information: GenericInformation;
+		flux: GenericFlux;
+		body: GenericSchema;
+	}
+
+	export function stream<
+		GenericInformation extends string,
+		GenericSchema extends SupportedStructure,
+	>(
+		information: GenericInformation,
+		schema: GenericSchema,
+	): StreamContract<
+		"200",
+		GenericInformation,
+		GenericSchema,
+		typeof defaultSchema
+	> {
+		return streamContractKind.setTo(
+			{
+				code: <const>"200",
+				information,
+				flux: schema,
+				body: defaultSchema,
+			},
+			null,
+		);
+	}
+
+	export const streamTextContractKind = createKind("stream-text-response-contract");
+	export interface StreamTextContract<
+		GenericCode extends SuccessResponseCode = SuccessResponseCode,
+		GenericInformation extends string = string,
+		GenericFlux extends DDataStructure.Structure<string> = DDataStructure.Structure<string>,
+		GenericSchema extends SupportedStructure = SupportedStructure,
+	> extends DKind.Kind<typeof streamTextContractKind> {
+		code: GenericCode;
+		information: GenericInformation;
+		flux: GenericFlux;
+		body: GenericSchema;
+	}
+
+	const defaultStreamTextSchema = DDataStructure.string();
+	export function streamText<
+		GenericInformation extends string,
+	>(
+		information: GenericInformation,
+	): StreamTextContract<
+		"200",
+		GenericInformation,
+			typeof defaultStreamTextSchema,
+			typeof defaultSchema
+	> {
+		return streamTextContractKind.setTo(
+			{
+				code: <const>"200",
+				information,
+				flux: defaultStreamTextSchema,
+				body: defaultSchema,
+			},
+			null,
+		);
+	}
+
+	export type Contracts = (
+		| Contract
+		| ServerSentEventsContract
+		| StreamContract
+		| StreamTextContract
+	);
+
+	export type Convert<
+		GenericContract extends Contracts,
+	> = GenericContract extends Contract
+		? PredictedResponse<
+			GenericContract["code"],
+			GenericContract["information"],
+			DDataStructure.StructureValue<GenericContract["body"]>
+		>
+		: GenericContract extends ServerSentEventsContract
+			? ServerSentEventsPredictedResponse<
+				GenericContract["code"],
+				GenericContract["information"],
+				{
+					[
+					Prop in keyof GenericContract["events"]
+					]: DDataStructure.StructureValue<GenericContract["events"][Prop]>
+				}
+			>
+			: GenericContract extends StreamContract
+				? StreamPredictedResponse<
+					GenericContract["code"],
+					GenericContract["information"],
+					DDataStructure.StructureValue<GenericContract["flux"]>
+				>
+				: GenericContract extends StreamTextContract
+					? StreamTextPredictedResponse<
+						GenericContract["code"],
+						GenericContract["information"]
+					>
+					: never;
+
+	export class Error extends DKind.parentClass(
+		createKind("contract-error"),
+		ErrorClass,
+	) {
+		public constructor(
+			public information: string,
+			public detail: DDataStructure.Error | DDataStructure.ErrorPromise | string,
+		) {
+			super(null, `Error executing the response contract with the information: "${information}"`);
+		}
+	}
+}

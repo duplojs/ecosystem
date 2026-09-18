@@ -4,6 +4,7 @@ const scopes = [
     "code-config",
 	"eslint",
 	"form",
+	"http",
     "json-web-token",
     "lang",
     "playwright",

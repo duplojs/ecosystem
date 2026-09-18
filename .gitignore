@@ -6,4 +6,3 @@ cache
 .DS_Store
 .temp
 .vitest
-http

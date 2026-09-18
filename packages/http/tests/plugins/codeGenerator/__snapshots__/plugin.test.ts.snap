@@ -1,0 +1,153 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`plugin implementation > generate API type 1`] = `
+"import { TheDate, SerializedTheDate, TheTime, SerializedTheTime } from "@duplojs/lang/date";
+
+export type Routes = {
+    method: "GET";
+    path: "/user";
+    body: {
+        name: string;
+        age: number;
+    };
+    headers: {
+        header1: SerializedTheDate | TheDate;
+        header2: SerializedTheTime | TheTime;
+    };
+    responses: {
+        code: "422";
+        information: "extract-error";
+        body?: undefined;
+    } | {
+        code: "409";
+        information: "the-conflict";
+        body?: undefined;
+    } | {
+        code: "200";
+        information: "success";
+        body: string;
+    };
+};"
+`;
+
+exports[`plugin implementation > generate data parser files from identified route data parsers 1`] = `
+[
+  "routes.d.ts",
+  "export type ChildParser = string;
+
+export type Routes = {
+    method: "GET";
+    path: "/generated";
+    body: {
+        child: ChildParser;
+        count: number;
+    };
+    responses: {
+        code: "422";
+        information: "extract-error";
+        body?: undefined;
+    } | {
+        code: "200";
+        information: "generated.success";
+        body: ChildParser;
+    };
+};",
+]
+`;
+
+exports[`plugin implementation > generate data parser files from identified route data parsers 2`] = `
+[
+  "generated/types.ts",
+  "import * as DP from "@duplojs/lang/dataParser";",
+]
+`;
+
+exports[`plugin implementation > generate data parser files from identified route data parsers 3`] = `
+[
+  "generated/childParserDataParser.ts",
+  "import * as DP from "@duplojs/lang/dataParser";
+
+export const childParserDataParser = DP.string({ identifier: "ChildParser" });",
+]
+`;
+
+exports[`plugin implementation > generate data parser files from identified route data parsers 4`] = `
+[
+  "generated/bodyParserDataParser.ts",
+  "import * as DP from "@duplojs/lang/dataParser";
+
+import { childParserDataParser } from "./childParserDataParser";
+
+export const bodyParserDataParser = DP.object({
+    child: childParserDataParser,
+    count: DP.number()
+}, { identifier: "BodyParser" });",
+]
+`;
+
+exports[`plugin implementation > generate data parser files from identified route data parsers 5`] = `
+[
+  "generated/index.ts",
+  "import "@duplojs/lang/dataParser";
+
+declare module "@duplojs/lang/dataParser" {
+    interface DataParserDefinition {
+        identifier?: string;
+    }
+}
+export * from "./childParserDataParser";
+export * from "./bodyParserDataParser";",
+]
+`;
+
+exports[`plugin implementation > generate data parser files only from explicit data parsers when disabledFromRoute is enabled 1`] = `
+[
+  "routes.d.ts",
+  "export type RouteParser = string;
+
+export type Routes = {
+    method: "GET";
+    path: "/generated";
+    body: RouteParser;
+    responses: {
+        code: "422";
+        information: "extract-error";
+        body?: undefined;
+    } | {
+        code: "204";
+        information: "generated.success";
+        body?: undefined;
+    };
+};",
+]
+`;
+
+exports[`plugin implementation > generate data parser files only from explicit data parsers when disabledFromRoute is enabled 2`] = `
+[
+  "generated/types.ts",
+  "import * as DP from "@duplojs/lang/dataParser";",
+]
+`;
+
+exports[`plugin implementation > generate data parser files only from explicit data parsers when disabledFromRoute is enabled 3`] = `
+[
+  "generated/explicitParserDataParser.ts",
+  "import * as DP from "@duplojs/lang/dataParser";
+
+export const explicitParserDataParser = DP.number({ identifier: "ExplicitParser" });",
+]
+`;
+
+exports[`plugin implementation > generate data parser files only from explicit data parsers when disabledFromRoute is enabled 4`] = `
+[
+  "generated/index.ts",
+  "import "@duplojs/lang/dataParser";
+
+declare module "@duplojs/lang/dataParser" {
+    interface DataParserDefinition {
+        identifier?: string;
+    }
+}
+export * from "./explicitParserDataParser";",
+]
+`;

@@ -1,0 +1,793 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`openApiGenerator > correct generate file 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Swagger API",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "users.findMany",
+                  "type": "string"
+                },
+                "description": "users.findMany"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotIdentified0"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotIdentified4"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "users.create",
+                  "type": "string"
+                },
+                "description": "users.create"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "422": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "extract-error",
+                  "type": "string"
+                },
+                "description": "extract-error"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotIdentified6"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "users.deleted",
+                  "type": "string"
+                },
+                "description": "users.deleted"
+              }
+            }
+          },
+          "422": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "extract-error",
+                  "type": "string"
+                },
+                "description": "extract-error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/NotIdentified1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "users.find",
+                  "type": "string"
+                },
+                "description": "users.find"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "422": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "extract-error",
+                  "type": "string"
+                },
+                "description": "extract-error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/NotIdentified9"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "file.receive",
+                  "type": "string"
+                },
+                "description": "file.receive"
+              }
+            }
+          },
+          "422": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "extract-error",
+                  "type": "string"
+                },
+                "description": "extract-error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/*": {
+      "get": {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "file.send",
+                  "type": "string"
+                },
+                "description": "file.send"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotIdentified12"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sse": {
+      "get": {
+        "parameters": [
+          {
+            "name": "close",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/NotIdentified13"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "super-sse",
+                  "type": "string"
+                },
+                "description": "super-sse"
+              }
+            },
+            "content": {
+              "text/event-stream": {
+                "itemSchema": {
+                  "$ref": "#/components/schemas/NotIdentified15"
+                }
+              }
+            }
+          },
+          "204": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "close",
+                  "type": "string"
+                },
+                "description": "close"
+              }
+            }
+          },
+          "422": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "extract-error",
+                  "type": "string"
+                },
+                "description": "extract-error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cookie-check": {
+      "get": {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "cookie.checked",
+                  "type": "string"
+                },
+                "description": "cookie.checked"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotIdentified18"
+                }
+              }
+            }
+          },
+          "422": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "extract-error",
+                  "type": "string"
+                },
+                "description": "extract-error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cookie-drop": {
+      "get": {
+        "parameters": [],
+        "responses": {
+          "204": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "cookie.dropped",
+                  "type": "string"
+                },
+                "description": "cookie.dropped"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stream": {
+      "get": {
+        "parameters": [
+          {
+            "name": "value",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/NotIdentified20"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "monSuperStream",
+                  "type": "string"
+                },
+                "description": "monSuperStream"
+              }
+            },
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "422": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "extract-error",
+                  "type": "string"
+                },
+                "description": "extract-error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stream-text": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotIdentified22"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "monSuperStream",
+                  "type": "string"
+                },
+                "description": "monSuperStream"
+              }
+            },
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotIdentified24"
+                }
+              }
+            }
+          },
+          "422": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "extract-error",
+                  "type": "string"
+                },
+                "description": "extract-error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/static-file": {
+      "get": {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "resource.found",
+                  "type": "string"
+                },
+                "description": "resource.found"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotIdentified25"
+                }
+              }
+            }
+          },
+          "304": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "resource.notModified",
+                  "type": "string"
+                },
+                "description": "resource.notModified"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/static-folder/*": {
+      "get": {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "resource.found",
+                  "type": "string"
+                },
+                "description": "resource.found"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotIdentified27"
+                }
+              }
+            }
+          },
+          "304": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "resource.notModified",
+                  "type": "string"
+                },
+                "description": "resource.notModified"
+              }
+            }
+          },
+          "404": {
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "resource.notfound",
+                  "type": "string"
+                },
+                "description": "resource.notfound"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserId": {
+        "type": "number"
+      },
+      "UserName": {
+        "type": "string"
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UserId"
+          },
+          "name": {
+            "$ref": "#/components/schemas/UserName"
+          },
+          "age": {
+            "type": "number"
+          },
+          "friends": {
+            "$ref": "#/components/schemas/RecursiveType2"
+          },
+          "createdAt": {
+            "type": "string",
+            "pattern": "^date-?(?<value>\\\\d{1,16})(?<sign>[+-])$"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "age"
+        ]
+      },
+      "NotIdentified0": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/User"
+        }
+      },
+      "NotIdentified1": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "NotIdentified2": {},
+      "RecursiveType2": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/User"
+        }
+      },
+      "NotIdentified4": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UserId"
+          },
+          "name": {
+            "$ref": "#/components/schemas/UserName"
+          },
+          "age": {
+            "type": "number"
+          },
+          "friends": {
+            "$ref": "#/components/schemas/RecursiveType2"
+          },
+          "createdAt": {
+            "type": "string",
+            "pattern": "^date-?(?<value>\\\\d{1,16})(?<sign>[+-])$"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "age"
+        ]
+      },
+      "NotIdentified5": {},
+      "NotIdentified6": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "NotIdentified7": {},
+      "NotIdentified8": {},
+      "NotIdentified9": {
+        "type": "object",
+        "properties": {
+          "bool": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "true",
+                  "false",
+                  "0",
+                  "1"
+                ]
+              },
+              {
+                "type": "number",
+                "enum": [
+                  0,
+                  1
+                ]
+              }
+            ]
+          },
+          "myFile": {
+            "type": "array",
+            "items": [
+              {
+                "type": "string",
+                "format": "binary"
+              }
+            ],
+            "minItems": 1,
+            "additionalItems": false,
+            "maxItems": 1
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "bool",
+          "myFile",
+          "name"
+        ]
+      },
+      "NotIdentified10": {},
+      "NotIdentified11": {},
+      "NotIdentified12": {
+        "type": "string",
+        "format": "binary"
+      },
+      "NotIdentified13": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "string",
+            "enum": [
+              "true",
+              "false",
+              "0",
+              "1"
+            ]
+          },
+          {
+            "type": "number",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      "NotIdentified14": {},
+      "NotIdentified15": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "anyOf": [
+              {
+                "const": "other",
+                "type": "string"
+              },
+              {
+                "const": "message",
+                "type": "string"
+              }
+            ]
+          },
+          "data": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "test": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "test"
+                ]
+              }
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "retry": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "event",
+          "data"
+        ]
+      },
+      "NotIdentified16": {},
+      "NotIdentified17": {},
+      "NotIdentified18": {
+        "type": "object",
+        "properties": {
+          "session": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "session"
+        ]
+      },
+      "NotIdentified19": {},
+      "NotIdentified20": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "NotIdentified21": {},
+      "NotIdentified22": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "NotIdentified23": {},
+      "NotIdentified24": {
+        "type": "string"
+      },
+      "NotIdentified25": {
+        "type": "string",
+        "format": "binary"
+      },
+      "NotIdentified26": {},
+      "NotIdentified27": {
+        "type": "string",
+        "format": "binary"
+      },
+      "NotIdentified28": {},
+      "NotIdentified29": {}
+    }
+  }
+}"
+`;

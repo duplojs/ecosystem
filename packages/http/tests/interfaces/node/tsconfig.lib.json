@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+	  "@core": ["../../../dist/core/index.d.ts"],
+	  "@core/*": ["../../../dist/core/*"],
+	  "@interface-node": ["../../../dist/interfaces/node/index.d.ts"],
+	  "@interface-node/*": ["../../../dist/interfaces/node/*"],
+	  "@test-utils/*": ["../../_utils/*", "./_utils/*"],
+    },
+  },
+  "include": ["**/*.ts"],
+}

@@ -1,0 +1,16 @@
+{
+  "extends": "../../../tsconfig.test.json",
+  "compilerOptions": {
+    "paths": {
+	  "@core": ["../../../scripts/core/index.ts"],
+	  "@core/*": ["../../../scripts/core/*"],
+	  "@plugin-cors": ["../../../scripts/plugins/cors/index.ts"],
+	  "@plugin-cors/*": ["../../../scripts/plugins/cors/*"],
+	  "@test-utils/*": ["../../_utils/*"],
+    },
+  },
+  "include": [
+	"**/*.ts",
+	"../../../scripts/plugins/cors/**/*.ts",
+  ],
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.app.json",
+  "compilerOptions": {
+	"types": ["./global.d.ts"],
+    "paths": {
+	  "@core/*": ["./*"]
+    },
+  },
+  "include": ["**/*.ts"]
+}

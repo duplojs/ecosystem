@@ -1,0 +1,75 @@
+import { type Floor } from "@core/types";
+import { type RequestMethods, type BodyController } from "@core/request";
+import { preflightBuilder } from "./builder";
+import { type HookRouteLifeCycle, type RoutePath } from "@core/route";
+import { routeBuilderHandler, type RouteBuilder } from "../route";
+import * as DArray from "@duplojs/lang/array";
+import { type Metadata } from "@core/metadata";
+
+declare module "./builder" {
+	interface PreflightBuilder<
+		GenericDefinition extends PreflightBuilderDefinition = PreflightBuilderDefinition,
+		GenericFloor extends Floor = {},
+	> {
+		useRouteBuilder<
+			GenericMethod extends RequestMethods,
+			const GenericPaths extends RoutePath | readonly [RoutePath, ...RoutePath[]],
+			const GenericHooks extends readonly HookRouteLifeCycle[] = readonly [],
+			const GenericMetadata extends readonly Metadata[] = readonly [],
+			const GenericBodyController extends BodyController | null = null,
+		>(
+			method: GenericMethod,
+			path: GenericPaths,
+			options?: {
+				hooks?: GenericHooks | readonly HookRouteLifeCycle[];
+				metadata?: GenericMetadata;
+				bodyController?: GenericBodyController;
+			},
+		): RouteBuilder<
+			{
+				readonly method: GenericMethod;
+				readonly paths: GenericPaths extends string
+					? readonly [GenericPaths]
+					: GenericPaths;
+				readonly preflightSteps: GenericDefinition["preflightSteps"];
+				readonly steps: readonly [];
+				readonly hooks: readonly [
+					...GenericHooks,
+					...GenericDefinition["hooks"],
+				];
+				readonly metadata: readonly [
+					...GenericMetadata,
+					...GenericDefinition["metadata"],
+				];
+				readonly bodyController: GenericBodyController;
+			},
+			GenericFloor
+		>;
+	}
+}
+
+preflightBuilder.set(
+	"useRouteBuilder",
+	({
+		args: [
+			method,
+			paths,
+			options,
+		],
+		accumulator,
+	}) => routeBuilderHandler.use({
+		method,
+		paths: DArray.coalescing(paths),
+		preflightSteps: accumulator.preflightSteps,
+		steps: [],
+		hooks: [
+			...(options?.hooks ?? []),
+			...accumulator.hooks,
+		],
+		metadata: [
+			...(options?.metadata ?? []),
+			...accumulator.metadata,
+		],
+		bodyController: options?.bodyController ?? null,
+	}),
+);

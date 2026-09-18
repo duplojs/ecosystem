@@ -1,0 +1,400 @@
+import { ResponseContract, useRouteBuilder, Request, Response, usePreflightBuilder, useProcessBuilder, defaultExtractStepFunctionBuilder, defaultHandlerStepFunctionBuilder, HookResponse, type HookRouteLifeCycle, PredictedResponse } from "@core";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import { createBodyReader } from "@test-utils/bodyReader";
+import { useTestRouteFunctionBuilder } from "@test-utils/useTestRouteFunctionBuilder";
+
+describe("route function builder", () => {
+	const spyResponse = vi.fn();
+
+	beforeEach(() => {
+		spyResponse.mockClear();
+	});
+
+	it("failed build step", async() => {
+		const route = useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
+			.extract({ params: { value: DDataStructure.string() } })
+			.handler(
+				ResponseContract.ok("good", DDataStructure.string()),
+				(floor, { response }) => response("good", floor.value),
+			);
+
+		await expect(useTestRouteFunctionBuilder(route, { stepFunctionBuilders: [] }))
+			.rejects.toThrowError();
+	});
+
+	it("failed build preflight step", async() => {
+		const process = useProcessBuilder()
+			.exports();
+
+		const route = usePreflightBuilder()
+			.exec(process)
+			.useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
+			.extract({ params: { value: DDataStructure.string() } })
+			.handler(
+				ResponseContract.ok("good", DDataStructure.string()),
+				(floor, { response }) => response("good", floor.value),
+			);
+
+		await expect(
+			useTestRouteFunctionBuilder(route, {
+				stepFunctionBuilders: [defaultExtractStepFunctionBuilder, defaultHandlerStepFunctionBuilder],
+			}),
+		)
+			.rejects.toThrowError();
+	});
+
+	it("route send response", async() => {
+		const process = useProcessBuilder()
+			.exports();
+
+		const route = usePreflightBuilder()
+			.exec(process)
+			.useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
+			.extract({ params: { value: DDataStructure.string() } })
+			.handler(
+				ResponseContract.ok("good", DDataStructure.string()),
+				(floor, { response }) => response("good", floor.value),
+			);
+
+		const buildedRoute = await useTestRouteFunctionBuilder(route);
+
+		await buildedRoute(
+			new Request({
+				headers: {},
+				host: "",
+				matchedPath: "",
+				method: "",
+				origin: "",
+				path: "",
+				params: { value: "test" },
+				query: {},
+				url: "",
+				bodyReader: createBodyReader(),
+			}),
+		);
+
+		expect(spyResponse).toHaveBeenCalledWith(
+			expect.objectContaining({
+				currentResponse: new PredictedResponse("200", "good", "test"),
+			}),
+		);
+	});
+
+	it("route preflight send response", async() => {
+		const process = useProcessBuilder()
+			.cut(
+				ResponseContract.badRequest("preflight"),
+				(floor, { response }) => response("preflight"),
+			)
+			.exports();
+
+		const route = usePreflightBuilder()
+			.exec(process)
+			.useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
+			.extract({ params: { value: DDataStructure.string() } })
+			.handler(
+				ResponseContract.ok("good", DDataStructure.string()),
+				(floor, { response }) => response("good", floor.value),
+			);
+
+		const buildedRoute = await useTestRouteFunctionBuilder(route);
+
+		await buildedRoute(
+			new Request({
+				headers: {},
+				host: "",
+				matchedPath: "",
+				method: "",
+				origin: "",
+				path: "",
+				params: { value: "test" },
+				query: {},
+				url: "",
+				bodyReader: createBodyReader(),
+			}),
+		);
+
+		expect(spyResponse).toHaveBeenCalledWith(
+			expect.objectContaining({
+				currentResponse: new PredictedResponse("400", "preflight", undefined),
+			}),
+		);
+	});
+
+	it("route default response", async() => {
+		const route = useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
+			.extract({ params: { value: DDataStructure.string() } })
+			.handler(
+				ResponseContract.ok("good", DDataStructure.undefined()),
+				(floor, { response }) => ({ information: "good" }) as never,
+			);
+
+		const buildedRoute = await useTestRouteFunctionBuilder(route);
+
+		await buildedRoute(
+			new Request({
+				headers: {},
+				host: "",
+				matchedPath: "",
+				method: "",
+				origin: "",
+				path: "",
+				params: { value: "test" },
+				query: {},
+				url: "",
+				bodyReader: createBodyReader(),
+			}),
+		);
+
+		expect(spyResponse).toHaveBeenCalledWith(
+			expect.objectContaining({
+				currentResponse: new Response("500", "missing-response", undefined),
+			}),
+		);
+	});
+
+	describe("test hooks", () => {
+		it("beforeRouteExecution ", async() => {
+			const route = useRouteBuilder("GET", "/test", {
+				hooks: [
+					{
+						afterSendResponse: spyResponse,
+						beforeRouteExecution: ({ response }) => response("400", "info"),
+					},
+				],
+			})
+				.handler(
+					ResponseContract.noContent("good"),
+					(floor, { response }) => response("good"),
+				);
+
+			const buildedRoute = await useTestRouteFunctionBuilder(route);
+
+			await buildedRoute(
+				new Request({
+					headers: {},
+					host: "",
+					matchedPath: "",
+					method: "",
+					origin: "",
+					path: "",
+					params: { },
+					query: {},
+					url: "",
+					bodyReader: createBodyReader(),
+				}),
+			);
+
+			expect(spyResponse).toHaveBeenCalledWith(
+				expect.objectContaining({
+					currentResponse: new HookResponse("beforeRouteExecution", "400", "info", undefined),
+				}),
+			);
+		});
+
+		it("error", async() => {
+			const route = useRouteBuilder("GET", "/test", {
+				hooks: [
+					{
+						afterSendResponse: spyResponse,
+						error: ({ response }) => response("400", "info"),
+					},
+				],
+			})
+				.handler(
+					ResponseContract.noContent("good"),
+					(floor, { response }) => {
+						throw new Error("test");
+					},
+				);
+
+			const buildedRoute = await useTestRouteFunctionBuilder(route);
+
+			await buildedRoute(
+				new Request({
+					headers: {},
+					host: "",
+					matchedPath: "",
+					method: "",
+					origin: "",
+					path: "",
+					params: { },
+					query: {},
+					url: "",
+					bodyReader: createBodyReader(),
+				}),
+			);
+
+			expect(spyResponse).toHaveBeenCalledWith(
+				expect.objectContaining({
+					currentResponse: new HookResponse("error", "400", "info", undefined),
+				}),
+			);
+		});
+
+		it("default error", async() => {
+			const route = useRouteBuilder("GET", "/test", {
+				hooks: [
+					{
+						beforeRouteExecution: ({ next }) => next(),
+						afterSendResponse: spyResponse,
+						sendResponse: ({ exit }) => exit(),
+						error: ({ next }) => Promise.resolve(next()),
+					},
+				],
+			})
+				.handler(
+					ResponseContract.noContent("good"),
+					(floor, { response }) => {
+						throw new Error("test");
+					},
+				);
+
+			const buildedRoute = await useTestRouteFunctionBuilder(route);
+
+			await buildedRoute(
+				new Request({
+					headers: {},
+					host: "",
+					matchedPath: "",
+					method: "",
+					origin: "",
+					path: "",
+					params: { },
+					query: {},
+					url: "",
+					bodyReader: createBodyReader(),
+				}),
+			);
+
+			expect(spyResponse).toHaveBeenCalledWith(
+				expect.objectContaining({
+					currentResponse: new Response("500", "server-error", new Error("test")),
+				}),
+			);
+		});
+
+		it("order exec hook", async() => {
+			const checkpoint: string[] = [];
+
+			function createCheckpointHook(value: string): HookRouteLifeCycle {
+				return {
+					afterSendResponse: ({ next }) => {
+						checkpoint.push(`afterSendResponse ${value}`);
+						return next();
+					},
+					beforeRouteExecution: ({ next }) => {
+						checkpoint.push(`beforeRouteExecution ${value}`);
+						return next();
+					},
+					beforeSendResponse: ({ next }) => {
+						checkpoint.push(`beforeSendResponse ${value}`);
+						return next();
+					},
+					error: ({ next }) => {
+						checkpoint.push(`error ${value}`);
+						return next();
+					},
+					sendResponse: ({ next }) => {
+						checkpoint.push(`sendResponse ${value}`);
+						return next();
+					},
+				};
+			}
+
+			const route = usePreflightBuilder({ hooks: [createCheckpointHook("builder preflight process")] })
+				.exec(
+					useProcessBuilder({ hooks: [createCheckpointHook("preflight process")] })
+						.exec(
+							useProcessBuilder({ hooks: [createCheckpointHook("preflight deep process")] })
+								.exports(),
+						)
+						.exports(),
+				)
+				.useRouteBuilder("GET", "/", { hooks: [createCheckpointHook("route")] })
+				.exec(
+					useProcessBuilder({ hooks: [createCheckpointHook("process")] })
+						.exec(
+							useProcessBuilder({ hooks: [createCheckpointHook("deep process")] })
+								.exports(),
+						)
+						.exports(),
+				)
+				.handler(
+					ResponseContract.noContent("ok"),
+					(floor, { response }) => response("ok"),
+				);
+
+			const buildedRoute = await useTestRouteFunctionBuilder(route, {
+				globalHooksRouteLifeCycle: [
+					createCheckpointHook("global"),
+					{
+						beforeRouteExecution: ({ next }) => {
+							checkpoint.push("beforeRouteExecution async");
+							return Promise.resolve(next());
+						},
+						beforeSendResponse: ({ next }) => {
+							checkpoint.push("beforeSendResponse async");
+							return Promise.resolve(next());
+						},
+						error: ({ next }) => {
+							checkpoint.push("error async");
+							return Promise.resolve(next());
+						},
+					},
+				],
+			});
+
+			await buildedRoute(
+				new Request({
+					headers: {},
+					host: "",
+					matchedPath: "",
+					method: "",
+					origin: "",
+					path: "",
+					params: { },
+					query: {},
+					url: "",
+					bodyReader: createBodyReader(),
+				}),
+			);
+
+			expect(checkpoint).toStrictEqual([
+				"beforeRouteExecution route",
+				"beforeRouteExecution builder preflight process",
+				"beforeRouteExecution preflight process",
+				"beforeRouteExecution preflight deep process",
+				"beforeRouteExecution process",
+				"beforeRouteExecution deep process",
+				"beforeRouteExecution global",
+				"beforeRouteExecution async",
+
+				"beforeSendResponse route",
+				"beforeSendResponse builder preflight process",
+				"beforeSendResponse preflight process",
+				"beforeSendResponse preflight deep process",
+				"beforeSendResponse process",
+				"beforeSendResponse deep process",
+				"beforeSendResponse global",
+				"beforeSendResponse async",
+
+				"sendResponse route",
+				"sendResponse builder preflight process",
+				"sendResponse preflight process",
+				"sendResponse preflight deep process",
+				"sendResponse process",
+				"sendResponse deep process",
+				"sendResponse global",
+
+				"afterSendResponse route",
+				"afterSendResponse builder preflight process",
+				"afterSendResponse preflight process",
+				"afterSendResponse preflight deep process",
+				"afterSendResponse process",
+				"afterSendResponse deep process",
+				"afterSendResponse global",
+			]);
+		});
+	});
+});

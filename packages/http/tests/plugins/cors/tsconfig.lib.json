@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+	  "@core": ["../../../dist/core/index.d.ts"],
+	  "@core/*": ["../../../dist/core/*"],
+	  "@plugin-cors": ["../../../dist/plugins/cors/index.d.ts"],
+	  "@plugin-cors/*": ["../../../dist/plugins/cors/*"],
+	  "@test-utils/*": ["../../_utils/*"],
+    },
+  },
+  "include": ["**/*.ts"],
+}

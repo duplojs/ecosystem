@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`routeToDataParser > bodyAsFormData 1`] = `
+"import { TheFormData } from "@duplojs/lang";
+
+export type ArrayString = TheFormData<File[]>;"
+`;
+
+exports[`routeToStructure > bodyAsFormData 1`] = `
+"import { TheFormData } from "@duplojs/lang";
+
+export type ArrayString = TheFormData<readonly File[]>;"
+`;

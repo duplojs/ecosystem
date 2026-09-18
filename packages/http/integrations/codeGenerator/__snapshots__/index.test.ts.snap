@@ -1,0 +1,281 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`codeGenerator > correct generate file 1`] = `
+"import { TheDate, SerializedTheDate } from "@duplojs/lang/date";
+
+import { TheFormData } from "@duplojs/lang";
+
+export type UserId = number;
+
+export type UserName = string;
+
+export type User = {
+    id: UserId;
+    name: UserName;
+    age: number;
+    friends?: User[] | undefined;
+    createdAt?: (SerializedTheDate | TheDate) | undefined;
+};
+
+export type Routes = {
+    method: "GET";
+    path: "/users";
+    responses: {
+        code: "200";
+        information: "users.findMany";
+        body: User[];
+    };
+} | {
+    method: "GET";
+    path: "/users/{userId}";
+    params: {
+        userId: number;
+    };
+    responses: {
+        code: "422";
+        information: "extract-error";
+        body?: undefined;
+    } | {
+        code: "200";
+        information: "users.find";
+        body: User;
+    };
+} | {
+    method: "POST";
+    path: "/users";
+    body: {
+        id: UserId;
+        name: UserName;
+        age: number;
+        friends?: User[] | undefined;
+        createdAt?: (SerializedTheDate | TheDate) | undefined;
+    };
+    responses: {
+        code: "422";
+        information: "extract-error";
+        body?: undefined;
+    } | {
+        code: "200";
+        information: "users.create";
+        body: User;
+    };
+} | {
+    method: "DELETE";
+    path: "/users";
+    body: {
+        id: number;
+    };
+    responses: {
+        code: "422";
+        information: "extract-error";
+        body?: undefined;
+    } | {
+        code: "204";
+        information: "users.deleted";
+        body?: undefined;
+    };
+} | {
+    method: "POST";
+    path: "/documents";
+    body: TheFormData<{
+        bool: boolean;
+        myFile: [
+            File
+        ];
+        name: string;
+    }>;
+    responses: {
+        code: "422";
+        information: "extract-error";
+        body?: undefined;
+    } | {
+        code: "204";
+        information: "file.receive";
+        body?: undefined;
+    };
+} | {
+    method: "GET";
+    path: \`/documents/\${string}\`;
+    responses: {
+        code: "200";
+        information: "file.send";
+        body: File;
+    };
+} | {
+    method: "GET";
+    path: "/sse";
+    query: {
+        close?: boolean | undefined;
+    };
+    responses: {
+        code: "422";
+        information: "extract-error";
+        body?: undefined;
+    } | {
+        code: "200";
+        information: "super-sse";
+        body?: undefined;
+        events: {
+            other: string;
+            message: {
+                test: string;
+            };
+        };
+    } | {
+        code: "204";
+        information: "close";
+        body?: undefined;
+    };
+} | {
+    method: "GET";
+    path: "/cookie-check";
+    responses: {
+        code: "422";
+        information: "extract-error";
+        body?: undefined;
+    } | {
+        code: "200";
+        information: "cookie.checked";
+        body: {
+            session: string;
+        };
+    };
+} | {
+    method: "GET";
+    path: "/cookie-drop";
+    responses: {
+        code: "204";
+        information: "cookie.dropped";
+        body?: undefined;
+    };
+} | {
+    method: "GET";
+    path: "/stream";
+    query: {
+        value: number;
+    };
+    responses: {
+        code: "422";
+        information: "extract-error";
+        body?: undefined;
+    } | {
+        code: "200";
+        information: "monSuperStream";
+        body?: undefined;
+        flux: Uint8Array<ArrayBuffer>;
+    };
+} | {
+    method: "POST";
+    path: "/stream-text";
+    body: {
+        value: string;
+    };
+    responses: {
+        code: "422";
+        information: "extract-error";
+        body?: undefined;
+    } | {
+        code: "200";
+        information: "monSuperStream";
+        body?: undefined;
+        flux: string;
+    };
+} | {
+    method: "GET";
+    path: "/static-file";
+    responses: {
+        code: "200";
+        information: "resource.found";
+        body: File;
+    } | {
+        code: "304";
+        information: "resource.notModified";
+        body?: undefined;
+    };
+} | {
+    method: "GET";
+    path: \`/static-folder/\${string}\`;
+    responses: {
+        code: "200";
+        information: "resource.found";
+        body: File;
+    } | {
+        code: "404";
+        information: "resource.notfound";
+        body?: undefined;
+    } | {
+        code: "304";
+        information: "resource.notModified";
+        body?: undefined;
+    };
+};"
+`;
+
+exports[`codeGenerator > correct generate file 2`] = `
+"import "@duplojs/lang/dataParser";
+
+declare module "@duplojs/lang/dataParser" {
+    interface DataParserDefinition {
+        identifier?: string;
+    }
+}
+export * from "./userIdDataParser";
+export * from "./userNameDataParser";
+export * from "./userDataParser";"
+`;
+
+exports[`codeGenerator > correct generate file 3`] = `
+"import * as DP from "@duplojs/lang/dataParser";
+
+import { TheDate } from "@duplojs/lang/date";
+
+export type UserId = number;
+
+export type UserName = string;
+
+export type User = {
+    id: UserId;
+    name: UserName;
+    age: number;
+    friends?: User[] | undefined;
+    createdAt?: TheDate | undefined;
+};
+
+export type $userDataParser = User;"
+`;
+
+exports[`codeGenerator > correct generate file 4`] = `
+"import * as DP from "@duplojs/lang/dataParser";
+
+import { TheDate } from "@duplojs/lang/date";
+
+import { userIdDataParser } from "./userIdDataParser";
+
+import { userNameDataParser } from "./userNameDataParser";
+
+import { $userDataParser } from "./types";
+
+export const userDataParser: DP.DataParser<$userDataParser, unknown> = DP.object({
+    id: userIdDataParser,
+    name: userNameDataParser,
+    age: DP.number(),
+    friends: DP.optional(DP.array(DP.lazy(() => userDataParser))),
+    createdAt: DP.optional(DP.date())
+}, { identifier: "User" });"
+`;
+
+exports[`codeGenerator > correct generate file 5`] = `
+"import * as DP from "@duplojs/lang/dataParser";
+
+import { TheDate } from "@duplojs/lang/date";
+
+export const userIdDataParser = DP.number({ identifier: "UserId" });"
+`;
+
+exports[`codeGenerator > correct generate file 6`] = `
+"import * as DP from "@duplojs/lang/dataParser";
+
+import { TheDate } from "@duplojs/lang/date";
+
+export const userNameDataParser = DP.string({ identifier: "UserName" });"
+`;

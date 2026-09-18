@@ -1,0 +1,16 @@
+{
+  "extends": "../../../tsconfig.test.json",
+  "compilerOptions": {
+    "paths": {
+	  "@core": ["../../../scripts/core/index.ts"],
+	  "@core/*": ["../../../scripts/core/*"],
+	  "@plugin-codeGenerator": ["../../../scripts/plugins/codeGenerator/index.ts"],
+	  "@plugin-codeGenerator/*": ["../../../scripts/plugins/codeGenerator/*"],
+	  "@test-utils/*": ["../../_utils/*"],
+    },
+  },
+  "include": [
+	"**/*.ts",
+	"../../../scripts/plugins/codeGenerator/**/*.ts",
+  ],
+}

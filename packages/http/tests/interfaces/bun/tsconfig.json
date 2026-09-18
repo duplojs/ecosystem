@@ -1,0 +1,17 @@
+{
+  "extends": "../../../tsconfig.test.json",
+  "compilerOptions": {
+    "paths": {
+	  "@core": ["../../../scripts/core/index.ts"],
+	  "@core/*": ["../../../scripts/core/*"],
+	  "@interface-bun": ["../../../scripts/interfaces/bun/index.ts"],
+	  "@interface-bun/*": ["../../../scripts/interfaces/bun/*"],
+	  "@test-utils/*": ["../../_utils/*", "./_utils/*"],
+    },
+  },
+  "include": [
+	"**/*.ts",
+	"../../../scripts/core/**/*.ts",
+	"../../../scripts/interfaces/bun/**/*.ts",
+  ],
+}

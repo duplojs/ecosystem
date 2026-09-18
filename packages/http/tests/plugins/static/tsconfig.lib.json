@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+	  "@core": ["../../../dist/core/index.d.ts"],
+	  "@core/*": ["../../../dist/core/*"],
+	  "@plugin-static": ["../../../dist/plugins/static/index.d.ts"],
+	  "@plugin-static/*": ["../../../dist/plugins/static/*"],
+	  "@plugin-cacheController": ["../../../dist/plugins/cacheController/index.d.ts"],
+	  "@plugin-cacheController/*": ["../../../dist/plugins/cacheController/*"],
+	  "@test-utils/*": ["../../_utils/*"],
+    },
+  },
+  "include": ["**/*.ts"],
+}

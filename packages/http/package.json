@@ -1,0 +1,117 @@
+{
+  "name": "@duplojs/http",
+  "version": "0.0.0",
+  "license": "MIT",
+  "author": {
+    "name": "DuploJS",
+    "url": "https://github.com/duplojs"
+  },
+  "type": "module",
+  "homepage": "https://http.duplojs.dev/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duplojs/ecosystem.git",
+    "directory": "packages/lang"
+  },
+  "bugs": {
+    "url": "https://github.com/duplojs/ecosystem/issues"
+  },
+  "scripts": {
+    "build": "./.commands/build.sh",
+    "test:types": "./.commands/test-types.sh",
+    "test:types:target": "./.commands/test-types-target.sh",
+    "test:lint": "./.commands/test-lint.sh",
+    "test:lint:fix": "./.commands/test-lint.sh --fix"
+  },
+  "types": "./dist/core/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/core/index.mjs",
+      "require": "./dist/core/index.cjs",
+      "types": "./dist/core/index.d.ts"
+    },
+    "./client": {
+      "import": "./dist/client/index.mjs",
+      "require": "./dist/client/index.cjs",
+      "types": "./dist/client/index.d.ts"
+    },
+    "./node": {
+      "import": "./dist/interfaces/node/index.mjs",
+      "require": "./dist/interfaces/node/index.cjs",
+      "types": "./dist/interfaces/node/index.d.ts"
+    },
+    "./bun": {
+      "import": "./dist/interfaces/bun/index.mjs",
+      "require": "./dist/interfaces/bun/index.cjs",
+      "types": "./dist/interfaces/bun/index.d.ts"
+    },
+    "./deno": {
+      "import": "./dist/interfaces/deno/index.mjs",
+      "require": "./dist/interfaces/deno/index.cjs",
+      "types": "./dist/interfaces/deno/index.d.ts"
+    },
+    "./codeGenerator": {
+      "import": "./dist/plugins/codeGenerator/index.mjs",
+      "require": "./dist/plugins/codeGenerator/index.cjs",
+      "types": "./dist/plugins/codeGenerator/index.d.ts"
+    },
+    "./openApiGenerator": {
+      "import": "./dist/plugins/openApiGenerator/index.mjs",
+      "require": "./dist/plugins/openApiGenerator/index.cjs",
+      "types": "./dist/plugins/openApiGenerator/index.d.ts"
+    },
+    "./cacheController": {
+      "import": "./dist/plugins/cacheController/index.mjs",
+      "require": "./dist/plugins/cacheController/index.cjs",
+      "types": "./dist/plugins/cacheController/index.d.ts"
+    },
+    "./cookie": {
+      "import": "./dist/plugins/cookie/index.mjs",
+      "require": "./dist/plugins/cookie/index.cjs",
+      "types": "./dist/plugins/cookie/index.d.ts"
+    },
+    "./static": {
+      "import": "./dist/plugins/static/index.mjs",
+      "require": "./dist/plugins/static/index.cjs",
+      "types": "./dist/plugins/static/index.d.ts"
+    },
+    "./cors": {
+      "import": "./dist/plugins/cors/index.mjs",
+      "require": "./dist/plugins/cors/index.cjs",
+      "types": "./dist/plugins/cors/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README"
+  ],
+  "peerDependencies": {
+    "@duplojs/tools": "workspace:*",
+    "@duplojs/server": "workspace:*",
+    "@duplojs/lang": "workspace:*"
+  },
+  "devDependencies": {
+    "@duplojs/code-config": "workspace:*",
+    "@types/bun": "1.4.2",
+    "@types/deno": "2.7.0",
+    "@types/node": "24.13.3",
+    "@types/web": "0.0.356",
+    "eventsource": "5.1.1",
+    "form-data": "4.0.6",
+    "node-mocks-http": "1.18.1"
+  },
+  "engines": {
+    "node": ">=24.18.0"
+  },
+  "keywords": [
+    "duplojs",
+    "http",
+    "client",
+    "sse",
+    "static",
+    "codeGenerator",
+    "openApiGenerator",
+    "cors",
+    "cross-platform"
+  ]
+}
