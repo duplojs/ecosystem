@@ -1,19 +1,7 @@
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import type { JsonSchema, SupportedVersions, DataStructureTypeTransformerEither, DataStructureTypeErrorEither, DataStructureTypeSuccessEither } from "../result";
-import type {
-	JsonSchemaString,
-	JsonSchemaStringLiteral,
-	JsonSchemaNumber,
-	JsonSchemaNumberLiteral,
-	JsonSchemaBoolean,
-	JsonSchemaBooleanLiteral,
-	JsonSchemaBigint,
-	JsonSchemaBigintLiteral,
-	JsonSchemaFile,
-	JsonSchemaUndefined,
-	JsonSchemaNull,
-} from "./defaults";
+import type { JsonSchemaString, JsonSchemaStringLiteral, JsonSchemaNumber, JsonSchemaNumberLiteral, JsonSchemaBoolean, JsonSchemaBooleanLiteral, JsonSchemaBigint, JsonSchemaBigintLiteral, JsonSchemaFile, JsonSchemaUndefined, JsonSchemaNull } from "./defaults";
 
 export type TypeJsonSchema = (
 	| JsonSchemaString

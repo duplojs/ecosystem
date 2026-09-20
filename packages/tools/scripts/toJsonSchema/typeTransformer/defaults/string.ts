@@ -8,7 +8,7 @@ import { createTypeTransformer } from "../create";
 export interface JsonSchemaString {
 	type: "string" | ("string" | "number" | "boolean" | "null")[];
 	pattern?: string;
-	format?: "uri" | "email" | "uuid" | "path" | "absolute-path" | "segment-path";
+	format?: "uri" | "email" | "uuid" | "path" | "absolute-path" | "segment-path" | "date-time" | "time";
 	minLength?: number;
 	maxLength?: number;
 	allOf?: readonly Omit<JsonSchemaString, "type" | "allOf" | "anyOf">[];

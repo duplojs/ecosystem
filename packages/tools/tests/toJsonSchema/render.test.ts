@@ -66,4 +66,16 @@ describe("toJsonSchema render", () => {
 			},
 		)).toThrowErrorMatchingSnapshot();
 	});
+
+	it("throws when a structure transformer builds an error", () => {
+		expect(() => DStoJS.render(
+			DDataStructure.string(),
+			{
+				identifier: "Value",
+				structureTransformers: [(_structure, { buildError }) => buildError()],
+				typeTransformers: DStoJS.defaultTypeTransformers,
+				version: "jsonSchema7",
+			},
+		)).toThrowErrorMatchingSnapshot();
+	});
 });

@@ -9,6 +9,8 @@ export * from "./bigintLiteral";
 export * from "./file";
 export * from "./undefined";
 export * from "./null";
+export * from "./date";
+export * from "./time";
 
 import type { TypeTransformer } from "../create";
 
@@ -23,6 +25,8 @@ import { bigintLiteralTypeTransformer } from "./bigintLiteral";
 import { fileTypeTransformer } from "./file";
 import { undefinedTypeTransformer } from "./undefined";
 import { nullTypeTransformer } from "./null";
+import { dateTypeTransformer } from "./date";
+import { timeTypeTransformer } from "./time";
 
 export const defaultTypeTransformers = [
 	stringTypeTransformer,
@@ -36,4 +40,6 @@ export const defaultTypeTransformers = [
 	fileTypeTransformer,
 	undefinedTypeTransformer,
 	nullTypeTransformer,
+	dateTypeTransformer,
+	timeTypeTransformer,
 ] as const satisfies readonly TypeTransformer[];

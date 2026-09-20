@@ -1,0 +1,16 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`dateTypeTransformer > renders a date type as its transported string formats 1`] = `
+{
+  "anyOf": [
+    {
+      "pattern": "^date-?(\\d{1,16})([+-])$",
+      "type": "string",
+    },
+    {
+      "format": "date-time",
+      "type": "string",
+    },
+  ],
+}
+`;

@@ -69,4 +69,6 @@ exports[`toJsonSchema render > renders open api 3 output 1`] = `
 }
 `;
 
+exports[`toJsonSchema render > throws when a structure transformer builds an error 1`] = `[Error: Error during the render of a data structure as a JsonSchema.]`;
+
 exports[`toJsonSchema render > throws when a type transformer builds an error 1`] = `[Error: Error during the render of a data structure as a JsonSchema.]`;
