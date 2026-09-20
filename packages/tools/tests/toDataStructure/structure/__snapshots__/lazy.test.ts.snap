@@ -34,7 +34,7 @@ export const catalogFacetDataStructure: DDataStructure.Structure<$catalogFacetDa
     name: DDataStructure.TypeStructure(DDataStructure.StringType(), [
         DDataStructure.NotEmptyConstraint()
     ]),
-    children: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogFacetDataStructure(), []), [])
+    children: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogFacetDataStructure, []), [])
 }, []);
 
 export const catalogCategoryDataStructure: DDataStructure.Structure<$catalogCategoryDataStructure> = DDataStructure.ObjectStructure({
@@ -45,8 +45,8 @@ export const catalogCategoryDataStructure: DDataStructure.Structure<$catalogCate
         DDataStructure.TypeStructure(DDataStructure.NullType(), []),
         catalogCategoryDataStructure
     ], []),
-    facets: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogFacetDataStructure(), []), []),
-    children: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogCategoryDataStructure(), []), [])
+    facets: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogFacetDataStructure, []), []),
+    children: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogCategoryDataStructure, []), [])
 }, []);
 
 export const renderedCatalogCategoryDataStructure = catalogCategoryDataStructure;"

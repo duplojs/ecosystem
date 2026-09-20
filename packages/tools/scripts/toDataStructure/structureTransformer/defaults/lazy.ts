@@ -41,11 +41,7 @@ export const lazyStructureTransformer = createStructureTransformer(
 						[],
 						undefined,
 						Typescript.factory.createToken(Typescript.SyntaxKind.EqualsGreaterThanToken),
-						Typescript.factory.createCallExpression(
-							DEither.unwrapRight(getter),
-							undefined,
-							[],
-						),
+						DEither.unwrapRight(getter),
 					),
 					Typescript.factory.createArrayLiteralExpression(
 						constraints,
