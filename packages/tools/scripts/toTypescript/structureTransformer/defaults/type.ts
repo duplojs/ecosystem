@@ -11,14 +11,13 @@ export const typeStructureTransformer = createStructureTransformer(
 		structure,
 		{
 			transformType,
-			buildError,
 		},
 	) => DCommon.pipe(
 		structure.definition.type,
 		transformType,
 		DCommon.when(
 			DEither.isLeft,
-			() => buildError(),
+			DCommon.forward,
 		),
 	),
 );

@@ -52,5 +52,6 @@ export type TransformerEither = (
 	| TransformerSuccessEither
 	| DataStructureNotSupportedEither
 	| DataStructureErrorEither
-	| ConstraintTransformerEither
+	| Extract<ConstraintTransformerEither, DEither.Left>
+	| Extract<DataStructureTypeTransformerEither, DEither.Left>
 );

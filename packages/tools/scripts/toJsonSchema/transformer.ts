@@ -6,7 +6,7 @@ import type { MapContext } from "./context";
 import type { TransformerHook } from "./hook";
 import type { SupportedVersions, DataStructureTransformerEither } from "./result";
 import { structureTransformer, type StructureTransformerParams, type StructureTransformer } from "./structureTransformer";
-import { typeTransformer, type TypeTransformer, type TypeTransformerParams } from "./typeTransformer";
+import { typeTransformer, type TypeTransformer } from "./typeTransformer";
 
 const defaultPlaceholderJsonSchema = { not: {} };
 export interface TransformerFunctionParams {
@@ -80,16 +80,6 @@ export function transformer(
 		return identifier;
 	});
 
-	const typeTransformerParams: TypeTransformerParams = {
-		success(result) {
-			return DEither.right("buildDataStructureTypeSuccess", result);
-		},
-		buildError() {
-			return DEither.left("buildDataStructureTypeError");
-		},
-		version: params.version,
-	};
-
 	const structureTransformerParams: StructureTransformerParams = {
 		success(schema) {
 			return DEither.right("buildDataStructureSuccess", {
@@ -104,7 +94,7 @@ export function transformer(
 			);
 		},
 		buildError() {
-			return DEither.left("buildDataStructureError");
+			return DEither.left("buildDataStructureError", currentDataStructure);
 		},
 		context: params.context,
 		version: params.version,
@@ -114,7 +104,15 @@ export function transformer(
 				constraints,
 				{
 					transformers: params.typeTransformers,
-					transformerParams: typeTransformerParams,
+					transformerParams: {
+						success(result) {
+							return DEither.right("buildDataStructureTypeSuccess", result);
+						},
+						buildError() {
+							return DEither.left("buildDataStructureTypeError", type);
+						},
+						version: params.version,
+					},
 				},
 			);
 		},

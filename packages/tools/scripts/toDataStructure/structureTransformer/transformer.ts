@@ -230,6 +230,8 @@ export function structureTransformer(
 					buildDataStructureError: false,
 					constraintNotSupport: false,
 					dataStructureNotSupport: false,
+					buildDataStructureTypeError: false,
+					dataStructureTypeNotSupport: false,
 				},
 				() => Typescript.factory.createIdentifier(identifier),
 				() => DEither.left("buildDataStructureError", structure),

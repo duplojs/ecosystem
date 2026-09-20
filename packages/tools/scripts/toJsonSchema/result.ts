@@ -61,6 +61,7 @@ export type DataStructureTransformerEither = (
 	| DataStructureSuccessEither
 	| DataStructureNotSupportedEither
 	| DataStructureErrorEither
+	| Extract<DataStructureTypeTransformerEither, DEither.Left>
 );
 
 export const supportedVersions = {

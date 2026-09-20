@@ -92,13 +92,6 @@ export function transformer(
 
 	const addImport = createAddImport(params.importContext);
 
-	const typeTransformerParams: TypeTransformerParams = {
-		importContext: params.importContext,
-		success: (result) => DEither.right("buildSuccess", result),
-		buildError: () => DEither.left("buildDataStructureTypeError"),
-		addImport,
-	};
-
 	const structureTransformerParams: StructureTransformerParams = {
 		context: params.context,
 		importContext: params.importContext,
@@ -118,10 +111,15 @@ export function transformer(
 			type,
 			{
 				transformers: params.typeTransformers,
-				transformerParams: typeTransformerParams,
+				transformerParams: {
+					importContext: params.importContext,
+					success: (result) => DEither.right("buildSuccess", result),
+					buildError: () => DEither.left("buildDataStructureTypeError", type),
+					addImport,
+				},
 			},
 		),
-		buildError: () => DEither.left("buildDataStructureError"),
+		buildError: () => DEither.left("buildDataStructureError", currentDataStructure),
 		addImport,
 	};
 

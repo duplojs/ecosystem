@@ -5,7 +5,7 @@ import type { ConstraintTransformer } from "./constraintTransformer";
 import type { MapContext } from "./context";
 import type { TransformerHook } from "./hook";
 import type { MapImportContext } from "./importContext";
-import type { ConstraintErrorEither, ConstraintNotSupportedEither, DataStructureErrorEither, DataStructureNotSupportedEither } from "./result";
+import type { ConstraintErrorEither, ConstraintNotSupportedEither, DataStructureErrorEither, DataStructureNotSupportedEither, DataStructureTypeErrorEither, DataStructureTypeNotSupportedEither } from "./result";
 import type { StructureTransformer } from "./structureTransformer";
 import { transformer } from "./transformer";
 import type { TypeTransformer } from "./typeTransformer";
@@ -37,6 +37,8 @@ export function buildContext(
 	| DataStructureErrorEither
 	| ConstraintNotSupportedEither
 	| ConstraintErrorEither
+	| DataStructureTypeNotSupportedEither
+	| DataStructureTypeErrorEither
 ) {
 	const context: MapContext = params.context ?? new Map();
 	const importContext: MapImportContext = params.importContext ?? new Map();

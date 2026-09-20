@@ -4,7 +4,7 @@ import * as DGenerator from "@duplojs/lang/generator";
 import type * as DCommon from "@duplojs/lang/common";
 import * as DKind from "@duplojs/lang/kind";
 import { createKind } from "./kind";
-import { supportedVersions, type DataStructureErrorEither, type DataStructureNotSupportedEither, type JsonSchema, type MapperSupportedVersions, type SupportedVersions } from "./result";
+import { type DataStructureTransformerEither, supportedVersions, type JsonSchema, type MapperSupportedVersions, type SupportedVersions } from "./result";
 import { type MapContext } from "./context";
 import { type StructureTransformer } from "./structureTransformer";
 import { type TypeTransformer } from "./typeTransformer";
@@ -29,9 +29,7 @@ export class DataStructureToJsonSchemaRenderError extends DKind.parentClass(
 ) {
 	public constructor(
 		public structure: DDataStructure.Structure,
-		public error:
-			| DataStructureNotSupportedEither
-			| DataStructureErrorEither,
+		public error: Extract<DataStructureTransformerEither, DEither.Left>,
 	) {
 		super(
 			undefined,

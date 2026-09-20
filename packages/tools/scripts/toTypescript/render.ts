@@ -4,7 +4,7 @@ import * as DKind from "@duplojs/lang/kind";
 import { buildContext, type BuildContextParams } from "./buildContext";
 import { createKind } from "./kind";
 import { printer } from "./printer";
-import type { ConstraintErrorEither, ConstraintNotSupportedEither, DataStructureErrorEither, DataStructureNotSupportedEither } from "./result";
+import type { TransformerEither } from "./result";
 
 export interface RenderParams extends BuildContextParams {}
 
@@ -14,11 +14,7 @@ export class DataStructureToTypescriptRenderError extends DKind.parentClass(
 ) {
 	public constructor(
 		public structure: DDataStructure.Structure,
-		public error:
-			| DataStructureNotSupportedEither
-			| DataStructureErrorEither
-			| ConstraintNotSupportedEither
-			| ConstraintErrorEither,
+		public error: Extract<TransformerEither, DEither.Left>,
 	) {
 		super(
 			undefined,
