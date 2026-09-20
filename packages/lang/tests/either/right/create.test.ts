@@ -16,7 +16,7 @@ describe("right", () => {
 	});
 
 	it("should default the value to undefined", () => {
-		const either = DEither.right("empty");
+		const either = DEither.right("empty", undefined);
 
 		expect(DEither.unwrapRight(either)).toBeUndefined();
 

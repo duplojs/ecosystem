@@ -158,7 +158,7 @@ describe("filter", () => {
 		const stopFlow = DInvocation.createFlowController(
 			stopFlowKind,
 			({ exitFlow, init }) => () => init(
-				() => exitFlow(DEither.left("stopped")),
+				() => exitFlow(DEither.left("stopped", undefined)),
 			),
 		);
 		const useFlow = DInvocation.flow(
@@ -168,6 +168,6 @@ describe("filter", () => {
 		);
 		const result = useFlow(undefined);
 
-		expect(result).toStrictEqual(DEither.left("stopped"));
+		expect(result).toStrictEqual(DEither.left("stopped", undefined));
 	});
 });

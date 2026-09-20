@@ -12,7 +12,7 @@ describe("retry", () => {
 				attemptCount++;
 
 				return attemptCount < 3
-					? DEither.left("temporary")
+					? DEither.left("temporary", undefined)
 					: DEither.result("created", attemptCount);
 			},
 			DInvocation.retry({ times: 3 }),
@@ -39,7 +39,7 @@ describe("retry", () => {
 				attemptCount++;
 
 				return attemptCount < 2
-					? DEither.left("temporary")
+					? DEither.left("temporary", undefined)
 					: DEither.result("created", attemptCount);
 			},
 			DInvocation.retry({
@@ -67,7 +67,7 @@ describe("retry", () => {
 				attemptCount++;
 
 				return attemptCount < 2
-					? DEither.left("temporary")
+					? DEither.left("temporary", undefined)
 					: DEither.result("created", attemptCount);
 			},
 			DInvocation.retry({}),

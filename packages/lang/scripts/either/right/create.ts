@@ -27,10 +27,10 @@ export interface Right<
 
 export function right<
 	GenericInformation extends string,
-	const GenericValue extends unknown = undefined,
+	const GenericValue extends unknown,
 >(
 	information: GenericInformation,
-	value?: GenericValue,
+	value: GenericValue,
 ): Right<
 	GenericInformation,
 	GenericValue
@@ -38,7 +38,7 @@ export function right<
 
 export function right(
 	information: string,
-	value: unknown = undefined,
+	value: unknown,
 ) {
 	return {
 		[rightKind.runTimeKey]: null,

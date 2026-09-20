@@ -51,7 +51,7 @@ export const debounce = createFlowController(
 				);
 				const canContinue = await lastEvent.promise;
 				if (!canContinue) {
-					return exitFlow(DEither.left("debounce-reject"));
+					return exitFlow(DEither.left("debounce-reject", undefined));
 				}
 				return result;
 			},

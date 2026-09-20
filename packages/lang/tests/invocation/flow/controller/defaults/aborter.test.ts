@@ -159,7 +159,7 @@ describe("aborter", () => {
 		const stopFlow = DInvocation.createFlowController(
 			stopFlowKind,
 			({ exitFlow, init }) => () => init(
-				() => exitFlow(DEither.left("stopped")),
+				() => exitFlow(DEither.left("stopped", undefined)),
 			),
 		);
 		const useFlow = DInvocation.flow(
@@ -169,7 +169,7 @@ describe("aborter", () => {
 		);
 		const result = useFlow(undefined);
 
-		await expect(result).resolves.toStrictEqual(DEither.left("stopped"));
+		await expect(result).resolves.toStrictEqual(DEither.left("stopped", undefined));
 	});
 
 	it("should throw errors that are not abort errors", async() => {

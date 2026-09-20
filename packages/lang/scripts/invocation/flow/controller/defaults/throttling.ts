@@ -48,7 +48,7 @@ export const throttling = createFlowController(
 
 					const canContinue = await lastEvent.promise;
 					if (!canContinue) {
-						return exitFlow(DEither.left("throttling-reject"));
+						return exitFlow(DEither.left("throttling-reject", undefined));
 					}
 				}
 

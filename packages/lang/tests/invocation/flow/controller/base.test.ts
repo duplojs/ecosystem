@@ -16,7 +16,7 @@ describe("createFlowController", () => {
 		const stopFlow = DInvocation.createFlowController(
 			testFlowControllerKind,
 			({ exitFlow, init }) => () => init<TestFlowController>(
-				() => exitFlow(DEither.left("stopped")),
+				() => exitFlow(DEither.left("stopped", undefined)),
 			),
 		);
 		const useFlow = DInvocation.flow(
@@ -28,7 +28,7 @@ describe("createFlowController", () => {
 
 		expect(DInvocation.flowControllerKind.has(stopFlow())).toBe(true);
 		expect(testFlowControllerKind.has(stopFlow())).toBe(true);
-		expect(result).toStrictEqual(DEither.left("stopped"));
+		expect(result).toStrictEqual(DEither.left("stopped", undefined));
 
 		type _CheckResult = ExpectType<
 			typeof result,

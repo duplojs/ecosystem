@@ -21,7 +21,7 @@ describe("throttling", () => {
 		const thirdResult = useFlow("third");
 
 		await vi.advanceTimersByTimeAsync(10);
-		await expect(secondResult).resolves.toStrictEqual(DEither.left("throttling-reject"));
+		await expect(secondResult).resolves.toStrictEqual(DEither.left("throttling-reject", undefined));
 		await expect(thirdResult).resolves.toStrictEqual("accepted-third");
 
 		type _CheckSecondResult = ExpectType<
@@ -41,7 +41,7 @@ describe("throttling", () => {
 		const stopFlow = DInvocation.createFlowController(
 			stopFlowKind,
 			({ exitFlow, init }) => () => init(
-				() => exitFlow(DEither.left("stopped")),
+				() => exitFlow(DEither.left("stopped", undefined)),
 			),
 		);
 		const useFlow = DInvocation.flow(
@@ -51,6 +51,6 @@ describe("throttling", () => {
 		);
 		const result = useFlow(undefined);
 
-		await expect(result).resolves.toStrictEqual(DEither.left("stopped"));
+		await expect(result).resolves.toStrictEqual(DEither.left("stopped", undefined));
 	});
 });
