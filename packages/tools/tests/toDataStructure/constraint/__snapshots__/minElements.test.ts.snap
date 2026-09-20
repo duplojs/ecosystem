@@ -3,7 +3,7 @@
 exports[`minElementsConstraintTransformer > renders a required checkout line list 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const checkoutDataStructure = DDataStructure.ObjectStructure({
+export const checkoutStructure = DDataStructure.ObjectStructure({
     lines: DDataStructure.ArrayStructure(DDataStructure.TypeStructure(DDataStructure.StringType(), []), [
         DDataStructure.MinElementsConstraint(1)
     ])

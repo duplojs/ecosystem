@@ -93,7 +93,7 @@ describe("toDataStructure render", () => {
 
 		const context = DEither.unwrapRight(result).context;
 		const rootContext = [...context.values()].find(
-			(value) => value.identifier.text === "rootDataStructure",
+			(value) => value.identifier.text === "rootStructure",
 		);
 		const childContext = context.get(child);
 

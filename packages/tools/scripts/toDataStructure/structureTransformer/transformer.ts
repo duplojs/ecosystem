@@ -82,7 +82,7 @@ export function structureTransformer(
 			? Typescript.factory.createIdentifier(
 				currentStructure.definition.identifier !== undefined
 					? createIdentifier(currentStructure.definition.identifier)
-					: `recursive${params.context.size}DataStructure`,
+					: `recursive${params.context.size}Structure`,
 			)
 			: undefined;
 

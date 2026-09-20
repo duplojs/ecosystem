@@ -3,5 +3,5 @@
 exports[`undefinedTypeTransformer > renders an undefined type 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const undefinedValueDataStructure = DDataStructure.TypeStructure(DDataStructure.UndefinedType(), []);"
+export const undefinedValueStructure = DDataStructure.TypeStructure(DDataStructure.UndefinedType(), []);"
 `;

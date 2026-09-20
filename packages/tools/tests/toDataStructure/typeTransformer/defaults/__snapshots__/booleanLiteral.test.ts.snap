@@ -3,5 +3,5 @@
 exports[`booleanLiteralTypeTransformer > renders a boolean literal type 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const booleanLiteralValueDataStructure = DDataStructure.TypeStructure(DDataStructure.BooleanLiteralType(false), []);"
+export const booleanLiteralValueStructure = DDataStructure.TypeStructure(DDataStructure.BooleanLiteralType(false), []);"
 `;

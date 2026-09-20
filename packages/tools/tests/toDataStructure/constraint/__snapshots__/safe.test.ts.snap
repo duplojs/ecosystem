@@ -3,7 +3,7 @@
 exports[`safeConstraintTransformer > renders a safe accounting amount 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const accountingEntryDataStructure = DDataStructure.ObjectStructure({
+export const accountingEntryStructure = DDataStructure.ObjectStructure({
     amountCents: DDataStructure.TypeStructure(DDataStructure.NumberType(), [
         DDataStructure.SafeConstraint()
     ])

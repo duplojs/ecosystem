@@ -7,7 +7,7 @@ exports[`taggedObjectStructureTransformer > renders a tagged audit event payload
 
 import * as DModeling from "@duplojs/lang/modeling";
 
-export const auditEventStructureDataStructure = DModeling.TaggedObjectStructure("AuditEvent", {
+export const auditEventStructureStructure = DModeling.TaggedObjectStructure("AuditEvent", {
     id: DModeling.NewTypeStructure("EventId", DDataStructure.TypeStructure(DDataStructure.StringType(), [
         DDataStructure.UuidConstraint()
     ]), []),
@@ -21,5 +21,5 @@ export const auditEventStructureDataStructure = DModeling.TaggedObjectStructure(
     rawPayload: DDataStructure.NonEncodableStringStructure("redacted-audit-payload")
 });
 
-export const renderedAuditEventDataStructure = auditEventStructureDataStructure;"
+export const renderedAuditEventStructure = auditEventStructureStructure;"
 `;

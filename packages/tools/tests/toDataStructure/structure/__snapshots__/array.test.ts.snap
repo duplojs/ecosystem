@@ -12,7 +12,7 @@ exports[`arrayStructureTransformer > renders stock movements with nested structu
 
 import * as DModeling from "@duplojs/lang/modeling";
 
-export const stockMovementsDataStructure = DDataStructure.ArrayStructure(DDataStructure.ObjectStructure({
+export const stockMovementsStructure = DDataStructure.ArrayStructure(DDataStructure.ObjectStructure({
     id: DModeling.NewTypeStructure("MovementId", DDataStructure.TypeStructure(DDataStructure.StringType(), [
         DDataStructure.UuidConstraint()
     ]), []),

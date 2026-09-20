@@ -3,7 +3,7 @@
 exports[`nonEncodableStringStructureTransformer > renders an opaque generated document marker 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const generatedInvoicePdfDataStructure = DDataStructure.NonEncodableStringStructure("generated-invoice-pdf");
+export const generatedInvoicePdfStructure = DDataStructure.NonEncodableStringStructure("generated-invoice-pdf");
 
-export const renderedInvoicePdfDataStructure = generatedInvoicePdfDataStructure;"
+export const renderedInvoicePdfStructure = generatedInvoicePdfStructure;"
 `;

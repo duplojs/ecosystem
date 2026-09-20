@@ -3,7 +3,7 @@
 exports[`evenConstraintTransformer > renders an even warehouse aisle number 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const warehouseAisleDataStructure = DDataStructure.ObjectStructure({
+export const warehouseAisleStructure = DDataStructure.ObjectStructure({
     aisle: DDataStructure.TypeStructure(DDataStructure.NumberType(), [
         DDataStructure.EvenConstraint()
     ])

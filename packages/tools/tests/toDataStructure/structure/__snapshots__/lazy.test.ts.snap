@@ -19,7 +19,7 @@ export type CatalogFacet = {
     readonly children: readonly CatalogFacet[];
 };
 
-export type $catalogFacetDataStructure = CatalogFacet;
+export type $catalogFacetStructure = CatalogFacet;
 
 export type CatalogCategory = {
     readonly slug: string & DPath.Segment;
@@ -28,26 +28,26 @@ export type CatalogCategory = {
     readonly children: readonly CatalogCategory[];
 };
 
-export type $catalogCategoryDataStructure = CatalogCategory;
+export type $catalogCategoryStructure = CatalogCategory;
 
-export const catalogFacetDataStructure: DDataStructure.Structure<$catalogFacetDataStructure> = DDataStructure.ObjectStructure({
+export const catalogFacetStructure: DDataStructure.Structure<$catalogFacetStructure> = DDataStructure.ObjectStructure({
     name: DDataStructure.TypeStructure(DDataStructure.StringType(), [
         DDataStructure.NotEmptyConstraint()
     ]),
-    children: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogFacetDataStructure, []), [])
+    children: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogFacetStructure, []), [])
 }, []);
 
-export const catalogCategoryDataStructure: DDataStructure.Structure<$catalogCategoryDataStructure> = DDataStructure.ObjectStructure({
+export const catalogCategoryStructure: DDataStructure.Structure<$catalogCategoryStructure> = DDataStructure.ObjectStructure({
     slug: DDataStructure.TypeStructure(DDataStructure.StringType(), [
         DDataStructure.SegmentPathConstraint()
     ]),
     parent: DDataStructure.UnionStructure([
         DDataStructure.TypeStructure(DDataStructure.NullType(), []),
-        catalogCategoryDataStructure
+        catalogCategoryStructure
     ], []),
-    facets: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogFacetDataStructure, []), []),
-    children: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogCategoryDataStructure, []), [])
+    facets: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogFacetStructure, []), []),
+    children: DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => catalogCategoryStructure, []), [])
 }, []);
 
-export const renderedCatalogCategoryDataStructure = catalogCategoryDataStructure;"
+export const renderedCatalogCategoryStructure = catalogCategoryStructure;"
 `;

@@ -3,5 +3,5 @@
 exports[`defaultTypeTransformers > renders a type through the default transformer collection 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const defaultStringDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
+export const defaultStringStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
 `;

@@ -10,7 +10,7 @@ exports[`unionStructureTransformer > propagates unsupported union value and cons
 exports[`unionStructureTransformer > renders checkout payment method variants 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const paymentMethodDataStructure = DDataStructure.UnionStructure([
+export const paymentMethodStructure = DDataStructure.UnionStructure([
     DDataStructure.ObjectStructure({
         kind: DDataStructure.TypeStructure(DDataStructure.StringLiteralType("card"), []),
         last4: DDataStructure.TypeStructure(DDataStructure.StringType(), [
@@ -26,5 +26,5 @@ export const paymentMethodDataStructure = DDataStructure.UnionStructure([
     DDataStructure.TypeStructure(DDataStructure.NullType(), [])
 ], []);
 
-export const renderedPaymentMethodDataStructure = paymentMethodDataStructure;"
+export const renderedPaymentMethodStructure = paymentMethodStructure;"
 `;

@@ -3,5 +3,5 @@
 exports[`bigintLiteralTypeTransformer > renders a bigint literal type 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const bigintLiteralValueDataStructure = DDataStructure.TypeStructure(DDataStructure.BigintLiteralType(-12n), []);"
+export const bigintLiteralValueStructure = DDataStructure.TypeStructure(DDataStructure.BigintLiteralType(-12n), []);"
 `;

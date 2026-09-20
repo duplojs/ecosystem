@@ -3,5 +3,5 @@
 exports[`createTypeTransformer > creates a type transformer used by render 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const customStringLiteralDataStructure = DDataStructure.TypeStructure(DDataStructure.StringLiteralType("custom:sku"), []);"
+export const customStringLiteralStructure = DDataStructure.TypeStructure(DDataStructure.StringLiteralType("custom:sku"), []);"
 `;

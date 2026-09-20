@@ -7,15 +7,15 @@ exports[`entityStructureTransformer > renders an order entity with customer and 
 
 import * as DModeling from "@duplojs/lang/modeling";
 
-export const customerIdStructureDataStructure = DModeling.NewTypeStructure("CustomerId", DDataStructure.TypeStructure(DDataStructure.StringType(), [
+export const customerIdStructureStructure = DModeling.NewTypeStructure("CustomerId", DDataStructure.TypeStructure(DDataStructure.StringType(), [
     DDataStructure.UuidConstraint()
 ]), []);
 
-export const orderEntityDataStructure = DModeling.EntityStructure("Order", () => ({
+export const orderEntityStructure = DModeling.EntityStructure("Order", () => ({
     id: DModeling.NewTypeStructure("OrderId", DDataStructure.TypeStructure(DDataStructure.StringType(), [
         DDataStructure.UuidConstraint()
     ]), []),
-    customerId: customerIdStructureDataStructure,
+    customerId: customerIdStructureStructure,
     status: DDataStructure.UnionStructure([
         DDataStructure.TypeStructure(DDataStructure.StringLiteralType("draft"), []),
         DDataStructure.TypeStructure(DDataStructure.StringLiteralType("paid"), []),
@@ -31,5 +31,5 @@ export const orderEntityDataStructure = DModeling.EntityStructure("Order", () =>
     ], [])
 }));
 
-export const renderedOrderEntityDataStructure = orderEntityDataStructure;"
+export const renderedOrderEntityStructure = orderEntityStructure;"
 `;

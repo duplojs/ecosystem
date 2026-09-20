@@ -12,11 +12,11 @@ exports[`objectStructureTransformer > renders a product sheet with nested busine
 
 import * as DModeling from "@duplojs/lang/modeling";
 
-export const priceAmountStructureDataStructure = DModeling.NewTypeStructure("PriceAmount", DDataStructure.TypeStructure(DDataStructure.NumberType(), [
+export const priceAmountStructureStructure = DModeling.NewTypeStructure("PriceAmount", DDataStructure.TypeStructure(DDataStructure.NumberType(), [
     DDataStructure.GreaterThanOrEqualConstraint(0)
 ]), []);
 
-export const productSheetDataStructure = DDataStructure.ObjectStructure({
+export const productSheetStructure = DDataStructure.ObjectStructure({
     sku: DDataStructure.TypeStructure(DDataStructure.StringType(), [
         DDataStructure.NotEmptyConstraint()
     ]),
@@ -24,7 +24,7 @@ export const productSheetDataStructure = DDataStructure.ObjectStructure({
         DDataStructure.MinCharactersConstraint(3),
         DDataStructure.MaxCharactersConstraint(120)
     ]),
-    price: priceAmountStructureDataStructure,
+    price: priceAmountStructureStructure,
     tags: DDataStructure.ArrayStructure(DDataStructure.TypeStructure(DDataStructure.StringType(), [
         DDataStructure.TrimmedConstraint()
     ]), []),

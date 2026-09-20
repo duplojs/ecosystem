@@ -5,5 +5,5 @@ exports[`fileTypeTransformer > renders a file type and its import 1`] = `
 
 import * as DSDataStructure from "@duplojs/server/dataStructure";
 
-export const fileValueDataStructure = DDataStructure.TypeStructure(DSDataStructure.FileType(), []);"
+export const fileValueStructure = DDataStructure.TypeStructure(DSDataStructure.FileType(), []);"
 `;

@@ -3,7 +3,7 @@
 exports[`toDataStructure override > renders an overridden constraint without mutating the source constraint 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const customerEmailDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [
+export const customerEmailStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [
     DDataStructure.EmailConstraint()
 ]);"
 `;
@@ -11,13 +11,13 @@ export const customerEmailDataStructure = DDataStructure.TypeStructure(DDataStru
 exports[`toDataStructure override > renders an overridden data structure without mutating the source structure 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const externalSkuDataStructure = DDataStructure.StringType();"
+export const externalSkuStructure = DDataStructure.StringType();"
 `;
 
 exports[`toDataStructure override > sets and removes an override on the current constraint 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const customerNameDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [
+export const customerNameStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [
     DDataStructure.NotEmptyConstraint()
 ]);"
 `;
@@ -25,7 +25,7 @@ export const customerNameDataStructure = DDataStructure.TypeStructure(DDataStruc
 exports[`toDataStructure override > sets and removes an override on the current structure 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const searchScoreDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
+export const searchScoreStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
 `;
 
 exports[`toDataStructure override > throws when a constraint override reports a build error 1`] = `[Error: Error during the render of dataStructure in dataStructure.]`;

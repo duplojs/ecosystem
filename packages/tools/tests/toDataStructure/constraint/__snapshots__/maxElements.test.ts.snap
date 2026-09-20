@@ -3,7 +3,7 @@
 exports[`maxElementsConstraintTransformer > renders a cart size upper bound 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const cartDataStructure = DDataStructure.ObjectStructure({
+export const cartStructure = DDataStructure.ObjectStructure({
     lines: DDataStructure.ArrayStructure(DDataStructure.TypeStructure(DDataStructure.StringType(), []), [
         DDataStructure.MaxElementsConstraint(50)
     ])

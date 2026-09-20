@@ -3,5 +3,5 @@
 exports[`stringTypeTransformer > renders a string type 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const stringValueDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
+export const stringValueStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
 `;

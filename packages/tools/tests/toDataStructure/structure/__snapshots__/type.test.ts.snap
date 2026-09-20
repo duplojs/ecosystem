@@ -5,7 +5,7 @@ exports[`typeStructureTransformer > propagates unsupported type constraints 1`] 
 exports[`typeStructureTransformer > renders primitive and literal business values 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const featureFlagSnapshotDataStructure = DDataStructure.ObjectStructure({
+export const featureFlagSnapshotStructure = DDataStructure.ObjectStructure({
     label: DDataStructure.TypeStructure(DDataStructure.StringType(), [
         DDataStructure.NotEmptyConstraint()
     ]),

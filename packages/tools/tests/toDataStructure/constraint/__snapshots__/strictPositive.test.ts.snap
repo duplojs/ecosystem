@@ -3,7 +3,7 @@
 exports[`strictPositiveConstraintTransformer > renders a strict positive invoice total 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const invoiceTotalDataStructure = DDataStructure.ObjectStructure({
+export const invoiceTotalStructure = DDataStructure.ObjectStructure({
     amount: DDataStructure.TypeStructure(DDataStructure.NumberType(), [
         DDataStructure.StrictPositiveConstraint()
     ])

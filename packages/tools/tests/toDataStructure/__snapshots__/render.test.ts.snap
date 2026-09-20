@@ -5,15 +5,15 @@ exports[`toDataStructure render > applies hooks and import metadata while render
 
 import { CatalogMarker } from "@acme/catalog";
 
-export const externalProductDataStructure = DDataStructure.ObjectStructure({
+export const externalProductStructure = DDataStructure.ObjectStructure({
     sku: DDataStructure.TypeStructure(DDataStructure.StringType(), [
         DDataStructure.NotEmptyConstraint()
     ])
 }, []);
 
-export const catalogPageDataStructure = DDataStructure.ObjectStructure({
-    primaryProduct: externalProductDataStructure,
-    secondaryProduct: externalProductDataStructure
+export const catalogPageStructure = DDataStructure.ObjectStructure({
+    primaryProduct: externalProductStructure,
+    secondaryProduct: externalProductStructure
 }, []);"
 `;
 
@@ -28,13 +28,13 @@ import { DataStructureImport, TypescriptImport } from "@acme/shared";
 
 import { FirstDirectImport, SecondDirectImport } from "@acme/direct-only";
 
-export const sharedValueDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
+export const sharedValueStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
 `;
 
 exports[`toDataStructure render > renders an identified root when its identifier matches the requested identifier 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const customerNameDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [
+export const customerNameStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [
     DDataStructure.NotEmptyConstraint()
 ]);"
 `;

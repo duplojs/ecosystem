@@ -3,5 +3,5 @@
 exports[`nullTypeTransformer > renders a null type 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const nullValueDataStructure = DDataStructure.TypeStructure(DDataStructure.NullType(), []);"
+export const nullValueStructure = DDataStructure.TypeStructure(DDataStructure.NullType(), []);"
 `;

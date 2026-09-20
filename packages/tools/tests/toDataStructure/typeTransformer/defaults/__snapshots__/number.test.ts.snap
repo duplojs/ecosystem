@@ -3,5 +3,5 @@
 exports[`numberTypeTransformer > renders a number type 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const numberValueDataStructure = DDataStructure.TypeStructure(DDataStructure.NumberType(), []);"
+export const numberValueStructure = DDataStructure.TypeStructure(DDataStructure.NumberType(), []);"
 `;

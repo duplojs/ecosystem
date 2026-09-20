@@ -3,5 +3,5 @@
 exports[`dateTypeTransformer > renders a date type 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const dateValueDataStructure = DDataStructure.TypeStructure(DDataStructure.DateType(), []);"
+export const dateValueStructure = DDataStructure.TypeStructure(DDataStructure.DateType(), []);"
 `;

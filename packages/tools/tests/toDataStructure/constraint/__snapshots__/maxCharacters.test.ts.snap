@@ -3,7 +3,7 @@
 exports[`maxCharactersConstraintTransformer > renders a short product title limit 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const productSummaryDataStructure = DDataStructure.ObjectStructure({
+export const productSummaryStructure = DDataStructure.ObjectStructure({
     title: DDataStructure.TypeStructure(DDataStructure.StringType(), [
         DDataStructure.MaxCharactersConstraint(80)
     ])
