@@ -44,7 +44,7 @@ describe("toDataStructure printer", () => {
 			[
 				"import * as DDataStructure from \"@duplojs/lang/dataStructure\";",
 				"",
-				"export const recursiveDataStructure: DDataStructure.Structure<$recursiveDataStructure, unknown> = undefined;",
+				"export const recursiveDataStructure: DDataStructure.Structure<$recursiveDataStructure> = undefined;",
 				"",
 				"export const nullableDataStructure = null;",
 			].join("\n"),

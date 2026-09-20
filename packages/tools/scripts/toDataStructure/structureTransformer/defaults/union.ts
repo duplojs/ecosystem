@@ -58,11 +58,11 @@ export const unionStructureTransformer = createStructureTransformer(
 				[
 					Typescript.factory.createArrayLiteralExpression(
 						DEither.unwrapRight(values),
-						false,
+						true,
 					),
 					Typescript.factory.createArrayLiteralExpression(
 						constraints,
-						false,
+						true,
 					),
 				],
 			),

@@ -78,7 +78,7 @@ export const entityStructureTransformer = createStructureTransformer(
 						Typescript.factory.createParenthesizedExpression(
 							Typescript.factory.createObjectLiteralExpression(
 								entries,
-								false,
+								true,
 							),
 						),
 					),

@@ -3,5 +3,9 @@
 exports[`uuidConstraintTransformer > renders a customer identifier UUID 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const customerReferenceDataStructure = DDataStructure.ObjectStructure({ id: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.UuidConstraint()]) }, []);"
+export const customerReferenceDataStructure = DDataStructure.ObjectStructure({
+    id: DDataStructure.TypeStructure(DDataStructure.StringType(), [
+        DDataStructure.UuidConstraint()
+    ])
+}, []);"
 `;

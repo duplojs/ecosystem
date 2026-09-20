@@ -38,7 +38,7 @@ export const typeStructureTransformer = createStructureTransformer(
 					DEither.unwrapRight(typeExpression),
 					Typescript.factory.createArrayLiteralExpression(
 						constraints,
-						false,
+						true,
 					),
 				],
 			),

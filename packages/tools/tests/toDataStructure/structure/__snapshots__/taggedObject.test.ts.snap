@@ -7,7 +7,19 @@ exports[`taggedObjectStructureTransformer > renders a tagged audit event payload
 
 import * as DModeling from "@duplojs/lang/modeling";
 
-export const auditEventStructureDataStructure = DModeling.TaggedObjectStructure("AuditEvent", { id: DModeling.NewTypeStructure("EventId", DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.UuidConstraint()]), []), actorId: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.UuidConstraint()]), action: DDataStructure.UnionStructure([DDataStructure.TypeStructure(DDataStructure.StringLiteralType("product.created"), []), DDataStructure.TypeStructure(DDataStructure.StringLiteralType("product.archived"), [])], []), rawPayload: DDataStructure.NonEncodableStringStructure("redacted-audit-payload") });
+export const auditEventStructureDataStructure = DModeling.TaggedObjectStructure("AuditEvent", {
+    id: DModeling.NewTypeStructure("EventId", DDataStructure.TypeStructure(DDataStructure.StringType(), [
+        DDataStructure.UuidConstraint()
+    ]), []),
+    actorId: DDataStructure.TypeStructure(DDataStructure.StringType(), [
+        DDataStructure.UuidConstraint()
+    ]),
+    action: DDataStructure.UnionStructure([
+        DDataStructure.TypeStructure(DDataStructure.StringLiteralType("product.created"), []),
+        DDataStructure.TypeStructure(DDataStructure.StringLiteralType("product.archived"), [])
+    ], []),
+    rawPayload: DDataStructure.NonEncodableStringStructure("redacted-audit-payload")
+});
 
 export const renderedAuditEventDataStructure = auditEventStructureDataStructure;"
 `;

@@ -3,7 +3,9 @@
 exports[`toDataStructure override > renders an overridden constraint without mutating the source constraint 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const customerEmailDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.EmailConstraint()]);"
+export const customerEmailDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [
+    DDataStructure.EmailConstraint()
+]);"
 `;
 
 exports[`toDataStructure override > renders an overridden data structure without mutating the source structure 1`] = `
@@ -15,7 +17,9 @@ export const externalSkuDataStructure = DDataStructure.StringType();"
 exports[`toDataStructure override > sets and removes an override on the current constraint 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const customerNameDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]);"
+export const customerNameDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [
+    DDataStructure.NotEmptyConstraint()
+]);"
 `;
 
 exports[`toDataStructure override > sets and removes an override on the current structure 1`] = `

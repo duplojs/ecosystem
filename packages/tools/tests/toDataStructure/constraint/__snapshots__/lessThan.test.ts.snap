@@ -3,5 +3,9 @@
 exports[`lessThanConstraintTransformer > renders a fraud score upper bound 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const fraudSignalDataStructure = DDataStructure.ObjectStructure({ score: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.LessThanConstraint(1)]) }, []);"
+export const fraudSignalDataStructure = DDataStructure.ObjectStructure({
+    score: DDataStructure.TypeStructure(DDataStructure.NumberType(), [
+        DDataStructure.LessThanConstraint(1)
+    ])
+}, []);"
 `;

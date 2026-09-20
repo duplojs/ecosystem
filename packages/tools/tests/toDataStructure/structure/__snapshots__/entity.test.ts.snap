@@ -7,9 +7,29 @@ exports[`entityStructureTransformer > renders an order entity with customer and 
 
 import * as DModeling from "@duplojs/lang/modeling";
 
-export const customerIdStructureDataStructure = DModeling.NewTypeStructure("CustomerId", DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.UuidConstraint()]), []);
+export const customerIdStructureDataStructure = DModeling.NewTypeStructure("CustomerId", DDataStructure.TypeStructure(DDataStructure.StringType(), [
+    DDataStructure.UuidConstraint()
+]), []);
 
-export const orderEntityDataStructure = DModeling.EntityStructure("Order", () => ({ id: DModeling.NewTypeStructure("OrderId", DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.UuidConstraint()]), []), customerId: customerIdStructureDataStructure, status: DDataStructure.UnionStructure([DDataStructure.TypeStructure(DDataStructure.StringLiteralType("draft"), []), DDataStructure.TypeStructure(DDataStructure.StringLiteralType("paid"), []), DDataStructure.TypeStructure(DDataStructure.StringLiteralType("cancelled"), [])], []), invoice: DDataStructure.UnionStructure([DDataStructure.TypeStructure(DDataStructure.UndefinedType(), []), DDataStructure.ObjectStructure({ number: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]) }, [])], []) }));
+export const orderEntityDataStructure = DModeling.EntityStructure("Order", () => ({
+    id: DModeling.NewTypeStructure("OrderId", DDataStructure.TypeStructure(DDataStructure.StringType(), [
+        DDataStructure.UuidConstraint()
+    ]), []),
+    customerId: customerIdStructureDataStructure,
+    status: DDataStructure.UnionStructure([
+        DDataStructure.TypeStructure(DDataStructure.StringLiteralType("draft"), []),
+        DDataStructure.TypeStructure(DDataStructure.StringLiteralType("paid"), []),
+        DDataStructure.TypeStructure(DDataStructure.StringLiteralType("cancelled"), [])
+    ], []),
+    invoice: DDataStructure.UnionStructure([
+        DDataStructure.TypeStructure(DDataStructure.UndefinedType(), []),
+        DDataStructure.ObjectStructure({
+            number: DDataStructure.TypeStructure(DDataStructure.StringType(), [
+                DDataStructure.NotEmptyConstraint()
+            ])
+        }, [])
+    ], [])
+}));
 
 export const renderedOrderEntityDataStructure = orderEntityDataStructure;"
 `;

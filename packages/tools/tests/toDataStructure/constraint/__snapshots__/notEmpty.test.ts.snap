@@ -3,5 +3,9 @@
 exports[`notEmptyConstraintTransformer > renders a required stock keeping unit 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const productReferenceDataStructure = DDataStructure.ObjectStructure({ sku: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]) }, []);"
+export const productReferenceDataStructure = DDataStructure.ObjectStructure({
+    sku: DDataStructure.TypeStructure(DDataStructure.StringType(), [
+        DDataStructure.NotEmptyConstraint()
+    ])
+}, []);"
 `;

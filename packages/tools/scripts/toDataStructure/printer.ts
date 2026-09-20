@@ -34,10 +34,7 @@ export function printer(params: BuildedContext) {
 										Typescript.factory.createIdentifier("DDataStructure"),
 										Typescript.factory.createIdentifier("Structure"),
 									),
-									[
-										Typescript.factory.createTypeReferenceNode(contextValue.typeIdentifier),
-										Typescript.factory.createKeywordTypeNode(Typescript.SyntaxKind.UnknownKeyword),
-									],
+									[Typescript.factory.createTypeReferenceNode(contextValue.typeIdentifier)],
 								)
 								: undefined,
 							contextValue.expression,

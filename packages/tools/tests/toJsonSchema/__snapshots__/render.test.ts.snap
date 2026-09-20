@@ -12,18 +12,6 @@ exports[`toJsonSchema render > applies hooks until one stops the transformation 
 }
 `;
 
-exports[`toJsonSchema render > ignores context declarations without schema 1`] = `
-{
-  "$ref": "#/definitions/Value",
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "definitions": {
-    "Value": {
-      "type": "boolean",
-    },
-  },
-}
-`;
-
 exports[`toJsonSchema render > renders json schema 2020-12 output 1`] = `
 {
   "$defs": {

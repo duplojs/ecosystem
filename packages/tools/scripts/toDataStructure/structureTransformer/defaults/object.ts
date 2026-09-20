@@ -66,11 +66,11 @@ export const objectStructureTransformer = createStructureTransformer(
 				[
 					Typescript.factory.createObjectLiteralExpression(
 						entries,
-						false,
+						true,
 					),
 					Typescript.factory.createArrayLiteralExpression(
 						constraints,
-						false,
+						true,
 					),
 				],
 			),

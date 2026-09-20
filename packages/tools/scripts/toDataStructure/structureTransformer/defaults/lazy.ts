@@ -49,7 +49,7 @@ export const lazyStructureTransformer = createStructureTransformer(
 					),
 					Typescript.factory.createArrayLiteralExpression(
 						constraints,
-						false,
+						true,
 					),
 				],
 			),

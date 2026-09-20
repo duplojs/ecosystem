@@ -45,7 +45,7 @@ export const recordStructureTransformer = createStructureTransformer(
 					DEither.unwrapRight(value),
 					Typescript.factory.createArrayLiteralExpression(
 						constraints,
-						false,
+						true,
 					),
 				],
 			),

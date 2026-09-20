@@ -71,7 +71,7 @@ export const taggedObjectStructureTransformer = createStructureTransformer(
 					Typescript.factory.createStringLiteral(structure.name),
 					Typescript.factory.createObjectLiteralExpression(
 						entries,
-						false,
+						true,
 					),
 				],
 			),

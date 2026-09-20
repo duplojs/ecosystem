@@ -12,7 +12,12 @@ exports[`newTypeStructureTransformer > renders a money new type with inner and n
 
 import * as DModeling from "@duplojs/lang/modeling";
 
-export const moneyAmountStructureDataStructure = DModeling.NewTypeStructure("MoneyAmount", DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.IntegerConstraint(), DDataStructure.GreaterThanOrEqualConstraint(0)]), [DDataStructure.SafeConstraint()]);
+export const moneyAmountStructureDataStructure = DModeling.NewTypeStructure("MoneyAmount", DDataStructure.TypeStructure(DDataStructure.NumberType(), [
+    DDataStructure.IntegerConstraint(),
+    DDataStructure.GreaterThanOrEqualConstraint(0)
+]), [
+    DDataStructure.SafeConstraint()
+]);
 
 export const renderedMoneyDataStructure = moneyAmountStructureDataStructure;"
 `;

@@ -5,9 +5,16 @@ exports[`toDataStructure render > applies hooks and import metadata while render
 
 import { CatalogMarker } from "@acme/catalog";
 
-export const externalProductDataStructure = DDataStructure.ObjectStructure({ sku: DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]) }, []);
+export const externalProductDataStructure = DDataStructure.ObjectStructure({
+    sku: DDataStructure.TypeStructure(DDataStructure.StringType(), [
+        DDataStructure.NotEmptyConstraint()
+    ])
+}, []);
 
-export const catalogPageDataStructure = DDataStructure.ObjectStructure({ primaryProduct: externalProductDataStructure, secondaryProduct: externalProductDataStructure }, []);"
+export const catalogPageDataStructure = DDataStructure.ObjectStructure({
+    primaryProduct: externalProductDataStructure,
+    secondaryProduct: externalProductDataStructure
+}, []);"
 `;
 
 exports[`toDataStructure render > merges data structure and TypeScript import contexts when rendering 1`] = `
@@ -27,7 +34,9 @@ export const sharedValueDataStructure = DDataStructure.TypeStructure(DDataStruct
 exports[`toDataStructure render > renders an identified root when its identifier matches the requested identifier 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const customerNameDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.NotEmptyConstraint()]);"
+export const customerNameDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [
+    DDataStructure.NotEmptyConstraint()
+]);"
 `;
 
 exports[`toDataStructure render > throws when a constraint transformer fails 1`] = `[Error: Error during the render of dataStructure in dataStructure.]`;

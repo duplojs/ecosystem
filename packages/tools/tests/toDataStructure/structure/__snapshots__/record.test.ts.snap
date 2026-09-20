@@ -11,7 +11,26 @@ exports[`recordStructureTransformer > propagates unsupported record key, value a
 exports[`recordStructureTransformer > renders inventory by warehouse records 1`] = `
 "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const inventoryByWarehouseDataStructure = DDataStructure.RecordStructure(DDataStructure.UnionStructure([DDataStructure.TypeStructure(DDataStructure.StringLiteralType("main"), []), DDataStructure.TypeStructure(DDataStructure.StringLiteralType("outlet"), []), DDataStructure.TypeStructure(DDataStructure.StringLiteralType("supplier"), [])], []), DDataStructure.ObjectStructure({ available: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.IntegerConstraint(), DDataStructure.GreaterThanOrEqualConstraint(0)]), reserved: DDataStructure.TypeStructure(DDataStructure.NumberType(), [DDataStructure.IntegerConstraint(), DDataStructure.GreaterThanOrEqualConstraint(0)]), nextRestock: DDataStructure.UnionStructure([DDataStructure.TypeStructure(DDataStructure.StringType(), [DDataStructure.TrimmedConstraint()]), DDataStructure.TypeStructure(DDataStructure.NullType(), [])], []) }, []), []);
+export const inventoryByWarehouseDataStructure = DDataStructure.RecordStructure(DDataStructure.UnionStructure([
+    DDataStructure.TypeStructure(DDataStructure.StringLiteralType("main"), []),
+    DDataStructure.TypeStructure(DDataStructure.StringLiteralType("outlet"), []),
+    DDataStructure.TypeStructure(DDataStructure.StringLiteralType("supplier"), [])
+], []), DDataStructure.ObjectStructure({
+    available: DDataStructure.TypeStructure(DDataStructure.NumberType(), [
+        DDataStructure.IntegerConstraint(),
+        DDataStructure.GreaterThanOrEqualConstraint(0)
+    ]),
+    reserved: DDataStructure.TypeStructure(DDataStructure.NumberType(), [
+        DDataStructure.IntegerConstraint(),
+        DDataStructure.GreaterThanOrEqualConstraint(0)
+    ]),
+    nextRestock: DDataStructure.UnionStructure([
+        DDataStructure.TypeStructure(DDataStructure.StringType(), [
+            DDataStructure.TrimmedConstraint()
+        ]),
+        DDataStructure.TypeStructure(DDataStructure.NullType(), [])
+    ], [])
+}, []), []);
 
 export const renderedInventoryDataStructure = inventoryByWarehouseDataStructure;"
 `;
