@@ -1,31 +1,31 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`plugin implementation > generate API type 1`] = `
-"import { TheDate, SerializedTheDate, TheTime, SerializedTheTime } from "@duplojs/lang/date";
+"import { TheDate, SerializedTheDate, TheTime, SerializedTheTime } from "@duplojs/lang/chrono";
 
 export type Routes = {
-    method: "GET";
-    path: "/user";
-    body: {
-        name: string;
-        age: number;
+    readonly method: "GET";
+    readonly path: "/user";
+    readonly body: {
+        readonly name: string;
+        readonly age: number;
     };
-    headers: {
-        header1: SerializedTheDate | TheDate;
-        header2: SerializedTheTime | TheTime;
+    readonly headers: {
+        readonly header1: SerializedTheDate | TheDate;
+        readonly header2: SerializedTheTime | TheTime;
     };
-    responses: {
-        code: "422";
-        information: "extract-error";
-        body?: undefined;
+    readonly responses: {
+        readonly code: "422";
+        readonly information: "extract-error";
+        readonly body?: undefined;
     } | {
-        code: "409";
-        information: "the-conflict";
-        body?: undefined;
+        readonly code: "409";
+        readonly information: "the-conflict";
+        readonly body?: undefined;
     } | {
-        code: "200";
-        information: "success";
-        body: string;
+        readonly code: "200";
+        readonly information: "success";
+        readonly body: string;
     };
 };"
 `;
@@ -36,20 +36,20 @@ exports[`plugin implementation > generate data parser files from identified rout
   "export type ChildParser = string;
 
 export type Routes = {
-    method: "GET";
-    path: "/generated";
-    body: {
-        child: ChildParser;
-        count: number;
+    readonly method: "GET";
+    readonly path: "/generated";
+    readonly body: {
+        readonly child: ChildParser;
+        readonly count: number;
     };
-    responses: {
-        code: "422";
-        information: "extract-error";
-        body?: undefined;
+    readonly responses: {
+        readonly code: "422";
+        readonly information: "extract-error";
+        readonly body?: undefined;
     } | {
-        code: "200";
-        information: "generated.success";
-        body: ChildParser;
+        readonly code: "200";
+        readonly information: "generated.success";
+        readonly body: ChildParser;
     };
 };",
 ]
@@ -58,45 +58,36 @@ export type Routes = {
 exports[`plugin implementation > generate data parser files from identified route data parsers 2`] = `
 [
   "generated/types.ts",
-  "import * as DP from "@duplojs/lang/dataParser";",
+  "",
 ]
 `;
 
 exports[`plugin implementation > generate data parser files from identified route data parsers 3`] = `
 [
-  "generated/childParserDataParser.ts",
-  "import * as DP from "@duplojs/lang/dataParser";
+  "generated/childParserDataStructure.ts",
+  "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const childParserDataParser = DP.string({ identifier: "ChildParser" });",
+export const childParserDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);",
 ]
 `;
 
 exports[`plugin implementation > generate data parser files from identified route data parsers 4`] = `
 [
-  "generated/bodyParserDataParser.ts",
-  "import * as DP from "@duplojs/lang/dataParser";
+  "generated/bodyParserDataStructure.ts",
+  "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-import { childParserDataParser } from "./childParserDataParser";
-
-export const bodyParserDataParser = DP.object({
-    child: childParserDataParser,
-    count: DP.number()
-}, { identifier: "BodyParser" });",
+export const bodyParserDataStructure = DDataStructure.ObjectStructure({
+    child: childParserDataStructure,
+    count: DDataStructure.TypeStructure(DDataStructure.NumberType(), [])
+}, []);",
 ]
 `;
 
 exports[`plugin implementation > generate data parser files from identified route data parsers 5`] = `
 [
   "generated/index.ts",
-  "import "@duplojs/lang/dataParser";
-
-declare module "@duplojs/lang/dataParser" {
-    interface DataParserDefinition {
-        identifier?: string;
-    }
-}
-export * from "./childParserDataParser";
-export * from "./bodyParserDataParser";",
+  "export * from "./childParserDataStructure";
+export * from "./bodyParserDataStructure";",
 ]
 `;
 
@@ -106,17 +97,17 @@ exports[`plugin implementation > generate data parser files only from explicit d
   "export type RouteParser = string;
 
 export type Routes = {
-    method: "GET";
-    path: "/generated";
-    body: RouteParser;
-    responses: {
-        code: "422";
-        information: "extract-error";
-        body?: undefined;
+    readonly method: "GET";
+    readonly path: "/generated";
+    readonly body: RouteParser;
+    readonly responses: {
+        readonly code: "422";
+        readonly information: "extract-error";
+        readonly body?: undefined;
     } | {
-        code: "204";
-        information: "generated.success";
-        body?: undefined;
+        readonly code: "204";
+        readonly information: "generated.success";
+        readonly body?: undefined;
     };
 };",
 ]
@@ -125,29 +116,22 @@ export type Routes = {
 exports[`plugin implementation > generate data parser files only from explicit data parsers when disabledFromRoute is enabled 2`] = `
 [
   "generated/types.ts",
-  "import * as DP from "@duplojs/lang/dataParser";",
+  "",
 ]
 `;
 
 exports[`plugin implementation > generate data parser files only from explicit data parsers when disabledFromRoute is enabled 3`] = `
 [
-  "generated/explicitParserDataParser.ts",
-  "import * as DP from "@duplojs/lang/dataParser";
+  "generated/explicitParserDataStructure.ts",
+  "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const explicitParserDataParser = DP.number({ identifier: "ExplicitParser" });",
+export const explicitParserDataStructure = DDataStructure.TypeStructure(DDataStructure.NumberType(), []);",
 ]
 `;
 
 exports[`plugin implementation > generate data parser files only from explicit data parsers when disabledFromRoute is enabled 4`] = `
 [
   "generated/index.ts",
-  "import "@duplojs/lang/dataParser";
-
-declare module "@duplojs/lang/dataParser" {
-    interface DataParserDefinition {
-        identifier?: string;
-    }
-}
-export * from "./explicitParserDataParser";",
+  "export * from "./explicitParserDataStructure";",
 ]
 `;

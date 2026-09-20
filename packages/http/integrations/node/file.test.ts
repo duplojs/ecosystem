@@ -23,7 +23,7 @@ describe("file", async() => {
 		formData.append("name", "node/nodeTest.generate");
 		formData.append(
 			"myFile/*\\[0]",
-			await createFileToSend(DCommon.cast("files/fakeFiles/1mb.jpg"), "//😄.jpg"),
+			await createFileToSend(DCommon.cast("files/fakeFiles/1mb.jpg"), "😄.jpg"),
 		);
 
 		await expect(

@@ -9,7 +9,7 @@ export class StreamPredictedResponse<
 	GenericInformation extends string = string,
 	GenericFlux extends unknown = unknown,
 > extends DKind.parentClass(
-		createKind("hook-response"),
+		createKind("stream-predicted-response"),
 		Response,
 	)<
 		null,

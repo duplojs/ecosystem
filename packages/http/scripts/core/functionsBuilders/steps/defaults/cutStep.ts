@@ -76,7 +76,7 @@ export const defaultCutStepFunctionBuilder = createStepFunctionBuilder(
 
 				return {
 					...floor,
-					...DEither.unwrapRight(cutResult),
+					...cutStepOutputKind.getValue(cutResult),
 				};
 			},
 			hooksRouteLifeCycle: [],

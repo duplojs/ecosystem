@@ -7,7 +7,7 @@ export class PredictedResponse<
 	GenericInformation extends string = string,
 	GenericBody extends unknown = unknown,
 > extends DKind.parentClass(
-		createKind("hook-response"),
+		createKind("predicted-response"),
 		Response,
 	)<
 		null,

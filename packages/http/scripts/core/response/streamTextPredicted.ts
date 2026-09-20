@@ -8,7 +8,7 @@ export class StreamTextPredictedResponse<
 	GenericCode extends SuccessResponseCode = SuccessResponseCode,
 	GenericInformation extends string = string,
 > extends DKind.parentClass(
-		createKind("hook-response"),
+		createKind("stream-text-predicted-response"),
 		Response,
 	)<
 		null,

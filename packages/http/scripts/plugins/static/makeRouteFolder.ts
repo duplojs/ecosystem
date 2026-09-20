@@ -1,4 +1,3 @@
-import * as DSCommon from "@duplojs/server/common";
 import * as DSFile from "@duplojs/server/file";
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
@@ -22,13 +21,9 @@ interface MakeRouteFolderParams {
 	readonly directoryFallBackFile?: string & DPath.Segment;
 }
 
-export function makeRouteFolder(params: MakeRouteFolderParams) {
-	const sourcePath = DCommon.whenNot(
-		params.source.path,
-		DString.endsWith("/"),
-		DString.concat("/"),
-	);
+const dotDotRegExp = /(^|\/)\.\.(\/|$)/;
 
+export function makeRouteFolder(params: MakeRouteFolderParams) {
 	const localPrefix = DArray.coalescing(params.prefix);
 
 	const routePath = DTuple.map(
@@ -43,17 +38,26 @@ export function makeRouteFolder(params: MakeRouteFolderParams) {
 		(value) => new RegExp(`^(?:${value})(?:/|$)`),
 	);
 
-	const preparePath = (path: string) => DEither.rightPipe(
-		path,
-		DCommon.whenNot(
-			DPath.isAbsolute,
-			() => DEither.none(),
-		),
-		DString.replace(prefixRegex, ""),
-		DString.prepend(sourcePath),
-		DPath.normalize,
-		DEither.toMaybe,
-	);
+	function preparePath(path: string) {
+		if (DString.test(path, dotDotRegExp)) {
+			return DEither.none();
+		}
+
+		const nomalizedPath = DPath.normalize(path);
+
+		if (!nomalizedPath || !DPath.isAbsolute(nomalizedPath)) {
+			return DEither.none();
+		}
+
+		return DEither.some(
+			DPath.resolveRelative([
+				params.source.path,
+				DPath.createOrThrow(
+					DString.replace(nomalizedPath, prefixRegex, ""),
+				),
+			]),
+		);
+	}
 
 	return useRouteBuilder(
 		"GET",

@@ -9,7 +9,7 @@ export default oxlint.defineConfig({
 				"**/*.bench.ts",
 				"integrations/**/*.ts",
 			],
-			excludeFiles: ["**/*.d.ts"],
+			excludeFiles: ["**/*.d.ts", "**/*.generate.*", "**/*.generate"],
 			rules: {
 				...testPreset.rules,
 				"typescript/no-confusing-void-expression": "off",

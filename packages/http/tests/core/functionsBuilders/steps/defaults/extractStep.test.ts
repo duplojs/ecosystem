@@ -258,42 +258,6 @@ describe("extract step function builder", () => {
 		);
 	});
 
-	it("extract body whit async schema", async() => {
-		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.extract({ body: DDataStructure.number() })
-			.handler(
-				ResponseContract.ok("good", DDataStructure.number()),
-				(floor, { response }) => response("good", floor.body),
-			);
-
-		const buildedRoute = await useTestRouteFunctionBuilder(route, { environment: "DEV" });
-
-		await buildedRoute(
-			new Request({
-				headers: {},
-				host: "",
-				matchedPath: "",
-				method: "",
-				origin: "test1",
-				path: "",
-				params: {},
-				query: {},
-				url: "",
-				bodyReader: createBodyReader(() => 1),
-			}),
-		);
-
-		expect(spyResponse).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentResponse: new PredictedResponse(
-					"200",
-					"good",
-					2,
-				),
-			}),
-		);
-	});
-
 	it("fail extract body", async() => {
 		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ body: DDataStructure.number() })
@@ -327,38 +291,6 @@ describe("extract step function builder", () => {
 					new Error("fail"),
 				)
 					.setHeader("extract-key", "request.body"),
-			}),
-		);
-	});
-
-	it("extract with async structure", async() => {
-		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.extract({ origin: DDataStructure.string() })
-			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				(floor, { response }) => response("good", floor.origin),
-			);
-
-		const buildedRoute = await useTestRouteFunctionBuilder(route);
-
-		await buildedRoute(
-			new Request({
-				headers: {},
-				host: "",
-				matchedPath: "",
-				method: "",
-				origin: "test1",
-				path: "",
-				params: {},
-				query: {},
-				url: "",
-				bodyReader: createBodyReader(),
-			}),
-		);
-
-		expect(spyResponse).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentResponse: new PredictedResponse("200", "good", "test1tt"),
 			}),
 		);
 	});

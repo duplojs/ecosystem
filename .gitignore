@@ -6,3 +6,5 @@ cache
 .DS_Store
 .temp
 .vitest
+**/*.generate.*
+**/*.generate

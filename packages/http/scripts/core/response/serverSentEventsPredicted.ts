@@ -9,7 +9,7 @@ export class ServerSentEventsPredictedResponse<
 	GenericInformation extends string = string,
 	GenericEvents extends ServerSentEvents.DefinitionShape = ServerSentEvents.DefinitionShape,
 > extends DKind.parentClass(
-		createKind("hook-response"),
+		createKind("server-sent-events-predicted-response"),
 		Response,
 	)<
 		null,

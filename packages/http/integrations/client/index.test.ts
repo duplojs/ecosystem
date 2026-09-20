@@ -271,7 +271,7 @@ describe("client", async() => {
 		const result = await httpClient.post("/documents", {
 			body: DCommon.createFormData({
 				bool: true,
-				myFile: [await createFileToSend(DCommon.cast("files/fakeFiles/1mb.jpg"), "//😄.jpg")],
+				myFile: [await createFileToSend(DCommon.cast("files/fakeFiles/1mb.jpg"), "😄.jpg")],
 				name: "client/testClient.generate",
 			}),
 		});

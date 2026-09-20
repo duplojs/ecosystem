@@ -59,7 +59,7 @@ describe("createFormDataBodyReaderImplementation", () => {
 		});
 
 		expect(DEither.hasInformation(result, "error")).toBe(true);
-		expect(DEither.unwrapRight(result)).toBeInstanceOf(WrongContentTypeError);
+		expect(DEither.unwrapLeft(result)).toBeInstanceOf(WrongContentTypeError);
 	});
 
 	it("returns WrongContentTypeError when content-type is missing", async() => {
@@ -82,7 +82,7 @@ describe("createFormDataBodyReaderImplementation", () => {
 		});
 
 		expect(DEither.hasInformation(result, "error")).toBe(true);
-		expect(DEither.unwrapRight(result)).toBeInstanceOf(WrongContentTypeError);
+		expect(DEither.unwrapLeft(result)).toBeInstanceOf(WrongContentTypeError);
 	});
 
 	it("returns WrongContentTypeError when content-type is an array", async() => {
@@ -109,7 +109,7 @@ describe("createFormDataBodyReaderImplementation", () => {
 		});
 
 		expect(DEither.hasInformation(result, "error")).toBe(true);
-		expect(DEither.unwrapRight(result)).toBeInstanceOf(WrongContentTypeError);
+		expect(DEither.unwrapLeft(result)).toBeInstanceOf(WrongContentTypeError);
 	});
 
 	it("parses text field and returns file interface values", async() => {

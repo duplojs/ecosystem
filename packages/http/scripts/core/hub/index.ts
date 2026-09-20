@@ -81,7 +81,7 @@ export class Hub<
 	private constructor(
 		public config: GenericConfig,
 	) {
-		super({});
+		super(null);
 	}
 
 	public register(

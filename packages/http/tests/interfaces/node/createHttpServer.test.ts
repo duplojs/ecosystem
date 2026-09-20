@@ -88,7 +88,7 @@ describe("createHttpServer", () => {
 			predictedHeaderKey: "predicted",
 			fromHookHeaderKey: "from-hook",
 			interface: "node",
-			uploadFolder: "./upload",
+			uploadFolder: "upload",
 		});
 		expect(httpCreateServer).toHaveBeenCalledWith({});
 		expect(httpsCreateServer).not.toHaveBeenCalled();

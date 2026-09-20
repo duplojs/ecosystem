@@ -104,10 +104,15 @@ exports[`plugin implementation > generate OpenApi file 1`] = `
         "required": [
           "name",
           "age"
-        ]
+        ],
+        "additionalProperties": false
       },
-      "NotIdentified3": {},
-      "NotIdentified4": {},
+      "NotIdentified3": {
+        "not": {}
+      },
+      "NotIdentified4": {
+        "not": {}
+      },
       "NotIdentified5": {
         "type": "string"
       }
@@ -220,10 +225,15 @@ exports[`plugin implementation > generate OpenApi file with type apiKey ok secur
         "required": [
           "name",
           "age"
-        ]
+        ],
+        "additionalProperties": false
       },
-      "NotIdentified3": {},
-      "NotIdentified4": {},
+      "NotIdentified3": {
+        "not": {}
+      },
+      "NotIdentified4": {
+        "not": {}
+      },
       "NotIdentified5": {
         "type": "string"
       }
@@ -348,10 +358,15 @@ exports[`plugin implementation > generate OpenApi file with type bearer ok secur
         "required": [
           "name",
           "age"
-        ]
+        ],
+        "additionalProperties": false
       },
-      "NotIdentified3": {},
-      "NotIdentified4": {},
+      "NotIdentified3": {
+        "not": {}
+      },
+      "NotIdentified4": {
+        "not": {}
+      },
       "NotIdentified5": {
         "type": "string"
       }
