@@ -491,7 +491,7 @@ describe("PromiseRequest", () => {
 
 	it("addRequestInterceptor", async() => {
 		const params = createParams();
-		const response = createResponse(params, { code: "100" });
+		const response = createResponse(params, { code: "600" as never });
 		const fetchSpy = vi.spyOn(PromiseRequest, "fetch").mockImplementation((nextParams) => {
 			expect(nextParams.method).toBe("POST");
 			return Promise.resolve(DEither.right("response", response));

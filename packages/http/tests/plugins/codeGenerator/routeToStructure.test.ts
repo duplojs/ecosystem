@@ -115,7 +115,7 @@ describe("routeToStructure", () => {
 				[
 					convertRoutePath("/test/*"),
 					convertRoutePath("/test"),
-					convertRoutePath("/test-*/ok"),
+					convertRoutePath("/test-*/ok/*"),
 				],
 			),
 		).toStrictEqual(

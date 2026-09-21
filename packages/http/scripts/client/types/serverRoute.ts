@@ -1,5 +1,4 @@
 import type * as DCommon from "@duplojs/lang/common";
-import type * as DString from "@duplojs/lang/string";
 import { type ResponseCode } from "./responseCode";
 
 export type ServerPrimitiveData = string | undefined | number | null | boolean;
@@ -19,21 +18,21 @@ export type ServerRouteResponseFlux = string | Uint8Array<ArrayBuffer>;
 export type ServerRouteResponseEvents = Record<string, unknown>;
 
 export interface ServerRouteResponse {
-	code: ResponseCode;
-	information?: string;
-	body?: ServerRouteResponseBody;
-	events?: ServerRouteResponseEvents;
-	flux?: ServerRouteResponseFlux;
+	readonly code: ResponseCode;
+	readonly information?: string;
+	readonly body?: ServerRouteResponseBody;
+	readonly events?: ServerRouteResponseEvents;
+	readonly flux?: ServerRouteResponseFlux;
 }
 
 export interface ServerRoute {
-	path: string;
-	method: string;
-	headers?: ServerRouteHeaders;
-	params?: ServerRouteParams;
-	query?: ServerRouteQuery;
-	body?: ServerRouteBody;
-	responses: ServerRouteResponse;
+	readonly path: string;
+	readonly method: string;
+	readonly headers?: ServerRouteHeaders;
+	readonly params?: ServerRouteParams;
+	readonly query?: ServerRouteQuery;
+	readonly body?: ServerRouteBody;
+	readonly responses: ServerRouteResponse;
 }
 
 export type GetServerRoutePath<
@@ -53,7 +52,7 @@ export type AddPrefixPathServerRoute<
 	GenericPrefix extends string,
 > = GenericRoute extends ServerRoute
 	? DCommon.SimplifyTopLevel<
-		{ path: `${GenericPrefix}${GenericRoute["path"]}` }
+		{ readonly path: `${GenericPrefix}${GenericRoute["path"]}` }
 		& Omit<GenericRoute, "path">
 	>
 	: never;
@@ -64,7 +63,7 @@ export type RemovePrefixPathServerRoute<
 > = GenericRoute extends ServerRoute
 	? GenericRoute["path"] extends `${GenericPrefix}${infer InferredPathRest}`
 		? DCommon.SimplifyTopLevel<
-			{ path: InferredPathRest }
+			{ readonly path: InferredPathRest }
 			& Omit<GenericRoute, "path">
 		>
 		: GenericRoute

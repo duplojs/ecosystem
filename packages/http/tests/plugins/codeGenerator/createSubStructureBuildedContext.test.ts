@@ -9,6 +9,7 @@ describe("createSubStructureBuildedContext", () => {
 		const mainStructure = DDataStructure.object({
 			value: dependencyStructure,
 		});
+		const undefinedStructure = DDataStructure.undefined();
 
 		const buildedContext: DataStructureToDataStructure.BuildedContext = {
 			context: new Map<DDataStructure.Structure, DataStructureToDataStructure.MapContextValue>([
@@ -18,7 +19,7 @@ describe("createSubStructureBuildedContext", () => {
 						identifier: Typescript.factory.createIdentifier("mainStructure"),
 						expression: Typescript.factory.createIdentifier("mainExpression"),
 						typeIdentifier: Typescript.factory.createIdentifier("MainType"),
-						dependencies: new Set([dependencyStructure]),
+						dependencies: new Set([dependencyStructure, mainStructure, undefinedStructure]),
 						import: new Map([
 							[
 								"@duplojs/lang/dataStructure",
@@ -64,7 +65,7 @@ describe("createSubStructureBuildedContext", () => {
 							identifier: Typescript.factory.createIdentifier("mainStructure"),
 							expression: Typescript.factory.createIdentifier("mainExpression"),
 							typeIdentifier: Typescript.factory.createIdentifier("MainType"),
-							dependencies: new Set([dependencyStructure]),
+							dependencies: new Set([dependencyStructure, mainStructure, undefinedStructure]),
 							import: new Map([
 								[
 									"@duplojs/lang/dataStructure",

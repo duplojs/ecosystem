@@ -1,5 +1,10 @@
 import { ResponseContract, useRouteBuilder, Request, PredictedResponse } from "@core";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DPath from "@duplojs/lang/path";
+// oxlint-disable-next-line duplojs-plugin/no-restricted-import
+import { setEnvironment, TESTImplementation } from "@duplojs/server";
+import * as DSDataStructure from "@duplojs/server/dataStructure";
+import * as DSFile from "@duplojs/server/file";
 import { createBodyReader } from "@test-utils/bodyReader";
 import { useTestRouteFunctionBuilder } from "@test-utils/useTestRouteFunctionBuilder";
 
@@ -8,6 +13,7 @@ describe("extract step function builder", () => {
 
 	beforeEach(() => {
 		spyResponse.mockClear();
+		TESTImplementation.clear();
 	});
 
 	it("sub extract value from params", async() => {
@@ -291,6 +297,91 @@ describe("extract step function builder", () => {
 					new Error("fail"),
 				)
 					.setHeader("extract-key", "request.body"),
+			}),
+		);
+	});
+
+	it("extract with async structure", async() => {
+		setEnvironment("TEST");
+		TESTImplementation.set("stat", () => Promise.resolve({ isFile: true } as never));
+
+		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
+			.extract({ path: DSDataStructure.file([DSDataStructure.exist()]) })
+			.handler(
+				ResponseContract.ok("good", DSDataStructure.file()),
+				(floor, { response }) => response("good", floor.path),
+			);
+
+		const buildedRoute = await useTestRouteFunctionBuilder(route, {
+			environment: "DEV",
+			defaultCodecs: { path: DSDataStructure.codecsString },
+		});
+
+		await buildedRoute(
+			new Request({
+				headers: {},
+				host: "",
+				matchedPath: "",
+				method: "",
+				origin: "test1",
+				path: "test/file",
+				params: {},
+				query: {},
+				url: "",
+				bodyReader: createBodyReader(() => undefined),
+			}),
+		);
+
+		expect(spyResponse).toHaveBeenCalledWith(
+			expect.objectContaining({
+				currentResponse: new PredictedResponse(
+					"200",
+					"good",
+					expect.objectContaining({
+						path: "test/file",
+					}),
+				),
+			}),
+		);
+	});
+
+	it("extract body with async structure", async() => {
+		setEnvironment("TEST");
+		TESTImplementation.set("stat", () => Promise.resolve({ isFile: true } as never));
+
+		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
+			.extract({ body: DSDataStructure.file([DSDataStructure.exist()]) })
+			.handler(
+				ResponseContract.ok("good", DSDataStructure.file()),
+				(floor, { response }) => response("good", floor.body),
+			);
+
+		const buildedRoute = await useTestRouteFunctionBuilder(route, { environment: "DEV" });
+
+		await buildedRoute(
+			new Request({
+				headers: {},
+				host: "",
+				matchedPath: "",
+				method: "",
+				origin: "test1",
+				path: "",
+				params: {},
+				query: {},
+				url: "",
+				bodyReader: createBodyReader(() => DSFile.createFileInterface(DPath.declarePath("test/file"))),
+			}),
+		);
+
+		expect(spyResponse).toHaveBeenCalledWith(
+			expect.objectContaining({
+				currentResponse: new PredictedResponse(
+					"200",
+					"good",
+					expect.objectContaining({
+						path: "test/file",
+					}),
+				),
 			}),
 		);
 	});

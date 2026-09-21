@@ -802,4 +802,44 @@ describe("readRequestFormData", () => {
 		expect(DEither.unwrapLeft(result)).toBe(error);
 		expect(onError).toHaveBeenCalled();
 	});
+
+	it("error with invalid filename", async() => {
+		const request = createFakeRequest({
+			raw: {
+				request: {
+					headers: {
+						"content-type": contentType,
+					},
+					bodyChunks: [
+						Buffer.from(`--${boundary}\r\nContent-`),
+						Buffer.from("Disposition: form-data; name=\"file\"; filename=\"//invalid-filename.txt\"\r\n\r\n"),
+						Buffer.from(`A\r\n--${boundary}`),
+						Buffer.from("--"),
+					],
+				},
+			},
+		});
+
+		const result = await readRequestFormData(
+			request.raw.request,
+			{},
+			{
+				maxBodySize: 1000,
+				maxBufferSize: 10000,
+				maxKeyLength: 100,
+				maxFileQuantity: 1,
+				mimeType: /txt/,
+				fileMaxSize: Infinity,
+				textFieldMaxSize: Infinity,
+			},
+			() => ({
+				onReceiveChunk: () => {},
+				onEndPart: (value) => value,
+				onError: () => {},
+			}),
+		);
+
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
+		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodyParseFormDataError);
+	});
 });

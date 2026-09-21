@@ -4,101 +4,101 @@ import * as DEither from "@duplojs/lang/either";
 import * as DString from "@duplojs/lang/string";
 
 type Routes = {
-	method: "GET";
-	path: "/users";
-	responses: {
-		code: "200";
-		information: "users.findMany";
-		body: {
-			id: number;
-			name: string;
-			age: number;
+	readonly method: "GET";
+	readonly path: "/users";
+	readonly responses: {
+		readonly code: "200";
+		readonly information: "users.findMany";
+		readonly body: readonly {
+			readonly id: number;
+			readonly name: string;
+			readonly age: number;
 		}[];
 	};
 } | {
-	method: "GET";
-	path: "/users/{userId}";
-	params: {
-		userId: number;
+	readonly method: "GET";
+	readonly path: "/users/{userId}";
+	readonly params: {
+		readonly userId: number;
 	};
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body?: undefined;
 	} | {
-		code: "200";
-		information: "users.find";
-		body: {
-			id: number;
-			name: string;
-			age: number;
+		readonly code: "200";
+		readonly information: "users.find";
+		readonly body: {
+			readonly id: number;
+			readonly name: string;
+			readonly age: number;
 		};
 	};
 } | {
-	method: "POST";
-	path: "/users";
-	body: {
-		id: number;
-		name: string;
-		age: number;
+	readonly method: "POST";
+	readonly path: "/users";
+	readonly body: {
+		readonly id: number;
+		readonly name: string;
+		readonly age: number;
 	};
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body?: undefined;
 	} | {
-		code: "200";
-		information: "users.create";
-		body: {
-			id: number;
-			name: string;
-			age: number;
+		readonly code: "200";
+		readonly information: "users.create";
+		readonly body: {
+			readonly id: number;
+			readonly name: string;
+			readonly age: number;
 		};
 	};
 } | {
-	method: "POST";
-	path: "/documents";
-	body: DCommon.TheFormData<{
-		bool: boolean;
-		myFile: File;
+	readonly method: "POST";
+	readonly path: "/documents";
+	readonly body: DCommon.TheFormData<{
+		readonly bool: boolean;
+		readonly myFile: File;
 	}>;
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body?: undefined;
 	} | {
-		code: "204";
-		information: "file.receive";
-		body?: undefined;
+		readonly code: "204";
+		readonly information: "file.receive";
+		readonly body?: undefined;
 	};
 } | {
-	method: "GET";
-	path: `/documents/${string}`;
-	responses: {
-		code: "200";
-		information: "file.send";
-		body: File;
+	readonly method: "GET";
+	readonly path: `/documents/${string}`;
+	readonly responses: {
+		readonly code: "200";
+		readonly information: "file.send";
+		readonly body: File;
 	};
 } | {
-	method: "GET";
-	path: "/sse";
-	responses: {
-		code: "200";
-		information: "ess";
-		events: {
-			message: { test: string };
-			ping: string;
+	readonly method: "GET";
+	readonly path: "/sse";
+	readonly responses: {
+		readonly code: "200";
+		readonly information: "ess";
+		readonly events: {
+			readonly message: { readonly test: string };
+			readonly ping: string;
 		};
-		body: undefined;
+		readonly body: undefined;
 	};
 } | {
-	method: "GET";
-	path: "/stream";
-	responses: {
-		code: "200";
-		information: "monSuperStream";
-		body?: undefined;
-		flux: Uint8Array<ArrayBuffer>;
+	readonly method: "GET";
+	readonly path: "/stream";
+	readonly responses: {
+		readonly code: "200";
+		readonly information: "monSuperStream";
+		readonly body?: undefined;
+		readonly flux: Uint8Array<ArrayBuffer>;
 	};
 };
 
@@ -163,9 +163,9 @@ type Check = DCommon.ExpectType<
 			code: "200";
 			information: "users.find";
 			body: {
-				id: number;
-				name: string;
-				age: number;
+				readonly id: number;
+				readonly name: string;
+				readonly age: number;
 			};
 			ok: boolean | null;
 			headers: Headers;
@@ -189,9 +189,9 @@ void promiseRequest
 				code: "200";
 				information: "users.find";
 				body: {
-					id: number;
-					name: string;
-					age: number;
+					readonly id: number;
+					readonly name: string;
+					readonly age: number;
 				};
 				ok: boolean | null;
 				headers: Headers;
@@ -213,9 +213,9 @@ void promiseRequest
 				code: "200";
 				information: "users.find";
 				body: {
-					id: number;
-					name: string;
-					age: number;
+					readonly id: number;
+					readonly name: string;
+					readonly age: number;
 				};
 				ok: boolean | null;
 				headers: Headers;
@@ -246,9 +246,9 @@ void promiseRequest
 				code: "200";
 				information: "users.find";
 				body: {
-					id: number;
-					name: string;
-					age: number;
+					readonly id: number;
+					readonly name: string;
+					readonly age: number;
 				};
 				ok: boolean | null;
 				headers: Headers;
@@ -321,9 +321,9 @@ void promiseRequest
 				code: "200";
 				information: "users.find";
 				body: {
-					id: number;
-					name: string;
-					age: number;
+					readonly id: number;
+					readonly name: string;
+					readonly age: number;
 				};
 				ok: boolean | null;
 				headers: Headers;
@@ -392,9 +392,9 @@ void promiseRequest
 					code: "200";
 					information: "users.find";
 					body: {
-						id: number;
-						name: string;
-						age: number;
+						readonly id: number;
+						readonly name: string;
+						readonly age: number;
 					};
 					ok: boolean | null;
 					headers: Headers;
@@ -444,9 +444,9 @@ void promiseRequest
 					code: "200";
 					information: "users.find";
 					body: {
-						id: number;
-						name: string;
-						age: number;
+						readonly id: number;
+						readonly name: string;
+						readonly age: number;
 					};
 					ok: boolean | null;
 					headers: Headers;
@@ -503,9 +503,9 @@ void promiseRequest
 					code: "200";
 					information: "users.find";
 					body: {
-						id: number;
-						name: string;
-						age: number;
+						readonly id: number;
+						readonly name: string;
+						readonly age: number;
 					};
 					ok: boolean | null;
 					headers: Headers;
@@ -598,9 +598,9 @@ void promiseRequest
 					code: "200";
 					information: "users.find";
 					body: {
-						id: number;
-						name: string;
-						age: number;
+						readonly id: number;
+						readonly name: string;
+						readonly age: number;
 					};
 					ok: boolean | null;
 					headers: Headers;
@@ -670,9 +670,9 @@ void promiseRequest
 					code: "200";
 					information: "users.find";
 					body: {
-						id: number;
-						name: string;
-						age: number;
+						readonly id: number;
+						readonly name: string;
+						readonly age: number;
 					};
 					ok: boolean | null;
 					headers: Headers;
@@ -714,9 +714,9 @@ void promiseRequest
 					code: "200";
 					information: "users.find";
 					body: {
-						id: number;
-						name: string;
-						age: number;
+						readonly id: number;
+						readonly name: string;
+						readonly age: number;
 					};
 					ok: boolean | null;
 					headers: Headers;
@@ -765,9 +765,9 @@ void promiseRequest
 				code: "200";
 				information: "users.find";
 				body: {
-					id: number;
-					name: string;
-					age: number;
+					readonly id: number;
+					readonly name: string;
+					readonly age: number;
 				};
 				ok: boolean | null;
 				headers: Headers;
@@ -792,9 +792,9 @@ void promiseRequest
 				code: "200";
 				information: "users.find";
 				body: {
-					id: number;
-					name: string;
-					age: number;
+					readonly id: number;
+					readonly name: string;
+					readonly age: number;
 				};
 				ok: boolean | null;
 				headers: Headers;
@@ -831,9 +831,9 @@ void promiseRequest
 				code: "200";
 				information: "users.find";
 				body: {
-					id: number;
-					name: string;
-					age: number;
+					readonly id: number;
+					readonly name: string;
+					readonly age: number;
 				};
 				ok: boolean | null;
 				headers: Headers;
@@ -918,9 +918,9 @@ void promiseRequest
 				code: "200";
 				information: "users.find";
 				body: {
-					id: number;
-					name: string;
-					age: number;
+					readonly id: number;
+					readonly name: string;
+					readonly age: number;
 				};
 				ok: boolean | null;
 				headers: Headers;
@@ -987,9 +987,9 @@ void promiseRequest
 						code: "200";
 						information: "users.find";
 						body: {
-							id: number;
-							name: string;
-							age: number;
+							readonly id: number;
+							readonly name: string;
+							readonly age: number;
 						};
 						ok: boolean | null;
 						headers: Headers;
@@ -1033,10 +1033,10 @@ void httpClient.get("/users")
 			{
 				code: "200";
 				information: "users.findMany";
-				body: {
-					id: number;
-					name: string;
-					age: number;
+				body: readonly {
+					readonly id: number;
+					readonly name: string;
+					readonly age: number;
 				}[];
 				ok: boolean | null;
 				headers: Headers;
@@ -1061,10 +1061,10 @@ void httpClient.get("/users")
 				| {
 					code: "200";
 					information: "users.findMany";
-					body: {
-						id: number;
-						name: string;
-						age: number;
+					body: readonly {
+						readonly id: number;
+						readonly name: string;
+						readonly age: number;
 					}[];
 					ok: boolean | null;
 					headers: Headers;
@@ -1107,9 +1107,9 @@ void httpClient.post("/users", {
 				code: "200";
 				information: "users.create";
 				body: {
-					id: number;
-					name: string;
-					age: number;
+					readonly id: number;
+					readonly name: string;
+					readonly age: number;
 				};
 				ok: boolean | null;
 				headers: Headers;
@@ -1149,9 +1149,9 @@ void httpClient.post("/users", {
 					code: "200";
 					information: "users.create";
 					body: {
-						id: number;
-						name: string;
-						age: number;
+						readonly id: number;
+						readonly name: string;
+						readonly age: number;
 					};
 					ok: boolean | null;
 					headers: Headers;
@@ -1214,7 +1214,7 @@ void httpClient.get("/sse")
 				{
 					event: "message";
 					data: {
-						test: string;
+						readonly test: string;
 					};
 					id?: string | undefined;
 					retry?: number | undefined;
@@ -1239,7 +1239,7 @@ void httpClient.get("/sse")
 				} & ClientEventsResponseHandler<{
 					event: "message";
 					data: {
-						test: string;
+						readonly test: string;
 					};
 					id?: string;
 					retry?: number;
@@ -1263,7 +1263,7 @@ void httpClient.get("/sse")
 						{
 							event: "message";
 							data: {
-								test: string;
+								readonly test: string;
 							};
 							id?: string | undefined;
 							retry?: number | undefined;
@@ -1289,7 +1289,7 @@ void httpClient.get("/sse")
 						} & ClientEventsResponseHandler<{
 							event: "message";
 							data: {
-								test: string;
+								readonly test: string;
 							};
 							id?: string;
 							retry?: number;
@@ -1408,22 +1408,22 @@ type Check1 = DCommon.ExpectType<
 		"/titi/"
 	>,
 	{
-		method: "GET";
-		path: "toto/users/{userId}";
-		params: {
-			userId: number;
+		readonly method: "GET";
+		readonly path: "toto/users/{userId}";
+		readonly params: {
+			readonly userId: number;
 		};
-		responses: {
-			code: "422";
-			information: "extract-error";
-			body?: undefined;
+		readonly responses: {
+			readonly code: "422";
+			readonly information: "extract-error";
+			readonly body?: undefined;
 		} | {
-			code: "200";
-			information: "users.find";
-			body: {
-				id: number;
-				name: string;
-				age: number;
+			readonly code: "200";
+			readonly information: "users.find";
+			readonly body: {
+				readonly id: number;
+				readonly name: string;
+				readonly age: number;
 			};
 		};
 	},
@@ -1437,12 +1437,12 @@ type Check2 = DCommon.ExpectType<
 		"users.find"
 	>,
 	{
-		code: "200";
-		information: "users.find";
-		body: {
-			id: number;
-			name: string;
-			age: number;
+		readonly code: "200";
+		readonly information: "users.find";
+		readonly body: {
+			readonly id: number;
+			readonly name: string;
+			readonly age: number;
 		};
 	},
 	"strict"

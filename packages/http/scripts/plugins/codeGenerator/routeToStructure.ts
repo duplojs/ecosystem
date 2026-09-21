@@ -45,7 +45,7 @@ export function convertRoutePath(path: string) {
 		const tails = DCommon.pipe(
 			splittedPath,
 			DArray.shift,
-			DArray.flatMap(
+			DArray.map(
 				(element, { index, self }) => Typescript.factory.createTemplateLiteralTypeSpan(
 					Typescript.factory.createKeywordTypeNode(Typescript.SyntaxKind.StringKeyword),
 					DArray.isLastIndex(self, index)

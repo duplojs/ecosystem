@@ -1,7 +1,7 @@
 import { hub } from "@core";
 import { createHttpServer } from "@duplojs/http/node";
 import { type AllNotPredictedClientResponse, type ClientEventsResponseHandler, createHttpClient, type FindServerRoute, type PromiseRequestParams, type RequestErrorContent, type ServerRouteToClientRequestParams } from "@duplojs/http/client";
-import { type Routes } from "./clientType";
+import { type User, type Routes } from "./clientType";
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
 import * as DEither from "@duplojs/lang/either";
@@ -49,11 +49,7 @@ describe("client", async() => {
 				| {
 					code: "200";
 					information: "users.findMany";
-					body: {
-						id: number;
-						name: string;
-						age: number;
-					}[];
+					body: readonly User[];
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -150,11 +146,7 @@ describe("client", async() => {
 				| {
 					code: "200";
 					information: "users.find";
-					body: {
-						id: number;
-						name: string;
-						age: number;
-					};
+					body: User;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -228,11 +220,7 @@ describe("client", async() => {
 				| {
 					code: "200";
 					information: "users.create";
-					body: {
-						id: number;
-						name: string;
-						age: number;
-					};
+					body: User;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -271,7 +259,7 @@ describe("client", async() => {
 		const result = await httpClient.post("/documents", {
 			body: DCommon.createFormData({
 				bool: true,
-				myFile: [await createFileToSend(DCommon.cast("files/fakeFiles/1mb.jpg"), "😄.jpg")],
+				myFile: DCommon.cast([await createFileToSend(DCommon.cast("files/fakeFiles/1mb.jpg"), "😄.jpg")]),
 				name: "client/testClient.generate",
 			}),
 		});
@@ -407,7 +395,7 @@ describe("client", async() => {
 						}
 						| {
 							event: "message";
-							data: { test: string };
+							data: { readonly test: string };
 							id?: string | undefined;
 							retry?: number | undefined;
 						}

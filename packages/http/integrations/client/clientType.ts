@@ -1,139 +1,208 @@
+import type * as DChrono from "@duplojs/lang/chrono";
+
+import type * as DArray from "@duplojs/lang/array";
+
 import type * as DCommon from "@duplojs/lang/common";
 
+export type UserId = number;
+
+export type UserName = string;
+
+export interface User {
+	readonly id: UserId;
+	readonly name: UserName;
+	readonly age: number;
+	readonly friends?: undefined | readonly User[];
+	readonly createdAt?: undefined | DChrono.TheDate;
+}
+
 export type Routes = {
-	method: "GET";
-	path: "/users";
-	responses: {
-		code: "200";
-		information: "users.findMany";
-		body: {
-			id: number;
-			name: string;
-			age: number;
-		}[];
+	readonly method: "GET";
+	readonly path: "/users";
+	readonly responses: {
+		readonly code: "200";
+		readonly information: "users.findMany";
+		readonly body: readonly User[];
 	};
 } | {
-	method: "GET";
-	path: "/users/{userId}";
-	params: {
-		userId: number;
+	readonly method: "GET";
+	readonly path: "/users/{userId}";
+	readonly params: {
+		readonly userId: number;
 	};
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body?: undefined;
 	} | {
-		code: "200";
-		information: "users.find";
-		body: {
-			id: number;
-			name: string;
-			age: number;
-		};
+		readonly code: "200";
+		readonly information: "users.find";
+		readonly body: User;
 	};
 } | {
-	method: "POST";
-	path: "/users";
-	body: {
-		id: number;
-		name: string;
-		age: number;
+	readonly method: "POST";
+	readonly path: "/users";
+	readonly body: {
+		readonly id: UserId;
+		readonly name: UserName;
+		readonly age: number;
+		readonly friends?: undefined | readonly User[];
+		readonly createdAt?: undefined | DChrono.TheDate;
 	};
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body?: undefined;
 	} | {
-		code: "200";
-		information: "users.create";
-		body: {
-			id: number;
-			name: string;
-			age: number;
-		};
+		readonly code: "200";
+		readonly information: "users.create";
+		readonly body: User;
 	};
 } | {
-	method: "POST";
-	path: "/documents";
-	body: DCommon.TheFormData<{
-		bool: boolean;
-		myFile: [
-			File,
-		];
-		name: string;
+	readonly method: "DELETE";
+	readonly path: "/users";
+	readonly body: {
+		readonly id: number;
+	};
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body?: undefined;
+	} | {
+		readonly code: "204";
+		readonly information: "users.deleted";
+		readonly body?: undefined;
+	};
+} | {
+	readonly method: "POST";
+	readonly path: "/documents";
+	readonly body: DCommon.TheFormData<{
+		readonly bool: boolean;
+		readonly myFile: readonly File[] & DArray.LengthEqual<1>;
+		readonly name: string;
 	}>;
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body?: undefined;
 	} | {
-		code: "204";
-		information: "file.receive";
-		body?: undefined;
+		readonly code: "204";
+		readonly information: "file.receive";
+		readonly body?: undefined;
 	};
 } | {
-	method: "GET";
-	path: `/documents/${string}`;
-	responses: {
-		code: "200";
-		information: "file.send";
-		body: File;
+	readonly method: "GET";
+	readonly path: `/documents/${string}`;
+	readonly responses: {
+		readonly code: "200";
+		readonly information: "file.send";
+		readonly body: File;
 	};
 } | {
-	method: "GET";
-	path: "/sse";
-	query: {
-		close?: boolean | undefined;
+	readonly method: "GET";
+	readonly path: "/sse";
+	readonly query: {
+		readonly close?: undefined | boolean;
 	};
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body?: undefined;
 	} | {
-		code: "200";
-		information: "super-sse";
-		body?: undefined;
-		events: {
-			other: string;
-			message: {
-				test: string;
+		readonly code: "200";
+		readonly information: "super-sse";
+		readonly body?: undefined;
+		readonly events: {
+			readonly other: string;
+			readonly message: {
+				readonly test: string;
 			};
 		};
 	} | {
-		code: "204";
-		information: "close";
-		body?: undefined;
+		readonly code: "204";
+		readonly information: "close";
+		readonly body?: undefined;
 	};
 } | {
-	method: "GET";
-	path: "/stream";
-	query: {
-		value: number;
-	};
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly method: "GET";
+	readonly path: "/cookie-check";
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body?: undefined;
 	} | {
-		code: "200";
-		information: "monSuperStream";
-		body?: undefined;
-		flux: Uint8Array<ArrayBuffer>;
+		readonly code: "200";
+		readonly information: "cookie.checked";
+		readonly body: {
+			readonly session: string;
+		};
 	};
 } | {
-	method: "POST";
-	path: "/stream-text";
-	body: {
-		value: string;
+	readonly method: "GET";
+	readonly path: "/cookie-drop";
+	readonly responses: {
+		readonly code: "204";
+		readonly information: "cookie.dropped";
+		readonly body?: undefined;
 	};
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+} | {
+	readonly method: "GET";
+	readonly path: "/stream";
+	readonly query: {
+		readonly value: number;
+	};
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body?: undefined;
 	} | {
-		code: "200";
-		information: "monSuperStream";
-		body?: undefined;
-		flux: string;
+		readonly code: "200";
+		readonly information: "monSuperStream";
+		readonly body?: undefined;
+		readonly flux: Uint8Array<ArrayBuffer>;
+	};
+} | {
+	readonly method: "POST";
+	readonly path: "/stream-text";
+	readonly body: {
+		readonly value: string;
+	};
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body?: undefined;
+	} | {
+		readonly code: "200";
+		readonly information: "monSuperStream";
+		readonly body?: undefined;
+		readonly flux: string;
+	};
+} | {
+	readonly method: "GET";
+	readonly path: "/static-file";
+	readonly responses: {
+		readonly code: "200";
+		readonly information: "resource.found";
+		readonly body: File;
+	} | {
+		readonly code: "304";
+		readonly information: "resource.notModified";
+		readonly body?: undefined;
+	};
+} | {
+	readonly method: "GET";
+	readonly path: `/static-folder/${string}`;
+	readonly responses: {
+		readonly code: "200";
+		readonly information: "resource.found";
+		readonly body: File;
+	} | {
+		readonly code: "404";
+		readonly information: "resource.notfound";
+		readonly body?: undefined;
+	} | {
+		readonly code: "304";
+		readonly information: "resource.notModified";
+		readonly body?: undefined;
 	};
 };

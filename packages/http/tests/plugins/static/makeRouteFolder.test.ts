@@ -180,6 +180,29 @@ describe("makeRouteFolder", async() => {
 		);
 	});
 
+	it("invalid path", async() => {
+		await buildedRoute(
+			new Request({
+				headers: {},
+				host: "",
+				matchedPath: "",
+				method: "",
+				origin: "",
+				path: "/folder/\0/folder2/file.txt",
+				params: {},
+				query: {},
+				url: "",
+				bodyReader: createBodyReader(),
+			}),
+		);
+
+		expect(spyResponse).toHaveBeenCalledWith(
+			expect.objectContaining({
+				currentResponse: new PredictedResponse("404", "resource.notfound", undefined),
+			}),
+		);
+	});
+
 	it("resource requested notfound", async() => {
 		const spyStat = vi.fn(() => Promise.resolve(DEither.left("file-system-stat")));
 		TESTImplementation.set("stat", spyStat);
