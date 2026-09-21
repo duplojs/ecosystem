@@ -26,4 +26,9 @@ describe("right", () => {
 			"strict"
 		>;
 	});
+
+	it("contract error", () => {
+		// @ts-expect-error contract error
+		const result: DEither.Right<"test", number> = DEither.right("test");
+	});
 });

@@ -9,12 +9,12 @@ export default oxlint.defineConfig({
 				"**/*.bench.ts",
 				"integrations/**/*.ts",
 			],
-			excludeFiles: ["**/*.d.ts", "**/*.generate.*", "**/*.generate"],
+			excludeFiles: ["**/*.d.ts"],
 			rules: {
 				...testPreset.rules,
 				"typescript/no-confusing-void-expression": "off",
 			},
 		},
 	],
-	ignorePatterns: ["dist/**"],
+	ignorePatterns: ["dist/**", "**/*.generate.*", "**/*.generate"],
 });

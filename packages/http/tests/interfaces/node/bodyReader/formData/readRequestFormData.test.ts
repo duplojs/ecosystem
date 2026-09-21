@@ -37,7 +37,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodyParseFormDataError);
 	});
 
@@ -68,7 +68,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodyParseFormDataError);
 	});
 
@@ -242,7 +242,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodyParseWrongChunkReceived);
 		expect(onError).toHaveBeenCalled();
 	});
@@ -284,7 +284,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodySizeExceedsLimitError);
 	});
 
@@ -322,7 +322,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodySizeExceedsLimitError);
 		expect(onError).toHaveBeenCalled();
 	});
@@ -361,7 +361,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toStrictEqual(new BodyParseFormDataError("Buffer size exceeds limit."));
 	});
 
@@ -401,7 +401,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodyParseFormDataError);
 	});
 
@@ -441,7 +441,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodyParseFormDataError);
 	});
 
@@ -482,7 +482,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodyParseFormDataError);
 	});
 
@@ -523,7 +523,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodyParseFormDataError);
 	});
 
@@ -566,7 +566,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodyParseFormDataError);
 		expect(onError).toHaveBeenCalled();
 	});
@@ -610,7 +610,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodyParseFormDataError);
 		expect(onError).toHaveBeenCalled();
 	});
@@ -651,7 +651,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodyParseFormDataError);
 	});
 
@@ -685,7 +685,7 @@ describe("readRequestFormData", () => {
 			}),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodyParseFormDataError);
 	});
 
@@ -755,7 +755,7 @@ describe("readRequestFormData", () => {
 			() => new Error("nope"),
 		);
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toStrictEqual(new Error("nope"));
 	});
 

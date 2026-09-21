@@ -173,7 +173,7 @@ describe("makeRouteFile", async() => {
 	});
 
 	it("source does not exist", async() => {
-		const spy = vi.fn(() => Promise.resolve(DEither.left("file-system-stat")));
+		const spy = vi.fn(() => Promise.resolve(DEither.left("file-system-stat", undefined)));
 		TESTImplementation.set("stat", spy);
 
 		await buildedRoute(

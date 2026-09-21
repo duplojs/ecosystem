@@ -1,11 +1,11 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`codeGenerator > correct generate file 1`] = `
-"import { TheDate, SerializedTheDate } from "@duplojs/lang/chrono";
+"import * as DChrono from "@duplojs/lang/chrono";
 
 import * as DArray from "@duplojs/lang/array";
 
-import { TheFormData } from "@duplojs/lang";
+import * as DCommon from "@duplojs/lang/common";
 
 export type UserId = number;
 
@@ -16,7 +16,7 @@ export type User = {
     readonly name: UserName;
     readonly age: number;
     readonly friends?: undefined | readonly User[];
-    readonly createdAt?: undefined | (SerializedTheDate | TheDate);
+    readonly createdAt?: undefined | DChrono.TheDate;
 };
 
 export type Routes = {
@@ -50,7 +50,7 @@ export type Routes = {
         readonly name: UserName;
         readonly age: number;
         readonly friends?: undefined | readonly User[];
-        readonly createdAt?: undefined | (SerializedTheDate | TheDate);
+        readonly createdAt?: undefined | DChrono.TheDate;
     };
     readonly responses: {
         readonly code: "422";
@@ -79,7 +79,7 @@ export type Routes = {
 } | {
     readonly method: "POST";
     readonly path: "/documents";
-    readonly body: TheFormData<{
+    readonly body: DCommon.TheFormData<{
         readonly bool: boolean;
         readonly myFile: readonly File[] & DArray.LengthEqual<1>;
         readonly name: string;
@@ -209,4 +209,64 @@ export type Routes = {
         readonly body?: undefined;
     };
 };"
+`;
+
+exports[`codeGenerator > correct generate file 2`] = `
+"export * from "./userIdStructure";
+export * from "./userNameStructure";
+export * from "./userStructure";"
+`;
+
+exports[`codeGenerator > correct generate file 3`] = `
+"import * as DChrono from "@duplojs/lang/chrono";
+
+export type UserId = number;
+
+export type UserName = string;
+
+export type User = {
+    readonly id: UserId;
+    readonly name: UserName;
+    readonly age: number;
+    readonly friends?: undefined | readonly User[];
+    readonly createdAt?: undefined | DChrono.TheDate;
+};
+
+export type $userStructure = User;"
+`;
+
+exports[`codeGenerator > correct generate file 4`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+import { userIdStructure } from "./userIdStructure";
+
+import { userNameStructure } from "./userNameStructure";
+
+import { $userStructure } from "./types";
+
+export const userStructure: DDataStructure.Structure<$userStructure> = DDataStructure.ObjectStructure({
+    id: userIdStructure,
+    name: userNameStructure,
+    age: DDataStructure.TypeStructure(DDataStructure.NumberType(), []),
+    friends: DDataStructure.UnionStructure([
+        DDataStructure.TypeStructure(DDataStructure.UndefinedType(), []),
+        DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => userStructure, []), [])
+    ], []),
+    createdAt: DDataStructure.UnionStructure([
+        DDataStructure.TypeStructure(DDataStructure.UndefinedType(), []),
+        DDataStructure.TypeStructure(DDataStructure.DateType(), [])
+    ], [])
+}, []);"
+`;
+
+exports[`codeGenerator > correct generate file 5`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const userIdStructure = DDataStructure.TypeStructure(DDataStructure.NumberType(), []);"
+`;
+
+exports[`codeGenerator > correct generate file 6`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const userNameStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
 `;

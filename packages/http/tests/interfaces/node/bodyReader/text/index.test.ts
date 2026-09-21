@@ -27,7 +27,7 @@ describe("createTextBodyReaderImplementation", () => {
 
 		const result = await reader.read(request, {});
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(WrongContentTypeError);
 	});
 
@@ -37,7 +37,7 @@ describe("createTextBodyReaderImplementation", () => {
 
 		const result = await reader.read(request, {});
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(WrongContentTypeError);
 	});
 
@@ -74,7 +74,7 @@ describe("createTextBodyReaderImplementation", () => {
 
 		const result = await reader.read(request, {});
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(ParseJsonError);
 	});
 
@@ -111,7 +111,7 @@ describe("createTextBodyReaderImplementation", () => {
 
 		const result = await reader.read(request, { bodyMaxSize: 3 });
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodySizeExceedsLimitError);
 		expect((DEither.unwrapLeft(result) as BodySizeExceedsLimitError).bytesInString).toBe(3);
 	});

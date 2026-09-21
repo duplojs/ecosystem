@@ -44,6 +44,7 @@ export const defaultExtractStepFunctionBuilder = createStepFunctionBuilder(
 					...floor,
 					[subKey ?? key]: DEither.unwrapRight(result),
 				};
+
 			const getValue = typeof subKey === "string"
 				? (value: unknown) => value?.[subKey as never]
 				: DCommon.forward;
@@ -53,12 +54,17 @@ export const defaultExtractStepFunctionBuilder = createStepFunctionBuilder(
 					? structure.asyncParse
 					: structure.parse;
 				return async(request: Request, floor: Floor) => {
-					const bodyResult = await request.getBody();
-					if (DEither.isLeft(bodyResult)) {
-						return treatResult(bodyResult, floor);
-					}
-					const result = await parseFunction(getValue(DEither.unwrapRight(bodyResult)));
-					return treatResult(result, floor);
+					const bodyResult = await request
+						.getBodyResult()
+						.extract(
+							getValue,
+							parseFunction,
+						);
+
+					return treatResult(
+						bodyResult,
+						floor,
+					);
 				};
 			}
 

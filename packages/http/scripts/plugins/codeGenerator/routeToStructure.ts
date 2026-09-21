@@ -25,11 +25,14 @@ export const bodyAsFormData: DataStructureToTypescript.StructureTransformer = (
 		return result;
 	}
 
-	addImport("@duplojs/lang", "TheFormData");
+	addImport("@duplojs/lang/common", "DCommon", "namespace");
 
 	return success(
 		Typescript.factory.createTypeReferenceNode(
-			"TheFormData",
+			Typescript.factory.createQualifiedName(
+				Typescript.factory.createIdentifier("DCommon"),
+				Typescript.factory.createIdentifier("TheFormData"),
+			),
 			[DEither.unwrapRight(result)],
 		),
 	);

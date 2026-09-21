@@ -10,7 +10,7 @@ export function createBodyReader(theFunction: () => unknown = () => undefined) {
 				const result = await theFunction();
 
 				if (result instanceof Error) {
-					return DEither.error(result);
+					return DEither.left("reader-error", result);
 				}
 
 				return DEither.success(result);

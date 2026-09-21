@@ -1,4 +1,6 @@
 import { EmptyBodyController, Request, defaultEmptyReaderImplementation } from "@core";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 
 describe("defaultEmptyReaderImplementation", () => {
@@ -20,6 +22,11 @@ describe("defaultEmptyReaderImplementation", () => {
 			bodyReader,
 		});
 
-		await expect(request.getBody()).resolves.toStrictEqual(DEither.success(undefined));
+		const undefinedParseFunction = DDataStructure.undefined().asyncParse;
+		await expect(
+			request
+				.getBodyResult()
+				.extract(DCommon.forward, undefinedParseFunction),
+		).resolves.toStrictEqual(DEither.right("parse-success", undefined));
 	});
 });

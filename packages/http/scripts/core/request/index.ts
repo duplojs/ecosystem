@@ -1,9 +1,7 @@
-import * as DEither from "@duplojs/lang/either";
 import type * as DObject from "@duplojs/lang/object";
 import { createKind } from "../kind";
-import { type BodyReader } from "./bodyController";
+import { type BodyResult, type BodyReader } from "./bodyController";
 import * as DKind from "@duplojs/lang/kind";
-import * as DCommon from "@duplojs/lang/common";
 import type * as DPath from "@duplojs/lang/path";
 
 export * from "./bodyController";
@@ -58,7 +56,7 @@ export class Request extends DKind.parentClass(
 
 	public bodyReader: BodyReader;
 
-	private bodyResult?: DCommon.MaybePromise<DEither.Success | DEither.Error> = undefined;
+	private bodyResult?: BodyResult = undefined;
 
 	public filesAttache: readonly (string & DPath.Path)[] | undefined = undefined;
 
@@ -95,31 +93,13 @@ export class Request extends DKind.parentClass(
 		}
 	}
 
-	public getBody(): DCommon.MaybePromise<
-		| DEither.Success
-		| DEither.Error
-	> {
+	public getBodyResult(): BodyResult {
 		if (this.bodyResult !== undefined) {
 			return this.bodyResult;
 		}
-		const externalPromise = DCommon.createExternalPromise<
-			| DEither.Success
-			| DEither.Error
-		>();
 
-		this.bodyResult = externalPromise.promise;
+		this.bodyResult = this.bodyReader.getResult(this);
 
-		return this.bodyReader
-			.read(this)
-			.then((result) => {
-				externalPromise.resolve(result);
-				this.bodyResult = result;
-				return result;
-			})
-			.catch((error) => {
-				const result = DEither.error(error);
-				externalPromise.resolve(result);
-				return result;
-			});
+		return this.bodyResult;
 	}
 }

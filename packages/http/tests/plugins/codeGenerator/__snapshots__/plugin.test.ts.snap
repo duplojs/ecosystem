@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`plugin implementation > generate API type 1`] = `
-"import { TheDate, SerializedTheDate, TheTime, SerializedTheTime } from "@duplojs/lang/chrono";
+"import * as DChrono from "@duplojs/lang/chrono";
 
 export type Routes = {
     readonly method: "GET";
@@ -11,8 +11,8 @@ export type Routes = {
         readonly age: number;
     };
     readonly headers: {
-        readonly header1: SerializedTheDate | TheDate;
-        readonly header2: SerializedTheTime | TheTime;
+        readonly header1: DChrono.TheDate;
+        readonly header2: DChrono.TheTime;
     };
     readonly responses: {
         readonly code: "422";
@@ -64,20 +64,22 @@ exports[`plugin implementation > generate data parser files from identified rout
 
 exports[`plugin implementation > generate data parser files from identified route data parsers 3`] = `
 [
-  "generated/childParserDataStructure.ts",
+  "generated/childParserStructure.ts",
   "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const childParserDataStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);",
+export const childParserStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);",
 ]
 `;
 
 exports[`plugin implementation > generate data parser files from identified route data parsers 4`] = `
 [
-  "generated/bodyParserDataStructure.ts",
+  "generated/bodyParserStructure.ts",
   "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const bodyParserDataStructure = DDataStructure.ObjectStructure({
-    child: childParserDataStructure,
+import { childParserStructure } from "./childParserStructure";
+
+export const bodyParserStructure = DDataStructure.ObjectStructure({
+    child: childParserStructure,
     count: DDataStructure.TypeStructure(DDataStructure.NumberType(), [])
 }, []);",
 ]
@@ -86,8 +88,8 @@ export const bodyParserDataStructure = DDataStructure.ObjectStructure({
 exports[`plugin implementation > generate data parser files from identified route data parsers 5`] = `
 [
   "generated/index.ts",
-  "export * from "./childParserDataStructure";
-export * from "./bodyParserDataStructure";",
+  "export * from "./childParserStructure";
+export * from "./bodyParserStructure";",
 ]
 `;
 
@@ -122,16 +124,16 @@ exports[`plugin implementation > generate data parser files only from explicit d
 
 exports[`plugin implementation > generate data parser files only from explicit data parsers when disabledFromRoute is enabled 3`] = `
 [
-  "generated/explicitParserDataStructure.ts",
+  "generated/explicitParserStructure.ts",
   "import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-export const explicitParserDataStructure = DDataStructure.TypeStructure(DDataStructure.NumberType(), []);",
+export const explicitParserStructure = DDataStructure.TypeStructure(DDataStructure.NumberType(), []);",
 ]
 `;
 
 exports[`plugin implementation > generate data parser files only from explicit data parsers when disabledFromRoute is enabled 4`] = `
 [
   "generated/index.ts",
-  "export * from "./explicitParserDataStructure";",
+  "export * from "./explicitParserStructure";",
 ]
 `;

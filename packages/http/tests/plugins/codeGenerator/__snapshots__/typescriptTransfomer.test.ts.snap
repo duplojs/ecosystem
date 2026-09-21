@@ -1,15 +1,3 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`typescript transformer > date 1`] = `
-"import { TheDate, SerializedTheDate } from "@duplojs/lang/chrono";
-
-export type ArrayString = readonly (SerializedTheDate | TheDate)[];"
-`;
-
 exports[`typescript transformer > file 1`] = `"export type ArrayString = readonly File[];"`;
-
-exports[`typescript transformer > time 1`] = `
-"import { TheTime, SerializedTheTime } from "@duplojs/lang/chrono";
-
-export type ArrayString = readonly (SerializedTheTime | TheTime)[];"
-`;

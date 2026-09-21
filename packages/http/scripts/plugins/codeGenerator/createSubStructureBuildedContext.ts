@@ -14,7 +14,7 @@ export function createSubStructureBuildedContext(
 		DGenerator.map(
 			([structure, contextValue]): SubBuildedContext => {
 				const subImportContext: DataStructureToTypescript.MapImportContext = new Map(
-					buildedContext.context.get(structure)?.import,
+					contextValue.import,
 				);
 
 				DCommon.pipe(
@@ -47,7 +47,15 @@ export function createSubStructureBuildedContext(
 
 				return {
 					identifier: contextValue.identifier.text,
-					context: new Map([[structure, contextValue]]),
+					context: new Map([
+						[
+							structure,
+							{
+								...contextValue,
+								import: subImportContext,
+							},
+						],
+					]),
 					toTypescript: {
 						context: new Map(),
 						importContext: new Map(),

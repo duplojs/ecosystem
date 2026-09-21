@@ -14,7 +14,7 @@ export async function readRequestText<
 	onEnd?: (result: string) => GenericOutputValue,
 ): Promise<
 	| DEither.Left<"server-error", unknown>
-	| DEither.Error<Error>
+	| DEither.Left<"reader-error", Error>
 	| GenericOutputValue
 > {
 	let result = "";
@@ -23,7 +23,7 @@ export async function readRequestText<
 	try {
 		for await (const chunk of request) {
 			if (!(chunk instanceof Buffer) && typeof chunk !== "string") {
-				return DEither.error(new BodyParseWrongChunkReceived("Buffer or String.", chunk));
+				return DEither.left("reader-error", new BodyParseWrongChunkReceived("Buffer or String.", chunk));
 			}
 
 			size += chunk instanceof Buffer
@@ -31,7 +31,7 @@ export async function readRequestText<
 				: Buffer.byteLength(chunk);
 
 			if (size > params.maxBodySize) {
-				return DEither.error(new BodySizeExceedsLimitError(params.maxBodySize));
+				return DEither.left("reader-error", new BodySizeExceedsLimitError(params.maxBodySize));
 			}
 
 			result += chunk.toString();

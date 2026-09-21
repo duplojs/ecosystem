@@ -163,7 +163,7 @@ describe("routeToStructure", () => {
 		).toMatchSnapshot();
 
 		expect(
-			bodyAsFormData(DSDataStructure.file(), { transformer: () => DEither.left("test") } as never),
-		).toStrictEqual(DEither.left("test"));
+			bodyAsFormData(DSDataStructure.file(), { transformer: () => DEither.left("test", undefined) } as never),
+		).toStrictEqual(DEither.left("test", undefined));
 	});
 });

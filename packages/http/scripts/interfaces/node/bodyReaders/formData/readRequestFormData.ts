@@ -57,7 +57,7 @@ export async function readRequestFormData<
 ): Promise<
 	| DEither.Left<"server-error", unknown>
 	| GenericOutputHeader
-	| DEither.Error<Error>
+	| DEither.Left<"reader-error", Error>
 	| GenericValueAccumulator
 > {
 	const boundary = DString.extract(
@@ -66,7 +66,7 @@ export async function readRequestFormData<
 	)?.namedGroups?.boundary;
 
 	if (!boundary) {
-		return DEither.error(new BodyParseFormDataError("Wrong boundary."));
+		return DEither.left("reader-error", new BodyParseFormDataError("Wrong boundary."));
 	}
 
 	let valueAccumulator: GenericValueAccumulator = firstValueAccumulator;
@@ -201,9 +201,9 @@ export async function readRequestFormData<
 		return true;
 	};
 
-	const treatError = async(error: Error): Promise<DEither.Error<Error>> => {
+	const treatError = async(error: Error): Promise<DEither.Left<"reader-error", Error>> => {
 		await currentStream?.onError?.(error, valueAccumulator);
-		return DEither.error(error);
+		return DEither.left("reader-error", error);
 	};
 
 	try {

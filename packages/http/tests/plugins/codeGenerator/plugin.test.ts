@@ -9,7 +9,7 @@ import { codeGeneratorPlugin } from "@plugin-codeGenerator";
 describe("plugin implementation", () => {
 	setEnvironment("TEST");
 	const spy = vi.fn((path: string, content: string) => Promise.resolve(DEither.ok()));
-	const spyExists = vi.fn<DCommon.AnyFunction>((path: string) => Promise.resolve(DEither.left("file-system-exists")));
+	const spyExists = vi.fn<DCommon.AnyFunction>((path: string) => Promise.resolve(DEither.left("file-system-exists", undefined)));
 	const spyMakeDirectory = vi.fn((path: string) => Promise.resolve(DEither.ok()));
 	const spyRemove = vi.fn((path: string, params?: { recursive?: boolean }) => Promise.resolve(DEither.ok()));
 	TESTImplementation.set("writeTextFile", spy);

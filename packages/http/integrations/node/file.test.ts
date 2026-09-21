@@ -65,7 +65,7 @@ describe("file", async() => {
 		formData.append("name", "nodeTest.generate");
 		formData.append(
 			"myFile/*\\[0]",
-			await createFileToSend(DPath.declarePath("files/fakeFiles/2mb.jpg"), "//😄.jpg"),
+			await createFileToSend(DPath.declarePath("files/fakeFiles/2mb.jpg"), "😄.jpg"),
 		);
 
 		await expect(

@@ -6,6 +6,7 @@ import * as DEither from "@duplojs/lang/either";
 import { type HttpServerParams } from "@core/types";
 import { ParseJsonError, WrongContentTypeError } from "@core/errors";
 import * as DString from "@duplojs/lang/string";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 export * from "./readRequestText";
 
 export function createTextBodyReaderImplementation(serverParams: HttpServerParams) {
@@ -17,7 +18,8 @@ export function createTextBodyReaderImplementation(serverParams: HttpServerParam
 				!request.headers["content-type"]?.includes("application/json")
 				&& !request.headers["content-type"]?.includes("text/plain")
 			) {
-				return DEither.error(
+				return DEither.left(
+					"reader-error",
 					new WrongContentTypeError(
 						"application/json or text/plain",
 						DString.join(DArray.coalescing(request.headers["content-type"] ?? ""), " "),
@@ -35,7 +37,8 @@ export function createTextBodyReaderImplementation(serverParams: HttpServerParam
 								JSON.parse(result) as DCommon.Json,
 							);
 						} catch (error) {
-							return DEither.error(
+							return DEither.left(
+								"reader-error",
 								new ParseJsonError(result, error),
 							);
 						}
@@ -56,5 +59,6 @@ export function createTextBodyReaderImplementation(serverParams: HttpServerParam
 
 			return result;
 		},
+		DDataStructure.codecsJson,
 	);
 }

@@ -1,4 +1,5 @@
-import { type BodyControllerParams, controlBodyAsText, createBodyController, WrongBodyReaderImplementationError } from "@core";
+import { type BodyControllerParams, bodyResultKind, controlBodyAsText, createBodyController, WrongBodyReaderImplementationError } from "@core";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 
@@ -45,14 +46,55 @@ describe("createBodyController", () => {
 		expect(new WrongBodyReaderImplementationError("test", {} as never)).instanceOf(Error);
 	});
 
-	it("reader", async() => {
+	it("reader", () => {
 		const bodyController = BodyController.create({ test: "" });
 		const spy = vi.fn();
 		const bodyReaderImplementation = BodyController.createReaderImplementation(spy);
 		const reader = bodyController.tryToCreateReader(bodyReaderImplementation);
 		DCommon.asserts(reader, DEither.isRight);
-		await DEither.unwrapRight(reader).read({} as never);
+		const result = DEither.unwrapRight(reader).getResult({} as never);
 		expect(spy).toHaveBeenCalledTimes(1);
+
+		expect(result).toStrictEqual(
+			expect.objectContaining({ [bodyResultKind.runTimeKey]: null }),
+		);
+	});
+
+	it("result right", async() => {
+		const bodyController = BodyController.create({ test: "" });
+		const bodyReaderImplementation = BodyController.createReaderImplementation(
+			() => Promise.resolve(DEither.success("1")),
+			DDataStructure.codecsString,
+		);
+		const reader = bodyController.createReaderOrThrow(bodyReaderImplementation);
+		const bodyResult = reader.getResult({} as never);
+
+		const numberParseFunction = DDataStructure.number().asyncParse;
+		const result1 = await bodyResult.extract(DCommon.forward, numberParseFunction);
+		expect(result1).toStrictEqual(
+			DEither.right("parse-success", 1),
+		);
+
+		const undefinedParseFunction = DDataStructure.undefined().asyncParse;
+		const result2 = await bodyResult.extract(DCommon.forward, undefinedParseFunction);
+		expect(result2).toStrictEqual(
+			DEither.left("parse-error", expect.any(DDataStructure.Error)),
+		);
+	});
+
+	it("result left", async() => {
+		const bodyController = BodyController.create({ test: "" });
+		const bodyReaderImplementation = BodyController.createReaderImplementation(
+			() => Promise.resolve(DEither.left("reader-error", new Error())),
+		);
+		const reader = bodyController.createReaderOrThrow(bodyReaderImplementation);
+		const bodyResult = reader.getResult({} as never);
+
+		const stringParseFunction = DDataStructure.string().asyncParse;
+		const result1 = await bodyResult.extract(DCommon.forward, stringParseFunction);
+		expect(result1).toStrictEqual(
+			DEither.left("reader-error", expect.any(Error)),
+		);
 	});
 
 	it("is", () => {

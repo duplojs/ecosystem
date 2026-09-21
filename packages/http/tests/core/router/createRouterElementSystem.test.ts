@@ -1,5 +1,7 @@
 import * as DEither from "@duplojs/lang/either";
 import { Request, ResponseContract, RouterBuildError, createHandlerStep, createHub, defaultCheckerStepFunctionBuilder, defaultCutStepFunctionBuilder, defaultExtractStepFunctionBuilder, defaultHandlerStepFunctionBuilder, defaultProcessStepFunctionBuilder, defaultRouteFunctionBuilder, stepKind, createRouterElementSystem } from "@core";
+import * as DCommon from "@duplojs/lang/common";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 
 describe("createRouterElementSystem", () => {
 	function makeBuildParams() {
@@ -28,10 +30,18 @@ describe("createRouterElementSystem", () => {
 
 	it("build system route with empty body reader", async() => {
 		const spy = vi.fn();
+		const parseFunction = DDataStructure.undefined().asyncParse;
 		const handlerStep = createHandlerStep({
 			responseContract: ResponseContract.noContent("system.route"),
 			theFunction: async(__, { request, response }) => {
-				spy(await request.getBody());
+				spy(
+					await request
+						.getBodyResult()
+						.extract(
+							DCommon.forward,
+							parseFunction,
+						),
+				);
 				return response("system.route", undefined as never);
 			},
 			metadata: [],
@@ -57,7 +67,7 @@ describe("createRouterElementSystem", () => {
 			}),
 		);
 
-		expect(spy).toHaveBeenCalledWith(DEither.success(undefined));
+		expect(spy).toHaveBeenCalledWith(DEither.right("parse-success", undefined));
 	});
 
 	it("throw RouterBuildError when handler step cannot be build", async() => {

@@ -27,6 +27,15 @@ export interface Left<
 
 export function left<
 	GenericInformation extends string,
+>(
+	information: GenericInformation,
+): Left<
+	GenericInformation,
+	undefined
+>;
+
+export function left<
+	GenericInformation extends string,
 	const GenericValue extends unknown,
 >(
 	information: GenericInformation,
@@ -38,7 +47,7 @@ export function left<
 
 export function left(
 	information: string,
-	value: unknown,
+	value: unknown = undefined,
 ) {
 	return {
 		[leftKind.runTimeKey]: null,

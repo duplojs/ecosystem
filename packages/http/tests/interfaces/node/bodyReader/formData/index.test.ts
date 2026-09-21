@@ -58,7 +58,7 @@ describe("createFormDataBodyReaderImplementation", () => {
 			maxIndexArray: 2500,
 		});
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(WrongContentTypeError);
 	});
 
@@ -81,7 +81,7 @@ describe("createFormDataBodyReaderImplementation", () => {
 			maxIndexArray: 2500,
 		});
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(WrongContentTypeError);
 	});
 
@@ -108,7 +108,7 @@ describe("createFormDataBodyReaderImplementation", () => {
 			maxIndexArray: 2500,
 		});
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(WrongContentTypeError);
 	});
 
@@ -291,7 +291,7 @@ describe("createFormDataBodyReaderImplementation", () => {
 			maxIndexArray: 2500,
 		});
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(spyStreamEnd).toHaveBeenCalled();
 	});
 

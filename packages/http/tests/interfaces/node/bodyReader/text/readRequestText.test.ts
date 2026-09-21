@@ -57,7 +57,7 @@ describe("readRequestText", () => {
 
 		const result = await readRequestText(request.raw.request, { maxBodySize: 100 });
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodyParseWrongChunkReceived);
 		expect(destroySpy).toHaveBeenCalled();
 	});
@@ -74,7 +74,7 @@ describe("readRequestText", () => {
 
 		const result = await readRequestText(request.raw.request, { maxBodySize: 3 });
 
-		expect(DEither.hasInformation(result, "error")).toBe(true);
+		expect(DEither.hasInformation(result, "reader-error")).toBe(true);
 		expect(DEither.unwrapLeft(result)).toBeInstanceOf(BodySizeExceedsLimitError);
 		expect(destroySpy).toHaveBeenCalled();
 	});

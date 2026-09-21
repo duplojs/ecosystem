@@ -11,6 +11,7 @@ import { WrongContentTypeError } from "@core/errors";
 import { open } from "node:fs/promises";
 import * as DPath from "@duplojs/lang/path";
 import * as DString from "@duplojs/lang/string";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 
 export * from "./error";
 export * from "./readRequestFormData";
@@ -38,7 +39,7 @@ export function createFormDataBodyReaderImplementation(serverParams: HttpServerP
 					}),
 				};
 			} catch (error) {
-				if ((error as NodeJS.ErrnoException).code !== "EEXIST" || --remainingAttempts === 0) {
+				if ((error as NodeJS.ErrnoException)?.code !== "EEXIST" || --remainingAttempts === 0) {
 					throw error;
 				}
 			}
@@ -65,7 +66,8 @@ export function createFormDataBodyReaderImplementation(serverParams: HttpServerP
 	return FormDataBodyController.createReaderImplementation(
 		async(request, params) => {
 			if (!request.headers["content-type"]?.includes("multipart/form-data")) {
-				return DEither.error(
+				return DEither.left(
+					"reader-error",
 					new WrongContentTypeError(
 						"multipart/form-data",
 						DString.join(DArray.coalescing(request.headers["content-type"] ?? ""), " "),
@@ -164,5 +166,6 @@ export function createFormDataBodyReaderImplementation(serverParams: HttpServerP
 
 			return DEither.success(DObject.fromEntries(result.entries()));
 		},
+		DDataStructure.codecsString,
 	);
 }

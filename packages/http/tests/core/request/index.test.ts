@@ -1,4 +1,4 @@
-import { createKind, Request } from "@core";
+import { bodyResultKind, createKind, Request } from "@core";
 import * as DKind from "@duplojs/lang/kind";
 import * as DEither from "@duplojs/lang/either";
 import { createBodyReader } from "@test-utils/bodyReader";
@@ -49,7 +49,7 @@ describe("Request", () => {
 		expect((new Request({} as any)) instanceof CloneRequest).toBe(true);
 	});
 
-	it("getBody", async() => {
+	it("getBodyResult", () => {
 		const spy = vi.fn(() => "superBody");
 		const bodyRequest = new Request({
 			method: "GET",
@@ -64,30 +64,16 @@ describe("Request", () => {
 			bodyReader: createBodyReader(spy),
 		});
 
-		const body = bodyRequest.getBody();
-		void bodyRequest.getBody();
-		void bodyRequest.getBody();
-		await expect(bodyRequest.getBody()).resolves.toStrictEqual(DEither.success("superBody"));
-		await expect(body).resolves.toStrictEqual(DEither.success("superBody"));
-		expect(bodyRequest.getBody()).toStrictEqual(DEither.success("superBody"));
+		const bodyResult = bodyRequest.getBodyResult();
+		void bodyRequest.getBodyResult();
+		void bodyRequest.getBodyResult();
+		expect(bodyRequest.getBodyResult()).toStrictEqual(
+			expect.objectContaining({ [bodyResultKind.runTimeKey]: null }),
+		);
+		expect(bodyResult).toStrictEqual(
+			expect.objectContaining({ [bodyResultKind.runTimeKey]: null }),
+		);
+		expect(bodyRequest.getBodyResult()).toBe(bodyResult);
 		expect(spy).toHaveBeenCalledTimes(1);
-	});
-
-	it("getBody error", async() => {
-		const spy = vi.fn(() => Promise.reject(new Error("boom")));
-		const bodyRequest = new Request({
-			method: "GET",
-			headers: { host: "example.com" },
-			url: "https://example.com/path?query=1",
-			host: "example.com",
-			origin: "https://example.com",
-			matchedPath: null,
-			params: {},
-			path: "/path",
-			query: { query: "1" },
-			bodyReader: createBodyReader(spy),
-		});
-
-		await expect(bodyRequest.getBody()).resolves.toStrictEqual(DEither.error(new Error("boom")));
 	});
 });

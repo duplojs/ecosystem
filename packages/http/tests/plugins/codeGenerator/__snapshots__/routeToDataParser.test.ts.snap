@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`routeToStructure > bodyAsFormData 1`] = `
-"import { TheFormData } from "@duplojs/lang";
+"import * as DCommon from "@duplojs/lang/common";
 
-export type ArrayString = TheFormData<readonly File[]>;"
+export type ArrayString = DCommon.TheFormData<readonly File[]>;"
 `;
