@@ -25,6 +25,7 @@ describe("createRouterElementSystem", () => {
 				defaultProcessStepFunctionBuilder,
 			],
 			defaultExtractContract: hub.defaultExtractContract,
+			defaultCodecs: {},
 		};
 	}
 

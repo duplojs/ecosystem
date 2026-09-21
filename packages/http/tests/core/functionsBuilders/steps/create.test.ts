@@ -36,6 +36,7 @@ describe("createStepFunctionBuilder", () => {
 				buildStep: () => void undefined as never,
 				environment: "DEV",
 				defaultExtractContract,
+				defaultCodecs: {},
 			},
 		);
 
@@ -55,6 +56,7 @@ describe("createStepFunctionBuilder", () => {
 				buildStep: () => void undefined as never,
 				environment: "DEV",
 				defaultExtractContract,
+				defaultCodecs: {},
 			},
 		);
 

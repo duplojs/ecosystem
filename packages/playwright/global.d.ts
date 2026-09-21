@@ -11,6 +11,6 @@ interface URL {
 
 declare let URL: {
 	prototype: URL;
-	new (input: string | { toString: () => string; }, base?: string | URL): URL
+	new (input: string | { toString(): string }, base?: string | URL): URL;
 };
 

@@ -4,6 +4,7 @@ import { type BuildedStep, type Steps } from "../../steps/types";
 import { type HookRouteLifeCycle } from "@core/route";
 import { type ResponseContract } from "@core/response";
 import { type Environment } from "@core/types";
+import { type ExtractShapeCodecs } from "@core/steps";
 
 export interface BuildStepResult {
 	readonly buildedFunction: BuildedStep;
@@ -29,6 +30,8 @@ export interface StepFunctionBuilderParams {
 	readonly environment: Environment;
 
 	readonly defaultExtractContract: ResponseContract.Contract;
+
+	readonly defaultCodecs: ExtractShapeCodecs;
 }
 
 export function createStepFunctionBuilder<

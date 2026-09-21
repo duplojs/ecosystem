@@ -6,7 +6,7 @@ import * as DObject from "@duplojs/lang/object";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DPattern from "@duplojs/lang/pattern";
 import { type HookHubLifeCycle } from "./hooks";
-import { type HandlerStepFunctionParams, type HandlerStep, createHandlerStep } from "@core/steps";
+import { type HandlerStepFunctionParams, type HandlerStep, createHandlerStep, type ExtractShapeCodecs } from "@core/steps";
 import { type BodyController, type BodyReaderImplementation, Request } from "@core/request";
 import { type ClientErrorResponseCode, type ResponseContract } from "@core/response";
 import { defaultNotfoundHandler } from "./defaultNotfoundHandler";
@@ -19,6 +19,7 @@ import { defaultMalformedUrlHandler } from "./defaultMalformedUrlHandler";
 import { defaultEmptyReaderImplementation } from "./defaultEmptyReaderImplementation";
 import { type createRouterFunctionBuilder } from "@core/functionsBuilders/router";
 import * as DKind from "@duplojs/lang/kind";
+import { defaultExtractShapeCodecs } from "./defaultExtractShapeCodecs";
 
 export * from "./hooks";
 export * from "./defaultNotfoundHandler";
@@ -26,6 +27,7 @@ export * from "./defaultExtractContract";
 export * from "./defaultBodyController";
 export * from "./defaultMalformedUrlHandler";
 export * from "./defaultEmptyReaderImplementation";
+export * from "./defaultExtractShapeCodecs";
 
 export const hubKind = createKind("hub");
 
@@ -77,6 +79,8 @@ export class Hub<
 	public defaultBodyController: BodyController = defaultBodyController;
 
 	public malformedUrlHandler: HandlerStep = defaultMalformedUrlHandler;
+
+	public defaultExtractShapeCodecs = defaultExtractShapeCodecs;
 
 	private constructor(
 		public config: GenericConfig,
@@ -254,6 +258,17 @@ export class Hub<
 			theFunction: (__, params) => theFunction(params),
 			metadata: [],
 		});
+
+		return this;
+	}
+
+	public setDefaultExtractShapeCodecs(
+		defaultCodecs: ExtractShapeCodecs,
+	) {
+		this.defaultExtractShapeCodecs = DObject.override(
+			this.defaultExtractShapeCodecs,
+			defaultCodecs,
+		);
 
 		return this;
 	}

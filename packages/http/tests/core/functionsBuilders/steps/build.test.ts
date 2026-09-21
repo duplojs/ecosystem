@@ -37,6 +37,7 @@ describe("buildStepFunction", () => {
 				environment: "DEV",
 				stepFunctionBuilders: [stepFunctionBuilders],
 				defaultExtractContract,
+				defaultCodecs: {},
 			},
 		);
 
@@ -56,6 +57,7 @@ describe("buildStepFunction", () => {
 				environment: "DEV",
 				stepFunctionBuilders: [stepFunctionBuilders],
 				defaultExtractContract,
+				defaultCodecs: {},
 			},
 		);
 

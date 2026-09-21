@@ -14,7 +14,7 @@ type Extractor = (request: Request, floor: Floor) => DCommon.MaybePromise<Predic
 
 export const defaultExtractStepFunctionBuilder = createStepFunctionBuilder(
 	extractStepKind.has,
-	(step, { success, environment, defaultExtractContract }) => {
+	(step, { success, environment, defaultExtractContract, defaultCodecs }) => {
 		const {
 			shape,
 			responseContract: stepResponseContract,
@@ -71,14 +71,14 @@ export const defaultExtractStepFunctionBuilder = createStepFunctionBuilder(
 			if (structure.isAsynchronous()) {
 				const parseFunction = structure.asyncParse;
 				return async(request: Request, floor: Floor) => {
-					const result = await parseFunction(getValue(request[key]));
+					const result = await parseFunction(getValue(request[key]), defaultCodecs[key]);
 					return treatResult(result, floor);
 				};
 			}
 
 			const parseFunction = structure.parse;
 			return (request: Request, floor: Floor) => {
-				const result = parseFunction(getValue(request[key]));
+				const result = parseFunction(getValue(request[key]), defaultCodecs[key]);
 				return treatResult(result, floor);
 			};
 		}

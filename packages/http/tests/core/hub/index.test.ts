@@ -1,4 +1,5 @@
-import { type HookRouteLifeCycle, defaultBodyController, createHub, defaultCheckerStepFunctionBuilder, defaultExtractContract, defaultNotfoundHandler, defaultRouteFunctionBuilder, hubKind, Request, ResponseContract, type HookHubLifeCycle, TextBodyController, controlBodyAsText, defaultMalformedUrlHandler, defaultEmptyReaderImplementation } from "@core";
+import { type HookRouteLifeCycle, defaultBodyController, createHub, defaultCheckerStepFunctionBuilder, defaultExtractContract, defaultNotfoundHandler, defaultRouteFunctionBuilder, hubKind, Request, ResponseContract, type HookHubLifeCycle, TextBodyController, controlBodyAsText, defaultMalformedUrlHandler, defaultEmptyReaderImplementation, defaultExtractShapeCodecs } from "@core";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 import { testRoute } from "@test-utils/route";
 
 describe("hub", () => {
@@ -18,6 +19,7 @@ describe("hub", () => {
 		stepFunctionBuilders: [],
 		bodyReaderImplementations: [defaultEmptyReaderImplementation],
 		routerFunctionBuilder: undefined,
+		defaultExtractShapeCodecs: defaultExtractShapeCodecs,
 	};
 
 	it("hub shape", () => {
@@ -303,6 +305,22 @@ describe("hub", () => {
 		expect({ ...hub }).toStrictEqual({
 			...baseHub,
 			defaultBodyController: bodyController,
+		});
+	});
+
+	it("hub set default shape codecs", () => {
+		const codecs = DDataStructure.createCodecs({});
+		const hub = createHub({
+			environment: "DEV",
+		})
+			.setDefaultExtractShapeCodecs({ query: codecs });
+
+		expect({ ...hub }).toStrictEqual({
+			...baseHub,
+			defaultExtractShapeCodecs: {
+				...baseHub.defaultExtractShapeCodecs,
+				query: codecs,
+			},
 		});
 	});
 });

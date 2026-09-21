@@ -83,7 +83,10 @@ export const codecsString = createCodecs({
 	),
 	undefined: createCodec(
 		FundamentalType.TheUndefined,
-		(data) => data === "undefined",
+		(data) => (
+			data === undefined
+			|| data === "undefined"
+		),
 		DString.to,
 		DCommon.justReturn(undefined),
 	),

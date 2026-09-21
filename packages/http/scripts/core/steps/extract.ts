@@ -46,6 +46,16 @@ export type ExtractShape<
 	}
 >;
 
+export type ExtractShapeCodecs = Partial<
+	Record<
+		Exclude<
+			keyof ExtractShape,
+			"body"
+		>,
+		DDataStructure.Codecs
+	>
+>;
+
 export interface ExtractStepDefinition {
 	readonly shape: ExtractShape;
 	readonly responseContract?: ResponseContract.Contract<

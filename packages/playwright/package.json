@@ -46,9 +46,6 @@
     "@duplojs/code-config": "workspace:*",
     "@types/node": "24.13.3"
   },
-  "workspaces": [
-    "integrations"
-  ],
   "keywords": [
     "test",
     "playwright",

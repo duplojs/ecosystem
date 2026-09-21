@@ -51,6 +51,7 @@ export async function createRouter(hub: Hub): Promise<Router> {
 		stepFunctionBuilders,
 		routeFunctionBuilders,
 		defaultExtractContract: hub.defaultExtractContract,
+		defaultCodecs: hub.defaultExtractShapeCodecs,
 	};
 
 	const routerElementWrapper = await DGenerator.asyncReduce(

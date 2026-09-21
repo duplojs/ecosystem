@@ -37,6 +37,7 @@ describe("buildStepFunction", () => {
 				routeFunctionBuilders: [routeFunctionBuilders],
 				globalHooksRouteLifeCycle: [],
 				defaultExtractContract,
+				defaultCodecs: {},
 			},
 		);
 
@@ -55,6 +56,7 @@ describe("buildStepFunction", () => {
 				routeFunctionBuilders: [routeFunctionBuilders],
 				globalHooksRouteLifeCycle: [],
 				defaultExtractContract,
+				defaultCodecs: {},
 			},
 		);
 

@@ -5,6 +5,7 @@ import { type RouteFunctionBuilderParams, type BuildRouteNotSupportEither, type 
 import { type HookRouteLifeCycle, type Route } from "@core/route";
 import { type ResponseContract } from "@core/response";
 import { type Environment } from "@core/types";
+import { type ExtractShapeCodecs } from "@core/steps";
 
 export interface BuildRouteFunctionParams {
 	readonly routeFunctionBuilders: readonly ReturnType<typeof createRouteFunctionBuilder>[];
@@ -12,6 +13,7 @@ export interface BuildRouteFunctionParams {
 	readonly stepFunctionBuilders: readonly ReturnType<typeof createStepFunctionBuilder>[];
 	readonly environment: Environment;
 	readonly defaultExtractContract: ResponseContract.Contract;
+	readonly defaultCodecs: ExtractShapeCodecs;
 }
 
 export function buildRouteFunction(

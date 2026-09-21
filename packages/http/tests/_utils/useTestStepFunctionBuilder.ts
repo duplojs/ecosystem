@@ -16,6 +16,7 @@ export async function useTestStepFunctionBuilder(
 				defaultHandlerStepFunctionBuilder,
 			],
 			defaultExtractContract: defaultExtractContract,
+			defaultCodecs: {},
 			...params,
 		},
 	);
