@@ -8,7 +8,7 @@ import * as DEither from "@duplojs/lang/either";
 import * as DString from "@duplojs/lang/string";
 import * as DArray from "@duplojs/lang/array";
 import { UnexpectedCodeResponseError, UnexpectedInformationResponseError, UnexpectedResponseError, UnexpectedResponseTypeError, type RequestErrorContent } from "./unexpectedResponseError";
-import { type PromiseRequestParams, type Hooks, type NotPredictedResponseHook, type ErrorHook, type ClientEventsResponse, type AllClientResponse, type AllNotPredictedClientResponse, type ClientResponse, type ClientEventsResponseHandler, type ServerEvent, type ClientStreamResponseHandler, type ClientStreamResponse, type ResponseCode } from "./types";
+import { type PromiseRequestParams, type Hooks, type NotPredictedResponseHook, type ErrorHook, type ClientEventsResponse, type AllClientResponse, type AllNotPredictedClientResponse, type ClientResponse, type ClientEventsResponseHandler, type ServerEvent, type ClientStreamResponseHandler, type ClientStreamResponse, type ResponseToEitherByInformation, type ResponseToEitherByCode } from "./types";
 import { isClientEventsResponse, makeClientEventsResponse } from "./serverSentEvents";
 import { findResponseFromCacheStore, saveResponseInCacheStore } from "./clientCache";
 import { isClientStreamResponse, makeClientStreamResponse } from "./stream";
@@ -30,19 +30,31 @@ type MaybeWantedResponse<
 	GenericWantedClientResponse extends AllClientResponse = AllClientResponse,
 	GenericUnexpectClientResponse extends AllClientResponse = AllClientResponse,
 > = (
-		| DEither.Right<
-			"response",
-			GenericWantedClientResponse
-		>
-		| DEither.Left<
-			"unexpect-response",
-			GenericUnexpectClientResponse
-		>
-		| DEither.Left<
-			"request-error",
-			RequestErrorContent
-		>
+	| DEither.Right<
+		"response",
+		GenericWantedClientResponse
+	>
+	| DEither.Left<
+		"unexpect-response",
+		GenericUnexpectClientResponse
+	>
+	| DEither.Left<
+		"request-error",
+		RequestErrorContent
+	>
 );
+
+type ForbiddenMoreKey<
+	GenericInput extends ClientResponse,
+	GenericSelector extends Record<string, boolean>,
+	GenericProperty extends "information" | "code",
+> = DObject.ForbiddenKey<
+	GenericSelector,
+	Exclude<
+		`${Extract<keyof GenericSelector, string | number>}`,
+		`${GenericInput[GenericProperty]}`
+	>
+>;
 
 export class PromiseRequest<
 	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
@@ -467,11 +479,11 @@ export class PromiseRequest<
 	): Promise<
 		MaybeWantedResponse<
 			GenericResponse,
-				| DCommon.NeverCoalescing<
-					Exclude<GenericClientResponse, GenericResponse>,
-					AllClientResponse<GenericHookParams>
-				>
-				| AllNotPredictedClientResponse<GenericHookParams>
+			| DCommon.NeverCoalescing<
+				Exclude<GenericClientResponse, GenericResponse>,
+				AllClientResponse<GenericHookParams>
+			>
+			| AllNotPredictedClientResponse<GenericHookParams>
 		>
 	> {
 		const formattedInformation: readonly string[] = DArray.coalescing(information);
@@ -525,7 +537,7 @@ export class PromiseRequest<
 				| AllNotPredictedClientResponse<GenericHookParams>
 		>
 	> {
-		const formattedCode: readonly ResponseCode[] = DArray.coalescing(code);
+		const formattedCode: readonly `${number}`[] = DArray.coalescing(code);
 
 		return this.then(
 			DEither.whenIsRight(
@@ -829,18 +841,21 @@ export class PromiseRequest<
 			| { information: DObject.GetPropsWithValue<GenericSelector, boolean> }
 		>,
 	>(
-		selector: GenericSelector,
+		selector: (
+			& GenericSelector
+			& ForbiddenMoreKey<GenericClientResponse, GenericSelector, "information">
+		),
 	): Promise<
 		MaybeWantedResponse<
 			DCommon.NeverCoalescing<
 				GenericResponse,
 				AllClientResponse<GenericHookParams>
 			>,
-				| DCommon.NeverCoalescing<
-					GenericUnexpectedResponse,
-					AllClientResponse<GenericHookParams>
-				>
-				| AllNotPredictedClientResponse<GenericHookParams>
+			| DCommon.NeverCoalescing<
+				GenericUnexpectedResponse,
+				AllClientResponse<GenericHookParams>
+			>
+			| AllNotPredictedClientResponse<GenericHookParams>
 		>
 	> {
 		return this.then(
@@ -1093,7 +1108,10 @@ export class PromiseRequest<
 			| { information: DObject.GetPropsWithValue<GenericSelector, boolean> }
 		>,
 	>(
-		selector: GenericSelector,
+		selector: (
+			& GenericSelector
+			& ForbiddenMoreKey<GenericClientResponse, GenericSelector, "information">
+		),
 	): Promise<
 		DCommon.NeverCoalescing<
 			GenericResponse,
@@ -1101,7 +1119,7 @@ export class PromiseRequest<
 		>
 	> {
 		return this
-			.iSelectExpectedResponseByInformation(selector)
+			.iSelectExpectedResponseByInformation(selector as never)
 			.then(
 				(maybeResponse) => {
 					if (DEither.isRight(maybeResponse)) {
@@ -1113,6 +1131,91 @@ export class PromiseRequest<
 					);
 				},
 			) as never;
+	}
+
+	public toEitherByInformation<
+		const GenericSelector extends Record<
+			Extract<GenericClientResponse["information"], string>,
+			boolean
+		>,
+	>(
+		selector: (
+			& GenericSelector
+			& ForbiddenMoreKey<GenericClientResponse, GenericSelector, "information">
+		),
+	): Promise<
+		ResponseToEitherByInformation<
+			GenericHookParams,
+			GenericClientResponse,
+			GenericSelector
+		>
+	> {
+		return this.then(
+			DEither.whenIsRight(
+				(response) => {
+					if (
+						(
+							response.predicted === true
+							|| response.requestParams.disabledPredicateMode === true
+						)
+						&& typeof response.information === "string"
+						&& selector[response.information as never] === true
+					) {
+						return DEither.right(
+							response.information,
+							response,
+						);
+					}
+
+					return DEither.left(
+						"unexpect-response",
+						response,
+					);
+				},
+			),
+		) as never;
+	}
+
+	public toEitherByCode<
+		const GenericSelector extends Record<
+			GenericClientResponse["code"],
+			boolean
+		>,
+	>(
+		selector: (
+			& GenericSelector
+			& ForbiddenMoreKey<GenericClientResponse, GenericSelector, "code">
+		),
+	): Promise<
+		ResponseToEitherByCode<
+			GenericHookParams,
+			GenericClientResponse,
+			GenericSelector
+		>
+	> {
+		return this.then(
+			DEither.whenIsRight(
+				(response) => {
+					if (
+						(
+							response.predicted === true
+							|| response.requestParams.disabledPredicateMode === true
+						)
+						&& selector[response.code as never] === true
+					) {
+						return DEither.right(
+							`response-${response.code}`,
+							response,
+						);
+					}
+
+					return DEither.left(
+						"unexpect-response",
+						response,
+					);
+				},
+			),
+		) as never;
 	}
 
 	public static override get [Symbol.species]() {
@@ -1189,7 +1292,7 @@ export class PromiseRequest<
 					const clientResponse: ClientResponse = {
 						body: undefined,
 						information: response.headers.get(requestParams.informationHeaderKey) ?? undefined,
-						code: response.status.toString() as ResponseCode,
+						code: response.status.toString() as `${number}`,
 						ok: (response.status < 500)
 							? response.ok
 							: null,

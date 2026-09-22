@@ -2,14 +2,13 @@ import { type ServerRouteResponse, type ServerRoute, type ServerRouteResponseFlu
 import type * as DCommon from "@duplojs/lang/common";
 import { type PromiseRequestParams } from "./promiseRequestParams";
 import { type ServerRouteToClientRequestParams } from "./clientRequestParams";
-import { type ResponseCode } from "./responseCode";
 
 export type ClientResponseBody = unknown;
 
 export interface ClientResponse<
 	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
 > {
-	code: ResponseCode;
+	code: `${number}`;
 	information: undefined | string;
 	body: ClientResponseBody;
 	ok: boolean | null;

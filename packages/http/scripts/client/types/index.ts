@@ -4,5 +4,5 @@ export type * from "./clientRequestParams";
 export type * from "./clientResponse";
 export type * from "./hooks";
 export type * from "./promiseRequestParams";
-export type * from "./responseCode";
+export type * from "./responseToEither";
 export type * from "./serverRoute";

@@ -656,3 +656,67 @@ void httpClient.get("/stream")
 			}
 		},
 	);
+
+void promiseRequest.toEitherByInformation({
+	superInfo1: true,
+	superInfo2: false,
+})
+	.then((result) => {
+		type Check = DCommon.ExpectType<
+			typeof result,
+			(
+				| DEither.Right<"superInfo1", AllClientResponse<{ params1: string }>>
+				| DEither.Left<"request-error", RequestErrorContent>
+				| DEither.Left<"unexpect-response", AllClientResponse<{ params1: string }>>
+			),
+			"strict"
+		>;
+	});
+
+void promiseRequest.toEitherByCode({
+	200: true,
+})
+	.then((result) => {
+		type Check = DCommon.ExpectType<
+			typeof result,
+			(
+				| DEither.Left<"request-error", RequestErrorContent>
+				| DEither.Left<"unexpect-response", AllClientResponse<{ params1: string }>>
+				| DEither.Right<"response-200", AllClientResponse<{ params1: string }>>
+			),
+			"strict"
+		>;
+	});
+
+void promiseRequest.toEitherByInformation({
+	superInfo1: true,
+	superInfo2: false,
+})
+	.then(DEither.unwrapSelectionOrThrow({
+		superInfo1: true,
+		"unexpect-response": false,
+		"request-error": false,
+	}))
+	.then((response) => {
+		type Check = DCommon.ExpectType<
+			typeof response,
+			AllClientResponse<{ params1: string }>,
+			"strict"
+		>;
+	});
+
+void promiseRequest.toEitherByCode({
+	200: true,
+})
+	.then(DEither.unwrapSelectionOrThrow({
+		"response-200": true,
+		"unexpect-response": false,
+		"request-error": false,
+	}))
+	.then((response) => {
+		type Check = DCommon.ExpectType<
+			typeof response,
+			AllClientResponse<{ params1: string }>,
+			"strict"
+		>;
+	});

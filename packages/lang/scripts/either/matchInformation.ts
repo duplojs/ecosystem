@@ -90,7 +90,7 @@ export function matchInformation(
 ): any {
 	if (args.length === 1) {
 		const [matcher] = args;
-		return (input: unknown) => matchInformation(input, matcher);
+		return (input: unknown) => matchInformation(input, matcher as never);
 	}
 
 	const [input, matcher] = args;

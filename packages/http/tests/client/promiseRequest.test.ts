@@ -1278,6 +1278,183 @@ describe("PromiseRequest", () => {
 		).rejects.toBeInstanceOf(UnexpectedResponseError);
 	});
 
+	it("toEitherByInformation creates an either selected by response information", async() => {
+		const fetchSpy = vi.spyOn(PromiseRequest, "fetch");
+		const selectedParams = createParams();
+		const selectedResponse = createResponse(selectedParams, { information: "ready" });
+		fetchSpy.mockResolvedValueOnce(DEither.right("response", selectedResponse));
+
+		const selected = await new PromiseRequest(selectedParams).toEitherByInformation({
+			ready: true,
+			rejected: false,
+		});
+		const selectedValue = DEither.unwrapSelectionOrThrow(
+			selected,
+			{
+				ready: true,
+				"unexpect-response": false,
+				"request-error": false,
+			},
+		);
+
+		expect(selectedValue).toBe(selectedResponse);
+
+		const rejectedParams = createParams();
+		const rejectedResponse = createResponse(rejectedParams, { information: "rejected" });
+		fetchSpy.mockResolvedValueOnce(DEither.right("response", rejectedResponse));
+
+		const rejected = await new PromiseRequest(rejectedParams).toEitherByInformation({
+			ready: true,
+			rejected: false,
+		});
+
+		expect(
+			DEither.unwrapByInformationOrThrow(rejected, "unexpect-response"),
+		).toBe(rejectedResponse);
+
+		const withoutInformationParams = createParams();
+		const withoutInformationResponse = createResponse(withoutInformationParams);
+		fetchSpy.mockResolvedValueOnce(DEither.right("response", withoutInformationResponse));
+
+		const withoutInformation = await new PromiseRequest(withoutInformationParams).toEitherByInformation({
+			ready: true,
+			rejected: false,
+		});
+
+		expect(
+			DEither.unwrapByInformationOrThrow(withoutInformation, "unexpect-response"),
+		).toBe(withoutInformationResponse);
+
+		const notPredictedParams = createParams();
+		const notPredictedResponse = createResponse(notPredictedParams, {
+			information: "ready",
+			predicted: false,
+		});
+		fetchSpy.mockResolvedValueOnce(DEither.right("response", notPredictedResponse));
+
+		const notPredicted = await new PromiseRequest(notPredictedParams).toEitherByInformation({
+			ready: true,
+			rejected: false,
+		});
+
+		expect(
+			DEither.unwrapByInformationOrThrow(notPredicted, "unexpect-response"),
+		).toBe(notPredictedResponse);
+
+		const disabledPredicateParams = createParams({ disabledPredicateMode: true });
+		const disabledPredicateResponse = createResponse(disabledPredicateParams, {
+			information: "ready",
+			predicted: false,
+		});
+		fetchSpy.mockResolvedValueOnce(DEither.right("response", disabledPredicateResponse));
+
+		const disabledPredicate = await new PromiseRequest(disabledPredicateParams).toEitherByInformation({
+			ready: true,
+			rejected: false,
+		});
+
+		expect(
+			DEither.unwrapByInformationOrThrow(disabledPredicate, "ready"),
+		).toBe(disabledPredicateResponse);
+
+		const requestError = new Error("network");
+		const requestErrorParams = createParams();
+		fetchSpy.mockRejectedValueOnce(requestError);
+
+		const failed = await new PromiseRequest(requestErrorParams).toEitherByInformation({
+			ready: true,
+			rejected: false,
+		});
+		const failure = DEither.unwrapByInformationOrThrow(failed, "request-error");
+
+		expect(failure).toStrictEqual({
+			error: requestError,
+			requestParams: requestErrorParams,
+		});
+	});
+
+	it("toEitherByCode creates an either selected by response code", async() => {
+		const fetchSpy = vi.spyOn(PromiseRequest, "fetch");
+		const selectedParams = createParams();
+		const selectedResponse = createResponse(selectedParams, { code: "200" });
+		fetchSpy.mockResolvedValueOnce(DEither.right("response", selectedResponse));
+
+		const selected = await new PromiseRequest(selectedParams).toEitherByCode({
+			200: true,
+			422: false,
+		});
+		const selectedValue = DEither.unwrapSelectionOrThrow(
+			selected,
+			{
+				"response-200": true,
+				"unexpect-response": false,
+				"request-error": false,
+			},
+		);
+
+		expect(selectedValue).toBe(selectedResponse);
+
+		const rejectedParams = createParams();
+		const rejectedResponse = createResponse(rejectedParams, { code: "422" });
+		fetchSpy.mockResolvedValueOnce(DEither.right("response", rejectedResponse));
+
+		const rejected = await new PromiseRequest(rejectedParams).toEitherByCode({
+			200: true,
+			422: false,
+		});
+
+		expect(
+			DEither.unwrapByInformationOrThrow(rejected, "unexpect-response"),
+		).toBe(rejectedResponse);
+
+		const notPredictedParams = createParams();
+		const notPredictedResponse = createResponse(notPredictedParams, {
+			code: "200",
+			predicted: false,
+		});
+		fetchSpy.mockResolvedValueOnce(DEither.right("response", notPredictedResponse));
+
+		const notPredicted = await new PromiseRequest(notPredictedParams).toEitherByCode({
+			200: true,
+			422: false,
+		});
+
+		expect(
+			DEither.unwrapByInformationOrThrow(notPredicted, "unexpect-response"),
+		).toBe(notPredictedResponse);
+
+		const disabledPredicateParams = createParams({ disabledPredicateMode: true });
+		const disabledPredicateResponse = createResponse(disabledPredicateParams, {
+			code: "200",
+			predicted: false,
+		});
+		fetchSpy.mockResolvedValueOnce(DEither.right("response", disabledPredicateResponse));
+
+		const disabledPredicate = await new PromiseRequest(disabledPredicateParams).toEitherByCode({
+			200: true,
+			422: false,
+		});
+
+		expect(
+			DEither.unwrapByInformationOrThrow(disabledPredicate, "response-200"),
+		).toBe(disabledPredicateResponse);
+
+		const requestError = new Error("network");
+		const requestErrorParams = createParams();
+		fetchSpy.mockRejectedValueOnce(requestError);
+
+		const failed = await new PromiseRequest(requestErrorParams).toEitherByCode({
+			200: true,
+			422: false,
+		});
+		const failure = DEither.unwrapByInformationOrThrow(failed, "request-error");
+
+		expect(failure).toStrictEqual({
+			error: requestError,
+			requestParams: requestErrorParams,
+		});
+	});
+
 	it("Symbol.species returns Promise", () => {
 		vi.spyOn(PromiseRequest, "fetch").mockResolvedValue(
 			DEither.right("response", createResponse(createParams())),

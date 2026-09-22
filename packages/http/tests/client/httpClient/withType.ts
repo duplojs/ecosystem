@@ -1399,6 +1399,188 @@ void httpClient.get("/stream")
 		},
 	);
 
+void promiseRequest.toEitherByInformation({
+	"extract-error": true,
+	"users.find": true,
+})
+	.then((result) => {
+		type Check = DCommon.ExpectType<
+			typeof result,
+			(
+				| DEither.Right<
+					"extract-error",
+					{
+						code: "422";
+						information: "extract-error";
+						body: undefined;
+						ok: boolean | null;
+						headers: Headers;
+						type: ResponseType;
+						url: string;
+						redirected: boolean;
+						raw: Response;
+						requestParams: RequestParams;
+						predicted: boolean;
+						fromCache?: boolean | undefined;
+					}
+				>
+				| DEither.Right<
+					"users.find",
+					{
+						code: "200";
+						information: "users.find";
+						body: {
+							readonly id: number;
+							readonly name: string;
+							readonly age: number;
+						};
+						ok: boolean | null;
+						headers: Headers;
+						type: ResponseType;
+						url: string;
+						redirected: boolean;
+						raw: Response;
+						requestParams: RequestParams;
+						predicted: boolean;
+						fromCache?: boolean | undefined;
+					}
+				>
+				| DEither.Left<"unexpect-response", AllClientResponse<HooksParams>>
+				| DEither.Left<"request-error", RequestErrorContent>
+			),
+			"strict"
+		>;
+	});
+
+void promiseRequest.toEitherByCode({
+	200: true,
+	422: true,
+})
+	.then((result) => {
+		type Check = DCommon.ExpectType<
+			typeof result,
+			(
+				| DEither.Right<
+					"response-422",
+					{
+						code: "422";
+						information: "extract-error";
+						body: undefined;
+						ok: boolean | null;
+						headers: Headers;
+						type: ResponseType;
+						url: string;
+						redirected: boolean;
+						raw: Response;
+						requestParams: RequestParams;
+						predicted: boolean;
+						fromCache?: boolean | undefined;
+					}
+				>
+				| DEither.Right<
+					"response-200",
+					{
+						code: "200";
+						information: "users.find";
+						body: {
+							readonly id: number;
+							readonly name: string;
+							readonly age: number;
+						};
+						ok: boolean | null;
+						headers: Headers;
+						type: ResponseType;
+						url: string;
+						redirected: boolean;
+						raw: Response;
+						requestParams: RequestParams;
+						predicted: boolean;
+						fromCache?: boolean | undefined;
+					}
+				>
+				| DEither.Left<"unexpect-response", AllClientResponse<HooksParams>>
+				| DEither.Left<"request-error", RequestErrorContent>
+			),
+			"strict"
+		>;
+	});
+
+void promiseRequest.toEitherByInformation({
+	"extract-error": false,
+	"users.find": true,
+})
+	.then(DEither.unwrapSelectionOrThrow({
+		"users.find": true,
+		"unexpect-response": false,
+		"request-error": false,
+	}))
+	.then((response) => {
+		type CheckCode = DCommon.ExpectType<
+			typeof response.code,
+			"200",
+			"strict"
+		>;
+
+		type CheckInformation = DCommon.ExpectType<
+			typeof response.information,
+			"users.find",
+			"strict"
+		>;
+
+		type CheckBody = DCommon.ExpectType<
+			typeof response.body,
+			{
+				readonly id: number;
+				readonly name: string;
+				readonly age: number;
+			},
+			"strict"
+		>;
+	});
+
+void promiseRequest.toEitherByCode({
+	200: true,
+	422: false,
+})
+	.then(DEither.unwrapSelectionOrThrow({
+		"response-200": true,
+		"unexpect-response": false,
+		"request-error": false,
+	}))
+	.then((response) => {
+		type CheckCode = DCommon.ExpectType<
+			typeof response.code,
+			"200",
+			"strict"
+		>;
+
+		type CheckInformation = DCommon.ExpectType<
+			typeof response.information,
+			"users.find",
+			"strict"
+		>;
+	});
+
+// @ts-expect-error the selector must include every declared information.
+void promiseRequest.toEitherByInformation({ "users.find": true });
+
+// @ts-expect-error the selector cannot include undeclared information.
+void promiseRequest.toEitherByInformation({
+	"extract-error": true,
+	"users.find": true,
+	other: true,
+});
+
+// @ts-expect-error the selector must include every declared response code.
+void promiseRequest.toEitherByCode({ 200: true });
+
+// @ts-expect-error the selector cannot include an undeclared numeric response code.
+void promiseRequest.toEitherByCode({
+	200: true,
+	422: true,
+	500: true,
+});
+
 type Check1 = DCommon.ExpectType<
 	RemovePrefixPathServerRoute<
 		AddPrefixPathServerRoute<

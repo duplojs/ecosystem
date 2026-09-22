@@ -146,7 +146,7 @@ export function matchInformationOtherwise(
 ): any {
 	if (args.length === 2) {
 		const [matcher, otherwise] = args;
-		return (input: unknown) => matchInformationOtherwise(input, matcher, otherwise);
+		return (input: unknown) => matchInformationOtherwise(input, matcher as never, otherwise);
 	}
 
 	const [input, matcher, otherwise] = args;

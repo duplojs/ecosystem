@@ -1,7 +1,6 @@
 import { type ClientRequestParamsBody, type ClientRequestParamsHeaders, type ClientRequestParamsParams, type ClientRequestParamsQuery } from "./clientRequestParams";
 import { type ClientResponseBody } from "./clientResponse";
 import type * as DCommon from "@duplojs/lang/common";
-import { type ResponseCode } from "./responseCode";
 
 export interface ClientCacheValue {
 	information?: string;
@@ -9,7 +8,7 @@ export interface ClientCacheValue {
 	headers: Record<string, string>;
 	ok: boolean | null;
 	type: ResponseType;
-	code: ResponseCode;
+	code: `${number}`;
 	url: string;
 	redirected: boolean;
 	predicted: boolean;
