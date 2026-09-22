@@ -206,6 +206,7 @@ export function createHttpClient<
 			? DObject.entries(clientParams.clientCacheInitialValues)
 			: [],
 	);
+
 	const hooks = DObject.override<Hooks>(
 		{
 			request: [],

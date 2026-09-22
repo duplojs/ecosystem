@@ -1,6 +1,6 @@
 import type * as DCommon from "@duplojs/lang/common";
 
-export type ServerPrimitiveData = DCommon.MaybeConstrain<string | undefined | number | null | boolean>;
+export type ServerPrimitiveData = DCommon.MaybeConstraint<string | undefined | number | null | boolean>;
 
 export type ServerRouteHeaders = Record<string, ServerPrimitiveData | { toString(): string }>;
 
@@ -12,7 +12,7 @@ export type ServerRouteBody = unknown;
 
 export type ServerRouteResponseBody = unknown;
 
-export type ServerRouteResponseFlux = DCommon.MaybeConstrain<string> | Uint8Array<ArrayBuffer>;
+export type ServerRouteResponseFlux = DCommon.MaybeConstraint<string> | Uint8Array<ArrayBuffer>;
 
 export type ServerRouteResponseEvents = Record<string, unknown>;
 

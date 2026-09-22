@@ -168,7 +168,9 @@ export type ServerRouteToClientRequestParams<
 				DCommon.IsEqual<GenericServerRoute["body"], unknown> extends true
 					? {}
 					: {
-						body: GenericServerRoute["body"];
+						body: GenericServerRoute["body"] extends DCommon.TheFormData<infer InferredValue>
+							? DCommon.TheFormData<DCommon.ToJson<InferredValue, File>>
+							: DCommon.ToJson<GenericServerRoute["body"]>;
 					}
 			)
 		>

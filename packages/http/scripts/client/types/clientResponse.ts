@@ -128,7 +128,7 @@ export type ServerRouteToClientResponse<
 					information: InferredResponse["information"];
 					body: DCommon.IsEqual<InferredResponse["body"], File> extends true
 						? undefined
-						: InferredResponse["body"];
+						: DCommon.ToJson<InferredResponse["body"]>;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -153,7 +153,7 @@ export type ServerRouteToClientResponse<
 								[EventName in keyof InferredResponse["events"]]: EventName extends string
 									? {
 										event: EventName;
-										data: InferredResponse["events"][EventName];
+										data: DCommon.ToJson<InferredResponse["events"][EventName]>;
 										id?: string;
 										retry?: number;
 									}

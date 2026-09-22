@@ -1,6 +1,6 @@
 import { type Constraint } from "./base";
 
-export type MaybeConstrain<
+export type MaybeConstraint<
 	GenericValue extends unknown,
 > = (
 	| GenericValue

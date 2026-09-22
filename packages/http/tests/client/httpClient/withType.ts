@@ -1,4 +1,5 @@
 import { createHttpClient, type RequestErrorContent, type PromiseRequest, type PromiseRequestParams, type FindServerRoute, type AddPrefixPathServerRoute, type RemovePrefixPathServerRoute, type FindServerRouteResponse, type AllClientResponse, type AllNotPredictedClientResponse, type ClientEventsResponseHandler, type ServerRouteToClientRequestParams, type CreateClientCacheKeyParams, type ClientStreamResponseHandler } from "@client";
+import type * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import * as DString from "@duplojs/lang/string";
@@ -9,11 +10,15 @@ type Routes = {
 	readonly responses: {
 		readonly code: "200";
 		readonly information: "users.findMany";
-		readonly body: readonly {
-			readonly id: number;
-			readonly name: string;
-			readonly age: number;
-		}[];
+		readonly body: (
+			& readonly {
+				readonly id: number;
+				readonly name: string;
+				readonly age: number;
+			}[]
+			& DArray.MinElements<2>
+			& DArray.MaxElements<10>
+		);
 	};
 } | {
 	readonly method: "GET";
@@ -61,6 +66,7 @@ type Routes = {
 	readonly body: DCommon.TheFormData<{
 		readonly bool: boolean;
 		readonly myFile: File;
+		readonly name: string & DString.Trimmed;
 	}>;
 	readonly responses: {
 		readonly code: "422";
@@ -1033,11 +1039,15 @@ void httpClient.get("/users")
 			{
 				code: "200";
 				information: "users.findMany";
-				body: readonly {
-					readonly id: number;
-					readonly name: string;
-					readonly age: number;
-				}[];
+				body: (
+					& readonly {
+						readonly id: number;
+						readonly name: string;
+						readonly age: number;
+					}[]
+					& DArray.MinElements<2>
+					& DArray.MaxElements<10>
+				);
 				ok: boolean | null;
 				headers: Headers;
 				type: ResponseType;
@@ -1061,11 +1071,15 @@ void httpClient.get("/users")
 				| {
 					code: "200";
 					information: "users.findMany";
-					body: readonly {
-						readonly id: number;
-						readonly name: string;
-						readonly age: number;
-					}[];
+					body: (
+						& readonly {
+							readonly id: number;
+							readonly name: string;
+							readonly age: number;
+						}[]
+						& DArray.MinElements<2>
+						& DArray.MaxElements<10>
+					);
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -1174,6 +1188,7 @@ void httpClient.post(
 		body: DCommon.createFormData({
 			bool: true,
 			myFile: new File([], "test"),
+			name: DCommon.forwardAsserts("superValue", DString.isTrimmed),
 		}),
 	},
 );
