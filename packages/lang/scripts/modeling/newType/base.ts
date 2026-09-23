@@ -63,19 +63,20 @@ export type ComputeNewType<
 		>,
 		unknown
 	>,
-> = (
-		& GenericValue
-		& GenericClearValue
-		& NewType<
-			GenericName,
-			GenericIntersectionConstraintValue extends (
-				& GenericClearValue
-				& infer InferredConstraint extends DCommon.BaseConstraint
-			)
-				? InferredConstraint
-				: never
-		>
-);
+> = Extract<
+	& GenericValue
+	& GenericClearValue
+	& NewType<
+		GenericName,
+		GenericIntersectionConstraintValue extends (
+			& GenericClearValue
+			& infer InferredConstraint extends DCommon.BaseConstraint
+		)
+			? InferredConstraint
+			: never
+	>,
+	any
+>;
 
 export interface NewTypeStructure<
 	out GenericName extends string = string,
@@ -98,14 +99,14 @@ export interface NewTypeStructure<
 	): (
 		data: DDataStructure.EncodedValue<
 			NewTypeMap<
-				DDataStructure.StructureValue<this>
+				ComputeNewType<GenericName, GenericValue, GenericNewTypeConstraint>
 			>,
 			GenericCodecs
 		>,
 	) => (
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			ComputeNewType<GenericName, GenericValue, GenericNewTypeConstraint>
 		>
 		| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 		| DEither.Left<"map-error", DDataStructure.Error>
@@ -116,14 +117,14 @@ export interface NewTypeStructure<
 		codecs: GenericCodecs,
 		data: DDataStructure.EncodedValue<
 			NewTypeMap<
-				DDataStructure.StructureValue<this>
+				ComputeNewType<GenericName, GenericValue, GenericNewTypeConstraint>
 			>,
 			GenericCodecs
 		>,
 	): (
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			ComputeNewType<GenericName, GenericValue, GenericNewTypeConstraint>
 		>
 		| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 		| DEither.Left<"map-error", DDataStructure.Error>
@@ -131,12 +132,12 @@ export interface NewTypeStructure<
 
 	map(
 		data: NewTypeMap<
-			DDataStructure.StructureValue<this>
+			ComputeNewType<GenericName, GenericValue, GenericNewTypeConstraint>
 		>
 	): (
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			ComputeNewType<GenericName, GenericValue, GenericNewTypeConstraint>
 		>
 		| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 		| DEither.Left<"map-error", DDataStructure.Error>
@@ -149,14 +150,14 @@ export interface NewTypeStructure<
 	): (
 		data: DDataStructure.EncodedValue<
 			NewTypeMap<
-				DDataStructure.StructureValue<this>
+				ComputeNewType<GenericName, GenericValue, GenericNewTypeConstraint>
 			>,
 			GenericCodecs
 		>,
 	) => Promise<
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			ComputeNewType<GenericName, GenericValue, GenericNewTypeConstraint>
 		>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	>;
@@ -166,26 +167,26 @@ export interface NewTypeStructure<
 		codecs: GenericCodecs,
 		data: DDataStructure.EncodedValue<
 			NewTypeMap<
-				DDataStructure.StructureValue<this>
+				ComputeNewType<GenericName, GenericValue, GenericNewTypeConstraint>
 			>,
 			GenericCodecs
 		>,
 	): Promise<
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			ComputeNewType<GenericName, GenericValue, GenericNewTypeConstraint>
 		>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	>;
 
 	asyncMap(
 		data: NewTypeMap<
-			DDataStructure.StructureValue<this>
+			ComputeNewType<GenericName, GenericValue, GenericNewTypeConstraint>
 		>
 	): Promise<
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			ComputeNewType<GenericName, GenericValue, GenericNewTypeConstraint>
 		>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	>;

@@ -1,6 +1,7 @@
 import type * as DKind from "@scripts/kind";
 import { type structureKind, type Structure } from "../base";
 import { type StructureConstraintsValue } from "./constraintsValue";
+import { type Constraint } from "@scripts/dataStructure/constraint";
 
 export type StructureValue<
 	GenericStructure extends Structure,
@@ -16,3 +17,14 @@ export type StructureInitialValue<
 		? InferredInitialValue
 		: GenericStructureValue
 	: never;
+
+export type ComputeStructureValue<
+	GenericValue extends unknown,
+	GenericConstraints extends readonly Constraint[],
+> = Extract<
+	& GenericValue
+	& StructureConstraintsValue<
+		GenericConstraints[number]
+	>,
+	any
+>;

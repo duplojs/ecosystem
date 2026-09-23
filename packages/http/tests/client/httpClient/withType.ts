@@ -120,7 +120,7 @@ const promiseRequest = httpClient
 		method: "GET",
 		path: "/users/{userId}",
 		params: {
-			userId: DString.to(1),
+			userId: 1,
 		},
 		clientCache: (params) => {
 			type Check = DCommon.ExpectType<

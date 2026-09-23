@@ -45,7 +45,7 @@ export type GetAllPorts<
 export const readerKind = createKind("reader");
 
 export interface Reader<
-	GenericDependencies extends ReaderDependencies = any,
+	GenericDependencies extends ReaderDependencies = ReaderDependencies,
 	GenericOutput extends unknown = unknown,
 > extends DKind.Kind<typeof readerKind> {
 	dependencies: GenericDependencies;

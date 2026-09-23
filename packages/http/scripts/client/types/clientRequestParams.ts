@@ -1,8 +1,9 @@
 import type * as DCommon from "@duplojs/lang/common";
-import { type ServerRouteHeaders, type ServerRouteParams, type ServerRouteQuery, type ServerRoute, type ServerPrimitiveData } from "./serverRoute";
+import { type ServerRouteHeaders, type ServerRouteParams, type ServerRouteQuery, type ServerRoute } from "./serverRoute";
 import { type ObjectCanBeEmpty } from "./ObjectCanBeEmpty";
 import type * as DObject from "@duplojs/lang/object";
 import { type CreateClientCacheKey } from "./clientCache";
+import type * as DChrono from "@duplojs/lang/chrono";
 
 export interface ClientRequestInitParams extends Pick<
 	RequestInit,
@@ -19,11 +20,11 @@ export interface ClientRequestInitParams extends Pick<
 
 }
 
-export type ClientRequestParamsHeaders = Record<string, string | undefined | { toString(): string }>;
+export type ClientRequestParamsHeaders = ServerRouteHeaders;
 
-export type ClientRequestParamsParams = Record<string, string | undefined | { toString(): string }>;
+export type ClientRequestParamsParams = ServerRouteParams;
 
-export type ClientRequestParamsQuery = Record<string, DCommon.MaybeArray<string | { toString(): string }> | undefined>;
+export type ClientRequestParamsQuery = ServerRouteQuery;
 
 export type ClientRequestParamsBody = unknown;
 
@@ -43,69 +44,6 @@ export interface ClientRequestParams<
 	bypassClientCache?: boolean;
 	refreshClientCache?: boolean;
 }
-
-type StringifyTuple<
-	GenericTuple extends DCommon.AnyTuple<ServerPrimitiveData>,
-> = GenericTuple extends [
-	infer InferredFirst extends ServerPrimitiveData,
-	...infer InferredRest,
-]
-	? InferredRest extends readonly []
-		? [`${InferredFirst}`]
-		: InferredRest extends DCommon.AnyTuple
-			? StringifyTuple<InferredRest> extends infer InferredResult extends DCommon.AnyTuple
-				? [`${InferredFirst}`, ...InferredResult]
-				: never
-			: never
-	: never;
-
-export type ServerRouteToClientRequestParamsHeaders<
-	GenericHeader extends ServerRouteHeaders | undefined,
-> = GenericHeader extends ServerRouteHeaders
-	? DCommon.SimplifyTopLevel<{
-		[Prop in keyof GenericHeader]: GenericHeader[Prop] extends infer InferredValue
-			? InferredValue extends ServerPrimitiveData
-				? InferredValue extends undefined
-					? InferredValue
-					: `${InferredValue}`
-				: never
-			: never
-	}>
-	: GenericHeader;
-
-export type ServerRouteToClientRequestParamsParams<
-	GenericParams extends ServerRouteParams | undefined,
-> = GenericParams extends ServerRouteParams
-	? DCommon.SimplifyTopLevel<{
-		[Prop in keyof GenericParams]: GenericParams[Prop] extends infer InferredValue
-			? InferredValue extends ServerPrimitiveData
-				? InferredValue extends undefined
-					? InferredValue
-					: `${InferredValue}`
-				: never
-			: never
-	}>
-	: GenericParams;
-
-export type ServerRouteToClientRequestParamsQuery<
-	GenericQuery extends ServerRouteQuery | undefined,
-> = GenericQuery extends ServerRouteQuery
-	? DCommon.SimplifyTopLevel<{
-		[Prop in keyof GenericQuery]: GenericQuery[Prop] extends infer InferredValue
-			? InferredValue extends DCommon.MaybeArray<ServerPrimitiveData>
-				? InferredValue extends undefined
-					? InferredValue
-					: InferredValue extends DCommon.AnyTuple
-						? StringifyTuple<InferredValue>
-						: InferredValue extends readonly any[]
-							? `${InferredValue[number]}`[]
-							: InferredValue extends ServerPrimitiveData
-								? `${InferredValue}`
-								: never
-				: never
-			: never
-	}>
-	: GenericQuery;
 
 type MaybeParams<
 	GenericParams extends object,
@@ -141,27 +79,21 @@ export type ServerRouteToClientRequestParams<
 				DCommon.IsEqual<GenericServerRoute["headers"], unknown> extends true
 					? {}
 					: {
-						headers: ServerRouteToClientRequestParamsHeaders<
-							GenericServerRoute["headers"]
-						>;
+						headers: GenericServerRoute["headers"];
 					}
 			)
 			& (
 				DCommon.IsEqual<GenericServerRoute["params"], unknown> extends true
 					? {}
 					: {
-						params: ServerRouteToClientRequestParamsParams<
-							GenericServerRoute["params"]
-						>;
+						params: GenericServerRoute["params"];
 					}
 			)
 			& (
 				DCommon.IsEqual<GenericServerRoute["query"], unknown> extends true
 					? {}
 					: {
-						query: ServerRouteToClientRequestParamsQuery<
-							GenericServerRoute["query"]
-						>;
+						query: GenericServerRoute["query"];
 					}
 			)
 			& (
@@ -170,7 +102,10 @@ export type ServerRouteToClientRequestParams<
 					: {
 						body: GenericServerRoute["body"] extends DCommon.TheFormData<infer InferredValue>
 							? DCommon.TheFormData<DCommon.ToJson<InferredValue, File>>
-							: DCommon.ToJson<GenericServerRoute["body"]>;
+							: DCommon.ToJson<
+								GenericServerRoute["body"],
+								DChrono.TheDate | DChrono.TheTime
+							>;
 					}
 			)
 		>

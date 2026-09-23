@@ -1,11 +1,10 @@
 import { hub } from "@core";
 import { createHttpServer } from "@duplojs/http/node";
 import { type AllNotPredictedClientResponse, type ClientEventsResponseHandler, createHttpClient, type FindServerRoute, type PromiseRequestParams, type RequestErrorContent, type ServerRouteToClientRequestParams } from "@duplojs/http/client";
-import { type User, type Routes } from "./clientType";
+import { type Routes } from "./clientType";
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
 import * as DEither from "@duplojs/lang/either";
-import * as DString from "@duplojs/lang/string";
 import { createFileToSend } from "@utils";
 import * as DSFile from "@duplojs/server/file";
 import * as DPath from "@duplojs/lang/path";
@@ -26,6 +25,14 @@ describe("client", async() => {
 	const httpClient = createHttpClient<Routes>({
 		baseUrl: "http://localhost:8946",
 	});
+
+	interface JsonUserOutput {
+		readonly id: number;
+		readonly name: string;
+		readonly age: number;
+		readonly friends?: readonly JsonUserOutput[] | undefined;
+		readonly createdAt?: `date${number}-` | `date${number}+` | undefined;
+	}
 
 	it("get all users", async() => {
 		type RequestParams = DCommon.SimplifyTopLevel<
@@ -49,7 +56,7 @@ describe("client", async() => {
 				| {
 					code: "200";
 					information: "users.findMany";
-					body: readonly User[];
+					body: readonly JsonUserOutput[];
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -108,7 +115,7 @@ describe("client", async() => {
 	});
 
 	it("get user", async() => {
-		const result = await httpClient.get("/users/{userId}", { params: { userId: DString.to(15) } });
+		const result = await httpClient.get("/users/{userId}", { params: { userId: 15 } });
 
 		type RequestParams = DCommon.SimplifyTopLevel<
 			& ServerRouteToClientRequestParams<
@@ -146,7 +153,7 @@ describe("client", async() => {
 				| {
 					code: "200";
 					information: "users.find";
-					body: User;
+					body: JsonUserOutput;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -220,7 +227,7 @@ describe("client", async() => {
 				| {
 					code: "200";
 					information: "users.create";
-					body: User;
+					body: JsonUserOutput;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -509,7 +516,7 @@ describe("client", async() => {
 			const result = await httpClient
 				.get(
 					"/stream",
-					{ query: { value: "15" } },
+					{ query: { value: 15 } },
 				)
 				.whenReceiveDataStream(spyClientFlux)
 				.iWantInformationOrThrow("monSuperStream");

@@ -1,3 +1,4 @@
+import * as DString from "@duplojs/lang/string";
 import { type ClientRequestParams } from "./types";
 
 export function queryToString(query: ClientRequestParams["query"]) {
@@ -14,10 +15,10 @@ export function queryToString(query: ClientRequestParams["query"]) {
 
 				if (value instanceof Array) {
 					value.forEach((subValue) => {
-						pv.push(`${key}=${subValue.toString()}`);
+						pv.push(`${key}=${DString.to(subValue)}`);
 					});
 				} else {
-					pv.push(`${key}=${value.toString()}`);
+					pv.push(`${key}=${DString.to(value)}`);
 				}
 
 				return pv;

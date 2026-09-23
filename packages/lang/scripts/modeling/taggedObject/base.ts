@@ -132,7 +132,7 @@ export interface TaggedObjectStructure<
 		data: DDataStructure.EncodedValue<
 			TaggedObjectMap<
 				DKind.Remove<
-					DDataStructure.StructureValue<this>
+					GenericTaggedObject
 				>
 			>,
 			GenericCodecs
@@ -140,7 +140,7 @@ export interface TaggedObjectStructure<
 	) => (
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			GenericTaggedObject
 		>
 		| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 		| DEither.Left<"map-error", DDataStructure.Error>
@@ -152,7 +152,7 @@ export interface TaggedObjectStructure<
 		data: DDataStructure.EncodedValue<
 			TaggedObjectMap<
 				DKind.Remove<
-					DDataStructure.StructureValue<this>
+					GenericTaggedObject
 				>
 			>,
 			GenericCodecs
@@ -160,7 +160,7 @@ export interface TaggedObjectStructure<
 	): (
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			GenericTaggedObject
 		>
 		| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 		| DEither.Left<"map-error", DDataStructure.Error>
@@ -168,13 +168,13 @@ export interface TaggedObjectStructure<
 	map(
 		data: TaggedObjectMap<
 			DKind.Remove<
-				DDataStructure.StructureValue<this>
+				GenericTaggedObject
 			>
 		>
 	): (
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			GenericTaggedObject
 		>
 		| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 		| DEither.Left<"map-error", DDataStructure.Error>
@@ -188,7 +188,7 @@ export interface TaggedObjectStructure<
 		data: DDataStructure.EncodedValue<
 			TaggedObjectMap<
 				DKind.Remove<
-					DDataStructure.StructureValue<this>
+					GenericTaggedObject
 				>
 			>,
 			GenericCodecs
@@ -196,7 +196,7 @@ export interface TaggedObjectStructure<
 	) => Promise<
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			GenericTaggedObject
 		>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	>;
@@ -207,7 +207,7 @@ export interface TaggedObjectStructure<
 		data: DDataStructure.EncodedValue<
 			TaggedObjectMap<
 				DKind.Remove<
-					DDataStructure.StructureValue<this>
+					GenericTaggedObject
 				>
 			>,
 			GenericCodecs
@@ -215,20 +215,20 @@ export interface TaggedObjectStructure<
 	): Promise<
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			GenericTaggedObject
 		>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	>;
 	asyncMap(
 		data: TaggedObjectMap<
 			DKind.Remove<
-				DDataStructure.StructureValue<this>
+				GenericTaggedObject
 			>
 		>
 	): Promise<
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			GenericTaggedObject
 		>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	>;

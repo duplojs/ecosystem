@@ -129,17 +129,14 @@ export interface EntityStructure<
 		codecs: GenericCodecs,
 	): (
 		data: DDataStructure.EncodedValue<
-			EntityMap<
-				DKind.Remove<
-					DDataStructure.StructureValue<this>
-				>
-			>,
+			EntityMap<GenericProperties>,
 			GenericCodecs
 		>,
 	) => (
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			& Entity<GenericName>
+			& GenericProperties
 		>
 		| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 		| DEither.Left<"map-error", DDataStructure.Error>
@@ -149,31 +146,25 @@ export interface EntityStructure<
 	>(
 		codecs: GenericCodecs,
 		data: DDataStructure.EncodedValue<
-			EntityMap<
-				DKind.Remove<
-					DDataStructure.StructureValue<this>
-				>
-			>,
+			EntityMap<GenericProperties>,
 			GenericCodecs
 		>,
 	): (
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			& Entity<GenericName>
+			& GenericProperties
 		>
 		| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	);
 	map(
-		data: EntityMap<
-			DKind.Remove<
-				DDataStructure.StructureValue<this>
-			>
-		>
+		data: EntityMap<GenericProperties>
 	): (
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			& Entity<GenericName>
+			& GenericProperties
 		>
 		| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 		| DEither.Left<"map-error", DDataStructure.Error>
@@ -185,17 +176,14 @@ export interface EntityStructure<
 		codecs: GenericCodecs,
 	): (
 		data: DDataStructure.EncodedValue<
-			EntityMap<
-				DKind.Remove<
-					DDataStructure.StructureValue<this>
-				>
-			>,
+			EntityMap<GenericProperties>,
 			GenericCodecs
 		>,
 	) => Promise<
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			& Entity<GenericName>
+			& GenericProperties
 		>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	>;
@@ -204,30 +192,24 @@ export interface EntityStructure<
 	>(
 		codecs: GenericCodecs,
 		data: DDataStructure.EncodedValue<
-			EntityMap<
-				DKind.Remove<
-					DDataStructure.StructureValue<this>
-				>
-			>,
+			EntityMap<GenericProperties>,
 			GenericCodecs
 		>,
 	): Promise<
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			& Entity<GenericName>
+			& GenericProperties
 		>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	>;
 	asyncMap(
-		data: EntityMap<
-			DKind.Remove<
-				DDataStructure.StructureValue<this>
-			>
-		>
+		data: EntityMap<GenericProperties>
 	): Promise<
 		| DEither.Right<
 			"map-success",
-			DDataStructure.StructureValue<this>
+			& Entity<GenericName>
+			& GenericProperties
 		>
 		| DEither.Left<"map-error", DDataStructure.Error>
 	>;
