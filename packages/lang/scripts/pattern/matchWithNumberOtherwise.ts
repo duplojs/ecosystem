@@ -32,7 +32,7 @@ export function matchWithNumberOtherwise<
 		& DCommon.FixDeepFunctionInfer<ComputeMatcher<GenericClearInput>, GenericMatcher>
 		& ForbiddenMoreKey<GenericClearInput, GenericMatcher>
 	),
-	otherwise: (value: Exclude<GenericInput, HandledKeys<GenericMatcher>>) => GenericOutput,
+	otherwise: (value: DCommon.BreakGenericLink<Exclude<GenericInput, HandledKeys<GenericMatcher>>>) => GenericOutput,
 ): (
 	input: GenericInput & DNumber.RequireSimpleLiteral<GenericClearInput>,
 ) => (
@@ -51,7 +51,7 @@ export function matchWithNumberOtherwise<
 		& DCommon.FixDeepFunctionInfer<ComputeMatcher<GenericClearInput>, GenericMatcher>
 		& ForbiddenMoreKey<GenericClearInput, GenericMatcher>
 	),
-	otherwise: (value: Exclude<GenericInput, HandledKeys<GenericMatcher>>) => GenericOutput,
+	otherwise: (value: DCommon.BreakGenericLink<Exclude<GenericInput, HandledKeys<GenericMatcher>>>) => GenericOutput,
 ): (
 	| ReturnType<Extract<GenericMatcher[keyof GenericMatcher], DCommon.AnyFunction>>
 	| GenericOutput

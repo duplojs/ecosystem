@@ -440,9 +440,19 @@ export const TaggedObjectStructure = DDataStructure.createStructure(
 					return (input: object) => self.update(input as never, update as never);
 				}
 
-				const [input, { [entityKind.runTimeKey as never]: __, ...update }] = args;
+				const [input, update] = args;
 
-				return DObject.override(input, update);
+				const updatedTaggedObject = {
+					[objectTagKind.runTimeKey]: name,
+				};
+
+				for (const key of self.definition.inner.definition.keys) {
+					updatedTaggedObject[key as never] = update[key as never] === undefined
+						? input[key as never]
+						: update[key as never];
+				}
+
+				return updatedTaggedObject;
 			},
 		},
 	) as never,

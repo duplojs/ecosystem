@@ -56,7 +56,9 @@ export function matchWithTaggedObjectOtherwise<
 		>
 		& ForbiddenMoreKey<NoInfer<GenericTaggedObject>, GenericMatcher>
 	),
-	otherwise: (value: UnhandledTaggedObject<GenericTaggedObject, GenericMatcher>) => GenericOutput,
+	otherwise: (
+		value: DCommon.BreakGenericLink<UnhandledTaggedObject<GenericTaggedObject, GenericMatcher>>,
+	) => GenericOutput,
 ): (
 	input: GenericTaggedObject & RequireLiteralTag<GenericTaggedObject>,
 ) => (
@@ -82,7 +84,9 @@ export function matchWithTaggedObjectOtherwise<
 		>
 		& ForbiddenMoreKey<GenericTaggedObject, GenericMatcher>
 	),
-	otherwise: (value: UnhandledTaggedObject<GenericTaggedObject, GenericMatcher>) => GenericOutput,
+	otherwise: (
+		value: DCommon.BreakGenericLink<UnhandledTaggedObject<GenericTaggedObject, GenericMatcher>>,
+	) => GenericOutput,
 ): (
 	| ReturnType<
 		Extract<

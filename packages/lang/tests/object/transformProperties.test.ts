@@ -1,4 +1,4 @@
-import { DObject, pipe, type ExpectType } from "@scripts";
+import { DArray, DObject, pipe, type ExpectType } from "@scripts";
 
 describe("transformProperties", () => {
 	it("should transform object properties", () => {
@@ -46,20 +46,35 @@ describe("transformProperties", () => {
 		});
 	});
 
-	it("should transform object properties in pipe", () => {
+	it("use in pipe", () => {
+		const input = {
+			prop1: 1,
+			prop2: "test",
+			prop3: [1, 2] as const,
+		};
+
 		const result = pipe(
-			{
-				name: "Duplo",
-				version: 1,
-			},
+			input,
 			DObject.transformProperties({
-				version: (value) => value + 1,
+				prop1: () => "wow",
+				prop3: true ? DArray.shift : undefined,
 			}),
 		);
 
-		expect(result).toEqual({
-			name: "Duplo",
-			version: 2,
+		expect(result).toStrictEqual({
+			prop1: "wow",
+			prop2: "test",
+			prop3: [2],
 		});
+
+		type check = ExpectType<
+			typeof result,
+			{
+				prop1: string;
+				prop3: readonly [1, 2] | (readonly (1 | 2)[] & DArray.MaxElements<2>);
+				prop2: string;
+			},
+			"strict"
+		>;
 	});
 });

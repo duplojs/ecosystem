@@ -7,20 +7,26 @@ describe("createFlag", () => {
 
 	it("creates a flag handler for an entity and value structure", () => {
 		const valueStructure = DDataStructure.string();
-		const flag = DModeling.createFlag<
+		interface UserRole extends DModeling.Flag<
 			"UserRole",
-			typeof userStructure,
 			string
+		> {}
+		const flag = DModeling.createFlag<
+			UserRole,
+			typeof userStructure
 		>("UserRole");
 
 		expect(flag.name).toBe("UserRole");
 	});
 
 	it("appends and reads a flag without mutating the entity", () => {
-		const flag = DModeling.createFlag<
+		interface UserRole extends DModeling.Flag<
 			"UserRole",
-			typeof userStructure,
 			string
+		> {}
+		const flag = DModeling.createFlag<
+			UserRole,
+			typeof userStructure
 		>("UserRole");
 		const entity = userStructure.new({ name: userName });
 		const result = flag.append(entity, "admin");
@@ -28,43 +34,56 @@ describe("createFlag", () => {
 		expect(result).not.toBe(entity);
 		expect(flag.has(entity)).toBe(false);
 		expect(flag.has(result)).toBe(true);
-		expect(flag.getValue(result)).toBe("admin");
+		expect(flag.getPayload(result)).toBe("admin");
 	});
 
 	it("appends a flag in a pipe", () => {
-		const flag = DModeling.createFlag<
+		interface UserRole extends DModeling.Flag<
 			"UserRole",
-			typeof userStructure,
 			string
+		> {}
+		const flag = DModeling.createFlag<
+			UserRole,
+			typeof userStructure
 		>("UserRole");
 		const entity = userStructure.new({ name: userName });
 		const result = pipe(entity, flag.append("reader"));
 
-		expect(flag.getValue(result)).toBe("reader");
+		expect(flag.getPayload(result)).toBe("reader");
 	});
 
 	it("preserves other flags when appending a new one", () => {
-		const role = DModeling.createFlag<
+		interface UserRole extends DModeling.Flag<
 			"UserRole",
-			typeof userStructure,
 			string
+		> {}
+		const role = DModeling.createFlag<
+			UserRole,
+			typeof userStructure
 		>("UserRole");
-		const state = DModeling.createFlag<
+		interface UserState extends DModeling.Flag<
 			"UserState",
+			unknown
+		> {}
+		const state = DModeling.createFlag<
+			UserState,
 			typeof userStructure
 		>("UserState");
 		const entity = userStructure.new({ name: userName });
 		const result = state.append(role.append(entity, "admin"), {});
 
-		expect(role.getValue(result)).toBe("admin");
-		expect(state.getValue(result)).toStrictEqual({});
+		expect(role.getPayload(result)).toBe("admin");
+		expect(state.getPayload(result)).toStrictEqual({});
 	});
 
 	it("narrows an entity union to the flagged branch", () => {
-		const flag = DModeling.createFlag<
+		interface UserRole extends DModeling.Flag<
 			"UserRole",
-			typeof userStructure,
 			string
+		> {}
+		const flag = DModeling.createFlag<
+			UserRole,
+			typeof userStructure
 		>("UserRole");
 		const entity = userStructure.new({ name: userName });
 		const input: typeof entity | ReturnType<typeof flag.append<typeof entity, "admin">> = entity;

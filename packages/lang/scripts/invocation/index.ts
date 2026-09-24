@@ -3,3 +3,4 @@ export * from "./flow";
 export * from "./kind";
 export * from "./port";
 export * from "./reader";
+export * from "./signature";

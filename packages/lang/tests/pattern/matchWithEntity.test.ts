@@ -1,24 +1,39 @@
-import { DModeling, DPattern, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DModeling from "@scripts/modeling";
+import * as DObject from "@scripts/object";
+import * as DPattern from "@scripts/pattern";
 
 describe("matchWithEntity", () => {
 	interface User extends DModeling.Entity<"User"> {
+		id: string;
 		name: string;
 	}
 
 	interface Admin extends DModeling.Entity<"Admin"> {
+		id: string;
 		permissions: readonly string[];
 	}
 
 	type Input = User | Admin;
+	type TransformedUser = DCommon.SimplifyTopLevel<
+		& Omit<User, "id">
+		& { id: number }
+	>;
+	type TransformedAdmin = DCommon.SimplifyTopLevel<
+		& Omit<Admin, "id">
+		& { id: boolean }
+	>;
+	type TransformedInput = TransformedUser | TransformedAdmin;
 
 	it("should call the matching handler with the narrowed entity in classic form", () => {
 		const input = DModeling.entityKind.addTo({
+			id: "admin-id",
 			permissions: ["read"],
 		}, "Admin") as Input;
 
 		const result = DPattern.matchWithEntity(input, {
 			User: (entity) => {
-				type check = ExpectType<
+				type check = DCommon.ExpectType<
 					typeof entity,
 					User,
 					"strict"
@@ -27,7 +42,7 @@ describe("matchWithEntity", () => {
 				return entity.name;
 			},
 			Admin: (entity) => {
-				type check = ExpectType<
+				type check = DCommon.ExpectType<
 					typeof entity,
 					Admin,
 					"strict"
@@ -39,7 +54,7 @@ describe("matchWithEntity", () => {
 
 		expect(result).toBe(1);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			string | number,
 			"strict"
@@ -48,14 +63,15 @@ describe("matchWithEntity", () => {
 
 	it("should work in pipe with the curried form", () => {
 		const input = DModeling.entityKind.addTo({
+			id: "user-id",
 			name: "Alice",
 		}, "User") as Input;
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DPattern.matchWithEntity({
 				User: (entity) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof entity,
 						User,
 						"strict"
@@ -64,7 +80,7 @@ describe("matchWithEntity", () => {
 					return entity.name;
 				},
 				Admin: (entity) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof entity,
 						Admin,
 						"strict"
@@ -77,9 +93,52 @@ describe("matchWithEntity", () => {
 
 		expect(result).toBe("Alice");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			string | number,
+			"strict"
+		>;
+	});
+
+	it("should infer entities passed directly to curried functions in pipe", () => {
+		const input = DModeling.entityKind.addTo({
+			id: "admin-id",
+			permissions: ["read"],
+		}, "Admin") as Input;
+
+		const result = DCommon.pipe(
+			input,
+			DPattern.matchWithEntity({
+				User: DObject.transformProperties({
+					id: (value) => {
+						type check = DCommon.ExpectType<
+							typeof value,
+							string,
+							"strict"
+						>;
+
+						return value.length;
+					},
+				}),
+				Admin: DObject.transformProperties({
+					id: (value) => {
+						type check = DCommon.ExpectType<
+							typeof value,
+							string,
+							"strict"
+						>;
+
+						return value.length > 0;
+					},
+				}),
+			}),
+		);
+
+		expect(result.id).toBe(true);
+
+		type check = DCommon.ExpectType<
+			typeof result,
+			TransformedInput,
 			"strict"
 		>;
 	});
@@ -92,7 +151,7 @@ describe("matchWithEntity", () => {
 			User: () => "Alice",
 		});
 
-		pipe(
+		DCommon.pipe(
 			// @ts-expect-error curried matcher only accepts its entity literal keys
 			input,
 			DPattern.matchWithEntity({
@@ -105,6 +164,7 @@ describe("matchWithEntity", () => {
 
 	it("should reject matchers with missing or additional keys", () => {
 		const input = DModeling.entityKind.addTo({
+			id: "user-id",
 			name: "Alice",
 		}, "User") as Input;
 
@@ -120,14 +180,14 @@ describe("matchWithEntity", () => {
 			Unexpected: () => false,
 		});
 
-		pipe(
+		DCommon.pipe(
 			input,
 			// @ts-expect-error curried matcher must handle every piped entity name
 			DPattern.matchWithEntity({
 				User: () => "Alice",
 			}),
 		);
-		pipe(
+		DCommon.pipe(
 			input,
 			DPattern.matchWithEntity(
 				// @ts-expect-error curried matcher cannot declare keys outside its entity names

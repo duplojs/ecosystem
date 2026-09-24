@@ -101,6 +101,14 @@ export type EntityUpdate<
 	any
 >;
 
+type ForbiddenMoreKey<
+	GenericProperties extends Record<string, unknown>,
+	GenericNewProperties extends Record<string, unknown>,
+> = DObject.ForbiddenKey<
+	GenericNewProperties,
+	Extract<Exclude<keyof GenericNewProperties, keyof GenericProperties>, string>
+>;
+
 export interface EntityStructure<
 	out GenericName extends string = string,
 	out GenericProperties extends Record<string, unknown> = Record<string, unknown>,
@@ -117,10 +125,18 @@ export interface EntityStructure<
 	"new"<
 		GenericNewProperties extends GenericProperties,
 	>(
-		properties: GenericNewProperties
+		properties: (
+			& GenericNewProperties
+			& ForbiddenMoreKey<
+				GenericProperties,
+				GenericNewProperties
+			>
+		)
 	): (
 		& Entity<GenericName>
-		& GenericNewProperties
+		& DCommon.SimplifyTopLevel<
+			Readonly<GenericNewProperties>
+		>
 	);
 
 	decodeMap<
@@ -425,9 +441,19 @@ export const EntityStructure = DDataStructure.createStructure(
 					return (input: object) => self.update(input as never, update as never);
 				}
 
-				const [input, { [objectTagKind.runTimeKey as never]: __, ...update }] = args;
+				const [input, update] = args;
 
-				return DObject.override(input, update);
+				const updatedEntity = {
+					[entityKind.runTimeKey]: name,
+				};
+
+				for (const key of self.definition.inner.value.definition.keys) {
+					updatedEntity[key as never] = update[key as never] === undefined
+						? input[key as never]
+						: update[key as never];
+				}
+
+				return updatedEntity;
 			},
 		},
 	) as never,

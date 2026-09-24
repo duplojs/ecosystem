@@ -59,7 +59,7 @@ export function matchWithEntityOtherwise<
 		>
 		& ForbiddenMoreKey<NoInfer<GenericEntity>, GenericMatcher>
 	),
-	otherwise: (value: UnhandledEntity<GenericEntity, GenericMatcher>) => GenericOutput,
+	otherwise: (value: DCommon.BreakGenericLink<UnhandledEntity<GenericEntity, GenericMatcher>>) => GenericOutput,
 ): (
 	input: GenericEntity & RequireSimpleName<GenericEntity>,
 ) => (
@@ -85,7 +85,7 @@ export function matchWithEntityOtherwise<
 		>
 		& ForbiddenMoreKey<GenericEntity, GenericMatcher>
 	),
-	otherwise: (value: UnhandledEntity<GenericEntity, GenericMatcher>) => GenericOutput,
+	otherwise: (value: DCommon.BreakGenericLink<UnhandledEntity<GenericEntity, GenericMatcher>>) => GenericOutput,
 ): (
 	| ReturnType<
 		Extract<

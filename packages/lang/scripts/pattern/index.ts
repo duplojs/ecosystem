@@ -16,3 +16,5 @@ export * from "./matchWithTaggedObject";
 export * from "./matchWithTaggedObjectOtherwise";
 export * from "./matchWithEntity";
 export * from "./matchWithEntityOtherwise";
+export * from "./matchWithFact";
+export * from "./matchWithFactOtherwise";

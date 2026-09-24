@@ -1,4 +1,3 @@
-import type * as DCommon from "@scripts/common";
 import type * as DKind from "@scripts/kind";
 import type * as DDataStructure from "@scripts/dataStructure";
 import { createKind } from "../kind";
@@ -10,47 +9,63 @@ export const flagKind = createKind<
 >("flag");
 
 export interface Flag<
-	GenericName extends string = string,
-	GenericValue extends unknown = never,
+	GenericName extends Capitalize<string> = Capitalize<string>,
+	GenericPayload extends unknown = unknown,
 > extends DKind.Kind<
 		typeof flagKind,
-		Record<GenericName, GenericValue>
+		Record<GenericName, GenericPayload>
 	> {
 
 }
 
+export type GetFlagName<
+	GenericFlag extends Flag,
+> = GenericFlag extends Flag<
+	infer InferredName extends Capitalize<string>
+>
+	? InferredName
+	: never;
+
+export type GetFlagPayload<
+	GenericFlag extends Flag,
+> = GenericFlag extends Flag<
+	any,
+	infer InferredPayload
+>
+	? InferredPayload
+	: never;
+
 const flagHandlerKind = createKind("flag-handler");
 
 export interface FlagHandler<
-	GenericName extends string = string,
+	GenericName extends Capitalize<string> = Capitalize<string>,
 	GenericEntity extends Entity = Entity,
-	GenericValue extends unknown = unknown,
-> extends DKind.Kind<typeof flagHandlerKind> {
+	GenericPayload extends unknown = unknown> extends DKind.Kind<typeof flagHandlerKind> {
 	readonly name: GenericName;
 
 	append<
 		GenericInputEntity extends GenericEntity,
-		const GenericInputValue extends GenericValue,
+		const GenericInputPayload extends GenericPayload,
 	>(
-		value: GenericInputValue
+		value: GenericInputPayload
 	): (entity: GenericInputEntity) => (
 		& GenericInputEntity
-		& Flag<GenericName, GenericInputValue>
+		& Flag<GenericName, GenericInputPayload>
 	);
 
 	append<
 		GenericInputEntity extends GenericEntity,
-		const GenericInputValue extends GenericValue,
+		const GenericInputPayload extends GenericPayload,
 	>(
 		entity: GenericInputEntity,
-		value: GenericInputValue
+		value: GenericInputPayload
 	): (
 		& GenericInputEntity
-		& Flag<GenericName, GenericInputValue>
+		& Flag<GenericName, GenericInputPayload>
 	);
 
-	getValue<
-		GenericInputEntity extends GenericEntity & Flag<GenericName, GenericValue>,
+	getPayload<
+		GenericInputEntity extends GenericEntity & Flag<GenericName, GenericPayload>,
 	>(
 		entity: GenericInputEntity
 	): DKind.GetValue<
@@ -69,17 +84,14 @@ export interface FlagHandler<
 }
 
 export function createFlag<
-	GenericName extends Capitalize<string>,
+	GenericFLag extends Flag,
 	GenericEntityStructure extends EntityStructure,
-	GenericPayload extends unknown = {},
 >(
-	name: DCommon.IsEqual<GenericName, Capitalize<string>> extends true
-		? never
-		: NoInfer<GenericName>,
+	name: GetFlagName<GenericFLag>,
 ): FlagHandler<
-	GenericName,
+	GetFlagName<GenericFLag>,
 	DDataStructure.StructureValue<GenericEntityStructure>,
-	GenericPayload
+	GetFlagPayload<GenericFLag>
 > {
 	function append(...args: [unknown] | [Entity, unknown]) {
 		if (args.length === 1) {
@@ -104,7 +116,7 @@ export function createFlag<
 	return {
 		name,
 		append,
-		getValue(entity: Entity) {
+		getPayload(entity: Entity) {
 			return flagKind.getValue(entity as never)[name];
 		},
 		has(entity: Entity) {
@@ -114,13 +126,3 @@ export function createFlag<
 		[flagHandlerKind.runTimeKey]: null,
 	} satisfies Record<keyof DKind.Remove<FlagHandler>, unknown> as never;
 }
-
-export type GetFlag<
-	GenericHandler extends FlagHandler<any, any, any>,
-> = GenericHandler extends FlagHandler<
-	infer InferredName,
-	any,
-	infer InferredValue
->
-	? Flag<InferredName, InferredValue>
-	: never;

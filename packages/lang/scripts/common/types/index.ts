@@ -6,6 +6,7 @@ export type * from "./anyObject";
 export type * from "./anyPredicate";
 export type * from "./anyTuple";
 export type * from "./anyValue";
+export type * from "./applyPromiseIf";
 export type * from "./bivariantFunction";
 export type * from "./breakGenericLink";
 export type * from "./cleanObjectEntry";
