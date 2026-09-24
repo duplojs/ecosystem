@@ -17,7 +17,7 @@ describe("readTextFile", () => {
 			readFile: vi.fn().mockResolvedValue("hello"),
 		});
 
-		const result = await DSFile.readTextFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		if (DEither.isRight(result)) {
@@ -31,7 +31,7 @@ describe("readTextFile", () => {
 			readFile: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DSFile.readTextFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -42,7 +42,7 @@ describe("readTextFile", () => {
 			readTextFile: vi.fn().mockResolvedValue("deno"),
 		});
 
-		const result = await DSFile.readTextFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		if (DEither.isRight(result)) {
@@ -56,7 +56,7 @@ describe("readTextFile", () => {
 			readTextFile: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DSFile.readTextFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -69,7 +69,7 @@ describe("readTextFile", () => {
 			}),
 		});
 
-		const result = await DSFile.readTextFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		if (DEither.isRight(result)) {
@@ -85,7 +85,7 @@ describe("readTextFile", () => {
 			}),
 		});
 
-		const result = await DSFile.readTextFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

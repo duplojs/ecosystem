@@ -27,7 +27,7 @@ declare module "@scripts/implementor" {
 			envFileParams?: EnvironmentVariableFileParams,
 		): Promise<
 			| DEither.Right<"decode-success", DDataStructure.ShapeObjectStructureValue<GenericShape>>
-			| DSFile.FileSystemLeft<"read-text-file">
+			| Exclude<DSFile.ReadTextFileResult, DEither.Right>
 			| DEither.Left<"decode-error", DDataStructure.Error>
 		>;
 	}

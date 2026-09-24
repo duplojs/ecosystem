@@ -17,7 +17,7 @@ describe("setCurrentWorkingDirectory", () => {
 		const chdir = vi.fn();
 		setProcessMock({ chdir });
 
-		const result = setCurrentWorkingDirectory<string & DPath.Path>(DCommon.infer("/tmp/project"));
+		const result = setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(chdir).toHaveBeenCalledWith("/tmp/project");
@@ -31,7 +31,7 @@ describe("setCurrentWorkingDirectory", () => {
 			},
 		});
 
-		const result = setCurrentWorkingDirectory<string & DPath.Path>(DCommon.infer("/tmp/project"));
+		const result = setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -41,7 +41,7 @@ describe("setCurrentWorkingDirectory", () => {
 		const chdir = vi.fn();
 		setDenoMock({ chdir });
 
-		const result = setCurrentWorkingDirectory<string & DPath.Path>(DCommon.infer("/tmp/project"));
+		const result = setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(chdir).toHaveBeenCalledWith("/tmp/project");
@@ -55,7 +55,7 @@ describe("setCurrentWorkingDirectory", () => {
 			},
 		});
 
-		const result = setCurrentWorkingDirectory<string & DPath.Path>(DCommon.infer("/tmp/project"));
+		const result = setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

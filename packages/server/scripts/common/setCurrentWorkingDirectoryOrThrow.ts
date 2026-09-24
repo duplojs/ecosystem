@@ -14,10 +14,8 @@ export class SetCurrentWorkingDirectoryError extends DKind.parentClass(
 	}
 }
 
-export function setCurrentWorkingDirectoryOrThrow<
-	GenericPath extends string & DPath.Path,
->(
-	path: GenericPath,
+export function setCurrentWorkingDirectoryOrThrow(
+	path: string & DPath.Path,
 ) {
 	DEither.whenIsRightOtherwise(
 		setCurrentWorkingDirectory(path),

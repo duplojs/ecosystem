@@ -35,7 +35,7 @@ describe("walkDirectory", () => {
 			]),
 		});
 
-		const result = await DSFile.walkDirectory<string & DPath.Path>(DCommon.infer("/tmp/demo"));
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/demo"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.readdir).toHaveBeenCalledWith("/tmp/demo", {
@@ -57,7 +57,7 @@ describe("walkDirectory", () => {
 			readdir: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DSFile.walkDirectory<string & DPath.Path>(DCommon.infer("/tmp/demo"));
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/demo"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

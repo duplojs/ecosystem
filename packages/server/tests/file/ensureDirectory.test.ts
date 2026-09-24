@@ -16,7 +16,7 @@ describe("ensureDirectory", () => {
 			mkdir: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DSFile.ensureDirectory<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.mkdir).toHaveBeenCalledWith("/tmp/mock", { recursive: true });
@@ -28,7 +28,7 @@ describe("ensureDirectory", () => {
 			mkdir: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DSFile.ensureDirectory<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -38,7 +38,7 @@ describe("ensureDirectory", () => {
 		const mkdir = vi.fn().mockResolvedValue(undefined);
 		setDenoMock({ mkdir });
 
-		const result = await DSFile.ensureDirectory<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(mkdir).toHaveBeenCalledWith("/tmp/mock", { recursive: true });
@@ -50,7 +50,7 @@ describe("ensureDirectory", () => {
 			mkdir: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DSFile.ensureDirectory<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

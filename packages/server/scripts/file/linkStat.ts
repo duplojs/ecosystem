@@ -5,7 +5,68 @@ import * as DChrono from "@duplojs/lang/chrono";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import type { StatInfo } from "./stat";
 import type { Stats } from "node:fs";
-import type { FileSystemLeft } from "./types";
+import type { FileSystemEither } from "./types";
+
+export type LinkStatResult = FileSystemEither<
+	| DEither.Right<"link-stat", StatInfo>
+	| DEither.Left<"link-stat-not-found", unknown>
+	| DEither.Left<"link-stat-permission-denied", unknown>
+	| DEither.Left<"link-stat-not-directory", unknown>
+	| DEither.Left<"link-stat-too-many-open-files", unknown>
+	| DEither.Left<"link-stat-busy", unknown>
+	| DEither.Left<"link-stat-error", unknown>
+>;
+
+function handleNodeLinkStatError(error: unknown): LinkStatResult {
+	if (
+		typeof error === "object"
+		&& error !== null
+		&& "code" in error
+	) {
+		if (error.code === "ENOENT") {
+			return DEither.left("file-system-link-stat-not-found", error);
+		} else if (
+			error.code === "EACCES"
+			|| error.code === "EPERM"
+		) {
+			return DEither.left("file-system-link-stat-permission-denied", error);
+		} else if (error.code === "ENOTDIR") {
+			return DEither.left("file-system-link-stat-not-directory", error);
+		} else if (
+			error.code === "EMFILE"
+			|| error.code === "ENFILE"
+		) {
+			return DEither.left("file-system-link-stat-too-many-open-files", error);
+		} else if (error.code === "EBUSY") {
+			return DEither.left("file-system-link-stat-busy", error);
+		}
+	}
+
+	return DEither.left("file-system-link-stat-error", error);
+}
+
+function handleDenoLinkStatError(error: unknown): LinkStatResult {
+	if (error instanceof Deno.errors.NotFound) {
+		return DEither.left("file-system-link-stat-not-found", error);
+	}
+
+	if (
+		error instanceof Deno.errors.PermissionDenied
+		|| error instanceof Deno.errors.NotCapable
+	) {
+		return DEither.left("file-system-link-stat-permission-denied", error);
+	}
+
+	if (error instanceof Deno.errors.NotADirectory) {
+		return DEither.left("file-system-link-stat-not-directory", error);
+	}
+
+	if (error instanceof Deno.errors.Busy) {
+		return DEither.left("file-system-link-stat-busy", error);
+	}
+
+	return DEither.left("file-system-link-stat-error", error);
+}
 
 function createStatInfoWithFsSource(source: Stats): StatInfo {
 	return {
@@ -81,11 +142,7 @@ function createStatInfoWithDeno(source: Deno.FileInfo): StatInfo {
 
 declare module "@scripts/implementor" {
 	interface ServerFunction {
-		linkStat<
-			GenericPath extends string & DPath.Path,
-		>(
-			path: GenericPath,
-		): Promise<FileSystemLeft<"link-stat"> | DEither.Success<StatInfo>>;
+		linkStat(path: string & DPath.Path): Promise<LinkStatResult>;
 	}
 }
 
@@ -98,19 +155,19 @@ export const linkStat = implementFunction(
 				.then(
 					DCommon.innerPipe(
 						createStatInfoWithFsSource,
-						DEither.success,
+						(value) => DEither.right("file-system-link-stat", value),
 					),
 				)
-				.catch((value) => DEither.left("file-system-link-stat", value));
+				.catch(handleNodeLinkStatError);
 		},
 		DENO: (path) => Deno
 			.lstat(path)
 			.then(
 				DCommon.innerPipe(
 					createStatInfoWithDeno,
-					DEither.success,
+					(value) => DEither.right("file-system-link-stat", value),
 				),
 			)
-			.catch((value) => DEither.left("file-system-link-stat", value)),
+			.catch(handleDenoLinkStatError),
 	},
 );

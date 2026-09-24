@@ -11,7 +11,7 @@ export class EnvironmentVariableError extends DKind.parentClass(
 ) {
 	public constructor(
 		public error: (
-			| DSFile.FileSystemLeft<"read-text-file">
+			| Exclude<DSFile.ReadTextFileResult, DEither.Right>
 			| DEither.Left<"decode-error", DDataStructure.Error>
 		),
 	) {

@@ -4,9 +4,9 @@ import { implementFunction } from "@scripts/implementor";
 
 declare module "@scripts/implementor" {
 	interface ServerFunction {
-		setCurrentWorkingDirectory<
-			GenericPath extends string & DPath.Path,
-		>(path: GenericPath): DEither.Fail | DEither.Ok;
+		setCurrentWorkingDirectory(
+			path: string & DPath.Path
+		): DEither.Fail | DEither.Ok;
 	}
 }
 

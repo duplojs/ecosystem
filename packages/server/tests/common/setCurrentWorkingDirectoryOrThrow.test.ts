@@ -16,7 +16,7 @@ describe("setCurrentWorkingDirectoryOrThrow", () => {
 			chdir: vi.fn(),
 		});
 
-		const result = setCurrentWorkingDirectoryOrThrow<string & DPath.Path>(DCommon.infer("/tmp/project"));
+		const result = setCurrentWorkingDirectoryOrThrow(DCommon.infer("/tmp/project"));
 
 		expect(result).toBeUndefined();
 	});
@@ -29,7 +29,7 @@ describe("setCurrentWorkingDirectoryOrThrow", () => {
 			},
 		});
 
-		expect(() => setCurrentWorkingDirectoryOrThrow<string & DPath.Path>(DCommon.infer("/tmp/project")))
+		expect(() => setCurrentWorkingDirectoryOrThrow(DCommon.infer("/tmp/project")))
 			.toThrow(SetCurrentWorkingDirectoryError);
 	});
 });

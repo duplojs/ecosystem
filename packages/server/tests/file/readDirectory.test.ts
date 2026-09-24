@@ -15,7 +15,7 @@ describe("readDirectory", () => {
 			readdir: vi.fn().mockResolvedValue(["a", "b"]),
 		});
 
-		const result = await DSFile.readDirectory<string & DPath.Path>(DCommon.infer("/tmp/mock"), { recursive: true });
+		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), { recursive: true });
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.readdir).toHaveBeenCalledWith("/tmp/mock", { recursive: true });
@@ -30,7 +30,7 @@ describe("readDirectory", () => {
 			readdir: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DSFile.readDirectory<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

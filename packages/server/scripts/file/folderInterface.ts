@@ -3,19 +3,22 @@ import type * as DKind from "@duplojs/lang/kind";
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import { createKind } from "@scripts/kind";
-import { move } from "./move";
-import { exists } from "./exists";
-import { rename } from "./rename";
-import { remove } from "./remove";
-import { readDirectory } from "./readDirectory";
-import { stat, type StatInfo } from "./stat";
-import { walkDirectory } from "./walkDirectory";
+import { move, type MoveResult } from "./move";
+import { exists, type ExistsResult } from "./exists";
+import { rename, type RenameResult } from "./rename";
+import { remove, type RemoveResult } from "./remove";
+import { readDirectory, type ReadDirectoryResult } from "./readDirectory";
+import { stat, type StatInfo, type StatResult } from "./stat";
+import { walkDirectory, type WalkDirectoryResult } from "./walkDirectory";
 import type { FileInterface } from "./fileInterface";
 import type { UnknownInterface } from "./unknownInterface";
-import type { FileSystemLeft } from "./types";
-import { relocate } from "./relocate";
+import { relocate, type RelocateResult } from "./relocate";
 
 const folderInterfaceKind = createKind("folderInterface");
+
+type FolderInterfaceRenameResult = Exclude<RenameResult, DEither.Right> | DEither.Right<"file-system-rename", FolderInterface>;
+type FolderInterfaceRelocateResult = Exclude<RelocateResult, DEither.Right> | DEither.Right<"file-system-relocate", FolderInterface>;
+type FolderInterfaceMoveResult = Exclude<MoveResult, DEither.Right> | DEither.Right<"file-system-move", FolderInterface>;
 
 export interface FolderInterface extends DKind.Kind<
 	typeof folderInterfaceKind
@@ -23,14 +26,14 @@ export interface FolderInterface extends DKind.Kind<
 	path: string & DPath.Path;
 	getName(): (string & DPath.Segment) | null;
 	getParentPath(): (string & DPath.Path) | null;
-	rename(newName: (string & DPath.Segment)): Promise<FileSystemLeft<"rename"> | DEither.Success<FolderInterface>>;
-	exists(): Promise<FileSystemLeft<"exists"> | DEither.Ok>;
-	relocate(parentPath: string & DPath.Path): Promise<FileSystemLeft<"relocate"> | DEither.Success<FolderInterface>>;
-	move(newPath: string & DPath.Path): Promise<FileSystemLeft<"move"> | DEither.Success<FolderInterface>>;
-	remove(): Promise<FileSystemLeft<"remove"> | DEither.Ok>;
-	getChildren(): Promise<FileSystemLeft<"read-directory"> | DEither.Success<(string & DPath.Path)[]>>;
-	stat(): Promise<FileSystemLeft<"stat"> | DEither.Success<StatInfo>>;
-	walk(): Promise<FileSystemLeft<"walk-directory"> | DEither.Success<Generator<FolderInterface | FileInterface | UnknownInterface>>>;
+	rename(newName: (string & DPath.Segment)): Promise<FolderInterfaceRenameResult>;
+	exists(): Promise<ExistsResult>;
+	relocate(parentPath: string & DPath.Path): Promise<FolderInterfaceRelocateResult>;
+	move(newPath: string & DPath.Path): Promise<FolderInterfaceMoveResult>;
+	remove(): Promise<RemoveResult>;
+	getChildren(): Promise<ReadDirectoryResult>;
+	stat(): Promise<StatResult>;
+	walk(): Promise<WalkDirectoryResult>;
 }
 
 export function createFolderInterface(path: string & DPath.Path): FolderInterface {
@@ -48,7 +51,7 @@ export function createFolderInterface(path: string & DPath.Path): FolderInterfac
 			DEither.whenIsRight(
 				DCommon.innerPipe(
 					createFolderInterface,
-					DEither.success,
+					(value) => DEither.right("file-system-rename", value),
 				),
 			),
 		);
@@ -60,7 +63,7 @@ export function createFolderInterface(path: string & DPath.Path): FolderInterfac
 			DEither.whenIsRight(
 				DCommon.innerPipe(
 					createFolderInterface,
-					DEither.success,
+					(value) => DEither.right("file-system-relocate", value),
 				),
 			),
 		);
@@ -70,7 +73,8 @@ export function createFolderInterface(path: string & DPath.Path): FolderInterfac
 		return DCommon.asyncPipe(
 			move(path, newPath),
 			DEither.whenIsRight(
-				() => DEither.success(
+				() => DEither.right(
+					"file-system-move",
 					createFolderInterface(newPath),
 				),
 			),

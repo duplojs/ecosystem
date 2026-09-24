@@ -3,15 +3,18 @@ import type * as DKind from "@duplojs/lang/kind";
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import { createKind } from "@scripts/kind";
-import { rename } from "./rename";
-import { exists } from "./exists";
-import { move } from "./move";
-import { remove } from "./remove";
-import { type StatInfo, stat } from "./stat";
-import type { FileSystemLeft } from "./types";
-import { relocate } from "./relocate";
+import { rename, type RenameResult } from "./rename";
+import { exists, type ExistsResult } from "./exists";
+import { move, type MoveResult } from "./move";
+import { remove, type RemoveResult } from "./remove";
+import { type StatInfo, stat, type StatResult } from "./stat";
+import { relocate, type RelocateResult } from "./relocate";
 
 const fileInterfaceKind = createKind("fileInterface");
+
+type FileInterfaceRenameResult = Exclude<RenameResult, DEither.Right> | DEither.Right<"file-system-rename", FileInterface>;
+type FileInterfaceRelocateResult = Exclude<RelocateResult, DEither.Right> | DEither.Right<"file-system-relocate", FileInterface>;
+type FileInterfaceMoveResult = Exclude<MoveResult, DEither.Right> | DEither.Right<"file-system-move", FileInterface>;
 
 export interface FileInterface extends DKind.Kind<
 	typeof fileInterfaceKind
@@ -21,12 +24,12 @@ export interface FileInterface extends DKind.Kind<
 	getMimeType(): string | null;
 	getExtension(params?: DPath.GetExtensionNameParams): (string & DPath.Segment) | null;
 	getParentPath(): (string & DPath.Path) | null;
-	rename(newName: string & DPath.Segment): Promise<FileSystemLeft<"rename"> | DEither.Success<FileInterface>>;
-	relocate(parentPath: string & DPath.Path): Promise<FileSystemLeft<"relocate"> | DEither.Success<FileInterface>>;
-	move(newPath: string & DPath.Path): Promise<FileSystemLeft<"move"> | DEither.Success<FileInterface>>;
-	exists(): Promise<FileSystemLeft<"exists"> | DEither.Ok>;
-	remove(): Promise<FileSystemLeft<"remove"> | DEither.Ok>;
-	stat(): Promise<FileSystemLeft<"stat"> | DEither.Success<StatInfo>>;
+	rename(newName: string & DPath.Segment): Promise<FileInterfaceRenameResult>;
+	relocate(parentPath: string & DPath.Path): Promise<FileInterfaceRelocateResult>;
+	move(newPath: string & DPath.Path): Promise<FileInterfaceMoveResult>;
+	exists(): Promise<ExistsResult>;
+	remove(): Promise<RemoveResult>;
+	stat(): Promise<StatResult>;
 }
 
 export function createFileInterface(
@@ -64,7 +67,7 @@ export function createFileInterface(
 			DEither.whenIsRight(
 				DCommon.innerPipe(
 					createFileInterface,
-					DEither.success,
+					(value) => DEither.right("file-system-rename", value),
 				),
 			),
 		);
@@ -76,7 +79,7 @@ export function createFileInterface(
 			DEither.whenIsRight(
 				DCommon.innerPipe(
 					createFileInterface,
-					DEither.success,
+					(value) => DEither.right("file-system-relocate", value),
 				),
 			),
 		);
@@ -86,7 +89,8 @@ export function createFileInterface(
 		return DCommon.asyncPipe(
 			move(path, newPath),
 			DEither.whenIsRight(
-				() => DEither.success(
+				() => DEither.right(
+					"file-system-move",
 					createFileInterface(newPath),
 				),
 			),

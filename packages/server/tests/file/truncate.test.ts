@@ -16,7 +16,7 @@ describe("truncate", () => {
 			truncate: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DSFile.truncate<string & DPath.Path>(DCommon.infer("/tmp/mock"), 10);
+		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.truncate).toHaveBeenCalledWith("/tmp/mock", 10);
@@ -28,7 +28,7 @@ describe("truncate", () => {
 			truncate: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DSFile.truncate<string & DPath.Path>(DCommon.infer("/tmp/mock"), 10);
+		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -38,7 +38,7 @@ describe("truncate", () => {
 		const truncate = vi.fn().mockResolvedValue(undefined);
 		setDenoMock({ truncate });
 
-		const result = await DSFile.truncate<string & DPath.Path>(DCommon.infer("/tmp/mock file"), 5);
+		const result = await DSFile.truncate(DCommon.infer("/tmp/mock file"), 5);
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(truncate).toHaveBeenCalledWith("/tmp/mock file", 5);
@@ -61,7 +61,7 @@ describe("truncate", () => {
 			truncate: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DSFile.truncate<string & DPath.Path>(DCommon.infer("/tmp/mock"), 5);
+		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 5);
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

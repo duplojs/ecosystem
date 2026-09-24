@@ -1,4 +1,16 @@
+type DenoErrorClass = new (message?: string) => Error;
+
 interface DenoMock {
+	errors?: {
+		NotFound: DenoErrorClass;
+		PermissionDenied: DenoErrorClass;
+		NotCapable: DenoErrorClass;
+		IsADirectory: DenoErrorClass;
+		NotADirectory: DenoErrorClass;
+		InvalidData: DenoErrorClass;
+		Busy: DenoErrorClass;
+		AlreadyExists: DenoErrorClass;
+	};
 	env?: {
 		toObject(): Record<string, string>;
 		set(key: string, value: string): void;
@@ -37,6 +49,20 @@ interface DenoMock {
 
 const globalWithDeno = globalThis as unknown as { Deno?: DenoMock };
 
+export const denoErrorsMock = {
+	NotFound: class NotFound extends Error {},
+	PermissionDenied: class PermissionDenied extends Error {},
+	NotCapable: class NotCapable extends Error {},
+	IsADirectory: class IsADirectory extends Error {},
+	NotADirectory: class NotADirectory extends Error {},
+	InvalidData: class InvalidData extends Error {},
+	Busy: class Busy extends Error {},
+	AlreadyExists: class AlreadyExists extends Error {},
+};
+
 export function setDenoMock(mock: DenoMock) {
-	globalWithDeno.Deno = mock;
+	globalWithDeno.Deno = {
+		errors: denoErrorsMock,
+		...mock,
+	};
 }

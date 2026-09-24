@@ -17,7 +17,7 @@ describe("readJsonFile", () => {
 			readFile: vi.fn().mockResolvedValue("{\"count\":1}"),
 		});
 
-		const result = await DSFile.readJsonFile<string & DPath.Path>(DCommon.infer("/tmp/mock.json"));
+		const result = await DSFile.readJsonFile(DCommon.infer("/tmp/mock.json"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		if (DEither.isRight(result)) {
@@ -31,7 +31,7 @@ describe("readJsonFile", () => {
 			readFile: vi.fn().mockResolvedValue("{bad"),
 		});
 
-		const result = await DSFile.readJsonFile<string & DPath.Path>(DCommon.infer("/tmp/mock.json"));
+		const result = await DSFile.readJsonFile(DCommon.infer("/tmp/mock.json"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -42,7 +42,7 @@ describe("readJsonFile", () => {
 			readTextFile: vi.fn().mockResolvedValue("{bad"),
 		});
 
-		const result = await DSFile.readJsonFile<string & DPath.Path>(DCommon.infer("/tmp/mock.json"));
+		const result = await DSFile.readJsonFile(DCommon.infer("/tmp/mock.json"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -53,7 +53,7 @@ describe("readJsonFile", () => {
 			readTextFile: vi.fn().mockResolvedValue("{\"value\":2}"),
 		});
 
-		const result = await DSFile.readJsonFile<string & DPath.Path>(DCommon.infer("/tmp/mock.json"));
+		const result = await DSFile.readJsonFile(DCommon.infer("/tmp/mock.json"));
 
 		expect(DEither.isRight(result)).toBe(true);
 	});
@@ -66,7 +66,7 @@ describe("readJsonFile", () => {
 			}),
 		});
 
-		const result = await DSFile.readJsonFile<string & DPath.Path>(DCommon.infer("/tmp/mock.json"));
+		const result = await DSFile.readJsonFile(DCommon.infer("/tmp/mock.json"));
 
 		expect(DEither.isRight(result)).toBe(true);
 	});
@@ -79,7 +79,7 @@ describe("readJsonFile", () => {
 			}),
 		});
 
-		const result = await DSFile.readJsonFile<string & DPath.Path>(DCommon.infer("/tmp/mock.json"));
+		const result = await DSFile.readJsonFile(DCommon.infer("/tmp/mock.json"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

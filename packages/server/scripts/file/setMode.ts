@@ -2,7 +2,7 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemLeft } from "./types";
+import type { FileSystemEither } from "./types";
 
 interface Permissions {
 	read?: boolean;
@@ -21,6 +21,64 @@ interface ModeObject {
 }
 
 type SetMode = ModeObject | number;
+
+export type SetModeResult = FileSystemEither<
+	| DEither.Right<"set-mode", void>
+	| DEither.Left<"set-mode-not-found", unknown>
+	| DEither.Left<"set-mode-permission-denied", unknown>
+	| DEither.Left<"set-mode-not-directory", unknown>
+	| DEither.Left<"set-mode-read-only", unknown>
+	| DEither.Left<"set-mode-invalid-argument", unknown>
+	| DEither.Left<"set-mode-error", unknown>
+>;
+
+function handleNodeSetModeError(error: unknown): SetModeResult {
+	if (
+		typeof error === "object"
+		&& error !== null
+		&& "code" in error
+	) {
+		if (error.code === "ENOENT") {
+			return DEither.left("file-system-set-mode-not-found", error);
+		} else if (
+			error.code === "EACCES"
+			|| error.code === "EPERM"
+		) {
+			return DEither.left("file-system-set-mode-permission-denied", error);
+		} else if (error.code === "ENOTDIR") {
+			return DEither.left("file-system-set-mode-not-directory", error);
+		} else if (error.code === "EROFS") {
+			return DEither.left("file-system-set-mode-read-only", error);
+		} else if (error.code === "EINVAL") {
+			return DEither.left("file-system-set-mode-invalid-argument", error);
+		}
+	}
+
+	return DEither.left("file-system-set-mode-error", error);
+}
+
+function handleDenoSetModeError(error: unknown): SetModeResult {
+	if (error instanceof Deno.errors.NotFound) {
+		return DEither.left("file-system-set-mode-not-found", error);
+	}
+
+	if (
+		error instanceof Deno.errors.PermissionDenied
+		|| error instanceof Deno.errors.NotCapable
+	) {
+		return DEither.left("file-system-set-mode-permission-denied", error);
+	}
+
+	if (error instanceof Deno.errors.NotADirectory) {
+		return DEither.left("file-system-set-mode-not-directory", error);
+	}
+
+	if (error instanceof Deno.errors.InvalidData) {
+		return DEither.left("file-system-set-mode-invalid-argument", error);
+	}
+
+	return DEither.left("file-system-set-mode-error", error);
+}
 
 function calculatePermissions(permissions?: Permissions): number {
 	if (!permissions) {
@@ -53,22 +111,50 @@ declare module "@scripts/implementor" {
 		setMode(
 			path: string & DPath.Path,
 			mode: SetMode,
-		): Promise<FileSystemLeft<"set-mode"> | DEither.Ok>;
+		): Promise<SetModeResult>;
 	}
 }
 
-export const setMode = implementFunction(
+const setModeImplementation = implementFunction(
 	"setMode",
 	{
 		NODE: async(path, mode) => {
 			const fs = await nodeFileSystem.value;
 			return fs.chmod(path, toMode(mode))
-				.then(DEither.ok)
-				.catch((value) => DEither.left("file-system-set-mode", value));
+				.then(() => DEither.right("file-system-set-mode"))
+				.catch(handleNodeSetModeError);
 		},
 		DENO: (path, mode) => Deno
 			.chmod(path, toMode(mode))
-			.then(DEither.ok)
-			.catch((value) => DEither.left("file-system-set-mode", value)),
+			.then(() => DEither.right("file-system-set-mode"))
+			.catch(handleDenoSetModeError),
 	},
 );
+
+export function setMode(
+	mode: SetMode,
+): (
+	path: string & DPath.Path,
+) => Promise<SetModeResult>;
+
+export function setMode(
+	path: string & DPath.Path,
+	mode: SetMode,
+): Promise<SetModeResult>;
+
+export function setMode(
+	...args:
+		| [mode: SetMode]
+		| [path: string & DPath.Path, mode: SetMode]
+) {
+	if (args.length === 1) {
+		const [mode] = args;
+
+		return (path: string & DPath.Path) => setModeImplementation(
+			path,
+			mode,
+		);
+	}
+
+	return setModeImplementation(...args);
+}

@@ -4,7 +4,7 @@ import * as DEither from "@duplojs/lang/either";
 import * as DChrono from "@duplojs/lang/chrono";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import type { Stats } from "node:fs";
-import type { FileSystemLeft } from "./types";
+import type { FileSystemEither } from "./types";
 
 export interface StatInfo {
 
@@ -46,13 +46,70 @@ export interface StatInfo {
 	isSocket: boolean | null;
 }
 
+export type StatResult = FileSystemEither<
+	| DEither.Right<"stat", StatInfo>
+	| DEither.Left<"stat-not-found", unknown>
+	| DEither.Left<"stat-permission-denied", unknown>
+	| DEither.Left<"stat-not-directory", unknown>
+	| DEither.Left<"stat-too-many-open-files", unknown>
+	| DEither.Left<"stat-busy", unknown>
+	| DEither.Left<"stat-error", unknown>
+>;
+
+function handleNodeStatError(error: unknown): StatResult {
+	if (
+		typeof error === "object"
+		&& error !== null
+		&& "code" in error
+	) {
+		if (error.code === "ENOENT") {
+			return DEither.left("file-system-stat-not-found", error);
+		} else if (
+			error.code === "EACCES"
+			|| error.code === "EPERM"
+		) {
+			return DEither.left("file-system-stat-permission-denied", error);
+		} else if (error.code === "ENOTDIR") {
+			return DEither.left("file-system-stat-not-directory", error);
+		} else if (
+			error.code === "EMFILE"
+			|| error.code === "ENFILE"
+		) {
+			return DEither.left("file-system-stat-too-many-open-files", error);
+		} else if (error.code === "EBUSY") {
+			return DEither.left("file-system-stat-busy", error);
+		}
+	}
+
+	return DEither.left("file-system-stat-error", error);
+}
+
+function handleDenoStatError(error: unknown): StatResult {
+	if (error instanceof Deno.errors.NotFound) {
+		return DEither.left("file-system-stat-not-found", error);
+	}
+
+	if (
+		error instanceof Deno.errors.PermissionDenied
+		|| error instanceof Deno.errors.NotCapable
+	) {
+		return DEither.left("file-system-stat-permission-denied", error);
+	}
+
+	if (error instanceof Deno.errors.NotADirectory) {
+		return DEither.left("file-system-stat-not-directory", error);
+	}
+
+	if (error instanceof Deno.errors.Busy) {
+		return DEither.left("file-system-stat-busy", error);
+	}
+
+	return DEither.left("file-system-stat-error", error);
+}
+
 declare module "@scripts/implementor" {
 	interface ServerFunction {
-		stat<
-			GenericPath extends string & DPath.Path,
-		>(
-			path: GenericPath,
-		): Promise<FileSystemLeft<"stat"> | DEither.Success<StatInfo>>;
+		stat(path: string & DPath.Path): Promise<StatResult>;
 	}
 }
 
@@ -137,28 +194,28 @@ export const stat = implementFunction(
 				.then(
 					DCommon.innerPipe(
 						createStatInfoWithFsSource,
-						DEither.success,
+						(value) => DEither.right("file-system-stat", value),
 					),
 				)
-				.catch((value) => DEither.left("file-system-stat", value));
+				.catch(handleNodeStatError);
 		},
 		DENO: (path) => Deno
 			.stat(path)
 			.then(
 				DCommon.innerPipe(
 					createStatInfoWithDeno,
-					DEither.success,
+					(value) => DEither.right("file-system-stat", value),
 				),
 			)
-			.catch((value) => DEither.left("file-system-stat", value)),
+			.catch(handleDenoStatError),
 		BUN: (path) => Bun.file(path)
 			.stat()
 			.then(
 				DCommon.innerPipe(
 					createStatInfoWithFsSource,
-					DEither.success,
+					(value) => DEither.right("file-system-stat", value),
 				),
 			)
-			.catch((value) => DEither.left("file-system-stat", value)),
+			.catch(handleNodeStatError),
 	},
 );

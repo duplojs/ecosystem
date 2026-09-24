@@ -1,10 +1,8 @@
 import type * as DKind from "@duplojs/lang/kind";
 import * as DPath from "@duplojs/lang/path";
-import type * as DEither from "@duplojs/lang/either";
 import { createKind } from "@scripts/kind";
-import { stat, type StatInfo } from "./stat";
-import { exists } from "./exists";
-import type { FileSystemLeft } from "./types";
+import { stat, type StatResult } from "./stat";
+import { exists, type ExistsResult } from "./exists";
 
 const unknownInterfaceKind = createKind("unknownInterface");
 
@@ -14,8 +12,8 @@ export interface UnknownInterface extends DKind.Kind<
 	path: string & DPath.Path;
 	getName(): (string & DPath.Segment) | null;
 	getParentPath(): (string & DPath.Path) | null;
-	stat(): Promise<FileSystemLeft<"stat"> | DEither.Success<StatInfo>>;
-	exist(): Promise<FileSystemLeft<"exists"> | DEither.Ok>;
+	stat(): Promise<StatResult>;
+	exist(): Promise<ExistsResult>;
 }
 
 export function createUnknownInterface(path: string & DPath.Path): UnknownInterface {

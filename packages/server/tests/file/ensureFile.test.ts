@@ -17,7 +17,7 @@ describe("ensureFile", () => {
 			open: vi.fn().mockResolvedValue({ close }),
 		});
 
-		const result = await DSFile.ensureFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.ensureFile(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(fs.open).toHaveBeenCalledWith("/tmp/mock", "a");
@@ -30,7 +30,7 @@ describe("ensureFile", () => {
 			open: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DSFile.ensureFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.ensureFile(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -41,7 +41,7 @@ describe("ensureFile", () => {
 		const open = vi.fn().mockResolvedValue({ close });
 		setDenoMock({ open });
 
-		const result = await DSFile.ensureFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.ensureFile(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(open).toHaveBeenCalledWith("/tmp/mock", {
@@ -58,7 +58,7 @@ describe("ensureFile", () => {
 			open: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DSFile.ensureFile<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.ensureFile(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

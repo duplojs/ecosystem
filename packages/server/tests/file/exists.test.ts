@@ -17,7 +17,7 @@ describe("exists", () => {
 			access: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DSFile.exists<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 	});
@@ -28,7 +28,7 @@ describe("exists", () => {
 			access: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DSFile.exists<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -39,7 +39,7 @@ describe("exists", () => {
 			stat: vi.fn().mockResolvedValue({}),
 		});
 
-		const result = await DSFile.exists<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 	});
@@ -50,7 +50,7 @@ describe("exists", () => {
 			stat: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await DSFile.exists<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -63,7 +63,7 @@ describe("exists", () => {
 			}),
 		});
 
-		const result = await DSFile.exists<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isRight(result)).toBe(true);
 	});
@@ -76,7 +76,7 @@ describe("exists", () => {
 			}),
 		});
 
-		const result = await DSFile.exists<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -89,7 +89,7 @@ describe("exists", () => {
 			}),
 		});
 
-		const result = await DSFile.exists<string & DPath.Path>(DCommon.infer("/tmp/mock"));
+		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
