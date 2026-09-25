@@ -336,7 +336,8 @@ describe("client", async() => {
 		await DCommon.timeout(500);
 
 		expect(await DSFile.stat(DCommon.cast("files/store/client/testClient.generate.jpg") satisfies string & DPath.Path)).toStrictEqual(
-			DEither.success(
+			DEither.right(
+				"file-system-stat",
 				expect.objectContaining({ sizeBytes: DCommon.stringToBytes("1mb") }),
 			),
 		);
@@ -347,7 +348,7 @@ describe("client", async() => {
 			DEither.isRight,
 		);
 		expect(await DSFile.readDirectory(DCommon.cast("files/upload") satisfies string & DPath.Path)).toStrictEqual(
-			DEither.success([".gitkeep"]),
+			DEither.right("file-system-read-directory", [".gitkeep"]),
 		);
 	});
 

@@ -54,7 +54,7 @@ describe("makeRouteFolder", async() => {
 			isFile: true,
 			modifiedAt,
 		} as DSFile.StatInfo;
-		const spyStat = vi.fn(() => Promise.resolve(DEither.success(defaultStat)));
+		const spyStat = vi.fn(() => Promise.resolve(DEither.right("file-system-stat", defaultStat)));
 		TESTImplementation.set("stat", spyStat);
 
 		await buildedRoute(
@@ -91,7 +91,7 @@ describe("makeRouteFolder", async() => {
 			isFile: true,
 			modifiedAt: null,
 		} as DSFile.StatInfo;
-		const spyStat = vi.fn(() => Promise.resolve(DEither.success(defaultStat)));
+		const spyStat = vi.fn(() => Promise.resolve(DEither.right("file-system-stat", defaultStat)));
 		TESTImplementation.set("stat", spyStat);
 
 		await buildedRoute(
@@ -129,7 +129,7 @@ describe("makeRouteFolder", async() => {
 			isFile: true,
 			modifiedAt,
 		} as DSFile.StatInfo;
-		const spyStat = vi.fn(() => Promise.resolve(DEither.success(defaultStat)));
+		const spyStat = vi.fn(() => Promise.resolve(DEither.right("file-system-stat", defaultStat)));
 		TESTImplementation.set("stat", spyStat);
 
 		await buildedRoute(
@@ -204,7 +204,7 @@ describe("makeRouteFolder", async() => {
 	});
 
 	it("resource requested notfound", async() => {
-		const spyStat = vi.fn(() => Promise.resolve(DEither.left("file-system-stat")));
+		const spyStat = vi.fn(() => Promise.resolve(DEither.left("file-system-stat-error")));
 		TESTImplementation.set("stat", spyStat);
 
 		await buildedRoute(
@@ -233,7 +233,7 @@ describe("makeRouteFolder", async() => {
 		const defaultStat = {
 			isFile: false,
 		} as DSFile.StatInfo;
-		const spyStat = vi.fn(() => Promise.resolve(DEither.success(defaultStat)));
+		const spyStat = vi.fn(() => Promise.resolve(DEither.right("file-system-stat", defaultStat)));
 		TESTImplementation.set("stat", spyStat);
 
 		await buildedRoute(

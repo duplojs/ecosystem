@@ -61,4 +61,189 @@ describe("walkDirectory", () => {
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
+	it("returns not-found when NODE walkDirectory rejects with ENOENT", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("ENOENT"),
+			{ code: "ENOENT" },
+		);
+		setFsPromisesMock({
+			readdir: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-walk-directory-not-found",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns permission-denied when NODE walkDirectory rejects with EACCES", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("EACCES"),
+			{ code: "EACCES" },
+		);
+		setFsPromisesMock({
+			readdir: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-walk-directory-permission-denied",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns permission-denied when NODE walkDirectory rejects with EPERM", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("EPERM"),
+			{ code: "EPERM" },
+		);
+		setFsPromisesMock({
+			readdir: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-walk-directory-permission-denied",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns not-directory when NODE walkDirectory rejects with ENOTDIR", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("ENOTDIR"),
+			{ code: "ENOTDIR" },
+		);
+		setFsPromisesMock({
+			readdir: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-walk-directory-not-directory",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns too-many-open-files when NODE walkDirectory rejects with EMFILE", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("EMFILE"),
+			{ code: "EMFILE" },
+		);
+		setFsPromisesMock({
+			readdir: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-walk-directory-too-many-open-files",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns too-many-open-files when NODE walkDirectory rejects with ENFILE", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("ENFILE"),
+			{ code: "ENFILE" },
+		);
+		setFsPromisesMock({
+			readdir: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-walk-directory-too-many-open-files",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns busy when NODE walkDirectory rejects with EBUSY", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("EBUSY"),
+			{ code: "EBUSY" },
+		);
+		setFsPromisesMock({
+			readdir: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-walk-directory-busy",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns error when NODE walkDirectory rejects with an unknown error", async() => {
+		setEnvironment("NODE");
+		const error = new Error("unexpected");
+		setFsPromisesMock({
+			readdir: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-walk-directory-error",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns error when NODE walkDirectory rejects with an unknown code", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("UNKNOWN"),
+			{ code: "UNKNOWN" },
+		);
+		setFsPromisesMock({
+			readdir: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-walk-directory-error",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
 });

@@ -43,8 +43,8 @@ describe("makeRouteFile", async() => {
 			isFile: true,
 			modifiedAt,
 		} as DSFile.StatInfo;
-		const spy = vi.fn(() => Promise.resolve(DEither.success(defaultStat)));
-		TESTImplementation.set("stat", spy);
+		const spyStat = vi.fn(() => Promise.resolve(DEither.right("file-system-stat", defaultStat)));
+		TESTImplementation.set("stat", spyStat);
 
 		await buildedRoute(
 			new Request({
@@ -77,8 +77,8 @@ describe("makeRouteFile", async() => {
 			isFile: true,
 			modifiedAt: null,
 		} as DSFile.StatInfo;
-		const spy = vi.fn(() => Promise.resolve(DEither.success(defaultStat)));
-		TESTImplementation.set("stat", spy);
+		const spyStat = vi.fn(() => Promise.resolve(DEither.right("file-system-stat", defaultStat)));
+		TESTImplementation.set("stat", spyStat);
 
 		await buildedRoute(
 			new Request({
@@ -112,8 +112,8 @@ describe("makeRouteFile", async() => {
 			isFile: true,
 			modifiedAt,
 		} as DSFile.StatInfo;
-		const spy = vi.fn(() => Promise.resolve(DEither.success(defaultStat)));
-		TESTImplementation.set("stat", spy);
+		const spyStat = vi.fn(() => Promise.resolve(DEither.right("file-system-stat", defaultStat)));
+		TESTImplementation.set("stat", spyStat);
 
 		await buildedRoute(
 			new Request({
@@ -147,8 +147,8 @@ describe("makeRouteFile", async() => {
 		const defaultStat = {
 			isFile: false,
 		} as DSFile.StatInfo;
-		const spy = vi.fn(() => Promise.resolve(DEither.success(defaultStat)));
-		TESTImplementation.set("stat", spy);
+		const spyStat = vi.fn(() => Promise.resolve(DEither.right("file-system-stat", defaultStat)));
+		TESTImplementation.set("stat", spyStat);
 
 		await buildedRoute(
 			new Request({
@@ -173,8 +173,8 @@ describe("makeRouteFile", async() => {
 	});
 
 	it("source does not exist", async() => {
-		const spy = vi.fn(() => Promise.resolve(DEither.left("file-system-stat", undefined)));
-		TESTImplementation.set("stat", spy);
+		const spyStat = vi.fn(() => Promise.resolve(DEither.left("file-system-stat-error", undefined)));
+		TESTImplementation.set("stat", spyStat);
 
 		await buildedRoute(
 			new Request({

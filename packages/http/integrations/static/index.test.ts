@@ -16,30 +16,39 @@ describe("static plugin", async() => {
 		await Promise.resolve();
 
 		if (path === "files/fakeFiles") {
-			return DEither.success({
-				isFile: false,
-				isDirectory: true,
-				modifiedAt: null,
-			} as DSFile.StatInfo);
+			return DEither.right(
+				"file-system-stat",
+				{
+					isFile: false,
+					isDirectory: true,
+					modifiedAt: null,
+				} as DSFile.StatInfo,
+			);
 		}
 
 		if (path === "files/fakeFiles/superTextFile.txt") {
-			return DEither.success({
-				isFile: true,
-				isDirectory: false,
-				modifiedAt: mockedModifiedAt,
-			} as DSFile.StatInfo);
+			return DEither.right(
+				"file-system-stat",
+				{
+					isFile: true,
+					isDirectory: false,
+					modifiedAt: mockedModifiedAt,
+				} as DSFile.StatInfo,
+			);
 		}
 
 		if (path === "files/fakeFiles/1mb.jpg") {
-			return DEither.success({
-				isFile: true,
-				isDirectory: false,
-				modifiedAt: mockedModifiedAt,
-			} as DSFile.StatInfo);
+			return DEither.right(
+				"file-system-stat",
+				{
+					isFile: true,
+					isDirectory: false,
+					modifiedAt: mockedModifiedAt,
+				} as DSFile.StatInfo,
+			);
 		}
 
-		return DEither.left("file-system-stat");
+		return DEither.left("file-system-stat-error");
 	});
 
 	const server = await createHttpServer(hub, {

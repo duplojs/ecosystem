@@ -19,7 +19,7 @@ describe("static plugin implementation", () => {
 		.plug(staticPlugin(sourceFolder, { prefix: "/folder" }));
 
 	it("API file source not exist", async() => {
-		const spyStat = vi.fn(() => Promise.resolve(DEither.left("file-system-stat")));
+		const spyStat = vi.fn(() => Promise.resolve(DEither.left("file-system-stat-error")));
 		TESTImplementation.set("stat", spyStat);
 
 		await expect(
@@ -33,7 +33,8 @@ describe("static plugin implementation", () => {
 
 	it("API file source is not file", async() => {
 		const spyStat = vi.fn(() => Promise.resolve(
-			DEither.success(
+			DEither.right(
+				"file-system-stat",
 				{
 					isFile: false,
 				} as DSFile.StatInfo,
@@ -52,7 +53,8 @@ describe("static plugin implementation", () => {
 
 	it("API file expect good", async() => {
 		const spyStat = vi.fn(() => Promise.resolve(
-			DEither.success(
+			DEither.right(
+				"file-system-stat",
 				{
 					isFile: true,
 				} as DSFile.StatInfo,
@@ -71,7 +73,8 @@ describe("static plugin implementation", () => {
 
 	it("API folder source is not folder", async() => {
 		const spyStat = vi.fn(() => Promise.resolve(
-			DEither.success(
+			DEither.right(
+				"file-system-stat",
 				{
 					isFile: true,
 				} as DSFile.StatInfo,
@@ -90,7 +93,8 @@ describe("static plugin implementation", () => {
 
 	it("API folder expect good", async() => {
 		const spyStat = vi.fn(() => Promise.resolve(
-			DEither.success(
+			DEither.right(
+				"file-system-stat",
 				{
 					isFile: false,
 				} as DSFile.StatInfo,

@@ -3,7 +3,7 @@ import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
 import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
-import { setDenoMock } from "@tests/_utils/deno.mock";
+import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
 
 interface DenoFileInfoMock {
 	isFile: boolean;
@@ -189,5 +189,298 @@ describe("linkStat", () => {
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
 		expect(DEither.isLeft(result)).toBe(true);
+	});
+	it("returns not-found when NODE linkStat rejects with ENOENT", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("ENOENT"),
+			{ code: "ENOENT" },
+		);
+		setFsPromisesMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-not-found",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns permission-denied when NODE linkStat rejects with EACCES", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("EACCES"),
+			{ code: "EACCES" },
+		);
+		setFsPromisesMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-permission-denied",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns permission-denied when NODE linkStat rejects with EPERM", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("EPERM"),
+			{ code: "EPERM" },
+		);
+		setFsPromisesMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-permission-denied",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns not-directory when NODE linkStat rejects with ENOTDIR", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("ENOTDIR"),
+			{ code: "ENOTDIR" },
+		);
+		setFsPromisesMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-not-directory",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns too-many-open-files when NODE linkStat rejects with EMFILE", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("EMFILE"),
+			{ code: "EMFILE" },
+		);
+		setFsPromisesMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-too-many-open-files",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns too-many-open-files when NODE linkStat rejects with ENFILE", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("ENFILE"),
+			{ code: "ENFILE" },
+		);
+		setFsPromisesMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-too-many-open-files",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns busy when NODE linkStat rejects with EBUSY", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("EBUSY"),
+			{ code: "EBUSY" },
+		);
+		setFsPromisesMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-busy",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns error when NODE linkStat rejects with an unknown error", async() => {
+		setEnvironment("NODE");
+		const error = new Error("unexpected");
+		setFsPromisesMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-error",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns error when NODE linkStat rejects with an unknown code", async() => {
+		setEnvironment("NODE");
+		const error = Object.assign(
+			new Error("UNKNOWN"),
+			{ code: "UNKNOWN" },
+		);
+		setFsPromisesMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-error",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns not-found when DENO linkStat rejects with NotFound", async() => {
+		setEnvironment("DENO");
+		const error = new denoErrorsMock.NotFound("not-found");
+		setDenoMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-not-found",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns permission-denied when DENO linkStat rejects with PermissionDenied", async() => {
+		setEnvironment("DENO");
+		const error = new denoErrorsMock.PermissionDenied("permission-denied");
+		setDenoMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-permission-denied",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns permission-denied when DENO linkStat rejects with NotCapable", async() => {
+		setEnvironment("DENO");
+		const error = new denoErrorsMock.NotCapable("permission-denied");
+		setDenoMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-permission-denied",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns not-directory when DENO linkStat rejects with NotADirectory", async() => {
+		setEnvironment("DENO");
+		const error = new denoErrorsMock.NotADirectory("not-directory");
+		setDenoMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-not-directory",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns busy when DENO linkStat rejects with Busy", async() => {
+		setEnvironment("DENO");
+		const error = new denoErrorsMock.Busy("busy");
+		setDenoMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-busy",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
+	});
+
+	it("returns error when DENO linkStat rejects with an unknown error", async() => {
+		setEnvironment("DENO");
+		const error = new Error("unexpected");
+		setDenoMock({
+			lstat: vi.fn().mockRejectedValue(error),
+		});
+
+		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
+
+		expect(DEither.hasInformation(
+			result,
+			"file-system-link-stat-error",
+		)).toBe(true);
+		if (DEither.isLeft(result)) {
+			expect(DEither.unwrapLeft(result)).toBe(error);
+		}
 	});
 });

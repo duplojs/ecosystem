@@ -9,11 +9,11 @@ import * as DPath from "@duplojs/lang/path";
 
 describe("plugin implementation", () => {
 	setEnvironment("TEST");
-	const spy = vi.fn((path: string, content: string) => Promise.resolve(DEither.ok()));
-	TESTImplementation.set("writeTextFile", spy);
+	const spyWriteTextFile = vi.fn((path: string, content: string) => Promise.resolve(DEither.right("file-system-write-text-file")));
+	TESTImplementation.set("writeTextFile", spyWriteTextFile);
 
 	beforeEach(() => {
-		spy.mockClear();
+		spyWriteTextFile.mockClear();
 	});
 
 	const route = useRouteBuilder("GET", "/user")
@@ -49,8 +49,8 @@ describe("plugin implementation", () => {
 			{} as any,
 		);
 
-		expect(spy.mock.lastCall?.at(0)).toBe("swagger.json");
-		expect(spy.mock.lastCall?.at(1)).toMatchSnapshot();
+		expect(spyWriteTextFile.mock.lastCall?.at(0)).toBe("swagger.json");
+		expect(spyWriteTextFile.mock.lastCall?.at(1)).toMatchSnapshot();
 	});
 
 	it("generate OpenApi file with type bearer ok security option", async() => {
@@ -70,8 +70,8 @@ describe("plugin implementation", () => {
 			{} as any,
 		);
 
-		expect(spy.mock.lastCall?.at(0)).toBe("swagger.json");
-		expect(spy.mock.lastCall?.at(1)).toMatchSnapshot();
+		expect(spyWriteTextFile.mock.lastCall?.at(0)).toBe("swagger.json");
+		expect(spyWriteTextFile.mock.lastCall?.at(1)).toMatchSnapshot();
 	});
 
 	it("generate OpenApi file with type apiKey ok security option", async() => {
@@ -93,8 +93,8 @@ describe("plugin implementation", () => {
 			{} as any,
 		);
 
-		expect(spy.mock.lastCall?.at(0)).toBe("swagger.json");
-		expect(spy.mock.lastCall?.at(1)).toMatchSnapshot();
+		expect(spyWriteTextFile.mock.lastCall?.at(0)).toBe("swagger.json");
+		expect(spyWriteTextFile.mock.lastCall?.at(1)).toMatchSnapshot();
 	});
 
 	it("not generate OpenApi file", async() => {
@@ -110,7 +110,7 @@ describe("plugin implementation", () => {
 			{} as any,
 		);
 
-		expect(spy).not.toHaveBeenCalled();
+		expect(spyWriteTextFile).not.toHaveBeenCalled();
 	});
 
 	it("empty route", async() => {
@@ -125,7 +125,7 @@ describe("plugin implementation", () => {
 			{} as any,
 		);
 
-		expect(spy).not.toHaveBeenCalled();
+		expect(spyWriteTextFile).not.toHaveBeenCalled();
 	});
 
 	it("empty params", async() => {
@@ -138,7 +138,7 @@ describe("plugin implementation", () => {
 			{} as any,
 		);
 
-		expect(spy).not.toHaveBeenCalled();
+		expect(spyWriteTextFile).not.toHaveBeenCalled();
 	});
 
 	it("not generate in PROD env", async() => {
@@ -151,6 +151,6 @@ describe("plugin implementation", () => {
 			{} as any,
 		);
 
-		expect(spy).not.toHaveBeenCalled();
+		expect(spyWriteTextFile).not.toHaveBeenCalled();
 	});
 });

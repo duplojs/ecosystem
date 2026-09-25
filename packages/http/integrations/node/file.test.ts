@@ -49,13 +49,14 @@ describe("file", async() => {
 		expect(
 			await DSFile.stat(DPath.declarePath("files/store/node/nodeTest.generate.jpg")),
 		).toStrictEqual(
-			DEither.success(
+			DEither.right(
+				"file-system-stat",
 				expect.objectContaining({ sizeBytes: DCommon.stringToBytes("1mb") }),
 			),
 		);
 		DCommon.asserts(await DSFile.remove(DPath.declarePath("files/store/node/nodeTest.generate.jpg")), DEither.isRight);
 		expect(await DSFile.readDirectory(DPath.declarePath("files/upload"))).toStrictEqual(
-			DEither.success([".gitkeep"]),
+			DEither.right("file-system-read-directory", [".gitkeep"]),
 		);
 	});
 
@@ -96,7 +97,7 @@ describe("file", async() => {
 		await DCommon.timeout(500);
 
 		expect(await DSFile.readDirectory(DPath.declarePath("files/upload"))).toStrictEqual(
-			DEither.success([".gitkeep"]),
+			DEither.right("file-system-read-directory", [".gitkeep"]),
 		);
 	});
 

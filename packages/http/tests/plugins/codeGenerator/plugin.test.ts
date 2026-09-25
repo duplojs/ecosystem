@@ -8,17 +8,17 @@ import { codeGeneratorPlugin } from "@plugin-codeGenerator";
 
 describe("plugin implementation", () => {
 	setEnvironment("TEST");
-	const spy = vi.fn((path: string, content: string) => Promise.resolve(DEither.ok()));
+	const spyWriteTextFile = vi.fn((path: string, content: string) => Promise.resolve(DEither.right("file-system-write-text-file")));
 	const spyExists = vi.fn<DCommon.AnyFunction>((path: string) => Promise.resolve(DEither.left("file-system-exists", undefined)));
-	const spyMakeDirectory = vi.fn((path: string) => Promise.resolve(DEither.ok()));
-	const spyRemove = vi.fn((path: string, params?: { recursive?: boolean }) => Promise.resolve(DEither.ok()));
-	TESTImplementation.set("writeTextFile", spy);
+	const spyMakeDirectory = vi.fn((path: string) => Promise.resolve(DEither.right("file-system-make-directory")));
+	const spyRemove = vi.fn((path: string, params?: { recursive?: boolean }) => Promise.resolve(DEither.right("file-system-remove")));
+	TESTImplementation.set("writeTextFile", spyWriteTextFile);
 	TESTImplementation.set("exists", spyExists);
 	TESTImplementation.set("makeDirectory", spyMakeDirectory);
 	TESTImplementation.set("remove", spyRemove);
 
 	beforeEach(() => {
-		spy.mockClear();
+		spyWriteTextFile.mockClear();
 		spyExists.mockClear();
 		spyMakeDirectory.mockClear();
 		spyRemove.mockClear();
@@ -55,8 +55,8 @@ describe("plugin implementation", () => {
 			{} as any,
 		);
 
-		expect(spy.mock.lastCall?.at(0)).toBe("test.d.ts");
-		expect(spy.mock.lastCall?.at(1)).toMatchSnapshot();
+		expect(spyWriteTextFile.mock.lastCall?.at(0)).toBe("test.d.ts");
+		expect(spyWriteTextFile.mock.lastCall?.at(1)).toMatchSnapshot();
 	});
 
 	it("not generate API type", async() => {
@@ -69,7 +69,7 @@ describe("plugin implementation", () => {
 			{} as any,
 		);
 
-		expect(spy).not.toHaveBeenCalled();
+		expect(spyWriteTextFile).not.toHaveBeenCalled();
 	});
 
 	it("not generate in PROD env", async() => {
@@ -83,7 +83,7 @@ describe("plugin implementation", () => {
 			{} as any,
 		);
 
-		expect(spy).not.toHaveBeenCalled();
+		expect(spyWriteTextFile).not.toHaveBeenCalled();
 	});
 
 	it("generate data parser files from identified route data parsers", async() => {
@@ -117,12 +117,12 @@ describe("plugin implementation", () => {
 			{} as any,
 		);
 
-		expect(spy.mock.calls).toHaveLength(5);
-		expect(spy.mock.calls[0]).toMatchSnapshot();
-		expect(spy.mock.calls[1]).toMatchSnapshot();
-		expect(spy.mock.calls[2]).toMatchSnapshot();
-		expect(spy.mock.calls[3]).toMatchSnapshot();
-		expect(spy.mock.calls[4]).toMatchSnapshot();
+		expect(spyWriteTextFile.mock.calls).toHaveLength(5);
+		expect(spyWriteTextFile.mock.calls[0]).toMatchSnapshot();
+		expect(spyWriteTextFile.mock.calls[1]).toMatchSnapshot();
+		expect(spyWriteTextFile.mock.calls[2]).toMatchSnapshot();
+		expect(spyWriteTextFile.mock.calls[3]).toMatchSnapshot();
+		expect(spyWriteTextFile.mock.calls[4]).toMatchSnapshot();
 	});
 
 	it("generate data parser files only from explicit data parsers when disabledFromRoute is enabled", async() => {
@@ -155,11 +155,11 @@ describe("plugin implementation", () => {
 			{} as any,
 		);
 
-		expect(spy.mock.calls).toHaveLength(4);
-		expect(spy.mock.calls[0]).toMatchSnapshot();
-		expect(spy.mock.calls[1]).toMatchSnapshot();
-		expect(spy.mock.calls[2]).toMatchSnapshot();
-		expect(spy.mock.calls[3]).toMatchSnapshot();
+		expect(spyWriteTextFile.mock.calls).toHaveLength(4);
+		expect(spyWriteTextFile.mock.calls[0]).toMatchSnapshot();
+		expect(spyWriteTextFile.mock.calls[1]).toMatchSnapshot();
+		expect(spyWriteTextFile.mock.calls[2]).toMatchSnapshot();
+		expect(spyWriteTextFile.mock.calls[3]).toMatchSnapshot();
 	});
 
 	it("remove existing generated folder before recreating it", async() => {
