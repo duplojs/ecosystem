@@ -1,0 +1,16 @@
+{
+  "name": "ai-docs",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@duplojs/code-config": "workspace:*",
+    "@duplojs/eslint": "workspace:*",
+    "@duplojs/form": "workspace:*",
+    "@duplojs/http": "workspace:*",
+    "@duplojs/json-web-token": "workspace:*",
+    "@duplojs/lang": "workspace:*",
+    "@duplojs/playwright": "workspace:*",
+    "@duplojs/server": "workspace:*",
+    "@duplojs/tools": "workspace:*"
+  }
+}

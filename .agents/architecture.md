@@ -74,30 +74,6 @@ La mise à jour d'un package implique donc la mise à jour de l'écosystème ver
 
 Cette contrainte garantit qu'une combinaison de versions correspond toujours à un ensemble explicitement supporté et évite les incompatibilités silencieuses entre packages.
 
-## Graphe des dépendances
-
-```text
-@duplojs/lang
-└── dev -> @duplojs/code-config
-
-@duplojs/server
-├── peer -> @duplojs/lang
-└── dev -> @duplojs/code-config
-
-@duplojs/tools
-├── peer -> @duplojs/lang
-└── dev -> @duplojs/code-config
-
-@duplojs/json-web-token
-├── peer -> @duplojs/lang
-└── dev -> @duplojs/code-config
-
-@duplojs/code-config
-└── aucune dépendance vers un autre package DuploJS
-```
-
-`@duplojs/code-config` est transversal et intervient uniquement dans l'environnement de développement.
-
 ## Frontières d'import entre packages
 
 Un package ne peut consommer un autre package de l'écosystème qu'à travers son API publique.

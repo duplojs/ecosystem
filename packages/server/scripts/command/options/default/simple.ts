@@ -69,7 +69,7 @@ export const createOption = constructOption(
 				);
 			}
 
-			const result = await self.dataStructure.asyncUnsafeDecode(
+			const result = await self.dataStructure.asyncDecode(
 				DSDataStructure.codecsString,
 				value,
 			);

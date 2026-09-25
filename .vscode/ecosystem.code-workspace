@@ -37,6 +37,10 @@
 			"path": "../packages/code-config"
 		},
 		{
+			"name": "ai-docs",
+			"path": "../ai-docs"
+		},
+		{
 			"name": "ecosystem",
 			"path": ".."
 		},

@@ -36,6 +36,36 @@ importers:
         specifier: 5.0.1
         version: 5.0.1(@types/node@24.13.3)(@vitest/browser-playwright@5.0.1)(@vitest/coverage-istanbul@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.0.1)(vite@8.3.0(@types/node@24.13.3)(jiti@2.6.1)(sass-embedded@1.104.1)(sass@1.104.1))
 
+  ai-docs:
+    dependencies:
+      '@duplojs/code-config':
+        specifier: workspace:*
+        version: link:../packages/code-config
+      '@duplojs/eslint':
+        specifier: workspace:*
+        version: link:../packages/eslint
+      '@duplojs/form':
+        specifier: workspace:*
+        version: link:../packages/form
+      '@duplojs/http':
+        specifier: workspace:*
+        version: link:../packages/http
+      '@duplojs/json-web-token':
+        specifier: workspace:*
+        version: link:../packages/json-web-token
+      '@duplojs/lang':
+        specifier: workspace:*
+        version: link:../packages/lang
+      '@duplojs/playwright':
+        specifier: workspace:*
+        version: link:../packages/playwright
+      '@duplojs/server':
+        specifier: workspace:*
+        version: link:../packages/server
+      '@duplojs/tools':
+        specifier: workspace:*
+        version: link:../packages/tools
+
   packages/code-config:
     dependencies:
       '@commitlint/cli':

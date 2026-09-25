@@ -132,49 +132,6 @@ export interface Structure<
 		GenericCodecs extends Codecs,
 	>(
 		codecs: GenericCodecs,
-		data: ComputeStructureValue<
-			GenericValue,
-			GenericDefinition["constraints"]
-		>,
-	): (
-		| DEither.Right<
-			"encode-success",
-			EncodedValue<
-				ComputeStructureValue<
-					GenericValue,
-					GenericDefinition["constraints"]
-				>,
-				GenericCodecs
-			>
-		>
-		| DEither.Left<"async-error", ErrorPromise>
-		| DEither.Left<"encode-error", Error>
-	);
-	asyncEncode<
-		GenericCodecs extends Codecs,
-	>(
-		codecs: GenericCodecs,
-		data: ComputeStructureValue<
-			GenericValue,
-			GenericDefinition["constraints"]
-		>,
-	): Promise<
-		| DEither.Right<
-			"encode-success",
-			EncodedValue<
-				ComputeStructureValue<
-					GenericValue,
-					GenericDefinition["constraints"]
-				>,
-				GenericCodecs
-			>
-		>
-		| DEither.Left<"encode-error", Error>
-	>;
-	unsafeEncode<
-		GenericCodecs extends Codecs,
-	>(
-		codecs: GenericCodecs,
 		data: unknown,
 	): (
 		| DEither.Right<
@@ -190,7 +147,7 @@ export interface Structure<
 		| DEither.Left<"async-error", ErrorPromise>
 		| DEither.Left<"encode-error", Error>
 	);
-	asyncUnsafeEncode<
+	asyncEncode<
 		GenericCodecs extends Codecs,
 	>(
 		codecs: GenericCodecs,
@@ -212,13 +169,7 @@ export interface Structure<
 		GenericCodecs extends Codecs,
 	>(
 		codecs: GenericCodecs,
-		data: EncodedValue<
-			ComputeStructureValue<
-				GenericValue,
-				GenericDefinition["constraints"]
-			>,
-			GenericCodecs
-		>,
+		data: unknown,
 	): (
 		| DEither.Right<
 			"decode-success",
@@ -234,39 +185,6 @@ export interface Structure<
 		GenericCodecs extends Codecs,
 	>(
 		codecs: GenericCodecs,
-		data: EncodedValue<
-			ComputeStructureValue<
-				GenericValue,
-				GenericDefinition["constraints"]
-			>,
-			GenericCodecs
-		>,
-	): Promise<
-		| DEither.Right<
-			"decode-success",
-			ComputeStructureValue<
-				GenericValue,
-				GenericDefinition["constraints"]
-			>
-		>
-		| DEither.Left<"decode-error", Error>
-	>;
-	unsafeDecode(
-		codecs: Codecs,
-		data: unknown,
-	): (
-		| DEither.Right<
-			"decode-success",
-			ComputeStructureValue<
-				GenericValue,
-				GenericDefinition["constraints"]
-			>
-		>
-		| DEither.Left<"async-error", ErrorPromise>
-		| DEither.Left<"decode-error", Error>
-	);
-	asyncUnsafeDecode(
-		codecs: Codecs,
 		data: unknown,
 	): Promise<
 		| DEither.Right<
@@ -527,9 +445,7 @@ export function createStructure<
 
 				return true;
 			},
-			encode: (codecs, data) => self.unsafeEncode(codecs, data),
-			asyncEncode: (codecs, data) => self.asyncUnsafeEncode(codecs, data),
-			unsafeEncode: (codecs, data) => {
+			encode: (codecs, data) => {
 				const errorHandler = createGetErrorHandler();
 				const result = self.executeEncode(
 					codecs.context.value,
@@ -547,7 +463,7 @@ export function createStructure<
 
 				return DEither.right("encode-success", result as never);
 			},
-			asyncUnsafeEncode: async(codecs, data) => {
+			asyncEncode: async(codecs, data) => {
 				const errorHandler = createGetErrorHandler();
 				const result = await self.executeEncode(
 					codecs.context.value,
@@ -561,9 +477,7 @@ export function createStructure<
 
 				return DEither.right("encode-success", result as never);
 			},
-			decode: (codecs, data) => self.unsafeDecode(codecs, data),
-			asyncDecode: (codecs, data) => self.asyncUnsafeDecode(codecs, data),
-			unsafeDecode: (codecs, data) => {
+			decode: (codecs, data) => {
 				const errorHandler = createGetErrorHandler();
 				const result = self.executeDecode(
 					codecs.context.value,
@@ -581,7 +495,7 @@ export function createStructure<
 
 				return DEither.right("decode-success", result as never);
 			},
-			asyncUnsafeDecode: async(codecs, data) => {
+			asyncDecode: async(codecs, data) => {
 				const errorHandler = createGetErrorHandler();
 				const result = await self.executeDecode(
 					codecs.context.value,

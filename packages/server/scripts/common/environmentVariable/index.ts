@@ -67,7 +67,7 @@ export const environmentVariable = implementFunction(
 				structure.definition.keys,
 			);
 
-			const checkedEnvResult = await structure.asyncUnsafeDecode(
+			const checkedEnvResult = await structure.asyncDecode(
 				envFileParams?.codecs ?? DSDataStructure.codecsString,
 				envResult,
 			);
@@ -106,7 +106,7 @@ export const environmentVariable = implementFunction(
 				structure.definition.keys,
 			);
 
-			const checkedEnvResult = await structure.asyncUnsafeDecode(
+			const checkedEnvResult = await structure.asyncDecode(
 				envFileParams?.codecs ?? DDataStructure.codecsString,
 				envResult,
 			);

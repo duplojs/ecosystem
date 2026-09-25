@@ -38,7 +38,7 @@ describe("dataStructure file", () => {
 	it("creates a file structure that decodes strings into file interfaces", async() => {
 		const structure = DSDataStructure.file();
 
-		const result = await structure.asyncUnsafeDecode(
+		const result = await structure.asyncDecode(
 			DSDataStructure.codecsString,
 			"/tmp/avatar.png",
 		);
@@ -61,7 +61,7 @@ describe("dataStructure file", () => {
 	it("rejects values that are not valid encoded file paths", async() => {
 		const structure = DSDataStructure.file();
 
-		const result = await structure.asyncUnsafeDecode(
+		const result = await structure.asyncDecode(
 			DSDataStructure.codecsString,
 			42,
 		);
@@ -102,7 +102,7 @@ describe("dataStructure file", () => {
 
 		const result = await structure.asyncDecode(
 			DSDataStructure.codecsJson,
-			DCommon.infer("/tmp/config.json"),
+			"/tmp/config.json",
 		);
 
 		expect(DEither.isRight(result)).toBe(true);

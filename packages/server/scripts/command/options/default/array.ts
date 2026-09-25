@@ -92,7 +92,7 @@ export const createArrayOption = constructOption(
 				);
 			}
 
-			const result = await self.dataStructure.asyncUnsafeDecode(
+			const result = await self.dataStructure.asyncDecode(
 				DSDataStructure.codecsString,
 				DString.split(value, self.separator),
 			);

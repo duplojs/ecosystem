@@ -58,7 +58,7 @@ export function createDecodeTokenContent(
 			return DEither.left("header-json-error");
 		}
 
-		const headerResult = params.headerStructure.unsafeDecode(
+		const headerResult = params.headerStructure.decode(
 			DDataStructure.codecsJson,
 			headerJsonResult,
 		);
@@ -73,7 +73,7 @@ export function createDecodeTokenContent(
 			return DEither.left("payload-json-error");
 		}
 
-		const payloadResult = params.payloadStructure.unsafeDecode(
+		const payloadResult = params.payloadStructure.decode(
 			DDataStructure.codecsJson,
 			payloadJsonResult,
 		);

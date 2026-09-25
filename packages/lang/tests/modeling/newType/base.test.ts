@@ -232,7 +232,7 @@ describe("NewTypeStructure", () => {
 		const codecs = DDataStructure.createCodecs({ string: codec });
 
 		const failure = DEither.unwrapByInformationOrThrow(
-			structure.unsafeEncode(codecs, "Jo"),
+			structure.encode(codecs, "Jo"),
 			"encode-error",
 		);
 
@@ -263,7 +263,7 @@ describe("NewTypeStructure", () => {
 
 		expect(
 			DEither.unwrapByInformationOrThrow(
-				structure.unsafeEncode(codecs, 123 as never),
+				structure.encode(codecs, 123 as never),
 				"encode-error",
 			).issues[0],
 		).toMatchObject({
@@ -297,7 +297,7 @@ describe("NewTypeStructure", () => {
 
 		expect(
 			DEither.unwrapByInformationOrThrow(
-				structure.unsafeEncode(codecs, "Jo"),
+				structure.encode(codecs, "Jo"),
 				"encode-error",
 			).issues[0],
 		).toMatchObject({
@@ -324,7 +324,7 @@ describe("NewTypeStructure", () => {
 
 		expect(
 			DEither.unwrapByInformationOrThrow(
-				structure.unsafeEncode(codecs, "Jane"),
+				structure.encode(codecs, "Jane"),
 				"encode-error",
 			).issues[0],
 		).toMatchObject({
@@ -395,7 +395,7 @@ describe("NewTypeStructure", () => {
 		const codecs = DDataStructure.createCodecs({ string: codec });
 
 		const failure = DEither.unwrapByInformationOrThrow(
-			structure.unsafeDecode(codecs, 2),
+			structure.decode(codecs, 2),
 			"decode-error",
 		);
 
@@ -436,7 +436,7 @@ describe("NewTypeStructure", () => {
 
 		expect(
 			DEither.unwrapByInformationOrThrow(
-				structure.unsafeDecode(codecs, 2),
+				structure.decode(codecs, 2),
 				"decode-error",
 			).issues[0],
 		).toMatchObject({
@@ -463,7 +463,7 @@ describe("NewTypeStructure", () => {
 
 		expect(
 			DEither.unwrapByInformationOrThrow(
-				structure.unsafeDecode(codecs, 4),
+				structure.decode(codecs, 4),
 				"decode-error",
 			).issues[0],
 		).toMatchObject({

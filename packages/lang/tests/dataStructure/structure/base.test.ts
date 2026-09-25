@@ -580,10 +580,10 @@ describe("createStructure", () => {
 		const structure = TestStructure();
 		const asyncStructure = AsyncEncodeStructure();
 		const success = structure.encode(DDataStructure.createCodecs({ codec }), "abcd");
-		const fallbackSuccess = structure.unsafeEncode(DDataStructure.createCodecs({}), "value");
+		const fallbackSuccess = structure.encode(DDataStructure.createCodecs({}), "value");
 		const asyncFailure = asyncStructure.encode(DDataStructure.createCodecs({}), "value");
 		const asyncSuccess = await asyncStructure.asyncEncode(DDataStructure.createCodecs({ codec }), "value");
-		const asyncUnsafeSuccess = await asyncStructure.asyncUnsafeEncode(
+		const asyncUnsafeSuccess = await asyncStructure.asyncEncode(
 			DDataStructure.createCodecs({ codec }),
 			"value",
 		);
@@ -617,7 +617,7 @@ describe("createStructure", () => {
 		const structure = TestStructure();
 		const failure = structure.encode(DDataStructure.createCodecs({}), "value");
 		const asyncFailure = await structure.asyncEncode(DDataStructure.createCodecs({}), "value");
-		const unsafeAsyncFailure = await structure.asyncUnsafeEncode(DDataStructure.createCodecs({}), "value");
+		const unsafeAsyncFailure = await structure.asyncEncode(DDataStructure.createCodecs({}), "value");
 
 		expect(
 			DEither.unwrapByInformationOrThrow(failure, "encode-error").issues,
@@ -691,7 +691,7 @@ describe("createStructure", () => {
 		const success = structure.decode(DDataStructure.createCodecs({ codec }), 123 as never);
 		const asyncFailure = asyncStructure.decode(DDataStructure.createCodecs({ codec }), "value");
 		const asyncSuccess = await asyncStructure.asyncDecode(DDataStructure.createCodecs({ codec }), "value");
-		const asyncUnsafeSuccess = await asyncStructure.asyncUnsafeDecode(
+		const asyncUnsafeSuccess = await asyncStructure.asyncDecode(
 			DDataStructure.createCodecs({ codec }),
 			"value",
 		);
@@ -735,7 +735,7 @@ describe("createStructure", () => {
 		const structure = TestStructure();
 		const failure = structure.decode(DDataStructure.createCodecs({}), "value");
 		const asyncFailure = await structure.asyncDecode(DDataStructure.createCodecs({}), "value");
-		const unsafeAsyncFailure = await structure.asyncUnsafeDecode(DDataStructure.createCodecs({}), "value");
+		const unsafeAsyncFailure = await structure.asyncDecode(DDataStructure.createCodecs({}), "value");
 		const parseFailure = structure.parse("value");
 		const asyncParseFailure = await structure.asyncParse("value");
 

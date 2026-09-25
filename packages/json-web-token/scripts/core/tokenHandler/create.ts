@@ -36,7 +36,7 @@ export function createTokenHandlerCreateMethod(
 			typ: "JWT",
 			alg: signer.algorithm,
 		};
-		const headerResult = headerStructure.unsafeEncode(
+		const headerResult = headerStructure.encode(
 			DDataStructure.codecsJson,
 			params?.header
 				? {
@@ -49,7 +49,7 @@ export function createTokenHandlerCreateMethod(
 			return DEither.left("header-encode-error", DEither.unwrapLeft(headerResult));
 		}
 
-		const payloadResult = payloadStructure.unsafeEncode(
+		const payloadResult = payloadStructure.encode(
 			DDataStructure.codecsJson,
 			{
 				iss: config.issuer,
