@@ -33,3 +33,6 @@ pnpm --filter @duplojs/form test:types
 
 printf "\n${GREEN}@duplojs/http${RESET}\n"
 pnpm --filter @duplojs/http test:types
+
+printf "\n${GREEN}ai-docs${RESET}\n"
+pnpm --filter ai-docs test:types

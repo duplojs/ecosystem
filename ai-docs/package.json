@@ -2,6 +2,10 @@
   "name": "ai-docs",
   "private": true,
   "type": "module",
+  "scripts": {
+    "test:types": "./.commands/test-types.sh",
+    "test:lint": "./.commands/test-lint.sh"
+  },
   "dependencies": {
     "@duplojs/code-config": "workspace:*",
     "@duplojs/eslint": "workspace:*",
