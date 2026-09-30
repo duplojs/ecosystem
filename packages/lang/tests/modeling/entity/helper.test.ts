@@ -1,25 +1,69 @@
-import { DDataStructure, DEither, DModeling, type ExpectType } from "@scripts";
+import { DDataStructure, DEither, DModeling, type DString, type ExpectType } from "@scripts";
 
 describe("createEntity", () => {
 	it("creates an entity composed of new types", () => {
 		const name = DModeling.createNewType("UserName", DDataStructure.string());
+		const tag = DModeling.createNewType(
+			"UserTag",
+			DDataStructure.string(),
+			[
+				DDataStructure.trimmed(),
+				DDataStructure.minCharacters(2),
+				DDataStructure.maxCharacters(20),
+			],
+		);
 		const structure = DModeling.createEntity(
 			"User",
-			() => ({ name }),
+			() => ({
+				name,
+				tags: DDataStructure.array(tag),
+				recordTag: DDataStructure.record(
+					DDataStructure.string(),
+					tag,
+				),
+				objectTag: DDataStructure.object({
+					test: tag,
+				}),
+			}),
 		);
 
 		type _CheckStructure = ExpectType<
 			typeof structure,
 			DModeling.EntityStructure<
 				"User",
-				{ readonly name: string & DModeling.NewType<"UserName"> }
+				{
+					readonly name: string & DModeling.NewType<"UserName">;
+					readonly tags: readonly (
+						string & DModeling.NewType<"UserTag", DString.Trimmed | DString.MinCharacters<2> | DString.MaxCharacters<20>>
+					)[];
+					readonly recordTag: Partial<{
+						readonly [x: string]: string & DModeling.NewType<"UserTag", DString.Trimmed | DString.MinCharacters<2> | DString.MaxCharacters<20>>;
+					}>;
+					readonly objectTag: {
+						readonly test: string & DModeling.NewType<"UserTag", DString.Trimmed | DString.MinCharacters<2> | DString.MaxCharacters<20>>;
+					};
+				}
 			>,
 			"strict"
 		>;
 
 		expect(structure.name).toBe("User");
-		expect(structure.map({ name: "Jane" })).toStrictEqual(
-			DEither.right("map-success", structure.new({ name: "Jane" } as never)),
+		expect(structure.map({
+			name: "Jane",
+			tags: ["TEST"],
+			recordTag: {},
+			objectTag: {
+				test: "TEST",
+			},
+		})).toStrictEqual(
+			DEither.right("map-success", structure.new({
+				name: "Jane",
+				tags: ["TEST"],
+				recordTag: {},
+				objectTag: {
+					test: "TEST",
+				},
+			} as never)),
 		);
 	});
 

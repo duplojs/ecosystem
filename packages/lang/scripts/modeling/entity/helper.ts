@@ -12,26 +12,28 @@ export type ForbiddenMissingNewTypeInEntityShape<
 	| ObjectTag
 	| NewType
 	| null
+	| undefined
+	| Entity
 )
 	? never
-	: GenericValue extends object
-		? DCommon.Or<[
-			DCommon.IsExtends<GenericValue, readonly any[]>,
-			DCommon.And<[
+	: GenericValue extends readonly (infer InferredElement)[]
+		? ForbiddenMissingNewTypeInEntityShape<
+			InferredElement,
+			readonly [...GenericPath, "[number]"]
+		>
+		: GenericValue extends object
+			? DCommon.And<[
 				DCommon.IsExtends<keyof GenericValue, string>,
 				DCommon.Not<DCommon.IsExtends<DCommon.AnyFunction, GenericValue[keyof GenericValue]>>,
-			]>,
-		]> extends true
-			? {
-				[Prop in keyof GenericValue]: ForbiddenMissingNewTypeInEntityShape<
-					GenericValue[Prop],
-					readonly [...GenericPath, `${Extract<Prop, string | number>}`]
-				>
-			}[keyof GenericValue]
-			: GenericValue extends Entity
-				? never
-				: DCommon.ComputedTypeError<`Value at '${DString.Join<GenericPath>}' is not a NewType.`>
-		: DCommon.ComputedTypeError<`Value at '${DString.Join<GenericPath>}' is not a NewType.`>;
+			]> extends true
+				? {
+					[Prop in keyof GenericValue]: ForbiddenMissingNewTypeInEntityShape<
+						GenericValue[Prop],
+						readonly [...GenericPath, `${Extract<Prop, string | number>}`]
+					>
+				}[keyof GenericValue]
+				: DCommon.ComputedTypeError<`Value at '${DString.Join<GenericPath, ".">}' is not a NewType.`>
+			: DCommon.ComputedTypeError<`Value at '${DString.Join<GenericPath, ".">}' is not a NewType.`>;
 
 export function createEntity<
 	GenericName extends Capitalize<string>,
