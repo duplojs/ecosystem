@@ -88,23 +88,21 @@ type SplitOutput<
 export function split<
 	GenericString extends string,
 	GenericSeparator extends string,
-	GenericOutput = SplitOutput<GenericString, GenericSeparator>,
 >(
 	separator: GenericSeparator | RegExp,
 ): (
 	string: GenericString,
-) => DCommon.BreakGenericLink<GenericOutput>;
+) => SplitOutput<GenericString, GenericSeparator>;
 
 export function split<
 	GenericString extends string,
 	GenericSeparator extends string,
 	GenericLimit extends number,
-	GenericOutput = SplitOutput<GenericString, GenericSeparator, GenericLimit>,
 >(
 	string: GenericString,
 	separator: GenericSeparator | RegExp,
 	params?: SplitParams<GenericLimit>,
-): DCommon.BreakGenericLink<GenericOutput>;
+): SplitOutput<GenericString, GenericSeparator, GenericLimit>;
 
 export function split(
 	...args:

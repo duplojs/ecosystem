@@ -13,10 +13,9 @@ type CapitalizeOutput<
 
 export function capitalize<
 	GenericString extends string,
-	GenericOutput = CapitalizeOutput<GenericString>,
 >(
 	string: GenericString,
-): DCommon.BreakGenericLink<GenericOutput>;
+): CapitalizeOutput<GenericString>;
 
 export function capitalize(
 	string: string,

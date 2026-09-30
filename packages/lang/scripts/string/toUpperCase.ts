@@ -11,10 +11,9 @@ type ToUpperCaseOutput<
 
 export function toUpperCase<
 	GenericString extends string,
-	GenericOutput = ToUpperCaseOutput<GenericString>,
 >(
 	string: GenericString,
-): DCommon.BreakGenericLink<GenericOutput>;
+): ToUpperCaseOutput<GenericString>;
 
 export function toUpperCase(
 	string: string,

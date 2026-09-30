@@ -11,10 +11,9 @@ type ToLowerCaseOutput<
 
 export function toLowerCase<
 	GenericString extends string,
-	GenericOutput = ToLowerCaseOutput<GenericString>,
 >(
 	string: GenericString,
-): DCommon.BreakGenericLink<GenericOutput>;
+): ToLowerCaseOutput<GenericString>;
 
 export function toLowerCase(
 	string: string,

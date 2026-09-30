@@ -29,23 +29,21 @@ type PrependOutput<
 export function prepend<
 	GenericString extends string,
 	GenericElement extends string,
-	GenericOutput = PrependOutput<GenericString, GenericElement>,
 >(
 	element: GenericElement,
 ): (
 	string: GenericString,
-) => DCommon.BreakGenericLink<GenericOutput>;
+) => PrependOutput<GenericString, GenericElement>;
 
 export function prepend<
 	GenericString extends string,
 	GenericElement extends string,
 	GenericElementsRest extends readonly string[],
-	GenericOutput = PrependOutput<GenericString, GenericElement, GenericElementsRest>,
 >(
 	string: GenericString,
 	element: GenericElement,
 	...elementsRest: GenericElementsRest
-): DCommon.BreakGenericLink<GenericOutput>;
+): PrependOutput<GenericString, GenericElement, GenericElementsRest>;
 
 export function prepend(
 	...args:

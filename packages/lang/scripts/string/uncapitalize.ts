@@ -11,10 +11,9 @@ type UncapitalizeOutput<
 
 export function uncapitalize<
 	GenericString extends string,
-	GenericOutput = UncapitalizeOutput<GenericString>,
 >(
 	string: GenericString,
-): DCommon.BreakGenericLink<GenericOutput>;
+): UncapitalizeOutput<GenericString>;
 
 export function uncapitalize(
 	string: string,
