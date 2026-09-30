@@ -7,14 +7,11 @@
  * La définition sert également à générer automatiquement l'aide et
  * les erreurs associées à la commande.
  */
-
 import * as DSCommand from "@duplojs/server/command";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 
-/**
- * Une commande simple peut uniquement déclarer les arguments
- * dont elle a besoin.
- */
+// Une commande simple peut uniquement déclarer les arguments
+// dont elle a besoin.
 await DSCommand.exec(
 	{
 		description: "Display a greeting",
@@ -30,19 +27,14 @@ await DSCommand.exec(
 	},
 );
 
-/**
- * Une commande peut combiner plusieurs arguments et différentes
- * formes d'options.
- */
+// Une commande peut combiner plusieurs arguments et différentes
+// formes d'options.
 await DSCommand.exec(
 	{
 		description: "Copy files to a destination",
 		options: [
-
-			/**
-			 * Une option classique attend une valeur qui sera
-			 * interprétée avec sa `DataStructure`.
-			 */
+			// Une option classique attend une valeur qui sera
+			// interprétée avec sa `DataStructure`.
 			DSCommand.createOption(
 				"mode",
 				DDataStructure.literal([
@@ -54,11 +46,8 @@ await DSCommand.exec(
 					description: "Operation to perform",
 				},
 			),
-
-			/**
-			 * Une option booléenne représente directement
-			 * la présence ou non du flag.
-			 */
+			// Une option booléenne représente directement
+			// la présence ou non du flag.
 			DSCommand.createBooleanOption(
 				"force",
 				{
@@ -66,11 +55,8 @@ await DSCommand.exec(
 					description: "Overwrite existing files",
 				},
 			),
-
-			/**
-			 * Une option tableau permet de recevoir plusieurs
-			 * valeurs respectant une même `DataStructure`.
-			 */
+			// Une option tableau permet de recevoir plusieurs
+			// valeurs respectant une même `DataStructure`.
 			DSCommand.createArrayOption(
 				"include",
 				DDataStructure.string(),

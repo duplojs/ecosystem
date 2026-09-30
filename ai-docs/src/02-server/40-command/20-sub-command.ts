@@ -9,7 +9,6 @@
  * Une commande qui contient des sous-commandes ne peut pas déclarer
  * d'arguments au même niveau.
  */
-
 import * as DSCommand from "@duplojs/server/command";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 
@@ -40,10 +39,8 @@ const installCommand = DSCommand.create(
 	},
 );
 
-/**
- * La commande parente référence directement ses sous-commandes
- * dans ses `subjects`.
- */
+// La commande parente référence directement ses sous-commandes
+// dans ses `subjects`.
 await DSCommand.exec(
 	{
 		description: "Package manager",

@@ -7,7 +7,6 @@
  * La variante `OrThrow` est particulièrement adaptée au chargement
  * de configuration au démarrage d'une application.
  */
-
 import * as DServerCommon from "@duplojs/server/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DCommon from "@duplojs/lang/common";
@@ -31,13 +30,10 @@ const envs = await DServerCommon.environmentVariableOrThrow(
 		override: false,
 	},
 );
-
-/**
- * envs: {
-    readonly host: "0.0.0.0" | "127.0.0.1" | "localhost";
-    readonly name: string;
-    readonly port: number & Positive;
-    readonly ENVIRONMENT: "DEV" | "PROD";
-    readonly DATABASE_URL: string & Url;
-}
- */
+// {
+//     readonly host: "0.0.0.0" | "127.0.0.1" | "localhost";
+//     readonly name: string;
+//     readonly port: number & Positive;
+//     readonly ENVIRONMENT: "DEV" | "PROD";
+//     readonly DATABASE_URL: string & Url;
+// }
