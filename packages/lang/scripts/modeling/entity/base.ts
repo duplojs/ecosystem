@@ -5,7 +5,6 @@ import * as DEither from "@scripts/either";
 import * as DObject from "@scripts/object";
 import { createKind } from "../kind";
 import { type NewType, type NewTypeMap } from "../newType";
-import { objectTagKind } from "../taggedObject";
 
 declare module "@scripts/dataStructure" {
 	interface StructuresStore {
