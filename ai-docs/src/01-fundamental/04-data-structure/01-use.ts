@@ -4,7 +4,6 @@
  * Les data structures permettent de représenter et valider de la donnée,
  * ainsi que d'encoder et de décoder de la donnée.
  */
-
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 
 const componentStructure = DDataStructure.object({
@@ -16,7 +15,6 @@ const componentStructure = DDataStructure.object({
 	}),
 });
 
-type ComponentStructure = DDataStructure.StructureValue<typeof componentStructure>;
 // {
 //     readonly name: string;
 //     readonly images: {
@@ -25,6 +23,7 @@ type ComponentStructure = DDataStructure.StructureValue<typeof componentStructur
 //     };
 //     readonly alt?: string | undefined;
 // }
+type ComponentStructure = DDataStructure.StructureValue<typeof componentStructure>;
 
 // Les résultats renvoient tout le temps une monade Right ou Left.
 const checkResult = componentStructure.check({});

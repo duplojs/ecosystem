@@ -17,7 +17,7 @@ describe("map", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			[
+			readonly [
 				`${number}:${number}`,
 				`${number}:${number}`,
 				`${number}:${number}`,
@@ -36,7 +36,7 @@ describe("map", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			[string, string, string],
+			readonly [string, string, string],
 			"strict"
 		>;
 	});
@@ -49,7 +49,7 @@ describe("map", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			[number, ...number[]],
+			readonly [number, ...number[]],
 			"strict"
 		>;
 	});

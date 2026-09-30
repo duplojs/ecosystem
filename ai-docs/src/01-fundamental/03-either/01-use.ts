@@ -3,6 +3,7 @@
  *
  * Toutes les monades sont étendues des monade Right et Left.
  */
+import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 
 // DEither.Right<"my-result", "superData">
@@ -21,12 +22,14 @@ declare function someAction(): (
 );
 
 // DEither.None | DEither.Success<"value">
-const whenIsRightResult = DEither.whenIsRight(
+const whenIsRightResult = DCommon.pipe(
 	findUser(),
-	(user) => {
-		// User
-		void user;
+	DEither.whenIsRight(
+		(user) => {
+			// User
+			void user;
 
-		return DEither.success("value");
-	},
+			return DEither.success("value");
+		},
+	),
 );

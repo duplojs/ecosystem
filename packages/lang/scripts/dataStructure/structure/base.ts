@@ -4,7 +4,7 @@ import * as DCommon from "@scripts/common";
 import { createKind } from "../kind";
 import { createGetErrorHandler, ErrorPromise, ErrorSymbol, type GetErrorHandler, SuccessSymbol, type EncodedValue, type CodecContext, type Error, type Codecs } from "../common";
 import { type Constraint } from "../constraint";
-import { type StructureValue, type ComputeStructureValue } from "./types";
+import { type ComputeStructureValue } from "./types";
 
 export class StructureClass {
 	private constructor() {}
@@ -224,23 +224,31 @@ export interface Structure<
 		| DEither.Left<"parse-error", Error>
 	>;
 	contract<
-		GenericStructure extends Structure<
-			ComputeStructureValue<
-				GenericValue,
-				GenericDefinition["constraints"]
-			>
-		>,
+		GenericContractValue extends unknown,
+		GenericArgs extends (
+			DCommon.IsEqual<
+				ComputeStructureValue<
+					GenericValue,
+					GenericDefinition["constraints"]
+				>,
+				GenericContractValue
+			> extends true
+				? []
+				: [] & DCommon.ComputedTypeError<"Contract error.">
+		) = (
+			DCommon.IsEqual<
+				ComputeStructureValue<
+					GenericValue,
+					GenericDefinition["constraints"]
+				>,
+				GenericContractValue
+			> extends true
+				? []
+				: [] & DCommon.ComputedTypeError<"Contract error.">
+		),
 	>(
-		...args: DCommon.IsEqual<
-			ComputeStructureValue<
-				GenericValue,
-				GenericDefinition["constraints"]
-			>,
-			StructureValue<GenericStructure>
-		> extends true
-			? []
-			: [] & DCommon.ComputedTypeError<"Contract error.">
-	): GenericStructure;
+		...args: NoInfer<GenericArgs>
+	): Structure<GenericContractValue>;
 	clone(): this;
 	setMessage(massage: string): this;
 	addMessage(massage: string): this;

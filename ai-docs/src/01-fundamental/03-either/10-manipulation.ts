@@ -9,6 +9,7 @@
 import * as DArray from "@duplojs/lang/array";
 import * as DString from "@duplojs/lang/string";
 import * as DEither from "@duplojs/lang/either";
+import * as DCommon from "@duplojs/lang/common";
 
 declare const myResult: (
 	| DEither.Success<"result">
@@ -21,9 +22,11 @@ declare const myResult: (
 
 // avec le type right or left
 // "result" | DEither.Left<"fail-task", Error> | DEither.Fail | DEither.Error<Error>
-const resulWhenIsRight = DEither.whenIsRight(
+const resulWhenIsRight = DCommon.pipe(
 	myResult,
-	(rightValue) => rightValue,
+	DEither.whenIsRight(
+		(rightValue) => rightValue,
+	),
 );
 // void | DEither.Success<"result"> | Error
 const resulUnwrapLeft = DEither.unwrapLeft(myResult);
@@ -32,15 +35,19 @@ const resulUnwrapLeft = DEither.unwrapLeft(myResult);
 
 // avec l'information
 // DEither.Success<"result"> | DEither.Fail | DEither.Error<Error> | "test"
-const resultWhenHasInformation = DEither.whenHasInformation(
+const resultWhenHasInformation = DCommon.pipe(
 	myResult,
-	"fail-task",
-	(failTaskEither) => "test" as const,
+	DEither.whenHasInformation(
+		"fail-task",
+		(failTaskEither) => "test" as const,
+	),
 );
 // "result" | Error | DEither.Fail | DEither.Error<Error>
-const resultUnwrapByInformation = DEither.unwrapByInformation(
+const resultUnwrapByInformation = DCommon.pipe(
 	myResult,
-	["success", "fail-task"],
+	DEither.unwrapByInformation(
+		["success", "fail-task"],
+	),
 );
 // Dans le cadre où l'on souhaite faire une action uniquement sur un résultat
 // de manière situationnelle, ces méthodes-là permettent de les sélectionner
@@ -48,25 +55,29 @@ const resultUnwrapByInformation = DEither.unwrapByInformation(
 
 // avec une sélection
 // DEither.Left<"fail-task", Error> | DEither.Fail | "test"
-const resultWhenIsSelected = DEither.whenIsSelected(
+const resultWhenIsSelected = DCommon.pipe(
 	myResult,
-	{
-		"fail-task": false,
-		error: true,
-		fail: false,
-		success: true,
-	},
-	(failTaskEither) => "test" as const,
+	DEither.whenIsSelected(
+		{
+			"fail-task": false,
+			error: true,
+			fail: false,
+			success: true,
+		},
+		(failTaskEither) => "test" as const,
+	),
 );
 // DEither.Success<"result"> | Error | DEither.Left<"fail-task", Error> | DEither.Fail
-const resultUnwrapSelection = DEither.unwrapSelection(
+const resultUnwrapSelection = DCommon.pipe(
 	myResult,
-	{
-		"fail-task": false,
-		error: true,
-		fail: false,
-		success: false,
-	},
+	DEither.unwrapSelection(
+		{
+			"fail-task": false,
+			error: true,
+			fail: false,
+			success: false,
+		},
+	),
 );
 // Le rôle de ces méthodes-là est de créer un point d'ancrage dans le typage.
 // Elles demandent de réaliser une sélection exhaustive, ce qui oblige, en cas
@@ -79,37 +90,43 @@ const resultUnwrapSelection = DEither.unwrapSelection(
 
 // Pour les fonctions "when" il existe les versions alternatives "otherwise"
 // "right" | "left"
-const resultWhenIsRightOtherwise = DEither.whenIsRightOtherwise(
+const resultWhenIsRightOtherwise = DCommon.pipe(
 	myResult,
-	// "result"
-	(rightValue) => "right" as const,
-	// DEither.Left<"fail-task", Error> | DEither.Fail | DEither.Error<Error>
-	(leftResult) => "left" as const,
+	DEither.whenIsRightOtherwise(
+		// "result"
+		(rightValue) => "right" as const,
+		// DEither.Left<"fail-task", Error> | DEither.Fail | DEither.Error<Error>
+		(leftResult) => "left" as const,
+	),
 );
 
 // Pour les fonctions "unwrap", il y a une version alternative "orThrow".
 // "result" | Error
-const resultUnwrapByInformationOrThrow = DEither.unwrapByInformationOrThrow(
+const resultUnwrapByInformationOrThrow = DCommon.pipe(
 	myResult,
-	["success", "fail-task"],
+	DEither.unwrapByInformationOrThrow(
+		["success", "fail-task"],
+	),
 );
 // Fonction très utile pour faire des insertions dans les tests unitaires.
 
 // Il existe également une fonction match qui permet de faire un traitement
 // exhaustif des résultats.
 // "fail-task" | "success" | "fail" | "error"
-const resultMatchInformation = DEither.matchInformation(
+const resultMatchInformation = DCommon.pipe(
 	myResult,
-	{
-		// Error
-		"fail-task": (value) => "fail-task" as const,
-		// Error
-		error: (value) => "error" as const,
-		// void
-		fail: (value) => "fail" as const,
-		// "result"
-		success: (value) => "success" as const,
-	},
+	DEither.matchInformation(
+		{
+			// Error
+			"fail-task": (value) => "fail-task" as const,
+			// Error
+			error: (value) => "error" as const,
+			// void
+			fail: (value) => "fail" as const,
+			// "result"
+			success: (value) => "success" as const,
+		},
+	),
 );
 // La version alternative "otherwise" existe aussi.
 
@@ -174,22 +191,21 @@ const resultSafeCallback = DEither.safeCallback(
 // keepAsRightSelection réécrit les monades pour leur réassigner left ou right selon la sélection.
 // DEither.Left<"fail", void> | DEither.Left<"error", Error> | DEither.Left<"success", "result">
 // | DEither.Right<"fail-task", Error>
-const resultKeepAsRightSelection = DEither.keepAsRightSelection(
+const resultKeepAsRightSelection = DCommon.pipe(
 	myResult,
-	{
+	DEither.keepAsRightSelection({
 		"fail-task": true,
 		error: false,
 		fail: false,
 		success: false,
-	},
+	}),
 );
 // Il existe également une version sans sélecteur exhaustif keepAsRightByInformation.
 
 // rewriteInformation permet de réécrire les informations portées par un résultat.
 // DEither.Left<"fail", void> | DEither.Left<"error", Error> | DEither.Right<"fail-task", Error>
 // | DEither.Left<"new-information", "result">
-const resultRewriteInformation = DEither.rewriteInformation(
+const resultRewriteInformation = DCommon.pipe(
 	myResult,
-	{ success: "new-information" },
+	DEither.rewriteInformation({ success: "new-information" }),
 );
-
