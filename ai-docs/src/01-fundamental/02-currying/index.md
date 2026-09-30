@@ -1,4 +1,4 @@
-## La currification
+## Currying
 
 Dans DuploJS, les fonctions curifiées sont conçues pour être utilisées dans des `pipe`.
 
