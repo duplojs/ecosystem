@@ -1,4 +1,4 @@
-import { type ExpectType, DChrono } from "@scripts";
+import { type ExpectType, DChrono, pipe } from "@scripts";
 
 describe("addTime", () => {
 	it("adds a TheTime to a TheDate", () => {
@@ -41,7 +41,10 @@ describe("addTime", () => {
 	});
 
 	it("use in pipe", () => {
-		const result = DChrono.addTime("time1000+")("date2000+");
+		const result = pipe(
+			"date2000+",
+			DChrono.addTime("time1000+"),
+		);
 
 		expect(DChrono.serialize(result)).toBe("date3000+");
 	});

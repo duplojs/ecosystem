@@ -6,34 +6,53 @@ import { toTimeValue } from "../toTimeValue";
 import type { SerializedTheDate, SerializedTheTime } from "../types";
 
 export function addTime<
-	GenericInput extends TheDate | SerializedTheDate,
+	GenericInput extends (
+		| TheDate
+		| SerializedTheDate
+		| TheTime
+		| SerializedTheTime
+	),
 >(
 	time: TheTime | SerializedTheTime,
 ): (
 	input: GenericInput,
-) => TheDate;
+) => (
+	GenericInput extends (
+		| TheDate
+		| SerializedTheDate
+	)
+		? TheDate
+		: GenericInput extends (
+			| TheTime
+			| SerializedTheTime
+		)
+			? TheTime
+			: never
+);
 
 export function addTime<
-	GenericInput extends TheTime | SerializedTheTime,
+	GenericInput extends (
+		| TheDate
+		| SerializedTheDate
+		| TheTime
+		| SerializedTheTime
+	),
 >(
+	input: GenericInput,
 	time: TheTime | SerializedTheTime,
 ): (
-	input: GenericInput,
-) => TheTime;
-
-export function addTime<
-	GenericInput extends TheDate | SerializedTheDate,
->(
-	input: GenericInput,
-	time: TheTime | SerializedTheTime,
-): TheDate;
-
-export function addTime<
-	GenericInput extends TheTime | SerializedTheTime,
->(
-	input: GenericInput,
-	time: TheTime | SerializedTheTime,
-): TheTime;
+	GenericInput extends (
+		| TheDate
+		| SerializedTheDate
+	)
+		? TheDate
+		: GenericInput extends (
+			| TheTime
+			| SerializedTheTime
+		)
+			? TheTime
+			: never
+);
 
 export function addTime(
 	...args:

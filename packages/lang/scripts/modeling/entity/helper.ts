@@ -3,11 +3,16 @@ import type * as DDataStructure from "@scripts/dataStructure";
 import type * as DString from "@scripts/string";
 import { type Entity, EntityStructure } from "./base";
 import { type NewType } from "../newType";
+import { type ObjectTag } from "../taggedObject";
 
 export type ForbiddenMissingNewTypeInEntityShape<
 	GenericValue extends unknown,
 	GenericPath extends readonly string[] = readonly [],
-> = GenericValue extends NewType | null
+> = GenericValue extends (
+	| ObjectTag
+	| NewType
+	| null
+)
 	? never
 	: GenericValue extends object
 		? DCommon.Or<[
