@@ -4,7 +4,7 @@ import * as DCommon from "@scripts/common";
 import { createKind } from "../kind";
 import { createGetErrorHandler, ErrorPromise, ErrorSymbol, type GetErrorHandler, SuccessSymbol, type EncodedValue, type CodecContext, type Error, type Codecs } from "../common";
 import { type Constraint } from "../constraint";
-import { type ComputeStructureValue } from "./types";
+import { type StructureValue, type ComputeStructureValue } from "./types";
 
 export class StructureClass {
 	private constructor() {}
@@ -224,18 +224,23 @@ export interface Structure<
 		| DEither.Left<"parse-error", Error>
 	>;
 	contract<
-		GenericValue extends unknown,
+		GenericStructure extends Structure<
+			ComputeStructureValue<
+				GenericValue,
+				GenericDefinition["constraints"]
+			>
+		>,
 	>(
 		...args: DCommon.IsEqual<
 			ComputeStructureValue<
 				GenericValue,
 				GenericDefinition["constraints"]
 			>,
-			GenericValue
+			StructureValue<GenericStructure>
 		> extends true
 			? []
 			: [] & DCommon.ComputedTypeError<"Contract error.">
-	): Structure<GenericValue>;
+	): GenericStructure;
 	clone(): this;
 	setMessage(massage: string): this;
 	addMessage(massage: string): this;
