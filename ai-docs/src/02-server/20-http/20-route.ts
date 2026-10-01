@@ -10,15 +10,17 @@
  *
  * Les principales steps sont :
  * - `extract` : extrait et valide des données de la requête
- * - `cut` : exécute un bloc intermédiaire puis poursuit la route
- * - `check` : exécute un checker
+ * - `cut` : exécute un bloc intermédiaire propre à la route
+ * - `check` : interprète le résultat d'un checker
  * - `handler` : clôture la route
  *
  * Une route n'est enregistrée qu'une fois clôturée par `handler`.
+ *
+ * Les steps de vérification (`cut`, `check`, `presetCheck`, `exec`)
+ * sont détaillées dans la partie routine.
  */
-import { ResponseContract, useRouteBuilder, controlBodyAsFormData, useCheckerBuilder, createPresetChecker } from "@duplojs/http";
+import { ResponseContract, useRouteBuilder, controlBodyAsFormData } from "@duplojs/http";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import type * as DString from "@duplojs/lang/string";
 import * as DServerDataStructure from "@duplojs/server/dataStructure";
 
 const userStructure = DDataStructure.object({
@@ -186,128 +188,11 @@ useRouteBuilder(
 	})
 	.handler(
 		ResponseContract.noContent("documents.received"),
-		({ title, userId }, { response }) => {
+		({ title, userId, files }, { response }) => {
 			void title;
 			void userId;
+			void files;
 
 			return response("documents.received");
 		},
-	);
-
-declare function findOneUser(id: string & DString.Uuid): Promise<User | undefined>;
-
-// Un checker factorise une opération indépendante de la route qui l'utilise.
-// Il reçoit un input et produit l'un de plusieurs résultats identifiés.
-//
-// Le checker ne définit pas lui-même lequel de ses résultats représente
-// un succès ou une erreur. Ce sens est donné au moment de son utilisation.
-export const userExist = useCheckerBuilder()
-	.handler(
-		async(input: string & DString.Uuid, { output }) => {
-			const user = await findOneUser(input);
-
-			if (user) {
-				return output("user.find", user);
-			}
-
-			return output("user.notfound", null);
-		},
-	);
-
-// `check` interprète les résultats d'un checker dans le contexte de la route.
-//
-// Cette interprétation détermine le résultat qui permet de poursuivre,
-// le traitement des autres résultats et éventuellement la donnée ajoutée au `floor`.
-useRouteBuilder("GET", "/users/{userId}")
-	.extract({
-		params: {
-			userId: DDataStructure.string([DDataStructure.uuid()]),
-		},
-	})
-	.check(
-		userExist,
-		{
-			// Construit l'input du checker depuis le `floor`.
-			input: ({ userId }) => userId,
-
-			// Ce résultat permet de poursuivre l'exécution de la route.
-			result: "user.find",
-
-			// Les autres résultats interrompent la route avec un `ResponseContract`.
-			otherwise: ResponseContract.notFound("user.notfound"),
-
-			// La valeur produite par `result` est ajoutée au `floor`.
-			indexing: "user",
-		},
-	)
-	.handler(
-		ResponseContract.ok("user.find", userStructure),
-		({ user }, { response }) => response("user.find", user),
-	);
-
-// Un même checker peut donc être interprété différemment selon son utilisation.
-// Un preset permet de nommer et réutiliser une interprétation récurrente.
-export const iWantUserExist = createPresetChecker(
-	userExist,
-	{
-		result: "user.find",
-		otherwise: ResponseContract.notFound("user.notfound"),
-	},
-);
-
-// `presetCheck` applique cette interprétation.
-// Les éléments dépendants du contexte de la route restent définis localement.
-useRouteBuilder("GET", "/users/{userId}")
-	.extract({
-		params: {
-			userId: DDataStructure.string([DDataStructure.uuid()]),
-		},
-	})
-	.presetCheck(
-		// L'indexation peut être définie ou remplacée localement.
-		iWantUserExist.indexing("user"),
-		({ userId }) => userId,
-	)
-	.handler(
-		ResponseContract.ok("user.find", userStructure),
-		({ user }, { response }) => response("user.find", user),
-	);
-
-// `cut` couvre les traitements intermédiaires spécifiques à une route
-// qui ne justifient pas la création d'un checker.
-//
-// La callback peut soit interrompre la route avec `response`,
-// soit poursuivre son exécution avec `output`.
-// Les données retournées par `output` enrichissent alors le `floor`.
-useRouteBuilder("GET", "/users/{userId}")
-	.extract({
-		params: {
-			userId: DDataStructure.string([DDataStructure.uuid()]),
-		},
-	})
-	.cut(
-		[
-			// Déclare les réponses que cette step peut produire.
-			ResponseContract.notFound("user.notfound"),
-			ResponseContract.forbidden("user.inaccessible"),
-		],
-		async({ userId }, { response, output }) => {
-			if (userId === "") {
-				// Interrompt immédiatement l'exécution de la route.
-				return response("user.inaccessible");
-			}
-
-			const user = await findOneUser(userId);
-
-			if (!user) {
-				return response("user.notfound");
-			}
-
-			// Poursuit la route et ajoute `user` au `floor`.
-			return output({ user });
-		},
-	)
-	.handler(
-		ResponseContract.ok("user.find", userStructure),
-		({ user }, { response }) => response("user.find", user),
 	);
