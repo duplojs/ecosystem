@@ -1,5 +1,5 @@
 /**
- * @title Interprétation des erreurs des `DataStructures`.
+ * @title Erreurs
  *
  * Les erreurs produites par les `DataStructures` sont structurées et conservent
  * la source exacte du problème : structure, type, contrainte ou codec.

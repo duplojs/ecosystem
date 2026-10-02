@@ -1,5 +1,5 @@
 /**
- * @title Les `DataStructures` récursives.
+ * @title Récursivité
  *
  * Une structure récursive doit pouvoir se référencer elle-même.
  *

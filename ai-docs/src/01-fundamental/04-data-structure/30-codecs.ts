@@ -1,5 +1,5 @@
 /**
- * @title Les `Codecs`.
+ * @title Codecs
  *
  * Un codec permet de faire transiter une donnée entre deux représentations
  * à partir d'une même `DataStructure`.

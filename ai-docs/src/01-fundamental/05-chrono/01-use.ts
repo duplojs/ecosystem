@@ -1,5 +1,5 @@
 /**
- * @title Création de dates et de temps.
+ * @title Création
  *
  * `chrono` distingue deux types :
  * - `TheDate` représente une date ;
