@@ -6,7 +6,10 @@ import type * as DString from "@scripts/string";
 type ComputeMatcher<
 	GenericFact extends DModeling.Fact,
 > = {
-	[Fact in GenericFact as DModeling.GetFactName<Fact>]?: (value: Fact) => unknown
+	[Fact in GenericFact as DModeling.GetFactName<Fact>]?: (
+		value: Fact,
+		payload: DModeling.GetFactPayload<Fact>,
+	) => unknown
 };
 
 type ForbiddenMoreKey<
@@ -120,5 +123,8 @@ export function matchWithFactOtherwise(
 
 	return matcher[factName] === undefined
 		? otherwise(input)
-		: matcher[factName](input);
+		: matcher[factName](
+			input,
+			DModeling.factKind.getValue(input).payload,
+		);
 }
