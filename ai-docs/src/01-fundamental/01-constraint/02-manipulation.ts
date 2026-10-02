@@ -1,5 +1,5 @@
 /**
- * @title Manipulation des variable avec des `Constraint`.
+ * @title Manipulation
  *
  * Les contraintes impliquent des vérités sur la données au run time.
  * Les vérités sont exploitées par les fonctions de la librairie.

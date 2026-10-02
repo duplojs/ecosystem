@@ -1,5 +1,5 @@
 /**
- * @title L'utilisation des `Constraint`.
+ * @title Utilisation
  *
  * Les contraintes existent uniquement au niveau du typage, mais elles
  * garantissent en amont l'appel de fonctions qui vérifie la contrainte au runtime.

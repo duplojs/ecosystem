@@ -1,5 +1,5 @@
 /**
- * @title Utilisation de la currification.
+ * @title Utilisation
  *
  * Dans DuploJS, les fonctions curifiées sont principalement conçues pour
  * composer des transformations dans des `pipe`.

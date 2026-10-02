@@ -1,5 +1,5 @@
 /**
- * @title Utiliser les contraintes fournies
+ * @title Contraintes intégrées
  *
  * DuploJS fournit des contraintes pour les cas courants.
  * Avant de définir une nouvelle contrainte, vérifier si une contrainte

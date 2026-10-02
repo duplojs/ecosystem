@@ -1,5 +1,5 @@
 /**
- * @title Créations de `Constraint` customisées.
+ * @title Contraintes personnalisées
  *
  * DuploJS met à disposition énormément de contraintes, mais il est tout
  * à fait possible de créer ses propres contraintes. Il suffit juste

@@ -1,5 +1,5 @@
 /**
- * @title Cast d'une contrainte
+ * @title Cast
  *
  * Le cast permet de considérer une donnée comme respectant une contrainte sans
  * exécuter sa validation.

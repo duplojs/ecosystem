@@ -1,5 +1,5 @@
 /**
- * @title Fonctions intégrées compatibles avec les `pipe`.
+ * @title Fonctions pour pipe
  *
  * L'écosystème DuploJS fournit de nombreuses fonctions conçues pour être
  * directement utilisées dans des `pipe`.

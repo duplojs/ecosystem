@@ -1,5 +1,5 @@
 /**
- * @title L'utilisation des monode Either.
+ * @title Utilisation
  *
  * Toutes les monades sont étendues des monade Right et Left.
  */
