@@ -1,5 +1,5 @@
 /**
- * @title Discrimination des `Fact`.
+ * @title Fact
  *
  * Une `Fact` possède une identité associée à son nom.
  *

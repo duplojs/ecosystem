@@ -1,5 +1,5 @@
 /**
- * @title Discrimination des primitives et par élimination.
+ * @title Primitives et élimination
  *
  * Pour les unions de literals `string` ou `number`, les fonctions
  * `matchWithString` et `matchWithNumber` sont les solutions à privilégier.

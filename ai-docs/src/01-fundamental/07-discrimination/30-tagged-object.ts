@@ -1,5 +1,5 @@
 /**
- * @title Discrimination des `TaggedObject`.
+ * @title TaggedObject
  *
  * Un `TaggedObject` possède une identité associée à son tag.
  *
