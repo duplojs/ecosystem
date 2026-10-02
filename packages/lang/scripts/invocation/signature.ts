@@ -23,8 +23,8 @@ export function signedFunction<
 	GenericName extends string,
 	GenericFunction extends DCommon.AnyFunction,
 >(
-	name: GenericName,
-	theFunction: GenericFunction,
+	name: NoInfer<GenericName>,
+	theFunction: NoInfer<GenericFunction>,
 ): SignedFunction<
 	GenericName,
 	GenericFunction

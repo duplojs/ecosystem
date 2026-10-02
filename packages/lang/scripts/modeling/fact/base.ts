@@ -69,6 +69,7 @@ export type FactSubscriber<
 	| DEither.Right
 	| DEither.Left
 	| undefined
+	| DCommon.EscapeVoid
 >;
 
 export type FactSubscribers<
