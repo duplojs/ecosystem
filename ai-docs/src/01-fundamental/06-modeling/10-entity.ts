@@ -1,5 +1,5 @@
 /**
- * @title Déclaration et hydratation d'une `Entity`.
+ * @title Entity
  *
  * Une `Entity` représente une donnée métier identifiée explicitement dans le typage.
  *

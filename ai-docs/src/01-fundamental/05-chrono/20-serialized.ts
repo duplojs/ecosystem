@@ -1,5 +1,5 @@
 /**
- * @title Sérialisation des dates et des temps.
+ * @title Sérialisation
  *
  * `chrono` possède un format de sérialisation dédié pour `TheDate` et `TheTime`.
  *

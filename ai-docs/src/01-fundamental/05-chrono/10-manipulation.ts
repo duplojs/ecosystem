@@ -1,5 +1,5 @@
 /**
- * @title Manipulation des dates et des temps.
+ * @title Manipulation
  *
  * `TheDate` et `TheTime` sont immuables.
  * Les opérations de manipulation retournent donc toujours une nouvelle valeur.

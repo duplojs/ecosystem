@@ -1,5 +1,5 @@
 /**
- * @title Gestion des fuseaux horaires.
+ * @title Fuseaux horaires
  *
  * `TheDate` représente toujours un instant absolu à travers son timestamp.
  * Le fuseau horaire intervient uniquement lorsqu'une date locale doit être
