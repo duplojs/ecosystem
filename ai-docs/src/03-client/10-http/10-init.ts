@@ -42,6 +42,16 @@ export const client = createHttpClient<Routes>({
 	baseUrl: "http://localhost:1506",
 });
 
+declare function getAuthToken(): string | undefined;
+
+// Les headers communs au client peuvent être ajoutés après l'initialisation.
+// La valeur est un `MayBeGetter` : elle peut être fixe ou recalculée à
+// chaque requête.
+client.addDefaultHeader(
+	"authorization",
+	() => getAuthToken(),
+);
+
 // Le typage des routes guide ensuite les requêtes disponibles.
 // Ici, `/hello-world` exige une query `name` et produit uniquement
 // les réponses déclarées dans `Routes`.

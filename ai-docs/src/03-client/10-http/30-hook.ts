@@ -13,6 +13,12 @@
  * Les hooks ciblés par `information`, code ou type de réponse servent à
  * centraliser une réaction quand un cas précis apparaît, sans répéter ce
  * traitement autour de chaque requête.
+ *
+ * En pratique, les hooks les plus sains sont souvent ceux qui produisent un
+ * effet de bord : redirection, toast, loader, instrumentation.
+ * Les hooks capables de transformer une requête ou une réponse existent.
+ * Ils doivent être utilisés avec retenue : l'enrichissement produit par un
+ * hook ne change pas le contrat typé de la route.
  */
 import { createHttpClient } from "@duplojs/http/client";
 
@@ -49,42 +55,45 @@ export type Routes = {
 	};
 };
 
-const client = createHttpClient<Routes>({
+interface HookParams {
+	readonly [key: string]: unknown;
+	readonly requestId: string;
+	readonly startedAt: number;
+}
+
+const client = createHttpClient<Routes, HookParams>({
 	baseUrl: "http://localhost:1506",
 });
 
-declare function getAuthToken(): string | undefined;
-declare function redirectToLogin(): void;
 declare function toast(message: string): void;
+declare function startLoader(): void;
+declare function stopLoader(): void;
+declare function createRequestId(): string;
+declare function getCurrentTime(): number;
+declare function sendMetric(name: string, requestId: string, value: number): void;
 
-// Un hook de requête est exécuté avant l'envoi.
-// Il peut enrichir les paramètres, par exemple ajouter un header commun.
-// S'il interrompt le flux, la requête n'est pas envoyée.
+// Les hooks de réaction sont adaptés aux effets de bord globaux.
+// Ici, le loader suit le cycle réel de la requête : démarrage avant l'envoi,
+// arrêt à la réception ou en cas d'erreur de transport.
 client.addRequestHook(
 	(requestParams) => {
-		const token = getAuthToken();
+		startLoader();
 
-		if (!token) {
-			redirectToLogin();
-			throw new Error("missing auth token");
-		}
-
-		return {
-			...requestParams,
-			headers: {
-				...requestParams.headers,
-				authorization: `Bearer ${token}`,
-			},
-		};
+		return requestParams;
 	},
 );
 
-// Les hooks ciblés par `information` permettent de centraliser une réaction
-// liée à un cas de réponse précis.
-client.addInformationHook(
-	"auth.required",
+client.addResponseHook(
+	(response) => {
+		stopLoader();
+
+		return response;
+	},
+);
+
+client.addErrorHook(
 	() => {
-		redirectToLogin();
+		stopLoader();
 	},
 );
 
@@ -111,6 +120,39 @@ client.addClientErrorResponseTypeHook(
 		if (message) {
 			toast(message);
 		}
+	},
+);
+
+// Un hook de transformation doit retourner la valeur transmise à l'étape
+// suivante.
+// Ce pattern reste utile pour enrichir le contexte technique des hooks,
+// par exemple ajouter un identifiant de corrélation ou un timestamp.
+// Ces données sont disponibles dans les hooks suivants, mais elles
+// n'élargissent pas le typage métier de la réponse.
+client.addRequestHook(
+	(requestParams) => ({
+		...requestParams,
+		hookParams: {
+			...requestParams.hookParams,
+			requestId: createRequestId(),
+			startedAt: getCurrentTime(),
+		},
+	}),
+);
+
+client.addResponseHook(
+	(response) => {
+		const hookParams = response.requestParams.hookParams;
+
+		if (hookParams) {
+			sendMetric(
+				"http.request.duration",
+				hookParams.requestId,
+				getCurrentTime() - hookParams.startedAt,
+			);
+		}
+
+		return response;
 	},
 );
 
