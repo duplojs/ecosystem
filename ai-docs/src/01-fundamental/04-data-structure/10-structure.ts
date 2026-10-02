@@ -1,5 +1,5 @@
 /**
- * @title Création et composition des `DataStructures`.
+ * @title Composition
  *
  * Une `Structure` représente une donnée au niveau du typage et du runtime.
  * Elle permet de construire un type TypeScript tout en conservant une

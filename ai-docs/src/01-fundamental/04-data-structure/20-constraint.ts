@@ -1,5 +1,5 @@
 /**
- * @title Les contraintes dans les `DataStructures`.
+ * @title Contraintes
  *
  * Une `Structure` décrit d'abord la nature de la donnée puis peut lui appliquer
  * des contraintes supplémentaires.

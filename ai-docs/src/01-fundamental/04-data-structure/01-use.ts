@@ -1,5 +1,5 @@
 /**
- * @title Utilisation des `DataStructures`.
+ * @title Utilisation
  *
  * Une `DataStructure` décrit la représentation attendue d'une donnée
  * à la fois au niveau TypeScript et au runtime.

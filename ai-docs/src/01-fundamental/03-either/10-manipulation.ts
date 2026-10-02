@@ -1,5 +1,5 @@
 /**
- * @title Manipulations des monode Either.
+ * @title Manipulation
  *
  * Il y a plusieurs outils pour manipuler les Either qui permettent de les
  * discriminer, d'effectuer des actions selon leur information, de gérer
