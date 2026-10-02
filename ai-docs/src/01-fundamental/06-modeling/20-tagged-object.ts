@@ -1,5 +1,5 @@
 /**
- * @title Déclaration et hydratation d'un `TaggedObject`.
+ * @title TaggedObject
  *
  * Un `TaggedObject` représente un objet possédant une identité explicite.
  *

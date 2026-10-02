@@ -1,5 +1,5 @@
 /**
- * @title Preuves au niveau du typage.
+ * @title Preuves de typage
  *
  * Certaines règles ne concernent pas uniquement la forme d'une donnée,
  * mais aussi les opérations par lesquelles elle est passée.

@@ -1,5 +1,5 @@
 /**
- * @title Cycle de vie d'une `Entity`.
+ * @title Cycle de vie
  *
  * Le cycle de vie d'une entité décrit :
  * - les différents états qu'elle peut posséder ;

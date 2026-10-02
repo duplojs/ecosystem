@@ -1,5 +1,5 @@
 /**
- * @title Discrimination des `Entity`.
+ * @title Entity
  *
  * Les `Entity` possèdent une identité associée à leur nom.
  *
