@@ -1,5 +1,5 @@
 import { type Option } from "../base";
-import { type SimpleOption, type BooleanOption, type ArrayOption } from "../default";
+import { type SimpleOption, type BooleanOption, type ArrayOption } from "../defaults";
 
 export interface OptionsStore {
 	base: Option;

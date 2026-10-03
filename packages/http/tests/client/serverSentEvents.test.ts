@@ -47,7 +47,7 @@ describe("server sent event", () => {
 	});
 
 	const createRawSseResponse = (
-		chunks: string[],
+		chunks: readonly string[],
 		options: {
 			status?: number;
 			headers?: HeadersInit;

@@ -1,7 +1,11 @@
 export * from "./computeRelative";
 export type * from "./constraints";
 export * from "./create";
+export * from "./createAbsolute";
+export * from "./createAbsoluteOrThrow";
 export * from "./createOrThrow";
+export * from "./createSegment";
+export * from "./createSegmentOrThrow";
 export * from "./declareAbsolutePath";
 export * from "./declarePath";
 export * from "./declareSegment";

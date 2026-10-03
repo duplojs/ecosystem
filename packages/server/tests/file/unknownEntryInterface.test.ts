@@ -30,24 +30,24 @@ function createNodeStatsMock() {
 	};
 }
 
-describe("unknownInterface", () => {
+describe("unknownEntryInterface", () => {
 	afterEach(() => {
 		vi.clearAllMocks();
 	});
 
 	it("detects unknown interface with predicate", () => {
-		const unknown = DSFile.createUnknownInterface(DCommon.infer("/tmp/entry"));
+		const unknown = DSFile.createUnknownEntryInterface(DCommon.infer("/tmp/entry"));
 		const file = DSFile.createFileInterface(DCommon.infer("/tmp/example.json"));
 		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
 
-		expect(DSFile.isUnknownInterface(unknown)).toBe(true);
-		expect(DSFile.isUnknownInterface(file)).toBe(false);
-		expect(DSFile.isUnknownInterface(folder)).toBe(false);
-		expect(DSFile.isUnknownInterface({})).toBe(false);
+		expect(DSFile.isUnknownEntryInterface(unknown)).toBe(true);
+		expect(DSFile.isUnknownEntryInterface(file)).toBe(false);
+		expect(DSFile.isUnknownEntryInterface(folder)).toBe(false);
+		expect(DSFile.isUnknownEntryInterface({})).toBe(false);
 	});
 
 	it("creates interface with name and parent path", () => {
-		const unknown = DSFile.createUnknownInterface(DCommon.infer("/tmp/unknown path"));
+		const unknown = DSFile.createUnknownEntryInterface(DCommon.infer("/tmp/unknown path"));
 
 		expect(unknown.getName()).toBe("unknown path");
 		expect(unknown.path).toBe("/tmp/unknown path");
@@ -55,7 +55,7 @@ describe("unknownInterface", () => {
 	});
 
 	it("returns current directory as parent path when no separator is present", () => {
-		const unknown = DSFile.createUnknownInterface(DCommon.infer("file"));
+		const unknown = DSFile.createUnknownEntryInterface(DCommon.infer("file"));
 
 		expect(unknown.getName()).toBe("file");
 		expect(unknown.getParentPath()).toBe(".");
@@ -66,7 +66,7 @@ describe("unknownInterface", () => {
 		const fs = setFsPromisesMock({
 			access: vi.fn().mockResolvedValue(undefined),
 		});
-		const unknown = DSFile.createUnknownInterface(DCommon.infer("/tmp/unknown"));
+		const unknown = DSFile.createUnknownEntryInterface(DCommon.infer("/tmp/unknown"));
 
 		const result = await unknown.exist();
 
@@ -79,7 +79,7 @@ describe("unknownInterface", () => {
 		const fs = setFsPromisesMock({
 			stat: vi.fn().mockResolvedValue(createNodeStatsMock()),
 		});
-		const unknown = DSFile.createUnknownInterface(DCommon.infer("/tmp/unknown"));
+		const unknown = DSFile.createUnknownEntryInterface(DCommon.infer("/tmp/unknown"));
 
 		const result = await unknown.stat();
 
@@ -87,6 +87,16 @@ describe("unknownInterface", () => {
 		expect(fs.stat).toHaveBeenCalledWith("/tmp/unknown");
 		if (DEither.isRight(result)) {
 			expect(DEither.unwrapRight(result).sizeBytes).toBe(789);
+		}
+	});
+
+	it("narrows an unknown input to UnknownEntryInterface", () => {
+		const input: unknown = DSFile.createUnknownEntryInterface(DCommon.infer("/tmp/entry"));
+		expect(DSFile.isUnknownEntryInterface(input)).toBe(true);
+		if (DSFile.isUnknownEntryInterface(input)) {
+			type _Check = DCommon.ExpectType<typeof input, DSFile.UnknownEntryInterface, "strict">;
+
+			expect(input.path).toBe("/tmp/entry");
 		}
 	});
 });

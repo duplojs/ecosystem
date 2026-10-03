@@ -50,7 +50,7 @@ export const createArrayOption = constructOption(
 	>(
 		name: GenericName,
 		dataStructure: GenericStructure,
-		params?: GenericParams,
+		params?: GenericParams & CreateArrayOptionParams,
 	): ArrayOption<
 		GenericName,
 		(
@@ -115,10 +115,10 @@ export const createArrayOption = constructOption(
 			dataStructure: DCommon.justExec(() => DCommon.pipe(
 				dataStructure,
 				DDataStructure.array,
-				(dataStructure) => params?.min
+				(dataStructure) => params?.min !== undefined
 					? dataStructure.addConstraint(DDataStructure.minElements(params.min))
 					: dataStructure,
-				(dataStructure) => params?.max
+				(dataStructure) => params?.max !== undefined
 					? dataStructure.addConstraint(DDataStructure.maxElements(params.max))
 					: dataStructure,
 			)),

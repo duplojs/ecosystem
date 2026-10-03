@@ -46,7 +46,7 @@ type ComputeSplitOutput<
 	DCommon.IsEqual<GenericSeparator, "">,
 	IsKeyPattern<GenericSeparator>,
 ]> extends true
-	? string[] & DArray.MinElements<ApplySplitLimit<1, GenericLimit>>
+	? readonly string[] & DArray.MinElements<ApplySplitLimit<1, GenericLimit>>
 	: CountSplitGroups<
 		GenericString,
 		GenericSeparator
@@ -56,7 +56,7 @@ type ComputeSplitOutput<
 			GenericLimit
 		> extends infer InferredOutputLength extends number
 			? (
-				& string[]
+				& readonly string[]
 				& DArray.MinElements<InferredOutputLength>
 				& (
 					IsKeyPattern<GenericString> extends true
@@ -116,6 +116,10 @@ export function split(
 	}
 
 	const [string, separator, params] = args;
+
+	if (string === "" && separator === "") {
+		return [""];
+	}
 
 	return string.split(separator, params?.limit);
 }

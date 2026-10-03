@@ -3,7 +3,7 @@ import type { ReapplyCompatiblesConstraints } from "./constraints";
 type ConcatOutput<
 	GenericArray extends readonly unknown[],
 	GenericElements extends readonly unknown[],
-	GenericElementsRest extends readonly unknown[][] = [],
+	GenericElementsRest extends readonly (readonly unknown[])[] = [],
 > = GenericArray extends unknown
 	? ReapplyCompatiblesConstraints<
 		GenericArray,
@@ -28,12 +28,12 @@ export function concat<
 export function concat<
 	GenericArray extends readonly unknown[],
 	GenericElements extends readonly unknown[],
-	GenericElementsRest extends readonly unknown[][],
+	GenericElementsRest extends readonly unknown[] = [],
 >(
 	array: GenericArray,
 	elements: GenericElements,
-	...elementsRest: GenericElementsRest
-): ConcatOutput<GenericArray, GenericElements, GenericElementsRest>;
+	...elementsRest: GenericElementsRest[]
+): ConcatOutput<GenericArray, GenericElements, GenericElementsRest[]>;
 
 export function concat(
 	...args:

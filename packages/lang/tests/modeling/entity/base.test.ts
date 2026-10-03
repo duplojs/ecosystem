@@ -1,4 +1,9 @@
-import { DDataStructure, type DCommon, DEither, type DKind, DModeling, type DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DModeling from "@scripts/modeling";
+import type * as DKind from "@scripts/kind";
+import type * as DString from "@scripts/string";
 
 describe("EntityStructure", () => {
 	it("creates a named entity structure from new type properties", () => {
@@ -20,7 +25,7 @@ describe("EntityStructure", () => {
 			}),
 		);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DModeling.EntityStructure<
 				"user",
@@ -31,7 +36,7 @@ describe("EntityStructure", () => {
 			>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			& DModeling.Entity<"user">
 			& {
@@ -193,7 +198,7 @@ describe("EntityStructure", () => {
 		} as never);
 
 		if (structure.is(input)) {
-			type _CheckNarrowedInput = ExpectType<
+			type _CheckNarrowedInput = DCommon.ExpectType<
 				typeof input,
 				& DModeling.Entity<"user">
 				& {
@@ -276,14 +281,14 @@ describe("EntityStructure", () => {
 			name: "Jane",
 		});
 
-		type _CheckInput = ExpectType<
+		type _CheckInput = DCommon.ExpectType<
 			Parameters<typeof structure.map>[0],
 			{
 				readonly name: string;
 			},
 			"strict"
 		>;
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Right<
 				"map-success",
@@ -314,14 +319,14 @@ describe("EntityStructure", () => {
 				),
 			}),
 		);
-		const result = pipe(
+		const result = DCommon.pipe(
 			{
 				name: "Jane",
 			},
 			structure.map,
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Right<
 				"map-success",
@@ -362,14 +367,14 @@ describe("EntityStructure", () => {
 			name: 4,
 		});
 
-		type _CheckInput = ExpectType<
+		type _CheckInput = DCommon.ExpectType<
 			Parameters<typeof structure.decodeMap<typeof codecs>>[1],
 			{
 				readonly name: number;
 			},
 			"strict"
 		>;
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Right<
 				"map-success",
@@ -408,14 +413,14 @@ describe("EntityStructure", () => {
 			(data) => `Jane-${data}`,
 		);
 		const codecs = DDataStructure.createCodecs({ codec });
-		const result = pipe(
+		const result = DCommon.pipe(
 			{
 				name: 4,
 			},
 			structure.decodeMap(codecs),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Right<
 				"map-success",
@@ -524,14 +529,14 @@ describe("EntityStructure", () => {
 			name: "Jane",
 		});
 
-		type _CheckInput = ExpectType<
+		type _CheckInput = DCommon.ExpectType<
 			Parameters<typeof structure.asyncMap>[0],
 			{
 				readonly name: string;
 			},
 			"strict"
 		>;
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<
 				| DEither.Right<
@@ -578,14 +583,14 @@ describe("EntityStructure", () => {
 			(data) => Promise.resolve(`Jane-${data}`),
 		);
 		const codecs = DDataStructure.createCodecs({ codec });
-		const result = pipe(
+		const result = DCommon.pipe(
 			{
 				name: 4,
 			},
 			structure.asyncDecodeMap(codecs),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<
 				| DEither.Right<
@@ -656,7 +661,7 @@ describe("EntityStructure", () => {
 			},
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			& DModeling.Entity<"user">
 			& {
@@ -689,12 +694,12 @@ describe("EntityStructure", () => {
 			name: "Jane",
 			age: 30,
 		} as const);
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			structure.update({ age: 31 }),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			& DModeling.Entity<"user">
 			& {

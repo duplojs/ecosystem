@@ -7,7 +7,7 @@ import { rename, type RenameResult } from "./rename";
 import { exists, type ExistsResult } from "./exists";
 import { move, type MoveResult } from "./move";
 import { remove, type RemoveResult } from "./remove";
-import { type StatInfo, stat, type StatResult } from "./stat";
+import { stat, type StatResult } from "./stat";
 import { relocate, type RelocateResult } from "./relocate";
 
 const fileInterfaceKind = createKind("fileInterface");
@@ -30,6 +30,7 @@ export interface FileInterface extends DKind.Kind<
 	exists(): Promise<ExistsResult>;
 	remove(): Promise<RemoveResult>;
 	stat(): Promise<StatResult>;
+	isFile(): Promise<boolean>;
 }
 
 export function createFileInterface(
@@ -105,6 +106,17 @@ export function createFileInterface(
 		return stat(path);
 	}
 
+	function isFile() {
+		return DCommon.asyncPipe(
+			localStat(),
+			DEither.whenHasInformationOtherwise(
+				"file-system-stat",
+				({ isFile }) => isFile,
+				DCommon.justReturn(false),
+			),
+		);
+	}
+
 	return {
 		path,
 		getName,
@@ -117,6 +129,7 @@ export function createFileInterface(
 		remove: localRemove,
 		move: localMove,
 		stat: localStat,
+		isFile,
 		[fileInterfaceKind.runTimeKey]: null,
 	} satisfies DKind.Remove<FileInterface> as never;
 }

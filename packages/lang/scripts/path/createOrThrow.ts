@@ -11,7 +11,7 @@ export class CreatePathError extends DKind.parentClass(
 	public constructor(
 		public value: string,
 	) {
-		super(`Invalid path: ${value}`);
+		super(null, `Invalid path: ${value}`);
 	}
 }
 

@@ -8,7 +8,7 @@ import { afterEach, beforeEach, describe, it } from "node:test";
 
 const initialWorkingDirectory = Deno.cwd();
 const initialDenoEnv = Deno.env.toObject();
-const rootPath = DPath.createOrThrow(`${initialWorkingDirectory}/.tmp-common-deno`);
+const rootPath = DPath.createAbsoluteOrThrow(`${initialWorkingDirectory}/.tmp-common-deno`);
 const applicationEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/application.env`);
 const serviceEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/service.env`);
 const runtimeEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/runtime.env`);

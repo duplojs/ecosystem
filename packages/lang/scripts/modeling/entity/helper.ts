@@ -27,7 +27,7 @@ export type ForbiddenMissingNewTypeInEntityShape<
 				DCommon.Not<DCommon.IsExtends<DCommon.AnyFunction, GenericValue[keyof GenericValue]>>,
 			]> extends true
 				? {
-					[Prop in keyof GenericValue]: ForbiddenMissingNewTypeInEntityShape<
+					[Prop in keyof GenericValue]-?: ForbiddenMissingNewTypeInEntityShape<
 						GenericValue[Prop],
 						readonly [...GenericPath, `${Extract<Prop, string | number>}`]
 					>

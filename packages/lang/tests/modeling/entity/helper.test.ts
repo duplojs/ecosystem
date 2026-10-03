@@ -1,4 +1,8 @@
-import { DDataStructure, DEither, DModeling, type DString, type ExpectType } from "@scripts";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DModeling from "@scripts/modeling";
+import type * as DCommon from "@scripts/common";
+import type * as DString from "@scripts/string";
 
 describe("createEntity", () => {
 	it("creates an entity composed of new types", () => {
@@ -27,7 +31,7 @@ describe("createEntity", () => {
 			}),
 		);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DModeling.EntityStructure<
 				"User",
@@ -81,5 +85,50 @@ describe("createEntity", () => {
 			// @ts-expect-error entity properties must be NewTypes or nested Entities.
 			() => ({ name: DDataStructure.string() }),
 		);
+	});
+
+	it("accepts nullable, optional, tagged and nested entity values", () => {
+		interface Shape {
+			readonly values: readonly (string & DModeling.NewType<"Name">)[];
+			readonly optional: undefined | (string & DModeling.NewType<"Name">);
+			readonly nullable: null | (string & DModeling.NewType<"Name">);
+			readonly tagged: DModeling.ObjectTag<"Tag"> & { readonly raw: string };
+			readonly entity: DModeling.Entity<"Nested"> & { readonly raw: string };
+		}
+
+		type _CheckShape = DCommon.ExpectType<DModeling.ForbiddenMissingNewTypeInEntityShape<Shape>, never, "strict">;
+	});
+
+	it("identifies primitive array elements using the complete nested path", () => {
+		interface Shape { readonly nested: { readonly values: readonly string[] } }
+
+		type _CheckError = DCommon.ExpectType<
+			DModeling.ForbiddenMissingNewTypeInEntityShape<Shape>,
+			DCommon.ComputedTypeError<"Value at 'nested.values.[number]' is not a NewType.">,
+			"strict"
+		>;
+
+		DModeling.createEntity(
+			"User",
+			// @ts-expect-error primitive array elements must be wrapped in a NewType.
+			() => ({ values: DDataStructure.array(DDataStructure.string()) }),
+		);
+	});
+
+	it("rejects primitive values nested inside records", () => {
+		DModeling.createEntity(
+			"User",
+			// @ts-expect-error nested primitive record values must be wrapped in a NewType.
+			() => ({ values: DDataStructure.record(DDataStructure.string(), DDataStructure.string()) }),
+		);
+	});
+
+	it("does not report optional NewType properties as missing NewTypes", () => {
+		interface Shape {
+			readonly name?: string & DModeling.NewType<"Name">;
+		}
+
+		// The optional property is valid, so the diagnostic type should be never.
+		type _CheckOptional = DCommon.ExpectType<DModeling.ForbiddenMissingNewTypeInEntityShape<Shape>, never, "strict">;
 	});
 });

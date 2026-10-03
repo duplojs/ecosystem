@@ -1,0 +1,17 @@
+{
+  "name": "@duplojs/ai-docgen",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "duplojs-ai-docgen": "./scripts/bin.ts"
+  },
+  "scripts": {
+    "test:types": "./.commands/test-types.sh",
+    "test:lint": "./.commands/test-lint.sh"
+  },
+  "dependencies": {
+    "@duplojs/code-config": "workspace:*",
+    "@duplojs/lang": "workspace:*",
+    "@duplojs/server": "workspace:*"
+  }
+}

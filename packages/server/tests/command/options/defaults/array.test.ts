@@ -157,4 +157,25 @@ describe("createArrayOption", () => {
 			}),
 		]);
 	});
+
+	it("accepts explicitly typed optional parameters", () => {
+		const params: DSCommand.CreateArrayOptionParams = { required: false };
+		const option = DSCommand.createArrayOption("count", DDataStructure.number(), params);
+
+		type _Check = DCommon.ExpectType<typeof option, DSCommand.ArrayOption<"count", readonly number[] | undefined>, "strict">;
+
+		expect(option.required).toBe(false);
+	});
+
+	it("rejects a non-empty array when max is zero", async() => {
+		const option = DSCommand.createArrayOption("ids", DDataStructure.number(), {
+			required: true,
+			max: 0,
+		});
+
+		type _Check = DCommon.ExpectType<typeof option, DSCommand.ArrayOption<"ids", readonly number[] & DArray.MaxElements<0>>, "strict">;
+
+		const error = DSCommand.createError("root");
+		expect(await option.execute(["--ids", "1"], error)).toBe(DSCommand.SymbolCommandError);
+	});
 });

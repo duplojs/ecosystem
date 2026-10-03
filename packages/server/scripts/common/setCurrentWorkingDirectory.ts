@@ -5,7 +5,7 @@ import { implementFunction } from "@scripts/implementor";
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		setCurrentWorkingDirectory(
-			path: string & DPath.Path
+			path: string & DPath.Absolute
 		): DEither.Fail | DEither.Ok;
 	}
 }

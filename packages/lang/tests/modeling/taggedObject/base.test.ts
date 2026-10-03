@@ -1,4 +1,9 @@
-import { DCommon, DDataStructure, DEither, type DKind, DModeling, type DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DModeling from "@scripts/modeling";
+import type * as DKind from "@scripts/kind";
+import type * as DString from "@scripts/string";
 
 describe("TaggedObjectStructure", () => {
 	it("creates a named tagged object structure from an existing interface", () => {
@@ -18,12 +23,12 @@ describe("TaggedObjectStructure", () => {
 			},
 		);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DModeling.TaggedObjectStructure<UserCreated>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			UserCreated,
 			"strict"
@@ -105,7 +110,7 @@ describe("TaggedObjectStructure", () => {
 			},
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			& DModeling.ObjectTag<"metric">
 			& {
@@ -114,7 +119,7 @@ describe("TaggedObjectStructure", () => {
 			},
 			"strict"
 		>;
-		type _CheckValue = ExpectType<
+		type _CheckValue = DCommon.ExpectType<
 			typeof value,
 			& DModeling.ObjectTag<"metric">
 			& {
@@ -248,7 +253,7 @@ describe("TaggedObjectStructure", () => {
 		);
 
 		if (structure.is(input)) {
-			type _CheckNarrowedInput = ExpectType<
+			type _CheckNarrowedInput = DCommon.ExpectType<
 				typeof input,
 				& DModeling.ObjectTag<"metric">
 				& {
@@ -300,7 +305,7 @@ describe("TaggedObjectStructure", () => {
 			[DModeling.objectTagKind.runTimeKey]: "profile",
 		} as never);
 
-		type _CheckEncoded = ExpectType<
+		type _CheckEncoded = DCommon.ExpectType<
 			typeof encoded,
 			| DEither.Right<
 				"encode-success",
@@ -313,7 +318,7 @@ describe("TaggedObjectStructure", () => {
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckDecoded = ExpectType<
+		type _CheckDecoded = DCommon.ExpectType<
 			typeof decoded,
 			| DEither.Right<
 				"decode-success",
@@ -359,14 +364,14 @@ describe("TaggedObjectStructure", () => {
 			name: "Jane",
 		});
 
-		type _CheckInput = ExpectType<
+		type _CheckInput = DCommon.ExpectType<
 			Parameters<typeof structure.map>[0],
 			{
 				readonly name: string;
 			},
 			"strict"
 		>;
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Right<
 				"map-success",
@@ -397,14 +402,14 @@ describe("TaggedObjectStructure", () => {
 				),
 			},
 		);
-		const result = pipe(
+		const result = DCommon.pipe(
 			{
 				name: "Jane",
 			},
 			structure.map,
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Right<
 				"map-success",
@@ -444,7 +449,7 @@ describe("TaggedObjectStructure", () => {
 			},
 		});
 
-		type _CheckInput = ExpectType<
+		type _CheckInput = DCommon.ExpectType<
 			Parameters<typeof structure.map>[0],
 			{
 				readonly profile: {
@@ -493,14 +498,14 @@ describe("TaggedObjectStructure", () => {
 			name: 4,
 		});
 
-		type _CheckInput = ExpectType<
+		type _CheckInput = DCommon.ExpectType<
 			Parameters<typeof structure.decodeMap<typeof codecs>>[1],
 			{
 				readonly name: number;
 			},
 			"strict"
 		>;
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Right<
 				"map-success",
@@ -539,14 +544,14 @@ describe("TaggedObjectStructure", () => {
 			(data) => `Jane-${data}`,
 		);
 		const codecs = DDataStructure.createCodecs({ codec });
-		const result = pipe(
+		const result = DCommon.pipe(
 			{
 				name: 4,
 			},
 			structure.decodeMap(codecs),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Right<
 				"map-success",
@@ -643,14 +648,14 @@ describe("TaggedObjectStructure", () => {
 			name: "Jane",
 		});
 
-		type _CheckInput = ExpectType<
+		type _CheckInput = DCommon.ExpectType<
 			Parameters<typeof structure.asyncMap>[0],
 			{
 				readonly name: string;
 			},
 			"strict"
 		>;
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<
 				| DEither.Right<
@@ -697,14 +702,14 @@ describe("TaggedObjectStructure", () => {
 			(data) => Promise.resolve(`Jane-${data}`),
 		);
 		const codecs = DDataStructure.createCodecs({ codec });
-		const result = pipe(
+		const result = DCommon.pipe(
 			{
 				name: 4,
 			},
 			structure.asyncDecodeMap(codecs),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<
 				| DEither.Right<
@@ -781,7 +786,7 @@ describe("TaggedObjectStructure", () => {
 			},
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			& DModeling.ObjectTag<"user-created">
 			& {
@@ -820,12 +825,12 @@ describe("TaggedObjectStructure", () => {
 				readonly age: 30;
 			}
 		);
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			structure.update({ age: 31 }),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			& DModeling.ObjectTag<"user-created">
 			& {
@@ -899,7 +904,7 @@ describe("TaggedObjectStructure", () => {
 			},
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof NodeStructure>,
 			Node,
 			"strict"

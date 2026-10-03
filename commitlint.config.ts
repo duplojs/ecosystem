@@ -11,7 +11,8 @@ const scopes = [
     "server",
     "tools",
 	"ecosystem",
-	"ai-docs"
+	"ai-docs",
+	"ai-docgen",
 ];
 
 const scopePattern = scopes.join("|");

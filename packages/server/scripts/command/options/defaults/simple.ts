@@ -39,7 +39,7 @@ export const createOption = constructOption(
 	>(
 		name: GenericName,
 		dataStructure: GenericStructure,
-		params?: GenericParams,
+		params?: GenericParams & CreateSimpleOptionParams,
 	): SimpleOption<
 		GenericName,
 		(

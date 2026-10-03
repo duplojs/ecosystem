@@ -15,7 +15,7 @@ export class SetCurrentWorkingDirectoryError extends DKind.parentClass(
 }
 
 export function setCurrentWorkingDirectoryOrThrow(
-	path: string & DPath.Path,
+	path: string & DPath.Absolute,
 ) {
 	DEither.whenIsRightOtherwise(
 		setCurrentWorkingDirectory(path),

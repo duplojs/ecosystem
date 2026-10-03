@@ -8,7 +8,7 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 
 const initialWorkingDirectory = process.cwd();
 const initialProcessEnv = { ...process.env };
-const rootPath = DPath.createOrThrow(`${initialWorkingDirectory}/.tmp-common-bun`);
+const rootPath = DPath.createAbsoluteOrThrow(`${initialWorkingDirectory}/.tmp-common-bun`);
 const applicationEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/application.env`);
 const serviceEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/service.env`);
 const runtimeEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/runtime.env`);
@@ -18,13 +18,13 @@ describe("common feature on bun", () => {
 		process.chdir(initialWorkingDirectory);
 		process.env = { ...initialProcessEnv };
 		process.argv = ["bun", "integration.ts", "--runtime", "bun"];
-		await DSFile.remove(rootPath, { recursive: true });
+		await DSFile.remove(DCommon.cast(rootPath), { recursive: true });
 	});
 
 	afterEach(async() => {
 		process.chdir(initialWorkingDirectory);
 		process.env = { ...initialProcessEnv };
-		await DSFile.remove(rootPath, { recursive: true });
+		await DSFile.remove(DCommon.cast(rootPath), { recursive: true });
 	});
 
 	it("reads environment files with override and expansion", async() => {
@@ -117,11 +117,11 @@ describe("common feature on bun", () => {
 	});
 
 	it("reads and changes the current working directory", async() => {
-		const makeDirectoryResult = await DSFile.ensureDirectory(rootPath);
+		const makeDirectoryResult = await DSFile.ensureDirectory(DCommon.cast(rootPath));
 		expect(DEither.isRight(makeDirectoryResult)).toBe(true);
 		expect(DEither.unwrapRight(makeDirectoryResult)).toBeUndefined();
 
-		const setResult = DSCommon.setCurrentWorkingDirectory(rootPath);
+		const setResult = DSCommon.setCurrentWorkingDirectory(DCommon.cast(rootPath));
 		expect(DEither.isRight(setResult)).toBe(true);
 		expect(DEither.unwrapRight(setResult)).toBeUndefined();
 

@@ -9,7 +9,7 @@ import * as DSCommon from "@duplojs/server/common";
 
 const initialWorkingDirectory = process.cwd();
 const initialProcessEnv = { ...process.env };
-const rootPath = DPath.createOrThrow(`${initialWorkingDirectory}/.tmp-common-node`);
+const rootPath = DPath.createAbsoluteOrThrow(`${initialWorkingDirectory}/.tmp-common-node`);
 const applicationEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/application.env`);
 const serviceEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/service.env`);
 const runtimeEnvPath = DPath.createOrThrow(`${initialWorkingDirectory}/fixtures/env/runtime.env`);

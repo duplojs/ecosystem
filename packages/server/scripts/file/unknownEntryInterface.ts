@@ -6,7 +6,7 @@ import { exists, type ExistsResult } from "./exists";
 
 const unknownInterfaceKind = createKind("unknownInterface");
 
-export interface UnknownInterface extends DKind.Kind<
+export interface UnknownEntryInterface extends DKind.Kind<
 	typeof unknownInterfaceKind
 > {
 	path: string & DPath.Path;
@@ -16,7 +16,7 @@ export interface UnknownInterface extends DKind.Kind<
 	exist(): Promise<ExistsResult>;
 }
 
-export function createUnknownInterface(path: string & DPath.Path): UnknownInterface {
+export function createUnknownEntryInterface(path: string & DPath.Path): UnknownEntryInterface {
 	function getName() {
 		return DPath.getBaseName(path);
 	}
@@ -40,11 +40,11 @@ export function createUnknownInterface(path: string & DPath.Path): UnknownInterf
 		stat: localStat,
 		exist,
 		[unknownInterfaceKind.runTimeKey]: null,
-	} satisfies DKind.Remove<UnknownInterface> as never;
+	} satisfies DKind.Remove<UnknownEntryInterface> as never;
 }
 
-export function isUnknownInterface(
+export function isUnknownEntryInterface(
 	input: unknown,
-): input is UnknownInterface {
+): input is UnknownEntryInterface {
 	return unknownInterfaceKind.has(input);
 }

@@ -38,7 +38,7 @@ describe("fileInterface", () => {
 	it("detects file interface with predicate", () => {
 		const file = DSFile.createFileInterface(DCommon.infer("/tmp/example.json"));
 		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
-		const unknown = DSFile.createUnknownInterface(DCommon.infer("/tmp/entry"));
+		const unknown = DSFile.createUnknownEntryInterface(DCommon.infer("/tmp/entry"));
 
 		const unknownValue: unknown = undefined;
 
@@ -185,5 +185,31 @@ describe("fileInterface", () => {
 
 		expect(file.getExtension()).toBe("txt");
 		expect(file.getExtension({ withDot: true })).toBe(".txt");
+	});
+
+	it.each([true, false])("isFile returns the stat flag %s", async(expected) => {
+		setEnvironment("NODE");
+		const fs = setFsPromisesMock({
+			stat: vi.fn().mockResolvedValue({
+				...createNodeStatsMock(),
+				isFile: () => expected,
+			}),
+		});
+		const entry = DSFile.createFileInterface(DCommon.infer("/tmp/entry"));
+		const result = entry.isFile();
+
+		type _Check = DCommon.ExpectType<typeof result, Promise<boolean>, "strict">;
+
+		expect(await result).toBe(expected);
+		expect(fs.stat).toHaveBeenCalledWith("/tmp/entry");
+	});
+
+	it("isFile returns false when stat fails", async() => {
+		setEnvironment("NODE");
+		setFsPromisesMock({
+			stat: vi.fn().mockRejectedValue(new Error("stat failed")),
+		});
+
+		expect(await DSFile.createFileInterface(DCommon.infer("/tmp/entry")).isFile()).toBe(false);
 	});
 });

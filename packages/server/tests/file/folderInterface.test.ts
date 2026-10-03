@@ -38,7 +38,7 @@ describe("folderInterface", () => {
 	it("detects folder interface with predicate", () => {
 		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
 		const file = DSFile.createFileInterface(DCommon.infer("/tmp/example.json"));
-		const unknown = DSFile.createUnknownInterface(DCommon.infer("/tmp/entry"));
+		const unknown = DSFile.createUnknownEntryInterface(DCommon.infer("/tmp/entry"));
 
 		const unknownValue: unknown = undefined;
 
@@ -205,5 +205,46 @@ describe("folderInterface", () => {
 			const items = Array.from(DEither.unwrapRight(result));
 			expect(items[0]?.getName()).toBe("file.json");
 		}
+	});
+
+	it.each([true, false])("isFolder returns the stat flag %s", async(expected) => {
+		setEnvironment("NODE");
+		const fs = setFsPromisesMock({
+			stat: vi.fn().mockResolvedValue({
+				...createNodeStatsMock(),
+				isDirectory: () => expected,
+			}),
+		});
+		const entry = DSFile.createFolderInterface(DCommon.infer("/tmp/entry"));
+		const result = entry.isFolder();
+
+		type _Check = DCommon.ExpectType<typeof result, Promise<boolean>, "strict">;
+
+		expect(await result).toBe(expected);
+		expect(fs.stat).toHaveBeenCalledWith("/tmp/entry");
+	});
+
+	it("isFolder returns false when stat fails", async() => {
+		setEnvironment("NODE");
+		setFsPromisesMock({
+			stat: vi.fn().mockRejectedValue(new Error("stat failed")),
+		});
+
+		expect(await DSFile.createFolderInterface(DCommon.infer("/tmp/entry")).isFolder()).toBe(false);
+	});
+
+	it.each([true, false])("forwards recursive: %s to walkDirectory", async(recursive) => {
+		setEnvironment("NODE");
+		const fs = setFsPromisesMock({ readdir: vi.fn().mockResolvedValue([]) });
+		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
+		const result = folder.walk({ recursive });
+
+		type _Check = DCommon.ExpectType<typeof result, Promise<DSFile.WalkDirectoryResult>, "strict">;
+
+		expect(Array.from(DEither.unwrapByInformationOrThrow(await result, "file-system-walk-directory"))).toEqual([]);
+		expect(fs.readdir).toHaveBeenCalledWith("/tmp/demo", {
+			recursive,
+			withFileTypes: true,
+		});
 	});
 });

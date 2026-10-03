@@ -118,4 +118,13 @@ describe("createOption", () => {
 			}),
 		]);
 	});
+
+	it("accepts explicitly typed optional parameters", () => {
+		const params: DSCommand.CreateSimpleOptionParams = { required: false };
+		const option = DSCommand.createOption("count", DDataStructure.number(), params);
+
+		type _Check = DCommon.ExpectType<typeof option, DSCommand.SimpleOption<"count", number | undefined>, "strict">;
+
+		expect(option.required).toBe(false);
+	});
 });

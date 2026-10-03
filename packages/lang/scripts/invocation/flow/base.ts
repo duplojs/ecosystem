@@ -30,6 +30,7 @@ type Pipe<
 > = (
 	this: never,
 	input: Awaited<ComputeLastUsableValue<GenericAccumulator>>,
+	argument: GenericAccumulator[0],
 ) => GenericOutput;
 
 type IsMaybePromise<
@@ -1816,19 +1817,19 @@ export function flow<
 >;
 
 export function flow(
-	...args: (DCommon.AnyFunction<[any]> | FlowController<any, any>)[]
+	...args: (DCommon.AnyFunction<[any, any]> | FlowController<any, any>)[]
 ): any {
-	const accumulateFunction = args.reduce<DCommon.AnyFunction<[any]>>(
+	const accumulateFunction = args.reduce<DCommon.AnyFunction<[any, any]>>(
 		(accumulator, currentValue) => {
 			if (flowControllerKind.has(currentValue)) {
-				return (arg) => currentValue.exec(() => accumulator(arg));
+				return (input, argument) => currentValue.exec(() => accumulator(input, argument));
 			} else {
-				const preparedResultTreatment = (result: any) => flowControllerExitKind.has(result)
+				const preparedResultTreatment = (result: any, argument: any) => flowControllerExitKind.has(result)
 					? result
-					: currentValue(result);
-				return (arg) => DCommon.callThen(
-					accumulator(arg),
-					preparedResultTreatment,
+					: currentValue(result, argument);
+				return (input, argument) => DCommon.callThen(
+					accumulator(input, argument),
+					(result) => preparedResultTreatment(result, argument),
 				);
 			}
 		},
@@ -1838,8 +1839,8 @@ export function flow(
 	const preparedResultTreatment = (result: any) => flowControllerExitKind.has(result)
 		? flowControllerExitKind.getValue(result)
 		: result;
-	return (arg: unknown) => DCommon.callThen(
-		accumulateFunction(arg),
+	return (input: unknown) => DCommon.callThen(
+		accumulateFunction(input, input),
 		preparedResultTreatment,
 	);
 }

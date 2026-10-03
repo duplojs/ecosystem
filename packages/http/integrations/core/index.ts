@@ -13,7 +13,7 @@ import "./routes";
 const sourceFile = DSFile.createFileInterface(DCommon.cast("files/fakeFiles/superTextFile.txt"));
 const sourceFolder = DSFile.createFolderInterface(DCommon.cast("files/fakeFiles"));
 
-DSCommon.setCurrentWorkingDirectoryOrThrow(DPath.resolveRelative([DPath.createOrThrow(import.meta.dirname), DCommon.cast("..")]));
+DSCommon.setCurrentWorkingDirectoryOrThrow(DPath.resolveRelative([DPath.createAbsoluteOrThrow(import.meta.dirname), DCommon.cast("..")]));
 
 export const hub = createHub({ environment: "DEV" })
 	.register(routeStore.getAll())

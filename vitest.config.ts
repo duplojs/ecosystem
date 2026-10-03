@@ -9,7 +9,7 @@ export default defineConfig({
 			reporter: ["text", "json", "html", "json-summary"],
 			reportsDirectory: "coverage",
 			include: ["**/scripts/**/*.{ts,vue}"],
-			exclude: ["**/*.config.ts"],
+			exclude: ["**/*.config.ts", "packages-private/**"],
 			thresholds: {
 				lines: 100,
 				branches: 100,

@@ -6,15 +6,15 @@ import * as DPattern from "@duplojs/lang/pattern";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import { type FileInterface, createFileInterface } from "./fileInterface";
 import { type FolderInterface, createFolderInterface } from "./folderInterface";
-import { createUnknownInterface, type UnknownInterface } from "./unknownInterface";
+import { createUnknownEntryInterface, type UnknownEntryInterface } from "./unknownEntryInterface";
 import type { FileSystemEither } from "./types";
 
-interface WalkDirectoryParams {
+export interface WalkDirectoryParams {
 	recursive?: boolean;
 }
 
 export type WalkDirectoryResult = FileSystemEither<
-	| DEither.Right<"walk-directory", Generator<FileInterface | FolderInterface | UnknownInterface>>
+	| DEither.Right<"walk-directory", Generator<FileInterface | FolderInterface | UnknownEntryInterface>>
 	| DEither.Left<"walk-directory-not-found", unknown>
 	| DEither.Left<"walk-directory-permission-denied", unknown>
 	| DEither.Left<"walk-directory-not-directory", unknown>
@@ -80,18 +80,27 @@ export const walkDirectory = implementFunction(
 								DPattern.when(
 									(dirent) => dirent.isFile(),
 									({ parentPath, name }) => createFileInterface(
-										DCommon.forwardAsserts(`${parentPath}/${name}`, DPath.is),
+										DCommon.forwardAsserts(
+											DPath.normalize(`${parentPath}/${name}`),
+											(result) => DCommon.isType(result, "string") && DPath.is(result),
+										),
 									),
 								),
 								DPattern.when(
 									(dirent) => dirent.isDirectory(),
 									({ parentPath, name }) => createFolderInterface(
-										DCommon.forwardAsserts(`${parentPath}/${name}`, DPath.is),
+										DCommon.forwardAsserts(
+											DPath.normalize(`${parentPath}/${name}`),
+											(result) => DCommon.isType(result, "string") && DPath.is(result),
+										),
 									),
 								),
 								DPattern.otherwise(
-									({ parentPath, name }) => createUnknownInterface(
-										DCommon.forwardAsserts(`${parentPath}/${name}`, DPath.is),
+									({ parentPath, name }) => createUnknownEntryInterface(
+										DCommon.forwardAsserts(
+											DPath.normalize(`${parentPath}/${name}`),
+											(result) => DCommon.isType(result, "string") && DPath.is(result),
+										),
 									),
 								),
 							),

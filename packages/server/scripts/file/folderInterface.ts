@@ -8,10 +8,8 @@ import { exists, type ExistsResult } from "./exists";
 import { rename, type RenameResult } from "./rename";
 import { remove, type RemoveResult } from "./remove";
 import { readDirectory, type ReadDirectoryResult } from "./readDirectory";
-import { stat, type StatInfo, type StatResult } from "./stat";
-import { walkDirectory, type WalkDirectoryResult } from "./walkDirectory";
-import type { FileInterface } from "./fileInterface";
-import type { UnknownInterface } from "./unknownInterface";
+import { stat, type StatResult } from "./stat";
+import { walkDirectory, type WalkDirectoryParams, type WalkDirectoryResult } from "./walkDirectory";
 import { relocate, type RelocateResult } from "./relocate";
 
 const folderInterfaceKind = createKind("folderInterface");
@@ -33,7 +31,8 @@ export interface FolderInterface extends DKind.Kind<
 	remove(): Promise<RemoveResult>;
 	getChildren(): Promise<ReadDirectoryResult>;
 	stat(): Promise<StatResult>;
-	walk(): Promise<WalkDirectoryResult>;
+	walk(params?: WalkDirectoryParams): Promise<WalkDirectoryResult>;
+	isFolder(): Promise<boolean>;
 }
 
 export function createFolderInterface(path: string & DPath.Path): FolderInterface {
@@ -97,8 +96,19 @@ export function createFolderInterface(path: string & DPath.Path): FolderInterfac
 		return readDirectory(path);
 	}
 
-	function walk() {
-		return walkDirectory(path);
+	function walk(params?: WalkDirectoryParams) {
+		return walkDirectory(path, params);
+	}
+
+	function isFolder() {
+		return DCommon.asyncPipe(
+			localStat(),
+			DEither.whenHasInformationOtherwise(
+				"file-system-stat",
+				({ isDirectory }) => isDirectory,
+				DCommon.justReturn(false),
+			),
+		);
 	}
 
 	return {
@@ -113,6 +123,7 @@ export function createFolderInterface(path: string & DPath.Path): FolderInterfac
 		getChildren,
 		stat: localStat,
 		walk,
+		isFolder,
 		[folderInterfaceKind.runTimeKey]: null,
 	} satisfies DKind.Remove<FolderInterface> as never;
 }

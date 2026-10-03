@@ -7,7 +7,7 @@ declare module "@scripts/implementor" {
 	interface ServerFunction {
 		getCurrentWorkDirectory(): (
 			| DEither.Error<unknown>
-			| DEither.Success<string & DPath.Path>
+			| DEither.Success<string & DPath.Absolute>
 		);
 	}
 }
@@ -19,7 +19,7 @@ export const getCurrentWorkDirectory = implementFunction(
 			DEither.safeCallback(
 				() => DCommon.whenElse(
 					DPath.normalize(process.cwd()),
-					DCommon.isType("string"),
+					(value) => DCommon.isType(value, "string") && DPath.isAbsolute(value),
 					DEither.success,
 					DEither.error,
 				),
@@ -30,7 +30,7 @@ export const getCurrentWorkDirectory = implementFunction(
 			DEither.safeCallback(
 				() => DCommon.whenElse(
 					DPath.normalize(Deno.cwd()),
-					DCommon.isType("string"),
+					(value) => DCommon.isType(value, "string") && DPath.isAbsolute(value),
 					DEither.success,
 					DEither.error,
 				),

@@ -246,4 +246,40 @@ describe("walkDirectory", () => {
 			expect(DEither.unwrapLeft(result)).toBe(error);
 		}
 	});
+
+	it("normalizes paths for every entry kind and preserves their types", async() => {
+		setEnvironment("NODE");
+		setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue([
+				{
+					parentPath: "/tmp//demo/",
+					name: "file.txt",
+					isFile: () => true,
+					isDirectory: () => false,
+				},
+				{
+					parentPath: "/tmp//demo/",
+					name: "folder",
+					isFile: () => false,
+					isDirectory: () => true,
+				},
+				{
+					parentPath: "/tmp//demo/",
+					name: "socket",
+					isFile: () => false,
+					isDirectory: () => false,
+				},
+			]),
+		});
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/demo"));
+		const entries = DEither.unwrapByInformationOrThrow(result, "file-system-walk-directory");
+
+		type _Check = DCommon.ExpectType<typeof entries, Generator<DSFile.FileInterface | DSFile.FolderInterface | DSFile.UnknownEntryInterface>, "strict">;
+
+		const items = Array.from(entries);
+		expect(items.map((entry) => entry.path)).toEqual(["/tmp/demo/file.txt", "/tmp/demo/folder", "/tmp/demo/socket"]);
+		expect(DSFile.isFileInterface(items[0])).toBe(true);
+		expect(DSFile.isFolderInterface(items[1])).toBe(true);
+		expect(DSFile.isUnknownEntryInterface(items[2])).toBe(true);
+	});
 });

@@ -8,3 +8,4 @@ cache
 .vitest
 **/*.generate.*
 **/*.generate
+packages/**/**/ai-docs

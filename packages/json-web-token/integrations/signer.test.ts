@@ -4,7 +4,7 @@ import { Signer } from "@duplojs/json-web-token";
 import * as DPath from "@duplojs/lang/path";
 
 describe("Signer", () => {
-	DSCommon.setCurrentWorkingDirectory(DPath.createOrThrow(import.meta.dirname));
+	DSCommon.setCurrentWorkingDirectory(DPath.createAbsoluteOrThrow(import.meta.dirname));
 
 	async function readKeyPair(directory: string) {
 		return {
