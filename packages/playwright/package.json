@@ -1,7 +1,7 @@
 {
   "name": "@duplojs/playwright",
   "version": "0.0.0",
-    "author": {
+  "author": {
     "name": "DuploJS",
     "url": "https://github.com/duplojs"
   },
@@ -10,7 +10,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/duplojs/playwright.git",
+    "url": "git+https://github.com/duplojs/ecosystem.git",
     "directory": "packages/playwright"
   },
   "bugs": {

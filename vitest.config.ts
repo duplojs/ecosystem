@@ -3,7 +3,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
 	test: {
 		watch: false,
-		projects: ["packages/*"],
+		projects: ["packages/*", "packages-private/**"],
 		coverage: {
 			provider: "istanbul",
 			reporter: ["text", "json", "html", "json-summary"],

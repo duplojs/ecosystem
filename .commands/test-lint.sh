@@ -39,3 +39,6 @@ pnpm --filter ai-docs test:lint
 
 printf "\n${GREEN}@duplojs/ai-docgen${RESET}\n"
 pnpm --filter @duplojs/ai-docgen test:lint
+
+printf "\n${GREEN}@duplojs/unplugin-jsdoc-include${RESET}\n"
+pnpm --filter @duplojs/unplugin-jsdoc-include test:lint

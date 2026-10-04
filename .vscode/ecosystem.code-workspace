@@ -45,6 +45,10 @@
 			"path": "../packages-private/ai-docgen"
 		},
 		{
+			"name": "@duplojs/unplugin-jsdoc-include",
+			"path": "../packages-private/unplugin-jsdoc-include"
+		},
+		{
 			"name": "ecosystem",
 			"path": ".."
 		},

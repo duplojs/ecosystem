@@ -3,6 +3,7 @@ packages:
   - "packages/*"
   - "packages/*/integrations"
   - "packages-private/*"
+  - "packages-private/*/integrations"
   - "ai-docs"
 nodeLinker: hoisted
 allowBuilds:
