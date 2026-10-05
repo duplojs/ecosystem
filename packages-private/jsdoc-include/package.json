@@ -1,0 +1,31 @@
+{
+  "name": "@duplojs/jsdoc-include",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "./.commands/build.sh",
+    "test:types": "./.commands/test-types.sh",
+    "test:types:target": "./.commands/test-types-target.sh",
+    "test:lint": "./.commands/test-lint.sh",
+    "test:lint:fix": "./.commands/test-lint.sh --fix"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./unplugindts": {
+      "types": "./dist/unplugindts.d.ts",
+      "import": "./dist/unplugindts.mjs",
+      "require": "./dist/unplugindts.cjs"
+    }
+  },
+  "devDependencies": {
+    "@duplojs/code-config": "workspace:*",
+    "@types/node": "24.13.3"
+  },
+  "engines": {
+    "node": ">=24.18.0"
+  }
+}

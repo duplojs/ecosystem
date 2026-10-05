@@ -4,12 +4,10 @@ import dts from "unplugin-dts/rolldown";
 export default defineConfig({
 	input: {
 		index: "scripts/index.ts",
-		rolldown: "scripts/rolldown.ts",
-		rollup: "scripts/rollup.ts",
-		vite: "scripts/vite.ts",
+		unplugindts: "scripts/unplugindts.ts",
 	},
 	platform: "neutral",
-	external: [/^unplugin/, /^@duplojs\/lang/, /^@duplojs\/server/],
+	external: [/^node:/],
 	tsconfig: "tsconfig.build.json",
 	output: [
 		{
@@ -19,14 +17,6 @@ export default defineConfig({
 			preserveModulesRoot: "scripts",
 			entryFileNames: "[name].mjs",
 			cleanDir: true,
-		},
-		{
-			dir: "dist",
-			format: "cjs",
-			exports: "named",
-			preserveModules: true,
-			preserveModulesRoot: "scripts",
-			entryFileNames: "[name].cjs",
 		},
 	],
 	treeshake: {

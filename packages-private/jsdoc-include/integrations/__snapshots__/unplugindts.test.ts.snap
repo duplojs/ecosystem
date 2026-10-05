@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`vite integration > prints included JSDoc in declaration files 1`] = `
+exports[`unplugindts integration > prints included JSDoc in declaration files 1`] = `
 "/**
  * Super test de la mort qui tue.
  * je test que le replace avec \`$\` ne bug plus.
@@ -11,5 +11,12 @@ exports[`vite integration > prints included JSDoc in declaration files 1`] = `
  * \`\`\`
  */
 export declare function mySuperFunction(superArg: string): string;
+export interface TestInterface {
+    /**
+     * Super test de la mort qui tue.
+     * je test que le replace avec \`$\` ne bug plus.
+     */
+    test: string;
+}
 "
 `;

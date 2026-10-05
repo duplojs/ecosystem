@@ -13,7 +13,7 @@ const scopes = [
 	"ecosystem",
 	"ai-docs",
 	"ai-docgen",
-	"unplugin-jsdoc-include"
+	"jsdoc-include"
 ];
 
 const scopePattern = scopes.join("|");

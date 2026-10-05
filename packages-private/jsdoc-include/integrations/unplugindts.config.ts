@@ -1,16 +1,13 @@
-import * as DPath from "@duplojs/lang/path";
-import jsdocInclude from "@duplojs/unplugin-jsdoc-include/rolldown";
+import { beforeWriteFileDtsHook } from "@duplojs/unplugin-jsdoc-include/unplugindts";
 import { defineConfig } from "rolldown";
 import dts from "unplugin-dts/rolldown";
-
-const includedPath = DPath.createOrThrow(`${import.meta.dirname}/docs`);
 
 export default defineConfig({
 	input: "scripts/index.ts",
 	platform: "neutral",
 	tsconfig: "tsconfig.json",
 	output: {
-		dir: "dist/rolldown",
+		dir: "dist/unplugindts",
 		format: "esm",
 		preserveModules: true,
 		preserveModulesRoot: "scripts",
@@ -20,11 +17,12 @@ export default defineConfig({
 	plugins: [
 		dts({
 			tsconfigPath: "tsconfig.json",
-			outDirs: "dist/rolldown",
+			outDirs: "dist/unplugindts",
 			bundleTypes: false,
-		}),
-		jsdocInclude({
-			includedPath,
+			beforeWriteFile: beforeWriteFileDtsHook({
+				includedPath: `${import.meta.dirname}/docs`,
+				lineChar: "\n",
+			}),
 		}),
 	],
 });

@@ -5,11 +5,12 @@ import { describe, expect, it } from "vitest";
 
 const integrationPath = import.meta.dirname;
 
-describe("rollup integration", () => {
+describe("unplugindts integration", () => {
 	it("prints included JSDoc in declaration files", () => {
-		const result = spawnSync("pnpm", ["run", "build:rollup"], {
+		const result = spawnSync("pnpm", ["run", "build:unplugindts"], {
 			cwd: integrationPath,
 			encoding: "utf8",
+			stdio: "inherit",
 		});
 
 		expect(result, result.stderr || result.stdout).toMatchObject({
@@ -17,7 +18,7 @@ describe("rollup integration", () => {
 		});
 
 		const declaration = readFileSync(
-			join(integrationPath, "dist/rollup/mySuperDomain/mySuperFunction.d.ts"),
+			join(integrationPath, "dist/unplugindts/mySuperDomain/mySuperFunction.d.ts"),
 			"utf8",
 		);
 

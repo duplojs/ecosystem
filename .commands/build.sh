@@ -5,8 +5,8 @@ RESET='\033[0m'
 
 set -euo pipefail
 
-printf "\n${GREEN}@duplojs/unplugin-jsdoc-include${RESET}\n"
-pnpm --filter @duplojs/unplugin-jsdoc-include build
+printf "\n${GREEN}@duplojs/jsdoc-include${RESET}\n"
+pnpm --filter @duplojs/jsdoc-include build
 
 printf "\n${GREEN}@duplojs/code-config${RESET}\n"
 pnpm --filter @duplojs/code-config build
