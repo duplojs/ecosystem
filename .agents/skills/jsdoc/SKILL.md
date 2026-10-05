@@ -1,5 +1,5 @@
 ---
-name: duplojs-jsdoc
+name: jsdoc
 description: Rediger, ajouter ou corriger la JSDoc publique des fonctions exportees des packages DuploJS avec @duplojs/unplugin-jsdoc-include, en separant les commentaires sources, les fichiers jsDoc et les exemples TypeScript.
 ---
 

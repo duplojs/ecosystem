@@ -1,5 +1,5 @@
 ---
-name: duplojs-implementation
+name: implementation
 description: Créer, modifier ou corriger une implémentation dans le monorepo DuploJS en respectant son architecture, ses domaines, ses dépendances et ses conventions d'importation.
 ---
 

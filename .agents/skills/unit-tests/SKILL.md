@@ -1,5 +1,5 @@
 ---
-name: duplojs-unit-tests
+name: unit-tests
 description: Créer, modifier ou corriger des tests unitaires dans le monorepo DuploJS, notamment pour tester un comportement, ajouter des cas de test ou améliorer la couverture.
 ---
 
