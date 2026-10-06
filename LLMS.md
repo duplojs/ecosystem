@@ -903,22 +903,21 @@ progressivement les cas restant à résoudre.
  
 # Serveur
 
-La partie serveur regroupe les abstractions qui permettent à DuploJS
-d'interagir avec une plateforme d'exécution sans enfermer le code dans
-l'API propre à Node.js, Deno ou Bun.
+Un serveur DuploJS est pensé comme un modèle applicatif indépendant du runtime
+qui l'exécute.
 
-Elle ne correspond pas uniquement à la création d'un serveur HTTP.
-Elle couvre plus largement les points de contact avec l'environnement :
-fichiers, variables d'environnement, commandes, connecteurs HTTP et
-ressources fournies par le runtime.
-
-Le principe général est de séparer le modèle DuploJS du détail de la
-plateforme. Le code applicatif manipule des abstractions communes, tandis
-que les connecteurs adaptent ces abstractions au runtime réellement utilisé.
+Le code décrit ses points de contact avec l'environnement à travers des
+abstractions communes : exposer une interface HTTP, manipuler des fichiers,
+lire la configuration d'exécution ou construire des commandes. Le détail propre
+à Node.js, Deno ou Bun reste porté par les connecteurs ou les implémentations
+de plateforme.
 
 Cette séparation permet de conserver les mêmes patterns de typage, de
 validation et de représentation des erreurs, même lorsque l'application
-s'exécute dans des environnements différents.
+s'exécute dans des environnements différents. HTTP y occupe une place
+centrale, sans réduire le serveur à cette seule feature : les routes
+structurent le flux applicatif, tandis que les autres abstractions assurent
+le lien avec le runtime.
 
 # Manipuler des fichiers
 
@@ -943,48 +942,6 @@ Le domaine `Path` fournit des contraintes et des fonctions dédiées
 Un chemin reste représenté par une `string`, mais la contrainte `Path`
 permet de l'identifier explicitement dans le typage et de garantir
 qu'il respecte le format attendu.
-/
-import * as DCommon from "@duplojs/lang/common";
-import * as DEither from "@duplojs/lang/either";
-import * as DPath from "@duplojs/lang/path";
-// Une valeur littérale peut être transformée directement en `Path`
-// lorsque sa validité peut être vérifiée par TypeScript.
-const resourcePath: string & DPath.Path = DCommon.cast(
-	"resources/images/avatar.png",
-);
-// Pour une `string` dynamique, `create` permet de construire un `Path`
-// en validant sa valeur à l'exécution.
-declare const unsafePath: string;
-const pathResult = DPath.create(unsafePath);
-if (DEither.isRight(pathResult)) {
-	// string & DPath.Path
-	const path = DEither.unwrapRight(pathResult);
-}
-// Le domaine expose trois contraintes principales :
-// - `Path` représente un chemin valide
-// - `Absolute` précise qu'un `Path` est absolu
-// - `Segment` représente un segment pouvant composer un chemin
-// Ces contraintes peuvent être combinées afin d'exprimer plus précisément
-// la nature d'une valeur.
-const absolutePath: string & DPath.Path & DPath.Absolute = DCommon.cast(
-	"/resources/images",
-);
-const segment: string & DPath.Segment = DCommon.cast("assets");
-// Plusieurs fonctions permettent de récupérer les différentes parties
-// d'un chemin sans manipuler directement sa `string`.
-// (string & DPath.Segment) | null
-const fileName = DPath.getBaseName(resourcePath);
-// (string & DPath.Segment) | null
-const extensionName = DPath.getExtensionName(resourcePath);
-// (string & DPath.Path) | null
-const parentFolderPath = DPath.getParentFolderPath(resourcePath);
-/**
-Les chemins peuvent être construits à partir de plusieurs `Path`
-ou `Segment` sans avoir à manipuler directement leur représentation
-sous forme de `string`.
-
-Les fonctions de résolution assemblent ces différentes parties
-et résolvent leur relation pour produire un nouveau chemin valide.
  
 # HTTP
 
@@ -1146,6 +1103,18 @@ sous-commande pouvant elle-même contenir d'autres sous-commandes.
 Une commande qui contient des sous-commandes ne peut pas déclarer
 d'arguments au même niveau.
  
+# Client
+
+Le client est l'endroit où les données typées rencontrent l'interaction
+utilisateur. C'est aussi l'endroit où la logique peut facilement se disperser :
+requêtes écrites au cas par cas, formulaires propres à chaque écran,
+comportements locaux difficiles à maintenir.
+
+DuploJS cherche à ramener ces usages vers une forme plus déclarative et
+constante. Les interactions sont décrites à partir de contrats et de
+compositions, ce qui permet de garder un code homogène, fortement typé et
+assez flexible pour couvrir des interfaces spécifiques sans abandonner le
+modèle commun.
 
 # Client HTTP
 
@@ -1204,7 +1173,322 @@ ajouter un header, remplacer des paramètres, transformer une réponse.
 Les hooks ciblés par `information`, code ou type de réponse servent à
 centraliser une réaction quand un cas précis apparaît, sans répéter ce
 traitement autour de chaque requête.
+
+En pratique, les hooks les plus sains sont souvent ceux qui produisent un
+effet de bord : redirection, toast, loader, instrumentation.
+Les hooks capables de transformer une requête ou une réponse existent.
+Ils doivent être utilisés avec retenue : l'enrichissement produit par un
+hook ne change pas le contrat typé de la route.
+ 
+# Form
+
+Les formulaires sont souvent une source de logique dispersée : chaque écran
+peut finir avec sa propre manière de gérer les valeurs, les erreurs, les
+validations, les états internes et le rendu.
+
+La partie form de DuploJS répond à ce problème en proposant une façon unique,
+déclarative et typée de construire un formulaire. Au lieu d'assembler les
+comportements de manière impérative, le formulaire est décrit par composition :
+chaque élément annonce ce qu'il porte, comment il s'intègre aux autres, et
+quelle place il occupe dans la valeur finale.
+
+Cette approche rend le modèle plus constant et plus robuste. Elle couvre déjà
+beaucoup de formes de formulaires avec les briques fournies, mais reste
+extensible lorsque l'interface demande un comportement ou un rendu spécifique.
+
+
+### [Créer un formulaire](ai-docs/src/03-client/20-form/10-init.ts)
+
+`@duplojs/form` permet de composer un formulaire par déclaration.
+
+Au lieu de piloter impérativement chaque interaction du formulaire,
+on exprime sa structure et ses comportements avec des fonctions.
+
+L'initialisation se fait en deux temps :
+- fabriquer une fonction `useForm` avec `createForm`
+- passer à cette fonction un `FormField` racine
+
+Le point important est qu'un input retourne un `FormField`, et qu'un layout
+retourne aussi un `FormField`. Le champ racine peut donc être un input simple
+ou une composition de layouts et d'inputs.
+
+`createForm` ne connaît pas le schéma métier du formulaire.
+Il reçoit les templates disponibles, clone la `defaultValue` du champ racine,
+instancie la composition sur un état Vue, puis expose le composant et les
+opérations du formulaire.
  
 
+### [Créer/Utiliser un input](ai-docs/src/03-client/20-form/20-input.ts)
+
+Un composant Vue d'input n'est pas encore une brique de formulaire.
+
+La séquence est :
+- écrire un composant Vue compatible
+- le transformer en factory avec `createInput`
+- appeler cette factory pour obtenir un `FormField`
+- composer ce `FormField` dans un formulaire
+
+Cette séparation permet de garder le composant concentré sur l'interface,
+et de laisser `@duplojs/form` gérer son intégration dans `currentValue`,
+`reset`, `dispose` et `check`.
+
+Le design system Vue expose déjà des factories prêtes à utiliser pour les
+inputs courants. `createInput` sert quand une application veut créer les
+siennes.
+ 
+
+### [Composer avec les layouts](ai-docs/src/03-client/20-form/30-layout.ts)
+
+Un layout reçoit un ou plusieurs `FormField` et retourne un nouveau
+`FormField`.
+
+C'est ce qui permet de construire un formulaire par composition : un input
+peut être donné à un layout, ce layout peut être donné à un autre layout,
+puis le résultat final devient le champ racine passé à `useForm`.
+
+Les layouts ont deux rôles principaux :
+- structurer la valeur du formulaire
+- piloter un comportement autour d'un ou plusieurs champs
+
+Ils sont librement composables. Un `repeat` peut contenir un `multi`, un
+`union` peut contenir un `step`, et un `section` peut simplement envelopper
+une composition existante sans changer sa valeur.
+ 
+
+### [Personnaliser les templates](ai-docs/src/03-client/20-form/40-template.ts)
+
+Les templates définissent le rendu des formulaires, des inputs et des
+layouts.
+
+Ils ne changent ni la structure de `currentValue`, ni la valeur retournée
+par `check`. Leur rôle est de transformer les props système et les slots
+fournis par `@duplojs/form` en interface Vue.
+
+Le découpage mental est simple :
+- les `FormField` décrivent la structure
+- les layouts composent cette structure
+- les templates rendent cette structure
+ 
+# Tests
+
+Les tests DuploJS servent à vérifier que le comportement observé reste aligné
+avec les contrats exprimés dans le code.
+
+Comme une grande partie du modèle repose sur le typage, tester ne consiste pas
+seulement à comparer une valeur finale. Il faut aussi vérifier que le bon flux
+est choisi, que les informations portées par les résultats sont interprétées au
+bon endroit, et que les garanties TypeScript importantes sont conservées.
+
+Les tests unitaires se concentrent sur une API précise : son résultat runtime,
+ses branches possibles et son inférence dans le contexte d'utilisation prévu.
+
+Les tests E2E gardent une autre responsabilité. Ils décrivent un parcours
+utilisateur à travers un site réel, en rangeant les pages, composants, actions
+et assertions pour que le test reste lisible quand l'interface grandit.
+
+# Tests unitaires
+
+Les tests unitaires DuploJS vérifient le comportement runtime et les garanties
+de typage d'une API.
+
+Un test ne doit pas seulement constater la forme d'une valeur produite. Il doit
+exprimer le contrat attendu : quelle branche du flux est acceptée, quelle
+information est attendue, quelle valeur est ensuite vérifiée, et quel type doit
+être conservé par TypeScript.
+
+### Tester un résultat Either
+
+Un test qui reçoit un `Either` doit d'abord exprimer quel résultat il
+attend. Dans DuploJS, cette intention passe le plus souvent par
+l'`information` portée par la monade.
+
+Le pattern habituel consiste à sélectionner l'information attendue, unwrap
+sa valeur, puis vérifier uniquement la donnée obtenue. Si le résultat n'est
+pas celui attendu, les helpers `OrThrow` font échouer le test avant
+l'assertion finale.
+ 
+
+```ts
+import * as DCommon from "@duplojs/lang/common";
+import * as DEither from "@duplojs/lang/either";
+
+// Dans les tests du monorepo, Vitest expose ces globals directement.
+// Ces déclarations rendent uniquement l'exemple typable dans `ai-docs`.
+declare const describe: (title: string, body: () => void) => void;
+declare const it: (title: string, body: () => void | Promise<void>) => void;
+declare const expect: (value: unknown) => {
+	toBe(expected: unknown): void;
+	toStrictEqual(expected: unknown): void;
+};
+
+interface User {
+	id: number;
+	email: string;
+}
+
+declare function findUserByEmail(
+	email: string,
+): (
+	| DEither.Result<"user.found", User>
+	| DEither.Left<"user.notfound", string>
+	| DEither.Error<Error>
+);
+
+// Le test ne vérifie pas l'implémentation interne de la monade.
+// Il s'appuie sur `DEither` comme passe-plat : si l'information attendue
+// n'est pas présente, l'unwrap échoue déjà.
+describe("findUserByEmail", () => {
+	it("returns the found user", () => {
+		const result = findUserByEmail("jane@duplo.dev");
+
+		const user = DEither.unwrapByInformationOrThrow(
+			result,
+			"user.found",
+		);
+
+		expect(user).toStrictEqual({
+			id: 1,
+			email: "jane@duplo.dev",
+		});
+
+		type _CheckUser = DCommon.ExpectType<
+			typeof user,
+			User,
+			"strict"
+		>;
+	});
+
+	it("returns the not found email", () => {
+		const result = findUserByEmail("missing@duplo.dev");
+
+		const email = DEither.unwrapByInformationOrThrow(
+			result,
+			"user.notfound",
+		);
+
+		expect(email).toBe("missing@duplo.dev");
+	});
+});
+
+// Quand le test accepte plusieurs résultats possibles, la sélection rend la
+// décision explicite. Les résultats marqués `true` sont unwrap. Les autres
+// font échouer le test.
+describe("findUserByEmail selection", () => {
+	it("accepts only the business results handled by this test", () => {
+		const result = findUserByEmail("jane@duplo.dev");
+
+		const value = DEither.unwrapSelectionOrThrow(
+			result,
+			{
+				"user.found": true,
+				"user.notfound": true,
+				error: false,
+			},
+		);
+
+		type _CheckValue = DCommon.ExpectType<
+			typeof value,
+			User | string,
+			"strict"
+		>;
+
+		if (typeof value === "string") {
+			expect(value).toBe("jane@duplo.dev");
+		} else {
+			expect(value).toStrictEqual({
+				id: 1,
+				email: "jane@duplo.dev",
+			});
+		}
+	});
+});
+
+// `DEither.expect` sert surtout quand le contrat dit qu'une valeur est déjà un
+// `Either` et que le test veut matérialiser cette garantie dans le typage.
+describe("DEither.expect", () => {
+	it("keeps the exact either type", () => {
+		const input = DEither.success(42);
+		const result = DEither.expect(input);
+
+		expect(result).toBe(input);
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			DEither.Success<42>,
+			"strict"
+		>;
+
+		// @ts-expect-error input must be an Either
+		DEither.expect("plain value");
+	});
+});
+
+// Pour une API curifiée, le test de typage doit rester dans le contexte réel
+// d'utilisation. Ici, `unwrapByInformationOrThrow` est testé dans `pipe`.
+describe("curried Either helpers", () => {
+	it("preserves inference in a pipe", () => {
+		const result = DCommon.pipe(
+			findUserByEmail("jane@duplo.dev"),
+			DEither.unwrapByInformationOrThrow("user.found"),
+		);
+
+		expect(result.email).toBe("jane@duplo.dev");
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			User,
+			"strict"
+		>;
+	});
+});
+```
+# Tests E2E
+
+`@duplojs/playwright` est une couche d'organisation au-dessus de Playwright.
+Elle ne remplace pas les locators, les assertions ni le runner Playwright :
+elle aide surtout a ranger le test autour du site qu'on manipule.
+
+L'idee est de donner des noms aux parties importantes du parcours : un
+`Website` pour le contexte global, des `Page` pour les ecrans navigables et
+des `Component` pour les morceaux d'interface que l'on reutilise.
+
+Un test reste donc un test Playwright, mais il se lit plus naturellement :
+aller sur une page, recuperer un composant, faire une action, verifier un
+etat. Quand la suite grossit, cette structure evite de recopier les memes
+locators et les memes intentions dans chaque spec.
 
 
+### [Initialiser le client E2E](ai-docs/src/04-tests/02-e2e/10-init.ts)
+
+DuploJS Playwright s'utilise depuis un client Playwright etendu.
+La fixture cree un `Website` pour chaque test avec la `page`
+Playwright et le `BrowserContext`.
+
+Ensuite, le test passe par ce `Website` pour naviguer, verifier
+l'URL, ajouter des cookies, appliquer un prefix, lancer des hooks
+ou attendre l'hydratation.
+ 
+
+### [Architecturer une suite E2E](ai-docs/src/04-tests/02-e2e/20-architecture.ts)
+
+La suite est rangee comme le site teste, pas comme une liste de locators.
+
+Le `Website` correspond a l'application ouverte par Playwright.
+Une `Page` correspond a un ecran et connait son path.
+Un `Component` correspond a une zone d'interface que l'on peut reutiliser.
+
+Les tests utilisent ces objets pour raconter un parcours. Les locators
+restent dans les pages et composants, au lieu d'etre eparpilles dans
+chaque spec.
+ 
+
+### [Ecrire un parcours de test](ai-docs/src/04-tests/02-e2e/30-testing.ts)
+
+Un test E2E DuploJS Playwright suit le parcours d'un utilisateur :
+on navigue, on recupere une page ou un composant, puis on enchaine
+actions et assertions.
+
+Les helpers `Actions` et `Assertions` travaillent avec les elements nommes
+dans `getElements`. Ils ajoutent des steps Playwright lisibles et gardent
+le typage des cles disponibles sur le composant.
+ 

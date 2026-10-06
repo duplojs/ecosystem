@@ -52,14 +52,12 @@ const extensionName = DPath.getExtensionName(resourcePath);
 // (string & DPath.Path) | null
 const parentFolderPath = DPath.getParentFolderPath(resourcePath);
 
-/**
- * Les chemins peuvent être construits à partir de plusieurs `Path`
- * ou `Segment` sans avoir à manipuler directement leur représentation
- * sous forme de `string`.
- *
- * Les fonctions de résolution assemblent ces différentes parties
- * et résolvent leur relation pour produire un nouveau chemin valide.
- */
+// Les chemins peuvent être construits à partir de plusieurs `Path`
+// ou `Segment` sans avoir à manipuler directement leur représentation
+// sous forme de `string`.
+//
+// Les fonctions de résolution assemblent ces différentes parties
+// et résolvent leur relation pour produire un nouveau chemin valide.
 const imagesPath: string & DPath.Path & DPath.Absolute = DCommon.cast(
 	"/resources/images",
 );

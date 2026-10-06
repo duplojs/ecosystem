@@ -13,17 +13,15 @@
  */
 import { createComponent, createPage } from "@duplojs/playwright";
 
-/*
-tests/
-	website.ts
-	pages/
-		home.page.ts
-		search.page.ts
-	components/
-		newsletter.component.ts
-	specs/
-		home.spec.ts
-*/
+// tests/
+//   website.ts
+//   pages/
+//      home.page.ts
+//      search.page.ts
+//  components/
+//      newsletter.component.ts
+//  specs/
+//      home.spec.ts
 
 // Un composant declare son element racine et les elements internes utiles
 // pour les actions ou les assertions.

@@ -118,8 +118,6 @@ dispose();
 // par l'application.
 void TheForm;
 
-/**
- * <TheForm @submit="() => console.log(check())">
- *   <PrimaryButton type="submit" label="Submit" />
- * </TheForm>
- */
+// <TheForm @submit="() => console.log(check())">
+//   <PrimaryButton type="submit" label="Submit" />
+// </TheForm>
