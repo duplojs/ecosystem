@@ -10,16 +10,24 @@ import * as DCommon from "@duplojs/lang/common";
 
 await DSCommand.exec(
 	{
+		displayName: "DuploJS AI DocGen CLI",
+		description: "Generate LLMS with structured documentation",
 		options: [
 			DSCommand.createOption(
 				"input",
 				DDataStructure.string([DDataStructure.path()]),
-				{ required: true },
+				{
+					required: true,
+					description: "folder path ai-docs",
+				},
 			),
 			DSCommand.createOption(
 				"output",
 				DDataStructure.string([DDataStructure.path()]),
-				{ required: true },
+				{
+					required: true,
+					description: "file path output",
+				},
 			),
 		],
 	},
