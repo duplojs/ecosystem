@@ -1,17 +1,14 @@
 # Serveur
 
-Un serveur DuploJS est pensé comme un modèle applicatif indépendant du runtime
-qui l'exécute.
+La partie serveur regroupe les abstractions qui relient une application
+DuploJS à son environnement d'exécution.
 
-Le code décrit ses points de contact avec l'environnement à travers des
-abstractions communes : exposer une interface HTTP, manipuler des fichiers,
-lire la configuration d'exécution ou construire des commandes. Le détail propre
-à Node.js, Deno ou Bun reste porté par les connecteurs ou les implémentations
-de plateforme.
+Elle couvre les points de contact avec le runtime : interface HTTP, système de
+fichiers, variables d'environnement, processus courant et commandes CLI. Le
+code applicatif peut ainsi rester organisé autour de contrats typés, tandis que
+les détails propres à Node.js, Deno ou Bun restent portés par les connecteurs
+ou les implémentations de plateforme.
 
-Cette séparation permet de conserver les mêmes patterns de typage, de
-validation et de représentation des erreurs, même lorsque l'application
-s'exécute dans des environnements différents. HTTP y occupe une place
-centrale, sans réduire le serveur à cette seule feature : les routes
-structurent le flux applicatif, tandis que les autres abstractions assurent
-le lien avec le runtime.
+HTTP structure le flux exposé aux clients. Les autres domaines servent à
+manipuler les ressources du runtime sans disperser ces dépendances dans le
+reste de l'application.

@@ -1,7 +1,11 @@
 # Créer des commandes
 
-`ServerCommand` fournit les outils nécessaires à la création de commandes et de CLI complets.
+Le domaine commande permet de construire des entrées CLI typées pour une
+application serveur.
 
-Une commande peut définir des arguments, des options et leur validation, puis exposer directement ces valeurs typées à son exécution. Les informations déclarées permettent également de générer automatiquement l'aide associée à la commande (--help).
+Une commande décrit les arguments et options qu'elle accepte, puis reçoit ces
+valeurs déjà interprétées dans son callback d'exécution. La même déclaration
+sert aussi à produire l'aide et les erreurs de ligne de commande.
 
-Les commandes peuvent être composées sous forme d'arbre grâce aux sous-commandes, ce qui permet de construire aussi bien une commande simple qu'un CLI plus complexe.
+Les sous-commandes permettent ensuite de structurer une CLI comme un arbre,
+sans changer le modèle d'exécution d'une commande simple.

@@ -1,13 +1,8 @@
 /**
  * @title Créer des sous-commandes
  *
- * Une commande peut utiliser d'autres commandes comme `subjects`.
- *
- * Cela permet de construire une arborescence de commandes, chaque
- * sous-commande pouvant elle-même contenir d'autres sous-commandes.
- *
- * Une commande qui contient des sous-commandes ne peut pas déclarer
- * d'arguments au même niveau.
+ * Composition de commandes sous forme d'arbre pour router l'exécution vers
+ * une branche spécialisée.
  */
 import * as DSCommand from "@duplojs/server/command";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -40,7 +35,8 @@ const installCommand = DSCommand.create(
 );
 
 // La commande parente référence directement ses sous-commandes
-// dans ses `subjects`.
+// dans ses `subjects`. Une commande avec sous-commandes ne déclare pas
+// d'arguments au même niveau.
 await DSCommand.exec(
 	{
 		description: "Package manager",

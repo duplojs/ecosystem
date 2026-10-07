@@ -1,11 +1,8 @@
 /**
- * @title Utiliser les commandes
+ * @title Définir une commande
  *
- * Une commande décrit ses arguments et ses options, puis expose
- * directement les valeurs interprétées à son callback d'exécution.
- *
- * La définition sert également à générer automatiquement l'aide et
- * les erreurs associées à la commande.
+ * Déclaration d'arguments, d'options et récupération des valeurs typées
+ * dans le callback d'exécution.
  */
 import * as DSCommand from "@duplojs/server/command";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -89,3 +86,26 @@ await DSCommand.exec(
 		void include;
 	},
 );
+
+// Si ce fichier est exposé comme binaire, `DSCommand.exec` lit les arguments
+// transmis par le terminal. Le fichier peut être un `.ts` exécutable lorsque
+// son shebang indique l'interpréteur à utiliser.
+//
+// #!/usr/bin/env -S tsx
+//
+// package.json
+// {
+//   "bin": {
+//     "my-cli": "./scripts/bin.ts"
+//   }
+// }
+//
+// my-cli Jane
+// -> name: "Jane"
+//
+// my-cli ./src ./dist --mode=copy --force --include=a.ts,b.ts
+// -> source: "./src"
+// -> destination: "./dist"
+// -> mode: "copy"
+// -> force: true
+// -> include: ["a.ts", "b.ts"]
