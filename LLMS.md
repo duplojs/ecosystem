@@ -3,25 +3,27 @@
 L'écosystème DuploJS a pour but de compenser les manquements de TypeScript grâce à la puissance des génériques de celui-ci. Les features fondatrices sont surtout là pour améliorer la modélisation de la donnée et également pour la manipuler.
 
 Le principe d'un logiciel c'est de gérer de la donnée. Donc il faut particulièrement faire attention à ses structures, â ses états et â ses transitions des données qui constitueront leurs cycle de vie. DuploJS a pour vocation de vouloir améliorés et standardiser la modélisation de tout ça afin de créer des logiciels robustes et scalables.
-## Les `Constraint` de type.
+## Contraintes de typage
 
-Le point central d'un logiciel, c'est toujours sa donnée. Mieux elle est modélisée, plus la santé du logiciel est bonne. Les contraintes dans Duplo sont là pour pouvoir modéliser des données le plus finement possible afin qu'aucune ambiguïté soit permise.
+Garanties sur les valeurs : acquisition, composition, propagation, compatibilité statique et contraintes personnalisées.
 
 
-### L'utilisation des `Constraint`.
+### Acquisition des contraintes.
 
-Les contraintes existent uniquement au niveau du typage, mais elles
-garantissent en amont l'appel de fonctions qui vérifie la contrainte au runtime.
+Vérification runtime et narrowing vers un type contraint.
  
 
 ```ts
 import * as DNumber from "@duplojs/lang/number";
 
+// Une contrainte existe uniquement dans le typage : elle ne modifie ni ne valide la valeur.
+// L’intersection compose ici deux garanties établies par les predicates.
 type Age = number & DNumber.Integer & DNumber.Positive;
 
-// @ts-expect-error Impossible d'être assigner comme tels sans vérification en amont.
+// @ts-expect-error Le littéral seul ne porte pas les contraintes attendues.
 const age: Age = 12;
 
+// Chaque vérification réussie enrichit le type sans changer la valeur runtime.
 const maybeAge = 12;
 if (
 	DNumber.isInteger(maybeAge)
@@ -31,102 +33,33 @@ if (
 }
 ```
 
-### Manipulation des variable avec des `Constraint`.
+### [Composition des contraintes fournies.](ai-docs/src/01-fundamental/01-constraint/10-built-in-constraint.ts)
 
-Les contraintes impliquent des vérités sur la données au run time.
-Les vérités sont exploitées par les fonctions de la librairie.
-Cela permet de compenser les problèmes de typage faibles de TypeScript de base.
-Toute manipulation implique également perte/changement de contrainte pour la valeur obtenue.
+Réutilisation et composition des contraintes disponibles dans les domaines.
  
 
-```ts
-import * as DTuple from "@duplojs/lang/tuple";
-import * as DString from "@duplojs/lang/string";
-import * as DArray from "@duplojs/lang/array";
+### [Manipulation des valeurs contraintes.](ai-docs/src/01-fundamental/01-constraint/20-manipulation.ts)
 
-declare const userEmail: string & DString.Email;
-
-// Un email dans son format contenant obligatoirement un "@"
-// donne forcément un tableau avec minimum 2 éléments.
-// string[] & DArray.MinElements<2>
-const spitedEmail = DString.split(userEmail, "@");
-
-// Le passage du tableau en tuple est fait en interprétant la contrainte
-// DArray.MinElements<2>, ce qui permet de déduire que le tableau a forcément deux éléments.
-// [string, string, ...string[]]
-const [first, second, ...maybeRest] = DTuple.from(spitedEmail);
-
-// string
-const firstElement = DArray.first(spitedEmail);
-
-// string
-const lastElement = DArray.last(spitedEmail);
-
-// string
-const secondElement = DArray.at(spitedEmail, 1);
-
-// string | undefined
-const otherElement = DArray.at(spitedEmail, 10);
-```
-
-### [Utiliser les contraintes fournies](ai-docs/src/01-fundamental/01-constraint/10-built-in-constraint.ts)
-
-DuploJS fournit des contraintes pour les cas courants.
-Avant de définir une nouvelle contrainte, vérifier si une contrainte
-existante représente déjà la propriété recherchée.
-
-Elles couvrent notamment les number, string, array,
-et autres propriétés courantes.
+Exploitation des contraintes par les fonctions DuploJS pour simplifier la manipulation des valeurs.
  
 
-### [Cast d'une contrainte](ai-docs/src/01-fundamental/01-constraint/20-cast.ts)
+### [Compatibilité statique des contraintes.](ai-docs/src/01-fundamental/01-constraint/30-cast.ts)
 
-Le cast permet de considérer une donnée comme respectant une contrainte sans
-exécuter sa validation.
-
-Le typage calcule la compatibilité et autorisera son utilisation uniquement
-si une contrainte en induit une autre. Exemple, si j'attends un nombre avec
-`DNumber.LessThan<20>` alors un contrainte `DNumber.LessThan<10>` est correct.
+Cast par implication, valeurs littérales et inférence en contexte générique.
  
 
-### [Créations de `Constraint` customisées.](ai-docs/src/01-fundamental/01-constraint/30-custom-constraint.ts)
+### [Contraintes personnalisées.](ai-docs/src/01-fundamental/01-constraint/40-custom-constraint.ts)
 
-DuploJS met à disposition énormément de contraintes, mais il est tout
-à fait possible de créer ses propres contraintes. Il suffit juste
-d'étendre l'interface `Constraint`.
-
-Il faut évidemment associer un predicate à la contrainte afin de pouvoir
-l'obtenir par une vérification.
-
-Il est également possible d'ajouter des casts customisés selon le
-besoin. Pour cela, il suffit de déclarer des override de modules.
+Déclaration, predicate de validation et extension des règles de cast.
  
-## Currying
+## Currification
 
-Dans DuploJS, les fonctions curifiées sont conçues pour être utilisées dans des `pipe`.
+Composition des transformations de données avec les fonctions DuploJS : pipes, callbacks et traitements asynchrones.
 
-Il faut privilégier cette forme pour manipuler et transformer les données, en utilisant en priorité les fonctions déjà fournies par l'écosystème.
 
-### Utilisation de la currification.
+### Currification et composition avec pipe.
 
-Dans DuploJS, les fonctions curifiées sont principalement conçues pour
-composer des transformations dans des `pipe`.
-
-Dès qu'une même donnée doit subir plusieurs transformations successives,
-il faut privilégier un `pipe`.
-
-Cela permet d'ajouter, retirer ou réordonner facilement des transformations
-sans modifier la structure générale du traitement.
-
-Pour une opération unique qui reçoit directement la donnée, utiliser
-directement la fonction est suffisant.
-
-Lorsqu'un traitement est susceptible d'accueillir d'autres transformations,
-il est également pertinent de commencer directement avec un `pipe`.
-
-Lorsqu'un `pipe` est utilisé, il faut privilégier les fonctions curifiées
-fournies par l'écosystème plutôt que réimplémenter les transformations
-avec des callbacks ou des API natives.
+Configurer les opérations avant de recevoir la donnée et enchaîner ses transformations.
  
 
 ```ts
@@ -134,324 +67,91 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
 import * as DString from "@duplojs/lang/string";
 
-// Une seule transformation ne nécessite pas forcément de `pipe`.
-const trimmedName = DString.trim(" John ");
-
-// Dès qu'une donnée subit plusieurs transformations successives,
-// il faut privilégier un `pipe`.
-//
-// readonly (Lowercase<string> & DString.MinCharacters<1>)[] & DArray.MaxElements<3>
+// La forme curifiée reçoit les paramètres, puis la donnée transmise par pipe.
+// Privilégier pipe dès qu’une donnée subit plusieurs transformations,
+// ou si le traitement est susceptible d’en accueillir d’autres.
+// Utiliser en priorité les fonctions fournies par l’écosystème.
 const normalizedTags = DCommon.pipe(
 	" TypeScript, DuploJS, Functional " as const,
+	// Configure le séparateur ; pipe fournit ensuite la chaîne.
 	DString.split(","),
+	// Configure la transformation ; pipe fournit le tableau.
 	DArray.map(DString.trim),
 	DArray.filter(DString.isNotEmpty),
 	DArray.map(DString.toLowerCase),
 );
-
-// Les fonctions curifiées permettent de configurer une transformation
-// avant que la donnée ne leur soit fournie par le `pipe`.
-//
-// `DString.split(",")` configure le séparateur.
-// La chaîne à découper sera fournie ensuite par `pipe`.
-//
-// `DArray.map(DString.trim)` configure également une transformation
-// qui recevra ensuite le tableau provenant de l'étape précédente.
-
-// `innerPipe` permet d'enchaîner plusieurs transformations lorsqu'une
-// fonction de transformation est elle-même attendue.
-//
-// readonly (Lowercase<string> & DString.NotEmpty)[] & DArray.MaxElements<3>
-const normalizedTagsWithInnerPipe = DCommon.pipe(
-	" TypeScript, DuploJS, Functional " as const,
-	DString.split(","),
-	DArray.map(
-		DCommon.innerPipe(
-			DString.trim,
-			DString.toLowerCase,
-		),
-	),
-	DArray.filter(DString.isNotEmpty),
-);
-
-// `innerPipe` évite de créer une callback intermédiaire uniquement
-// pour enchaîner plusieurs transformations.
-//
-// readonly (number & Positive)[] & DArray.LengthEqual<3> & DArray.MinElements<3> & DArray.MaxElements<3>
-const tagLengths = DCommon.pipe(
-	" TypeScript, DuploJS, Functional " as const,
-	DString.split(","),
-	DArray.map(
-		DCommon.innerPipe(
-			DString.trim,
-			DString.length,
-		),
-	),
-);
-
-// `asyncPipe` applique le même principe lorsqu'une ou plusieurs étapes
-// du traitement sont asynchrones.
-//
-// Promise<readonly Lowercase<string>[] & DArray.LengthEqual<2> & DArray.MinElements<2> & DArray.MaxElements<2>>
-const asyncTags = DCommon.asyncPipe(
-	Promise.resolve(" TypeScript, DuploJS " as const),
-	DString.split(","),
-	DArray.map(DString.trim),
-	(tags) => Promise.resolve(tags),
-	DArray.map(DString.toLowerCase),
-);
-
-// `asyncInnerPipe` permet de composer plusieurs transformations synchrones
-// ou asynchrones lorsqu'une callback asynchrone est attendue.
-//
-// Promise<readonly Promise<Lowercase<string>>[] & DArray.LengthEqual<2>>
-const values = DCommon.asyncPipe(
-	[" TypeScript ", " DuploJS "] as const,
-	DArray.map(
-		DCommon.asyncInnerPipe(
-			(value) => Promise.resolve(value),
-			DString.trim,
-			DString.toLowerCase,
-		),
-	),
-);
+// Résultat : ["typescript", "duplojs", "functional"].
+// Chaque étape reçoit la sortie précédente ; les types suivent ces transformations.
+// On peut ajouter, retirer ou réordonner les étapes sans restructurer le traitement.
 ```
 
-### Fonctions intégrées compatibles avec les `pipe`.
+### [Réutilisation des fonctions de l’écosystème dans les pipes.](ai-docs/src/01-fundamental/02-currying/10-built-in-function.ts)
 
-L'écosystème DuploJS fournit de nombreuses fonctions conçues pour être
-directement utilisées dans des `pipe`.
+Composer les opérations fournies, sous forme curifiée ou directement compatible avec pipe.
+ 
 
-Il faut privilégier les fonctions fournies par l'écosystème plutôt que
-réimplémenter une transformation avec une callback.
+### [Composition dans une callback.](ai-docs/src/01-fundamental/02-currying/20-inner-pipe.ts)
 
-Avant d'écrire une fonction intermédiaire, il faut rechercher si une
-fonction curifiée ou directement compatible avec `pipe` existe déjà.
+Enchaîner des transformations lorsque la fonction appelante attend une fonction.
+ 
 
-Ce principe ne concerne pas uniquement `@duplojs/lang`. Les autres packages
-de l'écosystème exposent également des fonctions pouvant être composées
-dans des pipes.
+### [Composition de traitements asynchrones.](ai-docs/src/01-fundamental/02-currying/30-async-pipe.ts)
+
+Enchaîner des étapes synchrones et asynchrones dans un pipe ou une callback.
+ 
+## Either
+
+Résultats et états contextualisés : représentation, discrimination, traitement exhaustif, propagation des échecs et adaptation des contrats.
+
+
+### Représentation des résultats avec Either.
+
+Statuts Right et Left, information contextuelle et valeur associée.
  
 
 ```ts
-import * as DCommon from "@duplojs/lang/common";
-import * as DArray from "@duplojs/lang/array";
-import * as DString from "@duplojs/lang/string";
-import * as DObject from "@duplojs/lang/object";
-import * as DNumber from "@duplojs/lang/number";
 import * as DEither from "@duplojs/lang/either";
-import * as DTuple from "@duplojs/lang/tuple";
-import * as DChrono from "@duplojs/lang/chrono";
-import * as DGenerator from "@duplojs/lang/generator";
-import * as DPattern from "@duplojs/lang/pattern";
-import type * as DPath from "@duplojs/lang/path";
-import * as DSFile from "@duplojs/server/file";
 
-// Les fonctions de `string` et `array` sont faites pour être composées.
-// readonly (Lowercase<string> & DString.MinCharacters<1>)[] & DArray.MaxElements<4>
-const normalizedNames = DCommon.pipe(
-	[" John ", "", " JANE ", " Alice "],
-	DArray.map(DString.trim),
-	DArray.filter(DString.isNotEmpty),
-	DArray.map(DString.toLowerCase),
-	DArray.sort((left, right) => left.localeCompare(right)),
-);
+// Un résultat porte un statut, une information qui identifie le cas et une valeur.
+const result = DEither.right("user-found", { name: "Alice" });
+const missing = DEither.left("user-not-found");
 
-// Les prédicats de `number` peuvent directement être utilisés
-// dans les fonctions de manipulation de tableaux.
-// number
-const adultAges = DCommon.pipe(
-	[12, 18, 42, 8, 21],
-	DArray.filter(DNumber.greaterThanOrEqual(18)),
-	DNumber.sum,
-);
-
-// Les fonctions de `object` sont également prévues pour le pipe.
-// {
-//     name: string & DString.Trimmed & DString.MaxCharacters<6>;
-//     readonly age: 24;
-// }
-const publicUser = DCommon.pipe(
-	{
-		name: " John ",
-		password: "secret",
-		age: 24,
-	},
-	DObject.transformProperty("name", DString.trim),
-	DObject.omit(["password"]),
-);
-
-// `innerPipe` permet de composer plusieurs fonctions intégrées
-// directement à l'endroit où une callback est attendue.
-// readonly { name: Lowercase<string>; }[] & DArray.LengthEqual<2>
-const users = DCommon.pipe(
-	[
-		{
-			name: " John ",
-			age: 24,
-		},
-		{
-			name: " JANE ",
-			age: 32,
-		},
-	],
-	DArray.map(
-		DCommon.innerPipe(
-			DObject.transformProperty(
-				"name",
-				DCommon.innerPipe(
-					DString.trim,
-					DString.toLowerCase,
-				),
-			),
-			DObject.pick(["name"]),
-		),
-	),
-);
-
-// Les fonctions `Either` sont elles aussi composables avec les pipes.
-declare const maybeName:
-	| DEither.Right<"user-found", string>
-	| DEither.Left<"user-not-found">;
-
-// Lowercase<string>
-const name = DCommon.pipe(
-	maybeName,
-	DEither.unwrapOr("anonymous"),
-	DString.trim,
-	DString.toLowerCase,
-);
-
-// `Either` possède également ses propres pipes lorsque le traitement
-// doit continuer uniquement sur une valeur `Right`.
-// DEither.Left<"user-not-found", unknown> | DEither.Success<Lowercase<string>>
-const normalizedEitherName = DEither.rightPipe(
-	maybeName,
-	DString.trim,
-	DString.toLowerCase,
-);
-
-// Les tuples disposent eux aussi de fonctions curifiées.
-// readonly [string & DString.Trimmed & DString.MaxCharacters<6>, string & DString.Trimmed & DString.MaxCharacters<6>]
-const normalizedTuple = DCommon.pipe(
-	[" John ", " Jane "] as const,
-	DTuple.map(DString.trim),
-);
-
-// Les generators permettent de construire des transformations lazy
-// avec exactement le même modèle de composition.
-// readonly (Lowercase<string> & DString.MinCharacters<1>)[]
-const generatedNames = DCommon.pipe(
-	[" John ", "", " JANE ", " Alice "],
-	DGenerator.map(DString.trim),
-	DGenerator.filter(DString.isNotEmpty),
-	DGenerator.map(DString.toLowerCase),
-	DArray.from,
-);
-
-// Les fonctions de date peuvent être utilisées directement dans les pipes.
-declare const creationDate: DChrono.TheDate;
-
-// string
-const serializedCreationDate = DCommon.pipe(
-	creationDate,
-	DChrono.formatDate(
-		"YYYY-MM-DD HH:mm:ss",
-		"Europe/Paris",
-	),
-);
-
-// Le pattern matching fournit également des fonctions curifiées.
-declare const status: "draft" | "published" | "archived";
-
-// "Draft" | "Published" | "Archived"
-const statusLabel = DCommon.pipe(
-	status,
-	DPattern.matchWithStringOtherwise(
-		{
-			draft: () => "Draft" as const,
-			published: () => "Published" as const,
-		},
-		() => "Archived" as const,
-	),
-);
-
-// Les fonctions n'ont pas besoin d'être curifiées lorsqu'elles reçoivent
-// déjà la donnée comme unique argument : elles peuvent être utilisées
-// directement comme étape du pipe.
-declare const filePath: string & DPath.Path;
-
-// string & DString.Trimmed
-const fileContent = await DCommon.asyncPipe(
-	filePath,
-	DSFile.readTextFile,
-	DEither.unwrapOr(""),
-	DString.trim,
-);
-
-// Les fonctions curifiées existent également dans `@duplojs/server`.
-// DSFile.WriteTextFileResult
-const writeResult = await DCommon.asyncPipe(
-	filePath,
-	DSFile.writeTextFile("Hello world"),
-);
-
-// Cela permet de composer des traitements provenant de plusieurs packages.
-// DCommon.Json | {}
-const jsonContent = await DCommon.asyncPipe(
-	filePath,
-	DSFile.readJsonFile,
-	DEither.unwrapOr({}),
-);
+// Les variantes fournies reposent sur Right (Success, Some, Result, Ok) ou Left
+// (Fail, Error, None).
+// Result décrit un état contextualisé sans décider s’il constitue un succès ou un échec.
+// Un contrat exprime les résultats possibles par une union, avec des informations
+// personnalisées ou des variantes fournies.
+type FindUserResult = DEither.Right<"user-found", { name: "Alice" }> | DEither.Left<"user-not-found", undefined>;
 ```
-## Traiter un resulta avec either.
 
-Either est un domaine qui regroupe la définition de monades représentants les résultats ainsi que de fonctions utilitaires pour les manipuler. Les monades de DuploJS ont une particularité, elles portent toujours une information permettant de créer un résultat contextuel traçable. L'information sert égalment a discriminer précisément un résulta.
+### [Discrimination et extraction des résultats.](ai-docs/src/01-fundamental/03-either/10-discrimination.ts)
 
-### L'utilisation des monode Either.
-
-Toutes les monades sont étendues des monade Right et Left.
+Choisir une branche par statut ou information, extraire sa valeur et traiter les autres cas.
  
 
-```ts
-import * as DCommon from "@duplojs/lang/common";
-import * as DEither from "@duplojs/lang/either";
+### [Décisions exhaustives sur les résultats.](ai-docs/src/01-fundamental/03-either/20-exhaustive-handling.ts)
 
-// DEither.Right<"my-result", "superData">
-const result = DEither.right("my-result", "superData");
+Sélection et traitement de chaque variante pour détecter les évolutions du contrat.
+ 
 
-interface User {}
-// DEither.None | DEither.Some<"value">
-declare function findUser(): DEither.Maybe<User>;
+### [Composition avec propagation des échecs.](ai-docs/src/01-fundamental/03-either/30-composition.ts)
 
-// Plein de façons différentes de décrire les résultats.
-declare function someAction(): (
-	| DEither.Success<"result">
-	| DEither.Left<"fail-task", Error>
-	| DEither.Fail
-	| DEither.Error<Error>
-);
+Enchaîner ou regrouper des opérations en arrêtant le traitement au premier Left.
+ 
 
-// DEither.None | DEither.Success<"value">
-const whenIsRightResult = DCommon.pipe(
-	findUser(),
-	DEither.whenIsRight(
-		(user) => {
-			// User
-			void user;
+### [Adaptation des résultats au contexte.](ai-docs/src/01-fundamental/03-either/40-result-adaptation.ts)
 
-			return DEither.success("value");
-		},
-	),
-);
-```
+Reclasser les statuts et renommer les informations en conservant les valeurs.
+ 
 
-### [Manipulations des monode Either.](ai-docs/src/01-fundamental/03-either/10-manipulation.ts)
+### [Conversion des absences et exceptions en résultats.](ai-docs/src/01-fundamental/03-either/50-external-results.ts)
 
-Il y a plusieurs outils pour manipuler les Either qui permettent de les
-discriminer, d'effectuer des actions selon leur information, de gérer
-des flux en faisant redescendre les erreurs, et autres outils permettant
-de rendre la gestion de résultats le plus robuste possible.
+Intégrer des valeurs optionnelles ou des appels pouvant échouer dans un contrat Either.
+ 
+
+### [États contextualisés avec Result.](ai-docs/src/01-fundamental/03-either/60-contextual-state.ts)
+
+Décrire et discriminer des états sans leur attribuer un sens de succès ou d’échec.
  
 ## Les `DataStructures`
 
@@ -803,7 +503,6 @@ Le cycle de vie d'une entité décrit :
 - les différents états qu'elle peut posséder ;
 - les `Flag` permettant de prouver ces états dans le typage ;
 - les `Fact` représentant les événements qui font évoluer l'entité ;
-- les conséquences qui doivent être résolues à la suite de certains faits.
 
 L'objectif est de représenter les règles du cycle de vie directement
 dans le modèle et dans les signatures des fonctions.

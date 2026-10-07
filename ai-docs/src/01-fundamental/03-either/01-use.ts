@@ -1,35 +1,17 @@
 /**
- * @title L'utilisation des monode Either.
+ * @title Représentation des résultats avec Either.
  *
- * Toutes les monades sont étendues des monade Right et Left.
+ * Statuts Right et Left, information contextuelle et valeur associée.
  */
-import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 
-// DEither.Right<"my-result", "superData">
-const result = DEither.right("my-result", "superData");
+// Un résultat porte un statut, une information qui identifie le cas et une valeur.
+const result = DEither.right("user-found", { name: "Alice" });
+const missing = DEither.left("user-not-found");
 
-interface User {}
-// DEither.None | DEither.Some<"value">
-declare function findUser(): DEither.Maybe<User>;
-
-// Plein de façons différentes de décrire les résultats.
-declare function someAction(): (
-	| DEither.Success<"result">
-	| DEither.Left<"fail-task", Error>
-	| DEither.Fail
-	| DEither.Error<Error>
-);
-
-// DEither.None | DEither.Success<"value">
-const whenIsRightResult = DCommon.pipe(
-	findUser(),
-	DEither.whenIsRight(
-		(user) => {
-			// User
-			void user;
-
-			return DEither.success("value");
-		},
-	),
-);
+// Les variantes fournies reposent sur Right (Success, Some, Result, Ok) ou Left
+// (Fail, Error, None).
+// Result décrit un état contextualisé sans décider s’il constitue un succès ou un échec.
+// Un contrat exprime les résultats possibles par une union, avec des informations
+// personnalisées ou des variantes fournies.
+type FindUserResult = DEither.Right<"user-found", { name: "Alice" }> | DEither.Left<"user-not-found", undefined>;
