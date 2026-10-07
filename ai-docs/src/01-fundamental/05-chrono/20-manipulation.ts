@@ -1,14 +1,13 @@
 /**
- * @title Manipulation des dates et des temps.
+ * @title Calculs et comparaisons temporels.
  *
- * `TheDate` et `TheTime` sont immuables.
- * Les opérations de manipulation retournent donc toujours une nouvelle valeur.
- *
- * La majorité des opérations sont curifiées afin d'être utilisées dans des `pipe`.
+ * Transformer, comparer et décomposer des instants ou durées avec les fonctions Chrono.
  */
 import * as DChrono from "@duplojs/lang/chrono";
 import * as DCommon from "@duplojs/lang/common";
 
+// TheDate et TheTime sont immuables : les transformations produisent de nouvelles valeurs.
+// Les formes curifiées permettent de composer ces transformations dans un pipe.
 const date = DChrono.createDate("2026-09-30");
 
 // Les unités peuvent être ajoutées ou retirées directement sur une date.
@@ -37,7 +36,7 @@ const totalDuration = DCommon.pipe(
 	DChrono.addTime(DChrono.createTime(30, "minute")),
 );
 
-// La différence entre deux dates produit un `TheTime`.
+// La différence entre deux dates produit un TheTime signé : date moins date de référence.
 const startDate = DChrono.createDate("2026-09-01");
 const endDate = DChrono.createDate("2026-09-30");
 
@@ -55,7 +54,7 @@ const differenceInHours = DCommon.pipe(
 	DChrono.computeTime("hour"),
 );
 
-// Une date peut être arrondie au début d'une unité.
+// round ramène une date au début d’une unité du calendrier UTC.
 
 // DChrono.TheDate -> 2026-09-30T00:00:00.000Z
 const startOfDay = DChrono.round(date, "day");

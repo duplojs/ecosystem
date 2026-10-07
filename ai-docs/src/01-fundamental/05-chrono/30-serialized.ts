@@ -1,16 +1,12 @@
 /**
- * @title Sérialisation des dates et des temps.
+ * @title Transport et reconstruction des valeurs temporelles.
  *
- * `chrono` possède un format de sérialisation dédié pour `TheDate` et `TheTime`.
- *
- * Ce format conserve directement leur valeur numérique et permet de reconnaître
- * explicitement qu'une string représente une date ou un temps DuploJS.
- *
- * Il est principalement destiné au transport de données : JSON, API,
- * persistance, messages, etc.
+ * Sérialiser, reconnaître et reconstruire les instants et durées en conservant leur valeur.
  */
 import * as DChrono from "@duplojs/lang/chrono";
 
+// Chrono possède un format dédié qui conserve la valeur numérique et identifie sa nature.
+// Il sert au transport des données : JSON, API, persistance ou messages.
 const date = DChrono.createDate("2026-09-30");
 const time = DChrono.createTime(2, "hour");
 

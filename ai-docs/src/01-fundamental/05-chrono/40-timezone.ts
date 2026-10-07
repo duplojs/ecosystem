@@ -1,16 +1,16 @@
 /**
- * @title Gestion des fuseaux horaires.
+ * @title Interprétation et affichage dans un fuseau horaire.
  *
- * `TheDate` représente toujours un instant absolu à travers son timestamp.
- * Le fuseau horaire intervient uniquement lorsqu'une date locale doit être
- * interprétée ou lorsqu'un instant doit être lu dans un contexte local.
- *
- * Les fuseaux acceptés sont typés avec `DChrono.Timezone`.
+ * Interpréter une heure locale et lire ou présenter un instant dans le fuseau demandé.
  */
 import * as DChrono from "@duplojs/lang/chrono";
 import * as DCommon from "@duplojs/lang/common";
 
-// Une date déclarée sans timezone est interprétée en UTC.
+// TheDate stocke un instant absolu sous forme de timestamp, sans fuseau attaché.
+// Le fuseau intervient pour interpréter une heure locale ou lire un instant dans un contexte local.
+// Les fuseaux acceptés sont typés avec DChrono.Timezone.
+
+// Une date littérale YYYY-MM-DD est interprétée en UTC.
 const utcDate = DChrono.createDate("2026-09-30");
 
 // Une date provenant d'une valeur locale peut préciser son fuseau.
@@ -24,7 +24,8 @@ const parisDate = DChrono.createDateOrThrow({
 
 // `applyTimezone` permet la même conversion lorsqu'une `TheDate` existe déjà.
 //
-// La date fournie est considérée comme représentant une heure locale
+// Cette opération change le timestamp : elle interprète les composantes UTC de l’entrée
+// comme une heure locale
 // dans le fuseau demandé, puis convertie vers l'instant correspondant.
 const localDate = DChrono.createDate("2026-09-30", {
 	hour: "09",
