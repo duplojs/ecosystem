@@ -1,14 +1,7 @@
 /**
- * @title Déclaration et hydratation d'une `Entity`.
+ * @title Entités métier et hydratation.
  *
- * Une `Entity` représente une donnée métier identifiée explicitement dans le typage.
- *
- * Ses propriétés sont généralement définies avec des `NewType`.
- * Ils permettent de conserver le type primitif de la donnée tout en y associant
- * une identité et des contraintes propres au domaine.
- *
- * Une entité peut ensuite être hydratée depuis des données dont le typage est
- * moins précis, comme celles provenant d'une base de données ou d'un repository.
+ * Déclarer les propriétés métier, hydrater les données externes et mettre à jour les valeurs typées.
  */
 import * as DEither from "@duplojs/lang/either";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -16,6 +9,10 @@ import * as DModeling from "@duplojs/lang/modeling";
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 
+// Une Entity représente un objet métier doté d’une identité explicite.
+// Ses valeurs primitives sont définies par des NewType qui associent un sens métier
+// et des contraintes à leur représentation. Des collections, objets imbriqués,
+// autres Entity ou TaggedObject peuvent également composer la shape.
 export namespace User {
 	// Un namespace d'entité permet de regrouper la définition de l'entité
 	// et de ses `NewType`.
@@ -90,7 +87,8 @@ export namespace User {
 	export type Entity = DDataStructure.StructureValue<typeof Entity>;
 }
 
-// Une donnée provenant d'un système externe possède généralement un typage
+// L’hydratation fait entrer dans le modèle métier des données de repository ou de base de données.
+// Une donnée provenant d’un système externe possède généralement un typage
 // amoindri par rapport au modèle métier.
 //
 // Les contraintes et les `NewType` ne sont plus présents, mais les types
@@ -136,7 +134,7 @@ const maybeMapUser = User.Entity.map({
 //     )[];
 // }>
 const maybeDecodeMapUser = User.Entity.decodeMap(DDataStructure.codecsString, {
-	id: "invalid-id",
+	id: "550e8400-e29b-41d4-a716-446655440000",
 	name: "SuperName",
 	age: DCommon.cast("12"),
 	tags: ["superTag"],
@@ -165,7 +163,7 @@ const maybeDecodeMapUser = User.Entity.decodeMap(DDataStructure.codecsString, {
 // }>
 const maybeUser = DEither.rightPipe(
 	DEither.group({
-		id: User.Id.map("invalid-id"),
+		id: User.Id.map("550e8400-e29b-41d4-a716-446655440000"),
 		name: User.Name.map("SuperName"),
 		age: User.Age.map(24),
 		tags: DEither.rightPipe(

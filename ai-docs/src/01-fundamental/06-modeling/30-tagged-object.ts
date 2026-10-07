@@ -1,24 +1,7 @@
 /**
- * @title Déclaration et hydratation d'un `TaggedObject`.
+ * @title Objets taggés et unions discriminées.
  *
- * Un `TaggedObject` représente un objet possédant une identité explicite.
- *
- * Il normalise le pattern classique consistant à ajouter manuellement
- * une propriété `type`, `kind`, `status`, etc. afin de créer une union
- * discriminée.
- *
- * L'identité du `TaggedObject` est gérée directement par DuploJS et fait
- * partie de la donnée.
- *
- * Une fois le `TaggedObject` créé, cette identité est conservée lors de sa
- * sérialisation et de son transport. Un autre consommateur peut donc directement
- * le discriminer sans avoir à l'hydrater à nouveau.
- *
- * L'hydratation intervient principalement lorsqu'une donnée externe entre
- * dans le domaine sans encore posséder cette identité.
- *
- * Contrairement à une `Entity`, les propriétés d'un `TaggedObject` ne sont
- * pas obligées d'être représentées par des `NewType`.
+ * Identité transportable, distinction des formes d’un objet et hydratation des données brutes.
  */
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";

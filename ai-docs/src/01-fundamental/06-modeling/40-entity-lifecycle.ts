@@ -1,13 +1,7 @@
 /**
- * @title Cycle de vie d'une `Entity`.
+ * @title Cycle de vie des entités.
  *
- * Le cycle de vie d'une entité décrit :
- * - les différents états qu'elle peut posséder ;
- * - les `Flag` permettant de prouver ces états dans le typage ;
- * - les `Fact` représentant les événements qui font évoluer l'entité ;
- *
- * L'objectif est de représenter les règles du cycle de vie directement
- * dans le modèle et dans les signatures des fonctions.
+ * États, préconditions et transitions métier représentés par des Flag et des Fact.
  */
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -16,6 +10,8 @@ import * as DChrono from "@duplojs/lang/chrono";
 import * as DPattern from "@duplojs/lang/pattern";
 import * as DEither from "@duplojs/lang/either";
 
+// Le modèle et les signatures expriment les états possibles, leurs preuves et les événements
+// qui font évoluer l’entité. Les préconditions deviennent des exigences de typage.
 export namespace User {
 	const namespace = DModeling.createEntityNamespace("User");
 
@@ -94,7 +90,7 @@ export namespace User {
 
 	// Un `Flag` représente dans le typage une information avérée sur l'entité.
 	//
-	// Sa payload est ici liée au `State` correspondant.
+	// Le flag porte aussi sa payload au runtime. Ici, elle est liée au State correspondant.
 	// Ajouter ce flag nécessite donc de posséder un `AwaitingValidationState`.
 	//
 	// Une fonction peut ensuite demander :
@@ -124,7 +120,8 @@ export namespace User {
 	// `refineState` transforme cette information runtime en information de typage.
 	// Chaque branche du pattern matching associe le `Flag` correspondant au state.
 	//
-	// Le résultat permet ensuite de travailler avec une entité dont l'état
+	// Chaque branche retourne un Result : elle constate un état sans décider d’un succès ou d’un échec.
+	// Le résultat permet ensuite de travailler avec une entité dont l’état
 	// courant est explicitement prouvé par le type.
 	export function refineState<
 		GenericEntity extends Entity,
