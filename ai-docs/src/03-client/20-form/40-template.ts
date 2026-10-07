@@ -1,26 +1,15 @@
 /**
  * @title Personnaliser les templates
  *
- * Les templates définissent le rendu des formulaires, des inputs et des
- * layouts.
- *
- * Ils ne changent ni la structure de `currentValue`, ni la valeur retournée
- * par `check`. Leur rôle est de transformer les props système et les slots
- * fournis par `@duplojs/form` en interface Vue.
- *
- * Le découpage mental est simple :
- * - les `FormField` décrivent la structure
- * - les layouts composent cette structure
- * - les templates rendent cette structure
+ * Adapter le rendu Vue des formulaires, inputs et layouts sans changer la
+ * structure, les validations ou les valeurs manipulées par `@duplojs/form`.
  */
 import { createForm, createTemplate, useMultiLayout, type InputTemplateProperties, type VueComponent } from "@duplojs/form/vue";
 import { templateFormAddButton, templateFormNextButton, templateFormPreviousButton, templateFormRemoveButton, templateFormResetButton, templateFormSelect, useTextareaInput, useTextInput } from "@duplojs/form/vueDesignSystem";
 import { createGridTemplates } from "@duplojs/form/vueGrid";
 
-// Un template reçoit des props système, comme `fieldKey`, `getLabel`,
-// `getErrorMessage`, et des slots, comme `input` ou `formField`.
-// Il doit rester générique : s'il connaît `firstName`, `age` ou une structure
-// métier précise, ce n'est plus un template mais de la logique de formulaire.
+// Un template transforme les props système et les slots en interface Vue.
+// Il reste générique : la connaissance métier appartient au formulaire.
 interface HeroInputTemplateProperties {
 	props: (
 		& InputTemplateProperties["props"]
@@ -33,8 +22,7 @@ interface HeroInputTemplateProperties {
 
 declare const HeroInputTemplate: VueComponent<HeroInputTemplateProperties>;
 
-// `createTemplate` transforme un composant Vue compatible en factory.
-// La clé `"input"` indique quel type de template est remplacé.
+// La clé `"input"` indique quelle partie du rendu est remplacée.
 const useHeroInputTemplate = createTemplate(
 	"input",
 	HeroInputTemplate,
@@ -45,10 +33,8 @@ const useHeroInputTemplate = createTemplate(
 	},
 );
 
-// Les templates grid de `@duplojs/form/vueGrid` sont une implémentation prête
-// à l'emploi pour les templates standards du formulaire.
-// Ils donnent une base visuelle cohérente, mais restent remplaçables
-// globalement ou localement.
+// Les templates grid fournissent une base visuelle remplaçable globalement
+// ou localement.
 const gridTemplates = createGridTemplates({
 	repeat: {
 		addLabel: "Add another item",
@@ -67,8 +53,7 @@ const gridTemplates = createGridTemplates({
 	union: { selectInputKind: templateFormSelect },
 });
 
-// Une surcharge globale remplace le template pour tous les champs concernés
-// par cette factory de formulaire.
+// La surcharge globale s'applique à tous les champs concernés par ce formulaire.
 const useForm = createForm({
 	...gridTemplates.useTemplates(),
 	input: useHeroInputTemplate({ tone: "accent" }),
@@ -92,9 +77,8 @@ const { component: TheForm, currentValue } = useForm(
 	}),
 );
 
-// `title` utilise le template global accentué.
-// `subtitle` surcharge localement ce template.
-// `summary` revient localement sur le template grid.
+// `title` utilise le template global, `subtitle` le surcharge localement,
+// `summary` revient au template grid.
 //
 // Ref<{
 //   title: string;

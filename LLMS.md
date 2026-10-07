@@ -440,169 +440,93 @@ une branche spécialisée.
  
 # Client
 
-Le client est l'endroit où les données typées rencontrent l'interaction
-utilisateur. C'est aussi l'endroit où la logique peut facilement se disperser :
-requêtes écrites au cas par cas, formulaires propres à chaque écran,
-comportements locaux difficiles à maintenir.
+Le client est l'endroit où les données typées rencontrent l'interaction utilisateur : requêtes HTTP, formulaires, validations et comportements d'interface.
 
-DuploJS cherche à ramener ces usages vers une forme plus déclarative et
-constante. Les interactions sont décrites à partir de contrats et de
-compositions, ce qui permet de garder un code homogène, fortement typé et
-assez flexible pour couvrir des interfaces spécifiques sans abandonner le
-modèle commun.
+DuploJS ramène ces usages vers des contrats et des compositions déclaratives afin de garder un code homogène, fortement typé et adaptable sans disperser la logique propre à chaque écran.
 
 # Client HTTP
 
-Le client HTTP permet de consommer une interface HTTP DuploJS à partir d'un
-contrat statique partagé.
+Consommation typée d'une interface HTTP DuploJS à partir de son contrat
+statique : initialisation du client, requêtes disponibles, réponses attendues
+et réactions communes au cycle des échanges.
 
-Ce contrat décrit les routes disponibles, leurs entrées et leurs réponses. Le
-client s'appuie dessus pour construire les requêtes et typer les réponses sans
-réécrire le modèle exposé par le serveur.
-
-L'idée principale est de garder le lien entre la route appelée et les réponses
-qu'elle peut produire. Les `information` déclarées côté HTTP deviennent alors
-le moyen discriminer une réponse précis côté client.
+Le client conserve le lien entre une route appelée et les réponses qu'elle peut
+produire. Les `information` déclarées côté serveur deviennent le discriminant
+principal pour traiter un cas de réponse précis côté client.
 
 
 ### [Initialiser un client HTTP](ai-docs/src/03-client/10-http/10-init.ts)
 
-Un client HTTP se construit à partir du typage des routes exposées par
-l'interface HTTP DuploJS.
-
-Ce typage est généralement produit par `codeGeneratorPlugin`.
-Le client n'a pas besoin de partager la codebase du serveur :
-il consomme uniquement le contrat statique généré.
-
-Ce contrat décrit les méthodes, paths, entrées attendues et réponses
-possibles. Il sert ensuite à écrire les requêtes et à traiter leurs
-réponses sans redécrire le contrat côté client.
+Création d'un client à partir du contrat statique des routes, configuration
+globale et conservation du typage des requêtes et réponses exposées par le
+serveur.
  
 
 ### [Effectuer une requête HTTP](ai-docs/src/03-client/10-http/20-request.ts)
 
-Les méthodes `get`, `post`, `patch`, `put`, `delete` et `request`
-créent une `PromiseRequest`.
-
-Une `PromiseRequest` lance la requête et ajoute des méthodes de traitement
-autour de la réponse typée.
-
-Le pattern principal consiste à :
-- construire la requête avec les paramètres attendus par la route
-- choisir une manière de traiter la réponse selon le besoin
-- discriminer en priorité par `information`, plus stable et explicite
-que le statut HTTP
+Construction d'une `PromiseRequest`, envoi des paramètres attendus par la
+route et sélection des réponses typées par `information`, code HTTP ou
+famille de statut.
  
 
 ### [Utiliser les hooks du client HTTP](ai-docs/src/03-client/10-http/30-hook.ts)
 
-Les hooks permettent de brancher un comportement commun sur le cycle
-d'une requête.
-
-Ils peuvent être donnés dans la configuration du client, mais les helpers
-`add*Hook` rendent souvent l'intention plus lisible.
-
-Les hooks de requête et de réponse permettent d'intervenir dans le flux :
-ajouter un header, remplacer des paramètres, transformer une réponse.
-
-Les hooks ciblés par `information`, code ou type de réponse servent à
-centraliser une réaction quand un cas précis apparaît, sans répéter ce
-traitement autour de chaque requête.
-
-En pratique, les hooks les plus sains sont souvent ceux qui produisent un
-effet de bord : redirection, toast, loader, instrumentation.
-Les hooks capables de transformer une requête ou une réponse existent.
-Ils doivent être utilisés avec retenue : l'enrichissement produit par un
-hook ne change pas le contrat typé de la route.
+Centralisation des comportements communs au cycle d'une requête : réactions
+globales, effets de bord, instrumentation et transformations techniques sans
+élargir le contrat typé des routes.
  
 # Form
 
-Les formulaires sont souvent une source de logique dispersée : chaque écran
-peut finir avec sa propre manière de gérer les valeurs, les erreurs, les
-validations, les états internes et le rendu.
+Formulaires déclaratifs et typés : composition de champs, layouts, validations,
+états internes et templates de rendu.
 
-La partie form de DuploJS répond à ce problème en proposant une façon unique,
-déclarative et typée de construire un formulaire. Au lieu d'assembler les
-comportements de manière impérative, le formulaire est décrit par composition :
-chaque élément annonce ce qu'il porte, comment il s'intègre aux autres, et
-quelle place il occupe dans la valeur finale.
+L'objectif est d'éviter que chaque écran reconstruise sa propre manière de
+gérer les valeurs, les erreurs et les comportements locaux. Le formulaire est
+décrit par composition : chaque élément annonce ce qu'il porte, comment il
+s'intègre aux autres et quelle place il occupe dans la valeur finale.
 
-Cette approche rend le modèle plus constant et plus robuste. Elle couvre déjà
-beaucoup de formes de formulaires avec les briques fournies, mais reste
-extensible lorsque l'interface demande un comportement ou un rendu spécifique.
+Les inputs portent les valeurs, les layouts structurent ou contrôlent leur
+composition, et les templates transforment cette structure en interface Vue.
+Cette séparation garde un modèle commun pour `currentValue`, `check`, `reset`
+et `dispose`, tout en laissant l'application personnaliser les comportements ou
+le rendu quand l'interface l'exige.
 
 
 ### [Créer un formulaire](ai-docs/src/03-client/20-form/10-init.ts)
 
-`@duplojs/form` permet de composer un formulaire par déclaration.
-
-Au lieu de piloter impérativement chaque interaction du formulaire,
-on exprime sa structure et ses comportements avec des fonctions.
-
-L'initialisation se fait en deux temps :
-- fabriquer une fonction `useForm` avec `createForm`
-- passer à cette fonction un `FormField` racine
-
-Le point important est qu'un input retourne un `FormField`, et qu'un layout
-retourne aussi un `FormField`. Le champ racine peut donc être un input simple
-ou une composition de layouts et d'inputs.
-
-`createForm` ne connaît pas le schéma métier du formulaire.
-Il reçoit les templates disponibles, clone la `defaultValue` du champ racine,
-instancie la composition sur un état Vue, puis expose le composant et les
-opérations du formulaire.
+Initialisation d'un formulaire à partir de templates et d'un `FormField`
+racine pour obtenir son composant Vue, sa valeur courante et ses opérations.
  
 
 ### [Créer/Utiliser un input](ai-docs/src/03-client/20-form/20-input.ts)
 
 Un composant Vue d'input n'est pas encore une brique de formulaire.
 
-La séquence est :
-- écrire un composant Vue compatible
-- le transformer en factory avec `createInput`
-- appeler cette factory pour obtenir un `FormField`
-- composer ce `FormField` dans un formulaire
+Pour créer un input réutilisable, le raisonnement est toujours le même :
+partir d'un composant Vue compatible, le transformer avec `createInput`,
+puis composer le champ obtenu dans un formulaire.
 
-Cette séparation permet de garder le composant concentré sur l'interface,
-et de laisser `@duplojs/form` gérer son intégration dans `currentValue`,
-`reset`, `dispose` et `check`.
-
-Le design system Vue expose déjà des factories prêtes à utiliser pour les
-inputs courants. `createInput` sert quand une application veut créer les
-siennes.
+Les inputs du design system suivent déjà ce modèle. Ils peuvent être utilisés
+directement, ou servir de référence lorsqu'une application crée ses propres
+inputs.
  
 
 ### [Composer avec les layouts](ai-docs/src/03-client/20-form/30-layout.ts)
 
-Un layout reçoit un ou plusieurs `FormField` et retourne un nouveau
-`FormField`.
+Un layout reçoit un ou plusieurs champs et retourne un nouveau champ.
 
 C'est ce qui permet de construire un formulaire par composition : un input
 peut être donné à un layout, ce layout peut être donné à un autre layout,
 puis le résultat final devient le champ racine passé à `useForm`.
 
-Les layouts ont deux rôles principaux :
-- structurer la valeur du formulaire
-- piloter un comportement autour d'un ou plusieurs champs
-
-Ils sont librement composables. Un `repeat` peut contenir un `multi`, un
-`union` peut contenir un `step`, et un `section` peut simplement envelopper
-une composition existante sans changer sa valeur.
+Les layouts structurent la valeur du formulaire ou pilotent un comportement
+autour d'un ou plusieurs champs.
  
 
 ### [Personnaliser les templates](ai-docs/src/03-client/20-form/40-template.ts)
 
-Les templates définissent le rendu des formulaires, des inputs et des
-layouts.
-
-Ils ne changent ni la structure de `currentValue`, ni la valeur retournée
-par `check`. Leur rôle est de transformer les props système et les slots
-fournis par `@duplojs/form` en interface Vue.
-
-Le découpage mental est simple :
-- les `FormField` décrivent la structure
-- les layouts composent cette structure
-- les templates rendent cette structure
+Adapter le rendu Vue des formulaires, inputs et layouts sans changer la
+structure, les validations ou les valeurs manipulées par `@duplojs/form`.
  
 # Tests
 
