@@ -1,5 +1,55 @@
 github:
-  - ".github/**/*"
+  - changed-files:
+      - any-glob-to-any-file: ".github/**/*"
+
+ai-docs:
+  - changed-files:
+      - any-glob-to-any-file: "ai-docs/**/*"
 
 wip:
-  - "**/*"
+  - changed-files:
+      - any-glob-to-any-file: "**/*"
+
+code-config:
+  - changed-files:
+      - any-glob-to-any-file: "packages/code-config/**/*"
+
+eslint:
+  - changed-files:
+      - any-glob-to-any-file: "packages/eslint/**/*"
+
+form:
+  - changed-files:
+      - any-glob-to-any-file: "packages/form/**/*"
+
+http:
+  - changed-files:
+      - any-glob-to-any-file: "packages/http/**/*"
+
+json-web-token:
+  - changed-files:
+      - any-glob-to-any-file: "packages/json-web-token/**/*"
+
+lang:
+  - changed-files:
+      - any-glob-to-any-file: "packages/lang/**/*"
+
+playwright:
+  - changed-files:
+      - any-glob-to-any-file: "packages/playwright/**/*"
+
+server:
+  - changed-files:
+      - any-glob-to-any-file: "packages/server/**/*"
+
+tools:
+  - changed-files:
+      - any-glob-to-any-file: "packages/tools/**/*"
+
+ai-docgen:
+  - changed-files:
+      - any-glob-to-any-file: "packages-private/ai-docgen/**/*"
+
+jsdoc-include:
+  - changed-files:
+      - any-glob-to-any-file: "packages-private/jsdoc-include/**/*"
