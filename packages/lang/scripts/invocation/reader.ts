@@ -23,7 +23,11 @@ export type ReaderDependenciesValue<
 	GenericDependencies extends ReaderDependencies,
 > = DCommon.SimplifyTopLevel<{
 	[
-	Prop in keyof GenericDependencies as FormatPortName<Extract<Prop, string>>
+	Prop in keyof GenericDependencies as (
+		GenericDependencies[Prop] extends PortHandler
+			? FormatPortName<Extract<Prop, string>>
+			: Uncapitalize<Extract<Prop, string>>
+	)
 	]: GenericDependencies[Prop] extends PortHandler
 		? ReturnType<GenericDependencies[Prop]["createImplementation"]>
 		: GenericDependencies[Prop] extends Reader
@@ -76,7 +80,7 @@ export interface Reader<
 					[
 					Prop in keyof GenericDependencies as
 					GenericDependencies[Prop] extends Reader
-						? FormatPortName<Extract<Prop, string>>
+						? Uncapitalize<Extract<Prop, string>>
 						: never
 					]?: GenericDependencies[Prop] extends Reader
 						? ReturnType<GenericDependencies[Prop]["run"]>
@@ -115,7 +119,9 @@ export function createReader<
 				DObject.entries,
 				DArray.map(
 					([key, value]) => {
-						const formattedKey = formatPortName(key);
+						const formattedKey = readerKind.has(value)
+							? DString.uncapitalize(key)
+							: formatPortName(key);
 
 						return DObject.entry(
 							formattedKey,

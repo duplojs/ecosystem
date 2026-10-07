@@ -97,7 +97,7 @@ Ne pas inclure d'exemple complexe uniquement pour demontrer l'implementation. Un
 
 ## Includes recursifs
 
-`@duplojs/unplugin-jsdoc-include` resout les includes recursivement.
+`@duplojs/jsdoc-include` resout les includes recursivement.
 
 Un fichier `index.md` peut donc inclure `example.ts`, et un fichier inclus peut lui-meme inclure un autre fragment.
 

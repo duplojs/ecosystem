@@ -55,7 +55,7 @@ Si un fichier contient plusieurs fonctions publiques, chaque fonction documentee
 
 ## Chemins d'include
 
-Les chemins utilises dans les balises `{@include ...}` sont relatifs au `includedPath` configure pour `@duplojs/unplugin-jsdoc-include`. Dans les packages DuploJS, ce chemin doit correspondre au dossier `jsDoc/` du package.
+Les chemins utilises dans les balises `{@include ...}` sont relatifs au `includedPath` configure pour `@duplojs/jsdoc-include`. Dans les packages DuploJS, ce chemin doit correspondre au dossier `jsDoc/` du package.
 
 Utiliser donc des chemins relatifs a `jsDoc/` :
 
@@ -68,14 +68,14 @@ Ne pas prefixer les chemins par `./jsDoc/` si le plugin est configure avec `incl
 
 ## Plugin de build
 
-`@duplojs/unplugin-jsdoc-include` est un plugin `unplugin` compatible Rollup, Rolldown et Vite.
+`@duplojs/jsdoc-include` est un plugin `unplugin` compatible Rollup, Rolldown et Vite.
 
 Il doit s'executer apres les autres plugins de generation, notamment apres `unplugin-dts`, afin de remplacer les includes dans les fichiers generes. Son implementation utilise `enforce: "post"`.
 
 Verifier la configuration de build du package lorsque les includes ne sont pas encore resolus. Avec Rolldown, le plugin attendu ressemble a :
 
 ```ts
-import jsdocInclude from "@duplojs/unplugin-jsdoc-include/rolldown";
+import jsdocInclude from "@duplojs/jsdoc-include/rolldown";
 import * as DPath from "@duplojs/lang/path";
 
 const includedPath = DPath.createOrThrow(`${import.meta.dirname}/jsDoc`);

@@ -1,4 +1,4 @@
-import { beforeWriteFileDtsHook } from "@duplojs/unplugin-jsdoc-include/unplugindts";
+import { beforeWriteFileDtsHook } from "@duplojs/jsdoc-include/unplugindts";
 import { defineConfig } from "rolldown";
 import dts from "unplugin-dts/rolldown";
 

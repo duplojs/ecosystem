@@ -1,13 +1,13 @@
 ---
 name: jsdoc
-description: Rediger, ajouter ou corriger la JSDoc publique des fonctions exportees des packages DuploJS avec @duplojs/unplugin-jsdoc-include, en separant les commentaires sources, les fichiers jsDoc et les exemples TypeScript.
+description: Rediger, ajouter ou corriger la JSDoc publique des fonctions exportees des packages DuploJS avec @duplojs/jsdoc-include, en separant les commentaires sources, les fichiers jsDoc et les exemples TypeScript.
 ---
 
 # JSDoc
 
 Ce skill sert a documenter les fonctions exportees des packages DuploJS.
 
-La JSDoc visible dans le code source doit rester minimale : elle contient principalement une balise `{@include ...}`. Le contenu redige est place dans le dossier `jsDoc/` du package courant, afin d'etre injecte pendant le build par `@duplojs/unplugin-jsdoc-include`.
+La JSDoc visible dans le code source doit rester minimale : elle contient principalement une balise `{@include ...}`. Le contenu redige est place dans le dossier `jsDoc/` du package courant, afin d'etre injecte pendant le build par `@duplojs/jsdoc-include`.
 
 La documentation produite est destinee aux fichiers generes, notamment les `.d.ts`. Elle fait partie du contrat public de l'API au meme titre que le comportement runtime et les declarations TypeScript.
 
