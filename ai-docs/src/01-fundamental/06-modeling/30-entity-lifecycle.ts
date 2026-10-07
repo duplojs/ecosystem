@@ -5,7 +5,6 @@
  * - les différents états qu'elle peut posséder ;
  * - les `Flag` permettant de prouver ces états dans le typage ;
  * - les `Fact` représentant les événements qui font évoluer l'entité ;
- * - les conséquences qui doivent être résolues à la suite de certains faits.
  *
  * L'objectif est de représenter les règles du cycle de vie directement
  * dans le modèle et dans les signatures des fonctions.

@@ -1,17 +1,15 @@
 /**
- * @title Utiliser les contraintes fournies
+ * @title Composition des contraintes fournies.
  *
- * DuploJS fournit des contraintes pour les cas courants.
- * Avant de définir une nouvelle contrainte, vérifier si une contrainte
- * existante représente déjà la propriété recherchée.
- *
- * Elles couvrent notamment les number, string, array,
- * et autres propriétés courantes.
+ * Réutilisation et composition des contraintes disponibles dans les domaines.
  */
 import type * as DArray from "@duplojs/lang/array";
 import type * as DNumber from "@duplojs/lang/number";
 import type * as DString from "@duplojs/lang/string";
 
+// Avant de créer une contrainte, vérifier celles du domaine concerné.
+// Une intersection cumule les garanties ; déclarer ce type ne valide aucune donnée.
+// Nom sans espaces aux extrémités, contenant entre 5 et 35 caractères.
 type Name = (
 	& string
 	& DString.MaxCharacters<35>
@@ -19,6 +17,7 @@ type Name = (
 	& DString.Trimmed
 );
 
+// Entier strictement positif, supérieur ou égal à 18 et strictement inférieur à 100.
 type Age = (
 	& number
 	& DNumber.Integer
@@ -27,6 +26,7 @@ type Age = (
 	& DNumber.LessThan<100>
 );
 
+// Tableau de 1 à 15 éléments, dont chaque élément respecte aussi son contrat.
 type Friends = (
 	& {
 		name: Name;

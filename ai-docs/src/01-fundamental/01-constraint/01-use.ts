@@ -1,16 +1,18 @@
 /**
- * @title L'utilisation des `Constraint`.
+ * @title Acquisition des contraintes.
  *
- * Les contraintes existent uniquement au niveau du typage, mais elles
- * garantissent en amont l'appel de fonctions qui vérifie la contrainte au runtime.
+ * Vérification runtime et narrowing vers un type contraint.
  */
 import * as DNumber from "@duplojs/lang/number";
 
+// Une contrainte existe uniquement dans le typage : elle ne modifie ni ne valide la valeur.
+// L’intersection compose ici deux garanties établies par les predicates.
 type Age = number & DNumber.Integer & DNumber.Positive;
 
-// @ts-expect-error Impossible d'être assigner comme tels sans vérification en amont.
+// @ts-expect-error Le littéral seul ne porte pas les contraintes attendues.
 const age: Age = 12;
 
+// Chaque vérification réussie enrichit le type sans changer la valeur runtime.
 const maybeAge = 12;
 if (
 	DNumber.isInteger(maybeAge)

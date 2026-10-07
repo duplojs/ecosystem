@@ -1,20 +1,19 @@
 /**
- * @title Cast d'une contrainte
+ * @title Compatibilité statique des contraintes.
  *
- * Le cast permet de considérer une donnée comme respectant une contrainte sans
- * exécuter sa validation.
- *
- * Le typage calcule la compatibilité et autorisera son utilisation uniquement
- * si une contrainte en induit une autre. Exemple, si j'attends un nombre avec
- * `DNumber.LessThan<20>` alors un contrainte `DNumber.LessThan<10>` est correct.
+ * Cast par implication, valeurs littérales et inférence en contexte générique.
  */
 import * as DCommon from "@duplojs/lang/common";
 import type * as DNumber from "@duplojs/lang/number";
 import type * as DString from "@duplojs/lang/string";
 
+// cast restitue la valeur sans validation runtime : TypeScript doit prouver la compatibilité.
+// Il convertit une garantie existante, ou exploite une valeur connue statiquement.
+// Une donnée runtime sans preuve doit d’abord être vérifiée par un predicate.
 declare function myFunction(name: string & DString.MinCharacters<10>): void;
 
 declare const validName: string & DString.MinCharacters<15>;
+// Au moins 15 caractères implique au moins 10 caractères.
 myFunction(DCommon.cast(validName));
 
 declare const invalidName: string & DString.MinCharacters<5>;
@@ -23,7 +22,11 @@ declare const invalidName: string & DString.MinCharacters<5>;
 // @ts-expect-error constraint error
 myFunction(DCommon.cast(invalidName));
 
-//Le caste fonctionne aussi avec des valeurs littérales.
+// De même, une borne strictement inférieure à 10 implique une borne inférieure à 20.
+declare const belowTen: number & DNumber.LessThan<10>;
+const belowTwenty: number & DNumber.LessThan<20> = DCommon.cast(belowTen);
+
+// Les valeurs littérales permettent aussi de calculer la compatibilité sans validation.
 const declaredName: string & DString.MinCharacters<10> = DCommon.cast("thisIsASuperName");
 const declaredAge: number & DNumber.GreaterThanOrEqual<18> = DCommon.cast(20);
 
@@ -31,14 +34,13 @@ declare function myFunctionWithGeneric<
 	GenericName extends string & DString.MinCharacters<10>,
 >(name: GenericName): void;
 
-// Quand la valeur avec une contrainte est directement un générique, on est obligé de passer par un
-// satisfy et de réapposer la contrainte pour que cast puisse inférer sa valeur de retour et
-// appliquer une comparaison.
+// Ici, le paramètre générique ne fournit pas à cast un type de retour assez précis.
+// satisfies explicite la cible pour permettre le calcul de compatibilité.
 myFunctionWithGeneric(
 	DCommon.cast("thisIsASuperName") satisfies string & DString.MinCharacters<10>,
 );
 
-// @ts-expect-error N'arrivent pas à inférer le retour.
+// @ts-expect-error cast ne peut pas inférer ici le type de retour attendu.
 myFunctionWithGeneric(DCommon.cast("thisIsASuperName"));
 
 declare function createUser<
@@ -48,10 +50,8 @@ declare function createUser<
 	},
 >(name: GenericUser): GenericUser;
 
-// Dans le cadre où on souhaite inférer la valeur littérale, mais également vérifier
-// une contrainte, alors dans ce cas là, il est possible d'utiliser la fonction infer.
-// Elle calcule le retour tout en conservant la valeur littérale envoyée. La fonction
-// est spécialisée pour les déclarations de valeurs constante prévues en avance.
+// infer calcule les contraintes attendues tout en conservant la valeur littérale.
+// Il est adapté aux constantes connues statiquement et ne valide rien au runtime.
 createUser({
 	name: DCommon.infer("thisIsASuperName"),
 	age: DCommon.infer(18),
