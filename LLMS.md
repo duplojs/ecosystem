@@ -323,222 +323,120 @@ Affiner les branches et réduire les cas restants, avec sélection positive ou i
  
 # Serveur
 
-Un serveur DuploJS est pensé comme un modèle applicatif indépendant du runtime
-qui l'exécute.
+La partie serveur regroupe les abstractions qui relient une application
+DuploJS à son environnement d'exécution.
 
-Le code décrit ses points de contact avec l'environnement à travers des
-abstractions communes : exposer une interface HTTP, manipuler des fichiers,
-lire la configuration d'exécution ou construire des commandes. Le détail propre
-à Node.js, Deno ou Bun reste porté par les connecteurs ou les implémentations
-de plateforme.
+Elle couvre les points de contact avec le runtime : interface HTTP, système de
+fichiers, variables d'environnement, processus courant et commandes CLI. Le
+code applicatif peut ainsi rester organisé autour de contrats typés, tandis que
+les détails propres à Node.js, Deno ou Bun restent portés par les connecteurs
+ou les implémentations de plateforme.
 
-Cette séparation permet de conserver les mêmes patterns de typage, de
-validation et de représentation des erreurs, même lorsque l'application
-s'exécute dans des environnements différents. HTTP y occupe une place
-centrale, sans réduire le serveur à cette seule feature : les routes
-structurent le flux applicatif, tandis que les autres abstractions assurent
-le lien avec le runtime.
+HTTP structure le flux exposé aux clients. Les autres domaines servent à
+manipuler les ressources du runtime sans disperser ces dépendances dans le
+reste de l'application.
 
 # Manipuler des fichiers
 
-`ServerFile` regroupe les principales fonctions permettant de manipuler des fichiers, des dossiers, des liens et, plus généralement, le système de fichiers.
+Accès cross-platform au système de fichiers : chemins typés avec `Path`, opérations sur fichiers/dossiers/liens et erreurs représentées par `Either`.
 
-Cette API est cross-platform : elle expose une interface commune pour Node.js, Deno et Bun, ce qui permet d'utiliser les mêmes fonctions quel que soit le runtime.
-
-Les opérations sur le système de fichiers peuvent échouer pour de nombreuses raisons : fichier inexistant, permissions insuffisantes, chemin invalide, etc. Pour représenter explicitement ces cas, les fonctions de ServerFile retournent leurs résultats avec `Either`.
 
 ### [Manipuler le système de fichiers](ai-docs/src/02-server/10-file/10-manipulation.ts)
 
-Les fonctions de `@duplojs/server/file` suivent toutes une structure similaire :
-elles prennent les paramètres nécessaires à l'opération, généralement un ou
-plusieurs chemins, puis retournent un `Either`.
+Lecture, écriture et opérations de système de fichiers avec chemins typés et résultats `Either`.
  
 
-### [Manipuler des chemins](ai-docs/src/02-server/10-file/20-path.ts)
+### [Chemins typés](ai-docs/src/02-server/10-file/20-path.ts)
 
-Le domaine `Path` fournit des contraintes et des fonctions dédiées
-à la manipulation des chemins Unix.
-
-Un chemin reste représenté par une `string`, mais la contrainte `Path`
-permet de l'identifier explicitement dans le typage et de garantir
-qu'il respecte le format attendu.
+Contraintes `Path`, `Absolute` et `Segment` pour valider, extraire et résoudre des chemins Unix.
  
 # HTTP
 
-La partie HTTP décrit la manière dont DuploJS structure une application
-exposée à travers des routes.
+Une application HTTP DuploJS décrit l'interface par laquelle un domaine reçoit une requête, valide ses entrées, exécute un flux explicite et produit une réponse contextualisée.
 
-Une application HTTP est organisée autour d'un `Hub`. Il centralise la
-configuration, les routes et les plugins, puis délègue le démarrage à un
-connecteur propre à la plateforme d'exécution.
+Le `Hub` regroupe la configuration, les routes et les plugins de cette interface.
 
-Les routes sont décrites comme une succession de steps. Chaque step lit les
-données déjà présentes dans le `floor`, peut y ajouter de nouvelles données,
-et déclare les réponses qu'elle est capable de produire.
+Une route n'est pas un objet métier : elle organise le passage entre protocole HTTP et logique applicative. Ses étapes valident les données de requête, partagent un contexte de traitement et déclarent les réponses que le flux peut produire.
 
-Ce modèle rend explicite le flux d'une requête : extraction des entrées,
-validation, vérifications intermédiaires, construction de la réponse finale.
-Les `DataStructure` décrivent les données reçues ou renvoyées, tandis que les
-`ResponseContract` rendent les sorties possibles visibles dans le typage.
+Les routines déplacent les vérifications et séquences réutilisables hors des routes sans cacher les données qui entrent ou ressortent du flux.
 
-Les routines permettent ensuite de déplacer hors des routes les vérifications
-ou enchaînements qui doivent être réutilisés. Elles gardent le même modèle de
-steps et de `floor`, mais contrôlent explicitement quelles données peuvent
-ressortir vers le flux appelant.
-
-Une opération clairement réutilisable doit être placée dans un `checker`, même
-si elle n'est appelée qu'une seule fois aujourd'hui. Une recherche par identifiant
-en est un exemple : le checker récupère la donnée et produit des informations
-génériques comme `user.find` ou `user.notfound`. La route interprète ces résultats
-avec `check`, ou avec un preset qui définit une réponse HTTP récurrente.
-
-Les `cut` restent adaptés aux vérifications propres à l'action ou au use case
-appelé par le flux. Leurs informations expriment les conditions de cette action,
-par exemple un échec de confirmation d'email. Le choix entre `cut` et checker
-dépend donc de la nature de l'opération et de ses informations, pas seulement
-de son nombre d'utilisations.
-
-La génération de code s'appuie sur ces déclarations pour produire un contrat
-statique partageable avec d'autres services ou applications, sans partager
-la codebase qui implémente réellement les routes.
+La génération de code transforme ces déclarations en contrat statique partageable sans exposer la codebase serveur.
 
 
 ### [Créer une application HTTP](ai-docs/src/02-server/20-http/10-init.ts)
 
-Une application HTTP est organisée autour d'un `Hub`.
-
-Le `Hub` centralise la configuration, les routes et les plugins.
-Ces éléments sont indépendants de la plateforme d'exécution.
-
-Certaines fonctionnalités peuvent toutefois nécessiter un environnement
-serveur, notamment lorsqu'elles accèdent au système de fichiers.
+Configuration d'un `Hub`, plugins et enregistrement des routes d'une application HTTP.
  
 
 ### [Créer une route HTTP](ai-docs/src/02-server/20-http/20-route.ts)
 
-Une route se construit avec `useRouteBuilder` au travers d'une succession
-de steps représentées par les méthodes du builder.
-
-Les steps sont exécutées dans leur ordre de déclaration, de haut en bas.
-À l'exception de `handler`, elles peuvent être appelées autant de fois
-que nécessaire et dans l'ordre souhaité.
-
-Les principales steps sont :
-- `extract` : extrait et valide des données de la requête
-- `cut` : exécute un bloc intermédiaire propre à la route
-- `check` : interprète le résultat d'un checker
-- `handler` : clôture la route
-
-Une route n'est enregistrée qu'une fois clôturée par `handler`.
-
-Les steps de vérification (`cut`, `check`, `presetCheck`, `exec`)
-sont détaillées dans la partie routine.
+Construction avec `useRouteBuilder` : steps, `floor`, extraction, réponse contextualisée et `handler`.
  
 
 ### [Faire une routine de vérification](ai-docs/src/02-server/20-http/30-routine.ts)
 
-Une vérification est une step qui décide si le flux peut continuer
-ou s'arrêter avec une réponse.
-
-Elle peut rester locale au flux avec `cut`, être isolée dans un `checker`,
-puis être enchaînée avec d'autres steps dans un `process`.
-
-Le choix dépend de la nature de l'opération, pas du nombre actuel d'appels.
-Une opération clairement réutilisable doit être isolée dans un checker,
-même si elle n'est utilisée qu'une fois aujourd'hui. C'est notamment le cas
-d'une recherche par identifiant, avec des informations génériques comme
-`user.find` et `user.notfound`.
-
-- `cut` garde les vérifications propres à l'action ou au use case du flux
-- `checker` encapsule une opération réutilisable et ses résultats identifiés
-- `presetCheck` réutilise la manière d'interpréter un checker
-- `process` réutilise une séquence complète de steps
+Vérifications locales ou réutilisables avec `cut`, `checker`, `presetCheck`, `process` et preflight.
  
 
 ### [Définir une politique de gestion de tokens](ai-docs/src/02-server/20-http/40-jwt.ts)
 
-`@duplojs/json-web-token` organise la gestion des tokens autour d'une politique
-définie une seule fois avec un `tokenHandler`.
-
-Cette politique centralise les règles communes aux tokens : durée de vie,
-claims attendus, structure du payload et du header, signature et éventuellement
-chiffrement.
-
-Le même `tokenHandler` est ensuite réutilisé partout où ces tokens doivent
-être créés ou vérifiés.
+Déclaration d'une politique unique pour créer et vérifier une famille de tokens.
  
 
 ### [Comment partager des ressources](ai-docs/src/02-server/20-http/50-codegen.ts)
 
-`codeGeneratorPlugin` génère à partir des routes les ressources nécessaires
-pour les utiliser depuis un autre service.
-
-Il permet notamment de partager le typage des routes et leurs `DataStructure`
-sans partager la codebase qui les implémente.
-
-La génération constitue ainsi un contrat statique entre plusieurs services
-ou applications, qui peut ensuite servir à construire un client typé.
+Génération du typage des routes et des `DataStructure` pour partager un contrat statique.
  
 # Environnement
 
-L'environnement représente les ressources et les informations fournies par
-la plateforme sur laquelle s'exécute une application.
+L'environnement regroupe ce que la plateforme d'exécution fournit à
+l'application : système de fichiers, processus courant, dossier de travail,
+variables d'environnement ou capacité à exposer une interface HTTP.
 
-Cela comprend notamment le système de fichiers, le processus courant,
-le dossier de travail, les variables d'environnement ou encore les
-fonctionnalités permettant d'exposer un serveur HTTP.
+DuploJS évite de lier le code applicatif à l'API particulière de Node.js,
+Deno ou Bun. Quand les plateformes partagent un modèle proche, le package
+serveur expose une API commune. Quand l'intégration dépend davantage du
+runtime, elle passe par un connecteur dédié.
 
-DuploJS fournit des abstractions permettant d'utiliser ces fonctionnalités
-sans dépendre directement de l'API propre à Node.js, Deno ou Bun.
-
-Lorsque les plateformes proposent des fonctionnalités suffisamment proches,
-elles sont exposées à travers une API commune. Lorsque leurs modèles diffèrent
-davantage, l'intégration peut être réalisée à travers un connecteur.
+Cette partie regroupe donc les outils qui permettent au serveur d'observer son
+contexte d'exécution sans disperser les détails de plateforme dans le reste de
+l'application.
 
 
-### [Plateformes](ai-docs/src/02-server/30-environment/10-platform.ts)
+### [Capacités de plateforme](ai-docs/src/02-server/30-environment/10-platform.ts)
 
-DuploJS peut fonctionner sur plusieurs plateformes sans exposer directement
-leurs API spécifiques dans le reste de l'application.
-
-Selon la fonctionnalité, cette intégration prend deux formes :
-une API commune ou un connecteur dédié à la plateforme.
+Utilisation des abstractions communes et des connecteurs pour garder le code
+applicatif indépendant du runtime.
  
 
 ### [Manipuler les variables d'environnement](ai-docs/src/02-server/30-environment/20-variable.ts)
 
-`environmentVariable` permet de charger, valider et transformer
-des variables d'environnement à partir du système et de fichiers.
-
-La variante `OrThrow` est particulièrement adaptée au chargement
-de configuration au démarrage d'une application.
+Chargement de sources d'environnement, validation par `DataStructure` et
+obtention d'une configuration typée.
  
 # Créer des commandes
 
-`ServerCommand` fournit les outils nécessaires à la création de commandes et de CLI complets.
+Le domaine commande permet de construire des entrées CLI typées pour une
+application serveur.
 
-Une commande peut définir des arguments, des options et leur validation, puis exposer directement ces valeurs typées à son exécution. Les informations déclarées permettent également de générer automatiquement l'aide associée à la commande (--help).
+Une commande décrit les arguments et options qu'elle accepte, puis reçoit ces
+valeurs déjà interprétées dans son callback d'exécution. La même déclaration
+sert aussi à produire l'aide et les erreurs de ligne de commande.
 
-Les commandes peuvent être composées sous forme d'arbre grâce aux sous-commandes, ce qui permet de construire aussi bien une commande simple qu'un CLI plus complexe.
+Les sous-commandes permettent ensuite de structurer une CLI comme un arbre,
+sans changer le modèle d'exécution d'une commande simple.
 
-### [Utiliser les commandes](ai-docs/src/02-server/40-command/10-use.ts)
 
-Une commande décrit ses arguments et ses options, puis expose
-directement les valeurs interprétées à son callback d'exécution.
+### [Définir une commande](ai-docs/src/02-server/40-command/10-use.ts)
 
-La définition sert également à générer automatiquement l'aide et
-les erreurs associées à la commande.
+Déclaration d'arguments, d'options et récupération des valeurs typées
+dans le callback d'exécution.
  
 
 ### [Créer des sous-commandes](ai-docs/src/02-server/40-command/20-sub-command.ts)
 
-Une commande peut utiliser d'autres commandes comme `subjects`.
-
-Cela permet de construire une arborescence de commandes, chaque
-sous-commande pouvant elle-même contenir d'autres sous-commandes.
-
-Une commande qui contient des sous-commandes ne peut pas déclarer
-d'arguments au même niveau.
+Composition de commandes sous forme d'arbre pour router l'exécution vers
+une branche spécialisée.
  
 # Client
 
