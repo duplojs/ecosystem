@@ -1,26 +1,15 @@
 /**
  * @title Définir une politique de gestion de tokens
  *
- * `@duplojs/json-web-token` organise la gestion des tokens autour d'une politique
- * définie une seule fois avec un `tokenHandler`.
- *
- * Cette politique centralise les règles communes aux tokens : durée de vie,
- * claims attendus, structure du payload et du header, signature et éventuellement
- * chiffrement.
- *
- * Le même `tokenHandler` est ensuite réutilisé partout où ces tokens doivent
- * être créés ou vérifiés.
+ * Déclaration d'une politique unique pour créer et vérifier une famille de tokens.
  */
 import { Cipher, createTokenHandler, Signer } from "@duplojs/json-web-token";
 import * as DChrono from "@duplojs/lang/chrono";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 
-// Le `tokenHandler` constitue la source de vérité d'une famille de tokens.
-//
-// Les propriétés standard définissent les règles communes de cette politique.
-// Les `DataStructure` complètent le payload et le header avec les données
-// propres à l'application.
+// Le `tokenHandler` est la source de vérité d'une famille de tokens :
+// propriétés standard, payload/header applicatifs, signature et chiffrement.
 const tokenHandler = createTokenHandler({
 	maxAge: DChrono.createTime(15, "minute"),
 	issuer: "my-application",
@@ -42,8 +31,7 @@ const tokenHandler = createTokenHandler({
 	},
 });
 
-// La structure déclarée par le `tokenHandler` est utilisée pour typer
-// et valider les données lors de la création du token.
+// À la création, les structures du handler typent et valident header/payload.
 // | Right<"token-created", string>
 // | Left<"header-encode-error", Error>
 // | Left<"payload-encode-error", Error>;
@@ -64,10 +52,7 @@ if (DEither.isRight(createdTokenResult)) {
 	const token = DEither.unwrapRight(createdTokenResult);
 }
 
-// `verify` applique la même politique au token reçu.
-//
-// En cas de succès, le payload et le header retrouvés conservent les types
-// définis par leurs `DataStructure`.
+// `verify` applique la même politique et restitue header/payload typés.
 // | Left<"token-format", unknown>
 // | Left<"header-json-error", unknown>
 // | Left<"header-decode-error", Error>
@@ -107,14 +92,8 @@ if (DEither.isRight(verifiedTokenResult)) {
 	const kid = header.kid;
 }
 
-// La politique définit également les mécanismes de signature et de chiffrement,
-// mais leur configuration n'a pas nécessairement besoin d'être fixée immédiatement.
-//
-// En fournissant directement un `Signer` ou un `Cipher`, ils sont prêts à être
-// utilisés par toutes les opérations du `tokenHandler`.
-//
-// En fournissant leur factory, leur configuration est demandée au moment
-// de chaque opération.
+// Avec une factory de `Signer` ou `Cipher`, la configuration est fournie
+// au moment de chaque opération.
 const dynamicTokenHandler = createTokenHandler({
 	maxAge: DChrono.createTime(15, "minute"),
 
@@ -154,13 +133,5 @@ const dynamicVerifiedTokenResult = await dynamicTokenHandler.verify(
 	},
 );
 
-// `Signer` et `Cipher` sont les abstractions utilisées par cette politique
-// pour encapsuler respectivement la signature et le chiffrement.
-//
-// La librairie fournit les implémentations courantes, mais ces abstractions
-// peuvent aussi être étendues avec des mécanismes personnalisés.
-//
-// `Signer` et `Cipher` fournissent les mécanismes de signature et de chiffrement
-// utilisés par la politique.
-// La librairie fournit les implémentations courantes et permet également
-// d’en définir de personnalisées lorsque nécessaire.
+// `Signer` et `Cipher` encapsulent signature et chiffrement.
+// Les implémentations fournies peuvent être remplacées par des mécanismes personnalisés.

@@ -1,22 +1,7 @@
 /**
  * @title Faire une routine de vérification
  *
- * Une vérification est une step qui décide si le flux peut continuer
- * ou s'arrêter avec une réponse.
- *
- * Elle peut rester locale au flux avec `cut`, être isolée dans un `checker`,
- * puis être enchaînée avec d'autres steps dans un `process`.
- *
- * Le choix dépend de la nature de l'opération, pas du nombre actuel d'appels.
- * Une opération clairement réutilisable doit être isolée dans un checker,
- * même si elle n'est utilisée qu'une fois aujourd'hui. C'est notamment le cas
- * d'une recherche par identifiant, avec des informations génériques comme
- * `user.find` et `user.notfound`.
- *
- * - `cut` garde les vérifications propres à l'action ou au use case du flux
- * - `checker` encapsule une opération réutilisable et ses résultats identifiés
- * - `presetCheck` réutilise la manière d'interpréter un checker
- * - `process` réutilise une séquence complète de steps
+ * Vérifications locales ou réutilisables avec `cut`, `checker`, `presetCheck`, `process` et preflight.
  */
 import { ResponseContract, createPresetChecker, useCheckerBuilder, usePreflightBuilder, useProcessBuilder, useRouteBuilder } from "@duplojs/http";
 import * as DEither from "@duplojs/lang/either";
@@ -39,13 +24,13 @@ declare function checkToken(
 
 declare function findOneUser(id: string & DString.Uuid): Promise<DEither.Maybe<User>>;
 
-// Un checker encapsule une opération clairement réutilisable, même lorsque
-// son premier usage est unique. La récupération de la donnée fait entièrement
-// partie du checker : ses appelants lui fournissent seulement l'identifiant.
+// Un checker encapsule une opération réutilisable et produit des résultats
+// génériques. Il ne choisit pas leur sens HTTP.
 //
-// Les informations décrivent le résultat générique de l'opération.
-// Le checker ne choisit ni le résultat attendu par une route, ni sa réponse HTTP :
-// cette interprétation appartient à `check` ou à un preset.
+// Ce sens est donné au point d'utilisation : une route peut interpréter le
+// checker avec `check`, ou une interprétation récurrente peut être nommée
+// avec un preset. Le même checker peut donc servir plusieurs flux sans être
+// dupliqué pour chaque variation d'usage.
 export const userExist = useCheckerBuilder()
 	.handler(
 		async(input: string & DString.Uuid, { output }) => {
@@ -58,14 +43,8 @@ export const userExist = useCheckerBuilder()
 		},
 	);
 
-// `cut` couvre les vérifications propres à une route, à un process ou au use case
-// appelé ensuite. Ici, la comparaison de l'email concerne la confirmation demandée,
-// tandis que la recherche générique de l'utilisateur reste dans `userExist`.
-//
-// La callback peut soit interrompre le flux avec `response`,
-// soit le poursuivre avec `output`.
-// Les données retournées par `output` enrichissent alors le `floor`
-// des steps suivantes.
+// `cut` couvre les vérifications propres au flux courant.
+// Il peut interrompre avec `response` ou poursuivre avec `output`.
 useRouteBuilder("POST", "/users/{userId}/confirm-email")
 	.extract({
 		params: {
@@ -85,15 +64,12 @@ useRouteBuilder("POST", "/users/{userId}/confirm-email")
 		},
 	)
 	.cut(
-		// Cette information décrit un échec propre à la confirmation d'email.
 		ResponseContract.conflict("user.emailConfirmation.mismatch"),
 		({ user, email }, { response, output }) => {
 			if (user.email !== email) {
-				// Interrompt immédiatement l'exécution du flux.
 				return response("user.emailConfirmation.mismatch");
 			}
 
-			// Poursuit le flux et ajoute la donnée vérifiée au `floor`.
 			return output({ confirmedUser: user });
 		},
 	)
@@ -102,10 +78,8 @@ useRouteBuilder("POST", "/users/{userId}/confirm-email")
 		({ confirmedUser }, { response }) => response("user.emailConfirmed", confirmedUser),
 	);
 
-// `check` interprète les résultats d'un checker dans le contexte du flux.
-//
-// Cette interprétation détermine le résultat qui permet de poursuivre,
-// le traitement des autres résultats et éventuellement la donnée ajoutée au `floor`.
+// `check` interprète un checker pour un flux donné : input, résultat attendu,
+// réponse sinon, et donnée ajoutée au `floor`.
 useRouteBuilder("GET", "/users/{userId}")
 	.extract({
 		params: {
@@ -115,16 +89,9 @@ useRouteBuilder("GET", "/users/{userId}")
 	.check(
 		userExist,
 		{
-			// Construit l'input du checker depuis le `floor`.
 			input: ({ userId }) => userId,
-
-			// Ce résultat permet de poursuivre l'exécution du flux.
 			result: "user.find",
-
-			// Les autres résultats interrompent le flux avec un `ResponseContract`.
 			otherwise: ResponseContract.notFound("user.notfound"),
-
-			// La valeur produite par `result` est ajoutée au `floor`.
 			indexing: "user",
 		},
 	)
@@ -133,9 +100,9 @@ useRouteBuilder("GET", "/users/{userId}")
 		({ user }, { response }) => response("user.find", user),
 	);
 
-// Un même checker peut donc être interprété différemment selon son utilisation.
-// Un preset permet de nommer et réutiliser une interprétation récurrente.
-// Il associe ici le résultat générique `user.notfound` à une réponse HTTP 404.
+// Un preset nomme une interprétation récurrente du checker.
+// Il fixe le sens habituel du résultat tout en laissant le flux fournir
+// son input et son indexation locale.
 export const iWantUserExist = createPresetChecker(
 	userExist,
 	{
@@ -144,8 +111,7 @@ export const iWantUserExist = createPresetChecker(
 	},
 );
 
-// `presetCheck` applique cette interprétation.
-// Les éléments dépendants du contexte du flux restent définis localement.
+// `presetCheck` applique le preset au flux courant.
 useRouteBuilder("GET", "/users/{userId}")
 	.extract({
 		params: {
@@ -153,7 +119,6 @@ useRouteBuilder("GET", "/users/{userId}")
 		},
 	})
 	.presetCheck(
-		// L'indexation peut être définie ou remplacée localement.
 		iWantUserExist.indexing("user"),
 		({ userId }) => userId,
 	)
@@ -162,19 +127,8 @@ useRouteBuilder("GET", "/users/{userId}")
 		({ user }, { response }) => response("user.find", user),
 	);
 
-// Certaines suites de vérifications doivent être exécutées à plusieurs endroits
-// avec le même enchaînement.
-//
-// Une authentification peut par exemple extraire un token, le vérifier,
-// retrouver l'utilisateur associé puis exposer cet utilisateur à la suite du flux.
-//
-// Un `process` permet d'isoler et de réutiliser ce type de séquence.
-
-// Un `process` est une succession de steps isolée du contexte d'une route.
-//
-// Comme une route, ses steps communiquent au travers d'un `floor`.
-// Ce `floor` reste local au process : seules les données explicitement
-// déclarées avec `exports` pourront être récupérées par son appelant.
+// Un `process` réutilise une séquence complète de steps.
+// Son `floor` reste local : seules les données déclarées avec `exports` sortent.
 export const authenticationProcess = useProcessBuilder()
 	.extract({
 		headers: {
@@ -205,7 +159,6 @@ export const authenticationProcess = useProcessBuilder()
 			indexing: "user",
 		},
 	)
-	// Seules ces données pourront sortir du `floor` du process.
 	.exports(["user"]);
 
 // `exec` insère l'exécution du process dans le flux courant.
@@ -213,8 +166,6 @@ useRouteBuilder("GET", "/some-action")
 	.exec(
 		authenticationProcess,
 		{
-			// sélectionne parmi les données exportées celles qui doivent
-			// être ajoutées au `floor` de la route.
 			imports: ["user"],
 		},
 	)
@@ -226,11 +177,7 @@ useRouteBuilder("GET", "/some-action")
 		),
 	);
 
-// Lorsqu'un même process doit précéder de nombreuses routes,
-// il peut être intégré à un preflight.
-//
-// Le builder obtenu conserve alors ce préambule et les données
-// qu'il ajoute au `floor`.
+// Un preflight préfixe un builder par un process récurrent.
 export const useAuthenticatedRouteBuilder = usePreflightBuilder()
 	.exec(
 		authenticationProcess,

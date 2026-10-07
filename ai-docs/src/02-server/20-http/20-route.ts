@@ -1,23 +1,7 @@
 /**
  * @title Créer une route HTTP
  *
- * Une route se construit avec `useRouteBuilder` au travers d'une succession
- * de steps représentées par les méthodes du builder.
- *
- * Les steps sont exécutées dans leur ordre de déclaration, de haut en bas.
- * À l'exception de `handler`, elles peuvent être appelées autant de fois
- * que nécessaire et dans l'ordre souhaité.
- *
- * Les principales steps sont :
- * - `extract` : extrait et valide des données de la requête
- * - `cut` : exécute un bloc intermédiaire propre à la route
- * - `check` : interprète le résultat d'un checker
- * - `handler` : clôture la route
- *
- * Une route n'est enregistrée qu'une fois clôturée par `handler`.
- *
- * Les steps de vérification (`cut`, `check`, `presetCheck`, `exec`)
- * sont détaillées dans la partie routine.
+ * Construction avec `useRouteBuilder` : steps, `floor`, extraction, réponse contextualisée et `handler`.
  */
 import { ResponseContract, useRouteBuilder, controlBodyAsFormData } from "@duplojs/http";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -36,9 +20,8 @@ declare function getUsers(params: {
 	quantityPerPage: number;
 }): Promise<User[]>;
 
-// Les steps communiquent au travers du `floor`.
-// Chaque step peut utiliser les données ajoutées par les steps précédentes
-// et enrichir à son tour le `floor` pour les suivantes.
+// Une route est une suite de steps exécutées dans l'ordre.
+// Elles partagent leurs données via le `floor`; `handler` clôture la route.
 useRouteBuilder("GET", "/users")
 	.extract({
 		query: {
@@ -65,13 +48,13 @@ useRouteBuilder("GET", "/users")
 		},
 	);
 
-// Les `ResponseContract` déclarent les réponses HTTP qu'une step
-// est autorisée à produire.
-// Un contrat associe un statut HTTP, éventuellement une structure de body,
-// et une `information`.
-// L'`information` contextualise la réponse et, comme elle est littérale,
-// permet également de la discriminer indépendamment de son statut
-// ou de son body.
+// Un `ResponseContract` associe un statut HTTP, un body éventuel et une
+// `information` littérale.
+//
+// L'information contextualise la réponse et sert de discriminant principal.
+// Le statut HTTP garde son rôle de convention protocolaire, mais c'est
+// l'information qui identifie finement le résultat du flux, y compris lorsqu'une
+// réponse n'a pas besoin de body.
 ResponseContract.ok("superResponse", DDataStructure.string());
 ResponseContract.created("user.created", userStructure);
 ResponseContract.noContent("user.deleted");
@@ -79,10 +62,8 @@ ResponseContract.conflict("email.alreadyUse");
 ResponseContract.notFound("user.notfound");
 ResponseContract.notFound("product.notfound");
 
-// `extract` permet de récupérer et valider les différentes données
-// de la requête avant de les ajouter au `floor`.
-// L'extraction peut notamment cibler les paramètres de route,
-// la query, les headers et le body.
+// `extract` valide les entrées de requête avant de les ajouter au `floor`.
+// Il peut cibler params, query, headers et body.
 useRouteBuilder("POST", "/users/{userId}")
 	.extract({
 		params: {
@@ -122,10 +103,8 @@ useRouteBuilder("POST", "/users/{userId}")
 		},
 	);
 
-// L'extraction peut se faire à deux profondeurs.
-// Si une source utilise directement une `DataStructure`, sa valeur
-// est ajoutée au `floor` sous le nom de la source.
-// Ici, le body sera disponible dans `floor.body`.
+// Si une source utilise directement une `DataStructure`, elle garde son nom :
+// le body sera disponible dans `floor.body`.
 useRouteBuilder("POST", "/profile")
 	.extract({
 		body: DDataStructure.object({
@@ -143,10 +122,8 @@ useRouteBuilder("POST", "/profile")
 		},
 	);
 
-// Si une source contient plusieurs `DataStructure`, chaque propriété
-// extraite est ajoutée directement au `floor`.
-// Ici, `page` et `search` seront disponibles dans
-// `floor.page` et `floor.search`.
+// Si une source contient plusieurs `DataStructure`, chaque propriété est
+// ajoutée au `floor` : ici `floor.page` et `floor.search`.
 useRouteBuilder("GET", "/search")
 	.extract({
 		query: {
@@ -164,9 +141,8 @@ useRouteBuilder("GET", "/search")
 		},
 	);
 
-// Le format du body est contrôlé par le `bodyController` de la route.
-// Le contrôleur par défaut traite un body JSON, mais il peut être remplacé
-// lorsqu'un autre format doit être reçu, comme du `FormData`.
+// `bodyController` remplace le body JSON par défaut, par exemple pour recevoir
+// du `FormData`.
 useRouteBuilder(
 	"POST",
 	"/documents",
