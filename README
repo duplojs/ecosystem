@@ -1,0 +1,17 @@
+# Écosystème DuploJS
+
+DuploJS est un écosystème de librairies TypeScript fondé sur la programmation fonctionnelle et le Type-Driven Design, pour construire des applications robustes et fortement typées.
+
+## Packages sur npm
+
+| Package | Description | Publication npm |
+| --- | --- | --- |
+| `@duplojs/lang` | Primitives fonctionnelles, opérations immuables, composition et contraintes de typage. | [npm](https://www.npmjs.com/package/@duplojs/lang) |
+| `@duplojs/server` | Utilitaires typés pour les fichiers, les opérations système et les commandes CLI. | [npm](https://www.npmjs.com/package/@duplojs/server) |
+| `@duplojs/http` | Outils HTTP pour l’écosystème DuploJS. | [npm](https://www.npmjs.com/package/@duplojs/http) |
+| `@duplojs/form` | Construction de formulaires complexes et fortement typés pour Vue. | [npm](https://www.npmjs.com/package/@duplojs/form) |
+| `@duplojs/json-web-token` | Création et gestion fortement typées des JSON Web Tokens. | [npm](https://www.npmjs.com/package/@duplojs/json-web-token) |
+| `@duplojs/playwright` | Organisation des tests Playwright en sites, pages et composants avec des actions nommées. | [npm](https://www.npmjs.com/package/@duplojs/playwright) |
+| `@duplojs/tools` | Outils et utilitaires de développement pour DuploJS. | [npm](https://www.npmjs.com/package/@duplojs/tools) |
+| `@duplojs/code-config` | Configurations partagées pour TypeScript, Oxlint, Commitlint et les outils de qualité de code. | [npm](https://www.npmjs.com/package/@duplojs/code-config) |
+| `@duplojs/eslint` | Configurations et règles ESLint partagées. | [npm](https://www.npmjs.com/package/@duplojs/eslint) |

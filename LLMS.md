@@ -153,452 +153,173 @@ Intégrer des valeurs optionnelles ou des appels pouvant échouer dans un contra
 
 Décrire et discriminer des états sans leur attribuer un sens de succès ou d’échec.
  
-## Les `DataStructures`
+## DataStructure
 
-Les `DataStructures` permettent de décrire précisément une donnée avec une représentation exploitable à la fois par TypeScript et au runtime.
+Contrats de données partagés entre TypeScript et runtime : composition, validation, contraintes, représentations, récursivité et erreurs.
 
-Elles servent notamment à :
 
-- construire et composer des structures de données ;
-- appliquer des contraintes ;
-- valider des données inconnues ;
-- encoder et décoder une même structure grâce aux codecs ;
-- représenter des structures récursives ;
-- produire et interpréter des erreurs structurées.
+### Contrats de données avec DataStructure.
 
-Elles doivent être utilisées aux frontières du logiciel afin de garantir que les données qui entrent dans le domaine respectent bien la représentation attendue.
-
-### Utilisation des `DataStructures`.
-
-Une `DataStructure` décrit la représentation attendue d'une donnée
-à la fois au niveau TypeScript et au runtime.
-
-Elle est principalement utilisée aux frontières du logiciel, lorsque
-la donnée n'est pas encore considérée comme fiable.
-
-Une structure permet ensuite quatre opérations principales :
-
-- `check` : valider une donnée déjà dans sa représentation interne ;
-- `decode` : convertir une représentation externe vers la représentation interne ;
-- `encode` : convertir la représentation interne vers une représentation externe ;
-- `is` : vérifier qu'une donnée respecte la structure.
-
-`check`, `decode` et `encode` retournent un `Either` contenant soit
-la donnée validée, soit une erreur structurée.
+Décrire les données attendues et obtenir des valeurs typées après validation.
  
 
 ```ts
 import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DEither from "@duplojs/lang/either";
 
-const componentStructure = DDataStructure.object({
-	id: DDataStructure.bigint(),
+// Une structure porte le même contrat dans TypeScript et au runtime.
+// L’utiliser aux frontières du logiciel pour vérifier les données encore inconnues.
+const userStructure = DDataStructure.object({
 	name: DDataStructure.string(),
-	alt: DDataStructure.optional(
-		DDataStructure.string(),
-	),
-	image: DDataStructure.object({
-		src: DDataStructure.string([DDataStructure.url()]),
-	}),
+	email: DDataStructure.string([DDataStructure.email()]),
 });
+type User = DDataStructure.StructureValue<typeof userStructure>;
 
-// Le type TypeScript correspondant à une structure peut être récupéré
-// avec `StructureValue`.
-//
-// {
-//     readonly id: bigint;
-//     readonly name: string;
-//     readonly alt?: string | undefined;
-//     readonly image: {
-//         readonly src: string & DString.Url;
-//     };
-// }
-type Component = DDataStructure.StructureValue<typeof componentStructure>;
-
-declare const unknownComponent: unknown;
-
-// `check` valide une donnée déjà dans sa représentation interne.
-//
-// Il est principalement utilisé lorsqu'une donnée provient d'une source
-// non fiable mais ne nécessite aucune transformation de représentation.
-const checkResult = componentStructure.check(
-	unknownComponent,
-);
-
-// `decode` transforme une représentation externe vers la représentation
-// interne décrite par la structure, puis valide la donnée obtenue.
-//
-// Ici, `codecsJson` permet notamment de transformer `string` en `bigint`.
-const decodeResult = componentStructure.decode(
-	DDataStructure.codecsJson,
-	{
-		id: "42",
-		name: "Header",
-		image: {
-			src: "https://duplojs.dev/image.png",
-		},
-	},
-);
-
-declare const component: Component;
-
-// `encode` réalise l'opération inverse de `decode`.
-//
-// Il transforme une donnée interne vers la représentation attendue
-// par le système externe.
-//
-// Ici, `codecsJson` transforme notamment `bigint` en `string`.
-const encodeResult = componentStructure.encode(
-	DDataStructure.codecsJson,
-	component,
-);
-
-declare const value: unknown;
-
-// `is` permet de vérifier simplement si une donnée respecte la structure.
-//
-// Contrairement à `check`, il ne retourne pas les détails de l'erreur.
-// Il agit également comme un type predicate TypeScript.
-if (componentStructure.is(value)) {
-	// Component
-	void value;
+declare const input: unknown;
+const result = userStructure.check(input);
+if (DEither.isRight(result)) {
+	const user: User = DEither.unwrapRight(result);
 }
-
-// Les opérations existent également sous forme asynchrone lorsque
-// la structure contient des traitements asynchrones.
-const asyncCheckResult = componentStructure.asyncCheck(
-	unknownComponent,
-);
+// Un Left conserve une erreur structurée lorsque la validation échoue.
 ```
 
-### [Création et composition des `DataStructures`.](ai-docs/src/01-fundamental/04-data-structure/10-structure.ts)
+### [Composition des contrats de données.](ai-docs/src/01-fundamental/04-data-structure/10-structure.ts)
 
-Une `Structure` représente une donnée au niveau du typage et du runtime.
-Elle permet de construire un type TypeScript tout en conservant une
-représentation capable de vérifier réellement la donnée.
-
-Les `TypeStructure` représentent directement un `Type`, comme `string`,
-`number`, `boolean` ou une valeur littérale.
-
-Les autres structures comme `ObjectStructure`, `ArrayStructure`,
-`UnionStructure` ou `RecordStructure` permettent de composer plusieurs
-structures entre elles pour représenter des données plus complexes.
+Construire et réutiliser des structures pour décrire des données simples ou composées.
  
 
-### [Les contraintes dans les `DataStructures`.](ai-docs/src/01-fundamental/04-data-structure/20-constraint.ts)
+### [Contraintes de validation dans les structures.](ai-docs/src/01-fundamental/04-data-structure/20-constraint.ts)
 
-Une `Structure` décrit d'abord la nature de la donnée puis peut lui appliquer
-des contraintes supplémentaires.
-
-Les contraintes sont vérifiées au runtime et leur résultat est également
-reporté dans le type produit par `StructureValue`.
-
-Toutes les structures peuvent recevoir des contraintes, à condition que
-celles-ci soient compatibles avec la donnée représentée.
+Ajouter et cumuler des contraintes compatibles, fournies ou personnalisées.
  
 
-### [Les `Codecs`.](ai-docs/src/01-fundamental/04-data-structure/30-codecs.ts)
+### [Validation des données entrantes.](ai-docs/src/01-fundamental/04-data-structure/30-validation.ts)
 
-Un codec permet de faire transiter une donnée entre deux représentations
-à partir d'une même `DataStructure`.
-
-Il définit deux transformations :
-- `encode` : état interne -> état externe
-- `decode` : état externe -> état interne
-
-Un codec est associé à un `FundamentalType`. Ce type fondamental sert de
-repère pendant le parcours d'une structure pour déterminer quelles valeurs
-doivent être transformées.
-
-Une fois les codecs enregistrés, la structure peut donc être parcourue dans
-les deux sens sans avoir à définir un schéma différent pour chaque état.
+Vérification, conversion et narrowing aux frontières du logiciel, en synchrone ou asynchrone.
  
 
-### [Les `DataStructures` récursives.](ai-docs/src/01-fundamental/04-data-structure/40-recurcive.ts)
+### [Changement de représentation avec des codecs.](ai-docs/src/01-fundamental/04-data-structure/40-codecs.ts)
 
-Une structure récursive doit pouvoir se référencer elle-même.
-
-TypeScript ne peut pas inférer entièrement ce type de structure.
-Il faut donc déclarer le type attendu en amont, puis utiliser `lazy`
-pour différer l'accès à la structure récursive.
-
-`contract` permet ensuite de vérifier que le type déclaré manuellement
-est strictement égal au type réellement produit par la structure.
+Encoder et décoder les données avec un même contrat, selon leur type fondamental.
  
 
-### [Interprétation des erreurs des `DataStructures`.](ai-docs/src/01-fundamental/04-data-structure/50-interpret-error.ts)
+### [Contrats de données récursifs.](ai-docs/src/01-fundamental/04-data-structure/50-recursive.ts)
 
-Les erreurs produites par les `DataStructures` sont structurées et conservent
-la source exacte du problème : structure, type, contrainte ou codec.
-
-`createErrorInterpreter` permet ensuite de transformer ces informations
-techniques en messages exploitables grâce à des dictionnaires.
-
-Cette séparation permet de conserver une erreur riche et indépendante
-de sa représentation finale : message utilisateur, API, logs, traduction, etc.
+Références différées et cohérence entre un type déclaré et sa structure runtime.
  
-## Manipuler le temps avec `chrono`
 
-`chrono` regroupe les outils utilisés pour représenter et manipuler les dates et les durées.
+### [Interprétation des erreurs de validation et de conversion.](ai-docs/src/01-fundamental/04-data-structure/60-interpret-error.ts)
 
-Deux types principaux sont utilisés :
+Localiser les données invalides et adapter les messages au contexte ou à la langue.
+ 
+## Chrono
 
-- `TheDate` représente un instant précis ;
-- `TheTime` représente une durée ou une quantité de temps.
+Représentation des instants et durées : création, calculs, comparaison, sérialisation et fuseaux horaires.
 
-Il faut privilégier ces types aux `Date` et `number` natifs afin de conserver une représentation explicite et contrôlée du temps dans le domaine.
 
-`chrono` fournit notamment les outils pour :
+### Représentation des instants et des durées.
 
-- créer des dates et des temps de manière sûre ;
-- manipuler, comparer et calculer des dates ou des durées ;
-- sérialiser ces valeurs dans un format identifiable et transportable ;
-- gérer l'interprétation et l'affichage selon les fuseaux horaires.
-
-Une `TheDate` représente toujours un instant absolu. Les fuseaux horaires ne doivent intervenir que lorsqu'une date locale doit être interprétée ou lorsqu'un instant doit être présenté dans un contexte local.
-
-### Création de dates et de temps.
-
-`chrono` distingue deux types :
-- `TheDate` représente une date ;
-- `TheTime` représente une quantité de temps.
-
-Lorsque la valeur peut être vérifiée au niveau du typage, les fonctions
-de création retournent directement `TheDate` ou `TheTime`.
-
-Lorsque la valeur n'est connue qu'au runtime, elles retournent une monade
-permettant de représenter explicitement l'échec de la création.
+TheDate et TheTime pour modéliser le temps avec des valeurs immuables.
  
 
 ```ts
 import * as DChrono from "@duplojs/lang/chrono";
 
-// Les dates littérales au format YYYY-MM-DD sont vérifiées par le typage.
+// TheDate représente un instant absolu ; TheTime une durée ou une quantité de temps.
+// Privilégier ces types aux Date et number natifs dans le domaine pour rendre ce sens explicite.
+const instant = DChrono.createDate("2026-09-30");
+const duration = DChrono.createTime(2, "hour");
 
-// DChrono.TheDate
-const date = DChrono.createDate("2026-09-30");
-
-// Les temps sont également sûrs lorsque la valeur littérale
-// et son unité permettent d'être vérifiées par le typage.
-
-// DChrono.TheTime
-const time = DChrono.createTime(2, "hour");
-
-// Lorsque la valeur provient du runtime, sa validité n'est plus garantie.
-declare const dateInput: string;
-declare const timeInput: number;
-
-// DChrono.MayBeDate
-// DEither.Right<"date-created", DChrono.TheDate>
-// | DEither.Left<"date-created-error", null>
-const maybeDate = DChrono.createDate({
-	value: dateInput,
-});
-
-// DChrono.MayBeTime
-// DEither.Right<"time-created", DChrono.TheTime>
-// | DEither.Left<"time-created-error", null>
-const maybeTime = DChrono.createTime(timeInput);
-
-// Les variantes `OrThrow` permettent de récupérer directement la valeur.
-// Une entrée invalide provoquera une `CreateTheDateError`
-// ou une `CreateTheTimeError`.
-
-// DChrono.TheDate
-const dateOrThrow = DChrono.createDateOrThrow({
-	value: dateInput,
-});
-
-// DChrono.TheTime
-const timeOrThrow = DChrono.createTimeOrThrow(timeInput);
-
-// Les objets natifs et timestamps sont également considérés
-// comme des valeurs runtime potentiellement invalides.
-
-// DChrono.MayBeDate
-const maybeNativeDate = DChrono.createDate(new Date());
-
-// DChrono.MayBeDate
-const maybeTimestampDate = DChrono.createDate(Date.now());
+// La transformation produit un nouvel instant ; la valeur initiale reste inchangée.
+const later = DChrono.addTime(instant, duration);
 ```
 
-### [Manipulation des dates et des temps.](ai-docs/src/01-fundamental/05-chrono/10-manipulation.ts)
+### [Création des instants et des durées.](ai-docs/src/01-fundamental/05-chrono/10-creation.ts)
 
-`TheDate` et `TheTime` sont immuables.
-Les opérations de manipulation retournent donc toujours une nouvelle valeur.
-
-La majorité des opérations sont curifiées afin d'être utilisées dans des `pipe`.
+Valeurs connues statiquement ou reçues au runtime, et gestion des entrées invalides.
  
 
-### [Sérialisation des dates et des temps.](ai-docs/src/01-fundamental/05-chrono/20-serialized.ts)
+### [Calculs et comparaisons temporels.](ai-docs/src/01-fundamental/05-chrono/20-manipulation.ts)
 
-`chrono` possède un format de sérialisation dédié pour `TheDate` et `TheTime`.
-
-Ce format conserve directement leur valeur numérique et permet de reconnaître
-explicitement qu'une string représente une date ou un temps DuploJS.
-
-Il est principalement destiné au transport de données : JSON, API,
-persistance, messages, etc.
+Transformer, comparer et décomposer des instants ou durées avec les fonctions Chrono.
  
 
-### [Gestion des fuseaux horaires.](ai-docs/src/01-fundamental/05-chrono/30-timezone.ts)
+### [Transport et reconstruction des valeurs temporelles.](ai-docs/src/01-fundamental/05-chrono/30-serialized.ts)
 
-`TheDate` représente toujours un instant absolu à travers son timestamp.
-Le fuseau horaire intervient uniquement lorsqu'une date locale doit être
-interprétée ou lorsqu'un instant doit être lu dans un contexte local.
+Sérialiser, reconnaître et reconstruire les instants et durées en conservant leur valeur.
+ 
 
-Les fuseaux acceptés sont typés avec `DChrono.Timezone`.
+### [Interprétation et affichage dans un fuseau horaire.](ai-docs/src/01-fundamental/05-chrono/40-timezone.ts)
+
+Interpréter une heure locale et lire ou présenter un instant dans le fuseau demandé.
  
 ## Modélisation
 
-La modélisation consiste à représenter explicitement les concepts, les états, les identités et les relations qui structurent un logiciel.
+Identités métier, modèles de données, états et transitions, preuves de passage et identité des opérations dans les contrats.
 
-Elle ne concerne pas uniquement la forme des données. Elle permet également d'exprimer des règles de cycle de vie, des préconditions, des garanties de passage ou encore l'identité précise de certaines opérations.
 
-Dans l'écosystème DuploJS, ces besoins sont notamment couverts par :
+### [Identité et contraintes des types métier.](ai-docs/src/01-fundamental/06-modeling/10-new-type.ts)
 
-- les `NewType`, `Entity` et `TaggedObject` pour représenter précisément les données et leur identité ;
-- les `Flag` et `Fact` pour représenter les états et les transitions d'un cycle de vie ;
-- les `Evidence` pour prouver dans le typage qu'une valeur est passée par une opération particulière ;
-- les `SignedFunction` pour donner une identité précise à une fonction au-delà de sa simple signature TypeScript.
-
-L'objectif est de rendre explicites dans les types et les signatures des informations qui resteraient autrement implicites ou impossibles à représenter précisément avec TypeScript seul.
-
-### [Déclaration et hydratation d'une `Entity`.](ai-docs/src/01-fundamental/06-modeling/10-entity.ts)
-
-Une `Entity` représente une donnée métier identifiée explicitement dans le typage.
-
-Ses propriétés sont généralement définies avec des `NewType`.
-Ils permettent de conserver le type primitif de la donnée tout en y associant
-une identité et des contraintes propres au domaine.
-
-Une entité peut ensuite être hydratée depuis des données dont le typage est
-moins précis, comme celles provenant d'une base de données ou d'un repository.
+Distinguer des valeurs de même représentation par des NewType propres à leur rôle métier.
  
 
-### [Déclaration et hydratation d'un `TaggedObject`.](ai-docs/src/01-fundamental/06-modeling/20-tagged-object.ts)
+### [Entités métier et hydratation.](ai-docs/src/01-fundamental/06-modeling/20-entity.ts)
 
-Un `TaggedObject` représente un objet possédant une identité explicite.
-
-Il normalise le pattern classique consistant à ajouter manuellement
-une propriété `type`, `kind`, `status`, etc. afin de créer une union
-discriminée.
-
-L'identité du `TaggedObject` est gérée directement par DuploJS et fait
-partie de la donnée.
-
-Une fois le `TaggedObject` créé, cette identité est conservée lors de sa
-sérialisation et de son transport. Un autre consommateur peut donc directement
-le discriminer sans avoir à l'hydrater à nouveau.
-
-L'hydratation intervient principalement lorsqu'une donnée externe entre
-dans le domaine sans encore posséder cette identité.
-
-Contrairement à une `Entity`, les propriétés d'un `TaggedObject` ne sont
-pas obligées d'être représentées par des `NewType`.
+Déclarer les propriétés métier, hydrater les données externes et mettre à jour les valeurs typées.
  
 
-### [Cycle de vie d'une `Entity`.](ai-docs/src/01-fundamental/06-modeling/30-entity-lifecycle.ts)
+### [Objets taggés et unions discriminées.](ai-docs/src/01-fundamental/06-modeling/30-tagged-object.ts)
 
-Le cycle de vie d'une entité décrit :
-- les différents états qu'elle peut posséder ;
-- les `Flag` permettant de prouver ces états dans le typage ;
-- les `Fact` représentant les événements qui font évoluer l'entité ;
-
-L'objectif est de représenter les règles du cycle de vie directement
-dans le modèle et dans les signatures des fonctions.
+Identité transportable, distinction des formes d’un objet et hydratation des données brutes.
  
 
-### [Preuves au niveau du typage.](ai-docs/src/01-fundamental/06-modeling/40-type-level-proof.ts)
+### [Cycle de vie des entités.](ai-docs/src/01-fundamental/06-modeling/40-entity-lifecycle.ts)
 
-Certaines règles ne concernent pas uniquement la forme d'une donnée,
-mais aussi les opérations par lesquelles elle est passée.
+États, préconditions et transitions métier représentés par des Flag et des Fact.
+ 
 
-Les `Evidence` permettent de représenter ces preuves uniquement dans
-le système de types.
+### [Preuves de passage par une opération.](ai-docs/src/01-fundamental/06-modeling/50-evidence.ts)
 
-Les `SignedFunction` appliquent le même principe à l'identité d'une fonction :
-une dépendance peut demander une fonction précise plutôt qu'une fonction
-possédant simplement la même signature TypeScript.
+Exiger dans les types qu’une valeur soit passée par un traitement préalable.
+ 
 
-Ces outils permettent ainsi d'exprimer des relations entre plusieurs
-opérations directement dans leurs signatures.
+### [Identité des fonctions dans les dépendances.](ai-docs/src/01-fundamental/06-modeling/60-signed-function.ts)
+
+Exiger une fonction identifiée au-delà de sa seule signature TypeScript.
  
 ## Discrimination
 
-La discrimination consiste à identifier précisément une valeur parmi plusieurs possibilités afin d'adapter son typage et son traitement au cas réellement rencontré.
+Sélection et affinement des types dans les unions : identité, valeurs littérales, forme ou prédicats, traitement exhaustif ou partiel.
 
-Dans DuploJS, il faut privilégier les données qui possèdent une identité explicite et utiliser les outils de discrimination associés :
 
-- `matchWithEntity` pour discriminer des `Entity` ;
-- `matchWithFact` pour discriminer les `Fact` portées par une valeur ;
-- `matchWithTaggedObject` pour discriminer des `TaggedObject` ;
-- `matchWithString` et `matchWithNumber` pour discriminer des unions de literals.
+### [Discrimination des entités par identité.](ai-docs/src/01-fundamental/07-discrimination/10-entity.ts)
 
-Ces outils permettent notamment de réaliser des sélections exhaustives. L'ajout d'une nouvelle possibilité dans une union oblige alors le code concerné à prendre explicitement en charge ce nouveau cas.
-
-Les variantes `otherwise` permettent au contraire de ne sélectionner qu'une partie des possibilités tout en conservant un typage précis de ce qui reste à traiter.
-
-Lorsque la donnée ne possède pas de discriminant exploitable, `match`, `when` et `whenNot` permettent également une discrimination par élimination à partir de sa shape ou de predicates.
-
-Cette dernière approche est principalement utile pour manipuler des données externes ou des modèles dont la conception ne permet pas une discrimination plus explicite. Lorsque le modèle est contrôlé, il faut préférer une identité clairement représentée dans la donnée.
-
-### [Discrimination des `Entity`.](ai-docs/src/01-fundamental/07-discrimination/10-entity.ts)
-
-Les `Entity` possèdent une identité associée à leur nom.
-
-Le domaine `pattern` permet d'utiliser cette identité pour discriminer
-une union d'entités sans dépendre de leur structure ou de leurs propriétés.
-
-`matchWithEntity` réalise une discrimination exhaustive.
-`matchWithEntityOtherwise` permet de ne traiter explicitement
-qu'une partie des entités et de regrouper les autres dans un fallback.
+Sélection exhaustive ou partielle selon le nom métier, avec typage précis des branches.
  
 
-### [Discrimination des `Fact`.](ai-docs/src/01-fundamental/07-discrimination/20-fact.ts)
+### [Discrimination selon le fait courant.](ai-docs/src/01-fundamental/07-discrimination/20-fact.ts)
 
-Une `Fact` possède une identité associée à son nom.
-
-Lorsqu'une `Fact` est appliquée à une entité, cette identité ainsi que
-sa payload sont conservées sur l'entité.
-
-Le domaine `pattern` permet d'utiliser cette identité pour discriminer
-une union selon la `Fact` actuellement portée par chaque valeur.
-
-`matchWithFact` réalise une discrimination exhaustive.
-`matchWithFactOtherwise` permet de ne traiter explicitement
-qu'une partie des facts et de regrouper les autres dans un fallback.
+Choisir une branche selon la Fact portée par une valeur et accéder aux données du fait.
  
 
-### [Discrimination des `TaggedObject`.](ai-docs/src/01-fundamental/07-discrimination/30-tagged-object.ts)
+### [Discrimination des objets par tag.](ai-docs/src/01-fundamental/07-discrimination/30-tagged-object.ts)
 
-Un `TaggedObject` possède une identité associée à son tag.
-
-Cette identité fait partie de la donnée et peut être utilisée pour
-discriminer une union de `TaggedObject` sans dépendre de leurs propriétés.
-
-Le domaine `pattern` fournit des matchers dédiés à cette discrimination.
-
-`matchWithTaggedObject` réalise une discrimination exhaustive.
-`matchWithTaggedObjectOtherwise` permet de ne traiter explicitement
-qu'une partie des tags et de regrouper les autres dans un fallback.
+Identifier la forme d’un objet par son tag et traiter tout ou partie de l’union.
  
 
-### [Discrimination des primitives et par élimination.](ai-docs/src/01-fundamental/07-discrimination/40-primitive.ts)
+### [Discrimination des valeurs littérales.](ai-docs/src/01-fundamental/07-discrimination/40-literal.ts)
 
-Pour les unions de literals `string` ou `number`, les fonctions
-`matchWithString` et `matchWithNumber` sont les solutions à privilégier.
+Traitement exhaustif ou partiel d’une union selon la valeur, avec branches typées.
+ 
 
-Plus généralement, une donnée métier devrait autant que possible posséder
-une identité explicite permettant d'utiliser les outils de discrimination
-de DuploJS.
+### [Discrimination par la forme des données.](ai-docs/src/01-fundamental/07-discrimination/50-shape.ts)
 
-Certaines données externes ne suivent cependant pas cette modélisation.
-Une API, une base de données ou une librairie peut fournir des unions
-d'objets dont la forme elle-même est la seule manière de distinguer les cas.
+Sélectionner les variantes sans identité explicite par des patterns, y compris imbriqués.
+ 
 
-`match`, `when` et `whenNot` permettent alors de réaliser une discrimination
-par élimination : chaque pattern traite une partie de la donnée et réduit
-progressivement les cas restant à résoudre.
+### [Discrimination par prédicats et élimination.](ai-docs/src/01-fundamental/07-discrimination/60-predicate.ts)
+
+Affiner les branches et réduire les cas restants, avec sélection positive ou inverse.
  
 # Serveur
 
