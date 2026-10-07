@@ -7,9 +7,14 @@
  * Elle peut rester locale au flux avec `cut`, être isolée dans un `checker`,
  * puis être enchaînée avec d'autres steps dans un `process`.
  *
- * Les formes changent selon ce qui doit être réutilisé :
- * - `cut` garde la vérification dans le flux courant
- * - `checker` isole la logique de vérification
+ * Le choix dépend de la nature de l'opération, pas du nombre actuel d'appels.
+ * Une opération clairement réutilisable doit être isolée dans un checker,
+ * même si elle n'est utilisée qu'une fois aujourd'hui. C'est notamment le cas
+ * d'une recherche par identifiant, avec des informations génériques comme
+ * `user.find` et `user.notfound`.
+ *
+ * - `cut` garde les vérifications propres à l'action ou au use case du flux
+ * - `checker` encapsule une opération réutilisable et ses résultats identifiés
  * - `presetCheck` réutilise la manière d'interpréter un checker
  * - `process` réutilise une séquence complète de steps
  */
@@ -32,64 +37,69 @@ declare function checkToken(
 	token: string,
 ): DEither.Success<User> | DEither.Fail;
 
-declare function findOneUser(id: string & DString.Uuid): Promise<User | undefined>;
+declare function findOneUser(id: string & DString.Uuid): Promise<DEither.Maybe<User>>;
 
-// `cut` couvre les vérifications propres à une route ou à un process,
-// lorsque le traitement ne mérite pas encore d'être nommé comme checker.
+// Un checker encapsule une opération clairement réutilisable, même lorsque
+// son premier usage est unique. La récupération de la donnée fait entièrement
+// partie du checker : ses appelants lui fournissent seulement l'identifiant.
+//
+// Les informations décrivent le résultat générique de l'opération.
+// Le checker ne choisit ni le résultat attendu par une route, ni sa réponse HTTP :
+// cette interprétation appartient à `check` ou à un preset.
+export const userExist = useCheckerBuilder()
+	.handler(
+		async(input: string & DString.Uuid, { output }) => {
+			const result = await findOneUser(input);
+
+			return DEither.matchInformation(result, {
+				some: (user) => output("user.find", user),
+				none: () => output("user.notfound", null),
+			});
+		},
+	);
+
+// `cut` couvre les vérifications propres à une route, à un process ou au use case
+// appelé ensuite. Ici, la comparaison de l'email concerne la confirmation demandée,
+// tandis que la recherche générique de l'utilisateur reste dans `userExist`.
 //
 // La callback peut soit interrompre le flux avec `response`,
 // soit le poursuivre avec `output`.
 // Les données retournées par `output` enrichissent alors le `floor`
 // des steps suivantes.
-useRouteBuilder("GET", "/users/{userId}")
+useRouteBuilder("POST", "/users/{userId}/confirm-email")
 	.extract({
 		params: {
 			userId: DDataStructure.string([DDataStructure.uuid()]),
 		},
+		body: {
+			email: DDataStructure.string([DDataStructure.email()]),
+		},
 	})
+	.check(
+		userExist,
+		{
+			input: ({ userId }) => userId,
+			result: "user.find",
+			otherwise: ResponseContract.notFound("user.notfound"),
+			indexing: "user",
+		},
+	)
 	.cut(
-		[
-			// Déclare les réponses que cette step peut produire.
-			ResponseContract.notFound("user.notfound"),
-			ResponseContract.forbidden("user.inaccessible"),
-		],
-		async({ userId }, { response, output }) => {
-			if (userId === "") {
+		// Cette information décrit un échec propre à la confirmation d'email.
+		ResponseContract.conflict("user.emailConfirmation.mismatch"),
+		({ user, email }, { response, output }) => {
+			if (user.email !== email) {
 				// Interrompt immédiatement l'exécution du flux.
-				return response("user.inaccessible");
+				return response("user.emailConfirmation.mismatch");
 			}
 
-			const user = await findOneUser(userId);
-
-			if (!user) {
-				return response("user.notfound");
-			}
-
-			// Poursuit le flux et ajoute `user` au `floor`.
-			return output({ user });
+			// Poursuit le flux et ajoute la donnée vérifiée au `floor`.
+			return output({ confirmedUser: user });
 		},
 	)
 	.handler(
-		ResponseContract.ok("user.find", userStructure),
-		({ user }, { response }) => response("user.find", user),
-	);
-
-// Un checker factorise une vérification indépendante du flux qui l'utilise.
-// Il reçoit un input et produit l'un de plusieurs résultats identifiés.
-//
-// Le checker ne définit pas lui-même lequel de ses résultats représente
-// un succès ou une erreur. Ce sens est donné au moment de son utilisation.
-export const userExist = useCheckerBuilder()
-	.handler(
-		async(input: string & DString.Uuid, { output }) => {
-			const user = await findOneUser(input);
-
-			if (user) {
-				return output("user.find", user);
-			}
-
-			return output("user.notfound", null);
-		},
+		ResponseContract.ok("user.emailConfirmed", userStructure),
+		({ confirmedUser }, { response }) => response("user.emailConfirmed", confirmedUser),
 	);
 
 // `check` interprète les résultats d'un checker dans le contexte du flux.
@@ -125,6 +135,7 @@ useRouteBuilder("GET", "/users/{userId}")
 
 // Un même checker peut donc être interprété différemment selon son utilisation.
 // Un preset permet de nommer et réutiliser une interprétation récurrente.
+// Il associe ici le résultat générique `user.notfound` à une réponse HTTP 404.
 export const iWantUserExist = createPresetChecker(
 	userExist,
 	{

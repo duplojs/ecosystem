@@ -1,18 +1,39 @@
 import type * as DCommon from "@scripts/common";
 import type * as DNumber from "@scripts/number";
+import { type ExtractMinElements, type MinElements, type ExtractMaxElements, type MaxElements } from "./constraints";
 
 type LengthOutput<
 	GenericArray extends readonly unknown[],
-> = GenericArray extends unknown
-	? DCommon.IsEqual<GenericArray["length"], number> extends true
-		? number & DNumber.Positive
-		: DNumber.IsGreater<GenericArray["length"], 0> extends true
-			? GenericArray["length"] & DNumber.StrictPositive
-			: 0 & DNumber.Positive
-	: never;
+> = Extract<
+	GenericArray extends unknown
+		? (
+			& number
+			& DNumber.Positive
+			& (
+				ExtractMaxElements<GenericArray, unknown> extends MaxElements<infer InferredValue>
+					? DCommon.UnionToIntersection<
+						InferredValue extends number
+							? DNumber.LessThanOrEqual<InferredValue>
+							: never
+					>
+					: unknown
+			)
+			& (
+				ExtractMinElements<GenericArray, unknown> extends MinElements<infer InferredValue>
+					? DCommon.UnionToIntersection<
+						InferredValue extends number
+							? DNumber.GreaterThanOrEqual<InferredValue>
+							: never
+					>
+					: unknown
+			)
+		)
+		: never,
+	any
+>;
 
 export function length<
-	GenericArray extends readonly unknown[],
+	const GenericArray extends readonly unknown[],
 >(
 	array: GenericArray,
 ): LengthOutput<GenericArray>;

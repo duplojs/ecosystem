@@ -6,6 +6,14 @@ import * as DString from "../string";
 import { type PortHandler } from "./port";
 import { createKind } from "./kind";
 
+type FormatPortName<
+	GenericValue extends string,
+> = Uncapitalize<GenericValue> extends infer InferredResult extends string
+	? InferredResult extends `${infer InferredName}Port`
+		? InferredName
+		: InferredResult
+	: never;
+
 export type ReaderDependencies = Record<
 	string,
 	Reader | PortHandler
@@ -15,7 +23,7 @@ export type ReaderDependenciesValue<
 	GenericDependencies extends ReaderDependencies,
 > = DCommon.SimplifyTopLevel<{
 	[
-	Prop in keyof GenericDependencies as Uncapitalize<Extract<Prop, string>>
+	Prop in keyof GenericDependencies as FormatPortName<Extract<Prop, string>>
 	]: GenericDependencies[Prop] extends PortHandler
 		? ReturnType<GenericDependencies[Prop]["createImplementation"]>
 		: GenericDependencies[Prop] extends Reader
@@ -30,7 +38,7 @@ export type GetAllPorts<
 		[Prop in keyof GenericDependenciesValue]: (
 			GenericDependenciesValue[Prop] extends PortHandler
 				? [
-					Uncapitalize<Extract<Prop, string>>,
+					FormatPortName<Extract<Prop, string>>,
 					ReturnType<
 						GenericDependenciesValue[Prop]["createImplementation"]
 					>,
@@ -68,7 +76,7 @@ export interface Reader<
 					[
 					Prop in keyof GenericDependencies as
 					GenericDependencies[Prop] extends Reader
-						? Uncapitalize<Extract<Prop, string>>
+						? FormatPortName<Extract<Prop, string>>
 						: never
 					]?: GenericDependencies[Prop] extends Reader
 						? ReturnType<GenericDependencies[Prop]["run"]>
@@ -77,6 +85,14 @@ export interface Reader<
 			)
 		>
 	): GenericOutput;
+}
+
+function formatPortName(value: string) {
+	return DCommon.pipe(
+		value,
+		DString.uncapitalize,
+		DString.replace(/Port$/, ""),
+	);
 }
 
 export function createReader<
@@ -99,7 +115,7 @@ export function createReader<
 				DObject.entries,
 				DArray.map(
 					([key, value]) => {
-						const formattedKey = DString.uncapitalize(key);
+						const formattedKey = formatPortName(key);
 
 						return DObject.entry(
 							formattedKey,

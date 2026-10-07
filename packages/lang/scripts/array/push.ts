@@ -1,19 +1,39 @@
-import type { ReapplyCompatiblesConstraints } from "./constraints";
+import type * as DCommon from "@scripts/common";
+import type { ExtractMaxElements, ExtractMinElements, MaxElements, MinElements } from "./constraints";
+import type * as DNumber from "@scripts/number";
 
 type PushOutput<
 	GenericArray extends readonly unknown[],
 	GenericValue extends unknown,
 	GenericValuesRest extends readonly unknown[] = [],
 > = GenericArray extends unknown
-	? ReapplyCompatiblesConstraints<
-		GenericArray,
-		readonly (
-			| GenericArray[number]
-			| GenericValue
-			| GenericValuesRest[number]
-		)[],
-		"minElements"
-	>
+	? (
+		& readonly (
+				| GenericArray[number]
+				| GenericValue
+				| GenericValuesRest[number]
+		)[]
+		& (
+			ExtractMinElements<GenericArray, unknown> extends MinElements<infer InferredValue>
+				? DCommon.UnionToIntersection<
+					InferredValue extends number
+						? MinElements<DNumber.AddOne<InferredValue>>
+						: never
+				>
+				: unknown
+		)
+		& (
+			DCommon.IsEqual<GenericValuesRest, []> extends true
+				? ExtractMaxElements<GenericArray, unknown> extends MaxElements<infer InferredValue>
+					? DCommon.UnionToIntersection<
+						InferredValue extends number
+							? MaxElements<DNumber.AddOne<InferredValue>>
+							: never
+					>
+					: unknown
+				: unknown
+		)
+	)
 	: never;
 
 export function push<

@@ -164,9 +164,8 @@ export type UserCreateFact = DModeling.Fact<
 >;
 export const UserCreateFact = DModeling.createFact<
 	UserCreateFact,
-	typeof User.Entity,
-	["sendValidation"]
->("UserCreated", true)(
+	typeof User.Entity
+>("UserCreated")(
 	({ applyFact }) => (
 		params: {
 			id: User.Id;
@@ -192,10 +191,6 @@ export const UserCreateFact = DModeling.createFact<
 		// - l'entité est créée avec `AwaitingValidationState` ;
 		// - le `AwaitingValidationFlag` prouve immédiatement cet état ;
 		// - `UserCreated` est apposée comme fait courant sur l'entité.
-		//
-		// La fact possède également une conséquence `sendValidation`.
-		// Son résultat sera donc un `FactResolver` tant que cette conséquence
-		// n'aura pas été résolue.
 		return DCommon.pipe(
 			payload,
 			User.Entity.new,
@@ -258,12 +253,7 @@ declare const id: User.Id;
 declare const age: User.Age;
 declare const name: User.Name;
 
-// Lorsque des conséquences sont associées à une `Fact`, `run` ne fournit pas
-// directement l'entité finale.
-//
-// Il retourne un `FactResolver` contenant déjà l'entité transformée et la fact,
-// mais imposant encore la résolution des conséquences déclarées.
-const createdUserResolver = DCommon.pipe(
+const createdUser = DCommon.pipe(
 	UserCreateFact.run({
 		id,
 		age,
@@ -272,53 +262,9 @@ const createdUserResolver = DCommon.pipe(
 	DEither.unwrapRight,
 );
 
-// `resolve` exécute toutes les conséquences exigées par la fact.
-//
-// L'entité n'est considérée comme complètement résolue qu'après leur exécution.
-// Ici, la création d'un utilisateur implique donc nécessairement
-// l'exécution de `sendValidation`.
-//
-// & DModeling.Entity<"User">
-// & {
-//     readonly id: User.Id;
-//     readonly age: User.Age;
-//     readonly name: User.Name;
-//     readonly state: User.AwaitingValidationState;
-// }
-// & DModeling.Flag<"AwaitingValidation", User.AwaitingValidationState>
-// & DModeling.Fact<"UserCreated", {
-//     id: User.Id;
-//     age: User.Age;
-//     name: User.Name;
-//     state: User.AwaitingValidationState;
-// }>
-const resolvedUser = await DCommon.asyncPipe(
-	createdUserResolver.resolve({
-		sendValidation: () => Promise.resolve(DEither.ok()),
-	}),
-	DEither.unwrapRight,
-);
-
-// `runAndResolve` permet d'exécuter une action avant les conséquences.
-//
-// L'ordre devient donc :
-// action fournie -> conséquences de la fact -> entité résolue.
-//
-// Cela permet notamment d'effectuer une opération principale avant de déclencher
-// les effets associés au fait qui vient de se produire.
-const runAndResolvedUser = await DCommon.asyncPipe(
-	createdUserResolver.runAndResolve(
-		() => Promise.resolve(DEither.success("some action")),
-		{
-			sendValidation: () => Promise.resolve(DEither.ok()),
-		},
-	),
-	DEither.unwrapRight,
-);
-
 declare const address: User.Address;
 
-// Le type de `resolvedUser` prouve qu'il possède
+// Le type de `createdUser` prouve qu'il possède
 // `AwaitingValidationFlag`.
 //
 // Cette preuve satisfait directement la précondition de `ValidateUserFact`.
@@ -343,7 +289,7 @@ declare const address: User.Address;
 // }>
 const validateUser = DCommon.pipe(
 	ValidateUserFact.run(
-		resolvedUser,
+		createdUser,
 		{ address },
 	),
 	DEither.unwrapRight,

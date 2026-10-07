@@ -10,7 +10,7 @@ describe("push", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			readonly (number | "a" | boolean)[] & DArray.MinElements<2>,
+			readonly (number | "a" | boolean)[] & DArray.MinElements<3>,
 			"strict"
 		>;
 	});
@@ -34,8 +34,8 @@ describe("push", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			| (readonly (number | "x")[] & DArray.MinElements<0>)
-			| (readonly (number | "x")[] & DArray.MinElements<3>),
+			| (readonly (number | "x")[] & DArray.MinElements<1> & DArray.MaxElements<1>)
+			| (readonly (number | "x")[] & DArray.MinElements<4> & DArray.MaxElements<4>),
 			"strict"
 		>;
 	});
@@ -46,7 +46,7 @@ describe("push", () => {
 
 		type _CheckMaxResult = ExpectType<
 			typeof resultMax,
-			readonly (number | string)[],
+			readonly (number | string)[] & DArray.MaxElements<3>,
 			"strict"
 		>;
 
@@ -55,7 +55,7 @@ describe("push", () => {
 
 		type _CheckLengthResult = ExpectType<
 			typeof resultLength,
-			readonly (number | string)[] & DArray.MinElements<2>,
+			readonly (number | string)[] & DArray.MinElements<3> & DArray.MaxElements<3>,
 			"strict"
 		>;
 	});

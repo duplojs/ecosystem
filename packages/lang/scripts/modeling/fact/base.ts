@@ -1,10 +1,9 @@
-import * as DCommon from "@scripts/common";
+import type * as DCommon from "@scripts/common";
 import type * as DKind from "@scripts/kind";
 import type * as DDataStructure from "@scripts/dataStructure";
 import * as DEither from "@scripts/either";
 import { createKind } from "../kind";
 import { type EntityStructure, type Entity } from "../entity";
-import type * as DObject from "@scripts/object";
 
 export interface FactValue<
 	GenericName extends string = string,
@@ -55,44 +54,12 @@ export type FactRun<
 	>
 >;
 
-export type FactSubscriber<
-	GenericName extends Capitalize<string> = Capitalize<string>,
-	GenericEntity extends Entity = Entity,
-	GenericPayload extends object = object,
-> = (
-	entity: (
-		& GenericEntity
-		& Fact<GenericName, GenericPayload>
-	),
-	payload: GenericPayload,
-) => DCommon.MaybePromise<
-	| DEither.Right
-	| DEither.Left
-	| undefined
-	| DCommon.EscapeVoid
->;
-
-export type FactSubscribers<
-	GenericName extends Capitalize<string> = Capitalize<string>,
-	GenericEntity extends Entity = Entity,
-	GenericPayload extends object = object,
-> = Record<
-	string,
-	FactSubscriber<
-		GenericName,
-		GenericEntity,
-		GenericPayload
-	>
->;
-
 const factHandlerKind = createKind("fact-handler");
 
 export interface FactHandler<
 	GenericName extends Capitalize<string> = Capitalize<string>,
 	GenericEntity extends Entity = Entity,
 	GenericPayload extends object = object,
-	GenericSubscribers extends FactSubscribers<GenericName, GenericEntity, GenericPayload> =
-		FactSubscribers<GenericName, GenericEntity, GenericPayload>,
 	GenericRun extends FactRun<GenericName> = FactRun<GenericName>,
 > extends DKind.Kind<typeof factHandlerKind> {
 	readonly name: GenericName;
@@ -129,101 +96,10 @@ type RemoveFact<
 		: GenericEntity
 	: GenericEntity;
 
-const factResolverKind = createKind("fact-resolver");
-
-export interface FactResolver<
-	GenericEntity extends Entity & Fact = Entity & Fact,
-	GenericSubscribers extends Record<string, DCommon.AnyFunction> = Record<string, DCommon.AnyFunction>,
-> extends DKind.Kind<typeof factResolverKind> {
-	runAndResolve<
-		GenericOutput extends DCommon.MaybePromise<
-			| DEither.Right
-			| DEither.Left
-			| undefined
-		>,
-		const GenericWrapperSubscribers extends GenericSubscribers,
-		GenericOutputHandlerLeft extends unknown = never,
-	>(
-		theFunction: (
-			entity: GenericEntity,
-			payload: DKind.GetValue<typeof factKind, GenericEntity>["payload"],
-		) => GenericOutput,
-		events: GenericWrapperSubscribers,
-		...args: (
-			DCommon.ContainExtends<
-				Extract<
-					| Awaited<GenericOutput>
-					| Awaited<ReturnType<DObject.Values<GenericWrapperSubscribers>>>,
-					DEither.Left
-				>,
-				DEither.Left
-			> extends true
-				? [
-					whenLeft: (
-						result: Extract<
-							| Awaited<GenericOutput>
-							| Awaited<ReturnType<DObject.Values<GenericWrapperSubscribers>>>,
-							DEither.Left
-						>,
-						entity: GenericEntity,
-						payload: DKind.GetValue<typeof factKind, GenericEntity>["payload"],
-					) => GenericOutputHandlerLeft,
-				]
-				: []
-		)
-	): Promise<
-		| (
-			DCommon.IsNever<GenericOutputHandlerLeft> extends true
-				? never
-				: DEither.Left<"fact-resolve-error", Awaited<GenericOutputHandlerLeft>>
-		)
-		| DEither.Right<"fact-resolve-success", GenericEntity>
-	>;
-
-	resolve<
-		const GenericWrapperSubscribers extends GenericSubscribers,
-		GenericOutputHandlerLeft extends unknown = never,
-	>(
-		events: GenericWrapperSubscribers,
-		...args: (
-			DCommon.ContainExtends<
-				Extract<
-					Awaited<ReturnType<DObject.Values<GenericWrapperSubscribers>>>,
-					DEither.Left
-				>,
-				DEither.Left
-			> extends true
-				? [
-					whenLeft: (
-						result: Extract<
-							Awaited<ReturnType<DObject.Values<GenericWrapperSubscribers>>>,
-							DEither.Left
-						>,
-						entity: GenericEntity,
-						payload: DKind.GetValue<typeof factKind, GenericEntity>["payload"],
-					) => GenericOutputHandlerLeft,
-				]
-				: []
-		)
-	): Promise<
-		| (
-			DCommon.IsNever<GenericOutputHandlerLeft> extends true
-				? never
-				: DEither.Left<"fact-resolve-error", Awaited<GenericOutputHandlerLeft>>
-		)
-		| DEither.Right<"fact-resolve-success", GenericEntity>
-	>;
-}
-
 export interface CreateFactConstructorParams<
 	GenericName extends Capitalize<string> = Capitalize<string>,
 	GenericEntity extends Entity = Entity,
 	GenericPayload extends object = object,
-	GenericSubscribers extends FactSubscribers<GenericName, GenericEntity, GenericPayload> = FactSubscribers<
-		GenericName,
-		GenericEntity,
-		GenericPayload
-	>,
 > {
 	applyFact<
 		GenericInputEntity extends GenericEntity,
@@ -234,22 +110,11 @@ export interface CreateFactConstructorParams<
 		entity: GenericInputEntity,
 	) => DEither.Right<
 		`fact-result-${GenericName}`,
-		DCommon.IsNever<GenericSubscribers> extends true
-			? (
-				& RemoveFact<GenericInputEntity>
-				& Fact<
-					GenericName,
-					GenericInputPayload
-				>
-			)
-			: FactResolver<
-				& RemoveFact<GenericInputEntity>
-				& Fact<
-					GenericName,
-					GenericInputPayload
-				>,
-				GenericSubscribers
-			>
+		& RemoveFact<GenericInputEntity>
+		& Fact<
+			GenericName,
+			GenericInputPayload
+		>
 	>;
 
 	applyFact<
@@ -260,59 +125,19 @@ export interface CreateFactConstructorParams<
 		payload: GenericInputPayload
 	): DEither.Right<
 		`fact-result-${GenericName}`,
-		DCommon.IsNever<GenericSubscribers> extends true
-			? (
-				& RemoveFact<GenericInputEntity>
-				& Fact<
-					GenericName,
-					GenericInputPayload
-				>
-			)
-			: FactResolver<
-				& RemoveFact<GenericInputEntity>
-				& Fact<
-					GenericName,
-					GenericInputPayload
-				>,
-				GenericSubscribers
-			>
+		& RemoveFact<GenericInputEntity>
+		& Fact<
+			GenericName,
+			GenericInputPayload
+		>
 	>;
 }
 
 export function createFact<
 	GenericFact extends Fact,
 	GenericEntityStructure extends EntityStructure,
-	const GenericSubscribers extends (
-		| FactSubscribers<
-			GetFactName<GenericFact>,
-			DDataStructure.StructureValue<GenericEntityStructure>,
-			GetFactPayload<GenericFact>
-		>
-		| DCommon.AnyTuple<string>
-	) = never,
-	GenericFormattedSubscriber extends FactSubscribers<
-		GetFactName<GenericFact>,
-		DDataStructure.StructureValue<GenericEntityStructure>,
-		GetFactPayload<GenericFact>
-	> = GenericSubscribers extends readonly string[]
-		? Record<
-			GenericSubscribers[number],
-			FactSubscriber<
-				GetFactName<GenericFact>,
-				DDataStructure.StructureValue<
-					GenericEntityStructure
-				>,
-				GetFactPayload<GenericFact>
-			>
-		>
-		: GenericSubscribers,
 >(
 	name: GetFactName<GenericFact>,
-	...[hasEvent]: (
-		DCommon.IsNever<GenericSubscribers> extends true
-			? [hasEvent?: false]
-			: [hasEvent: true]
-	)
 ): <
 	GenericRun extends FactRun<GetFactName<GenericFact>>,
 >(
@@ -322,8 +147,7 @@ export function createFact<
 			DDataStructure.StructureValue<
 				GenericEntityStructure
 			>,
-			GetFactPayload<GenericFact>,
-			GenericFormattedSubscriber
+			GetFactPayload<GenericFact>
 		>,
 	) => GenericRun,
 ) => FactHandler<
@@ -332,7 +156,6 @@ export function createFact<
 		GenericEntityStructure
 	>,
 	GetFactPayload<GenericFact>,
-	GenericFormattedSubscriber,
 	GenericRun
 > {
 	function applyFact(...args: [Entity, unknown] | [unknown]) {
@@ -349,78 +172,9 @@ export function createFact<
 			},
 		} satisfies Entity;
 
-		if (!hasEvent) {
-			return DEither.right(
-				`fact-result-${name}`,
-				entityWithFact,
-			);
-		}
-
-		function resolve(
-			subscribers: Record<string, DCommon.AnyFunction>,
-			whenError: DCommon.AnyFunction,
-		) {
-			return Promise
-				.resolve()
-				.then(
-					() => Object
-						.values(subscribers)
-						.reduce(
-							(accumulator, element) => DCommon.callThen(
-								accumulator,
-								(awaitedAccumulator) => {
-									if (DEither.isLeft(awaitedAccumulator)) {
-										return awaitedAccumulator;
-									}
-									return element(entityWithFact, payload);
-								},
-							),
-							null,
-						),
-				)
-				.then(
-					(result) => {
-						if (DEither.isLeft(result)) {
-							return DCommon.callThen(
-								whenError(result, entityWithFact, payload),
-								(output) => DEither.left("fact-resolve-error", output),
-							);
-						}
-
-						return DEither.right("fact-resolve-success", entityWithFact);
-					},
-				);
-		}
-
-		function runAndResolve(
-			theFunction: DCommon.AnyFunction,
-			subscribers: Record<string, DCommon.AnyFunction>,
-			whenError: DCommon.AnyFunction,
-		) {
-			return Promise
-				.resolve()
-				.then(() => theFunction(entityWithFact, payload))
-				.then(
-					(result) => {
-						if (DEither.isLeft(result)) {
-							return DCommon.callThen(
-								whenError(result, entityWithFact, payload),
-								(output) => DEither.left("fact-resolve-error", output),
-							);
-						}
-
-						return resolve(subscribers, whenError);
-					},
-				);
-		}
-
 		return DEither.right(
 			`fact-result-${name}`,
-			{
-				resolve,
-				runAndResolve,
-				[factResolverKind.runTimeKey]: null,
-			} satisfies Record<keyof DKind.Remove<FactResolver>, unknown> as never,
+			entityWithFact,
 		);
 	}
 

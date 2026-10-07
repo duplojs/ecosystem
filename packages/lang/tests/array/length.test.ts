@@ -2,7 +2,7 @@ import { DArray, type DNumber, type ExpectType } from "@scripts";
 
 describe("length", () => {
 	it("should return the length of a wide array", () => {
-		const result = DArray.length(["a", "b"]);
+		const result = DArray.length<string[]>(["a", "b"]);
 
 		expect(result).toBe(2);
 
@@ -14,11 +14,11 @@ describe("length", () => {
 	});
 
 	it("should preserve tuple length", () => {
-		const result = DArray.length(["a", "b"] as const);
+		const result = DArray.length(["a", "b"]);
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			2 & DNumber.StrictPositive,
+			number & DNumber.Positive & DNumber.LessThanOrEqual<2> & DNumber.GreaterThanOrEqual<2>,
 			"strict"
 		>;
 	});
@@ -28,7 +28,7 @@ describe("length", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			0 & DNumber.Positive,
+			number & DNumber.Positive,
 			"strict"
 		>;
 	});
@@ -41,8 +41,8 @@ describe("length", () => {
 
 		type _CheckResult = ExpectType<
 			typeof result,
-			| (0 & DNumber.Positive)
-			| (1 & DNumber.StrictPositive),
+			| (number & DNumber.Positive)
+			| (number & DNumber.Positive & DNumber.LessThanOrEqual<1> & DNumber.GreaterThanOrEqual<1>),
 			"strict"
 		>;
 	});

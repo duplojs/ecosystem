@@ -66,7 +66,11 @@ export const directoryToMarkdown: (
 					async({ lastValue, item, next }) => {
 						const fileName = item.getName();
 						const filePath = item.path;
-						if (!fileName || !DPath.isAbsolute(filePath)) {
+						if (
+							!fileName
+							|| !DPath.isAbsolute(filePath)
+							|| !DString.test(fileName, /^[0-9]+-/)
+						) {
 							return next(lastValue);
 						}
 
@@ -143,6 +147,7 @@ export const directoryToMarkdown: (
 				DEither.toMaybe,
 				DArray.select(
 					({ element, skip, select }) => DPath.isAbsolute(element.path)
+						&& DString.test(element.getName() ?? "", /^[0-9]+-/)
 						? select(element.path)
 						: skip(),
 				),
