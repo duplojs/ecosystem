@@ -1,22 +1,14 @@
 /**
- * @title Discrimination des `Fact`.
+ * @title Discrimination selon le fait courant.
  *
- * Une `Fact` possède une identité associée à son nom.
- *
- * Lorsqu'une `Fact` est appliquée à une entité, cette identité ainsi que
- * sa payload sont conservées sur l'entité.
- *
- * Le domaine `pattern` permet d'utiliser cette identité pour discriminer
- * une union selon la `Fact` actuellement portée par chaque valeur.
- *
- * `matchWithFact` réalise une discrimination exhaustive.
- * `matchWithFactOtherwise` permet de ne traiter explicitement
- * qu'une partie des facts et de regrouper les autres dans un fallback.
+ * Choisir une branche selon la Fact portée par une valeur et accéder aux données du fait.
  */
 import * as DCommon from "@duplojs/lang/common";
-import type * as DModeling from "@duplojs/lang/modeling";
+import * as DModeling from "@duplojs/lang/modeling";
 import * as DPattern from "@duplojs/lang/pattern";
 
+// Une Fact appliquée à une entité y conserve son nom et sa payload.
+// La sélection porte sur ce fait courant, même lorsque toutes les variantes sont la même Entity.
 interface UserCreatedFact extends DModeling.Fact<
 	"UserCreated",
 	{
@@ -60,20 +52,21 @@ declare const user: User;
 // doit posséder un handler.
 //
 // Chaque callback reçoit directement la valeur avec la `Fact` précise
-// correspondant au nom sélectionné.
+// correspondant au nom sélectionné. La payload est accessible sur cette valeur avec factKind.
+// Cette lecture fonctionne dans les formes directe et curifiée.
 
 // string | number
 const matchedFact = DPattern.matchWithFact(
 	user,
 	{
 		// UserCreated
-		UserCreated: (createdUser, payload) => (
-			payload.name
+		UserCreated: (createdUser) => (
+			DModeling.factKind.getValue(createdUser).payload.name
 		),
 
 		// UserDeleted
-		UserDeleted: (deletedUser, payload) => (
-			payload.reason.length
+		UserDeleted: (deletedUser) => (
+			DModeling.factKind.getValue(deletedUser).payload.reason.length
 		),
 	},
 );
@@ -94,13 +87,13 @@ const matchedFactInPipe = DCommon.pipe(
 	user,
 	DPattern.matchWithFact({
 		// UserCreated
-		UserCreated: (createdUser, payload) => (
-			payload.name
+		UserCreated: (createdUser) => (
+			DModeling.factKind.getValue(createdUser).payload.name
 		),
 
 		// UserDeleted
-		UserDeleted: (deletedUser, payload) => (
-			payload.reason.length
+		UserDeleted: (deletedUser) => (
+			DModeling.factKind.getValue(deletedUser).payload.reason.length
 		),
 	}),
 );
@@ -116,8 +109,8 @@ const matchedFactOtherwise = DPattern.matchWithFactOtherwise(
 	user,
 	{
 		// UserCreated
-		UserCreated: (createdUser, payload) => (
-			payload.name
+		UserCreated: (createdUser) => (
+			DModeling.factKind.getValue(createdUser).payload.name
 		),
 	},
 	// UserDeleted
@@ -137,8 +130,8 @@ const matchedFactOtherwiseInPipe = DCommon.pipe(
 	DPattern.matchWithFactOtherwise(
 		{
 			// UserCreated
-			UserCreated: (createdUser, payload) => (
-				payload.name
+			UserCreated: (createdUser) => (
+				DModeling.factKind.getValue(createdUser).payload.name
 			),
 		},
 		// UserDeleted

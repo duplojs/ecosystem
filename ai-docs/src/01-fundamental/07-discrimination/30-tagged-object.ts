@@ -1,21 +1,14 @@
 /**
- * @title Discrimination des `TaggedObject`.
+ * @title Discrimination des objets par tag.
  *
- * Un `TaggedObject` possède une identité associée à son tag.
- *
- * Cette identité fait partie de la donnée et peut être utilisée pour
- * discriminer une union de `TaggedObject` sans dépendre de leurs propriétés.
- *
- * Le domaine `pattern` fournit des matchers dédiés à cette discrimination.
- *
- * `matchWithTaggedObject` réalise une discrimination exhaustive.
- * `matchWithTaggedObjectOtherwise` permet de ne traiter explicitement
- * qu'une partie des tags et de regrouper les autres dans un fallback.
+ * Identifier la forme d’un objet par son tag et traiter tout ou partie de l’union.
  */
 import * as DCommon from "@duplojs/lang/common";
 import type * as DModeling from "@duplojs/lang/modeling";
 import * as DPattern from "@duplojs/lang/pattern";
 
+// Le tag fait partie de la donnée et identifie chaque TaggedObject.
+// Le matcher l’utilise pour distinguer les variantes indépendamment de leurs propriétés.
 interface EmailNotification extends DModeling.ObjectTag<"EmailNotification"> {
 	readonly email: string;
 	readonly subject: string;

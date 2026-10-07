@@ -1,19 +1,14 @@
 /**
- * @title Discrimination des `Entity`.
+ * @title Discrimination des entités par identité.
  *
- * Les `Entity` possèdent une identité associée à leur nom.
- *
- * Le domaine `pattern` permet d'utiliser cette identité pour discriminer
- * une union d'entités sans dépendre de leur structure ou de leurs propriétés.
- *
- * `matchWithEntity` réalise une discrimination exhaustive.
- * `matchWithEntityOtherwise` permet de ne traiter explicitement
- * qu'une partie des entités et de regrouper les autres dans un fallback.
+ * Sélection exhaustive ou partielle selon le nom métier, avec typage précis des branches.
  */
 import * as DCommon from "@duplojs/lang/common";
 import type * as DModeling from "@duplojs/lang/modeling";
 import * as DPattern from "@duplojs/lang/pattern";
 
+// Une Entity porte une identité associée à son nom. Le matcher utilise cette identité,
+// sans devoir déduire le cas à partir de la forme de l’objet ou de ses propriétés.
 interface User extends DModeling.Entity<"User"> {
 	readonly id: string;
 	readonly name: string;
