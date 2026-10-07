@@ -1,22 +1,14 @@
 /**
- * @title Les `Codecs`.
+ * @title Changement de représentation avec des codecs.
  *
- * Un codec permet de faire transiter une donnée entre deux représentations
- * à partir d'une même `DataStructure`.
- *
- * Il définit deux transformations :
- * - `encode` : état interne -> état externe
- * - `decode` : état externe -> état interne
- *
- * Un codec est associé à un `FundamentalType`. Ce type fondamental sert de
- * repère pendant le parcours d'une structure pour déterminer quelles valeurs
- * doivent être transformées.
- *
- * Une fois les codecs enregistrés, la structure peut donc être parcourue dans
- * les deux sens sans avoir à définir un schéma différent pour chaque état.
+ * Encoder et décoder les données avec un même contrat, selon leur type fondamental.
  */
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DString from "@duplojs/lang/string";
+
+// Un codec fait transiter les données entre deux représentations d’une même structure.
+// encode convertit la représentation interne vers l’externe ; decode effectue l’inverse.
+// Le contexte associe les codecs aux types fondamentaux pendant le parcours de la structure.
 
 // Les `FundamentalType` représentent les familles fondamentales de données.
 //

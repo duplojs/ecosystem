@@ -1,18 +1,12 @@
 /**
- * @title Création et composition des `DataStructures`.
+ * @title Composition des contrats de données.
  *
- * Une `Structure` représente une donnée au niveau du typage et du runtime.
- * Elle permet de construire un type TypeScript tout en conservant une
- * représentation capable de vérifier réellement la donnée.
- *
- * Les `TypeStructure` représentent directement un `Type`, comme `string`,
- * `number`, `boolean` ou une valeur littérale.
- *
- * Les autres structures comme `ObjectStructure`, `ArrayStructure`,
- * `UnionStructure` ou `RecordStructure` permettent de composer plusieurs
- * structures entre elles pour représenter des données plus complexes.
+ * Construire et réutiliser des structures pour décrire des données simples ou composées.
  */
 import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+// Une Structure associe un type TypeScript à une représentation capable de vérifier la donnée.
+// Une TypeStructure repose sur un Type ; les autres structures composent plusieurs contrats.
 
 // string
 const nameStructure = DDataStructure.string();

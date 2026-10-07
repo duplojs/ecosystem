@@ -1,17 +1,13 @@
 /**
- * @title Les contraintes dans les `DataStructures`.
+ * @title Contraintes de validation dans les structures.
  *
- * Une `Structure` décrit d'abord la nature de la donnée puis peut lui appliquer
- * des contraintes supplémentaires.
- *
- * Les contraintes sont vérifiées au runtime et leur résultat est également
- * reporté dans le type produit par `StructureValue`.
- *
- * Toutes les structures peuvent recevoir des contraintes, à condition que
- * celles-ci soient compatibles avec la donnée représentée.
+ * Ajouter et cumuler des contraintes compatibles, fournies ou personnalisées.
  */
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import type * as DNumber from "@duplojs/lang/number";
+
+// Une structure vérifie la nature de la donnée, puis ses propriétés supplémentaires.
+// Les contraintes sont vérifiées au runtime et enrichissent le type obtenu par StructureValue.
+// Toute structure peut en recevoir, à condition que la contrainte soit compatible.
 
 // string & DString.Email
 const emailStructure = DDataStructure.string([DDataStructure.email()]);
@@ -24,6 +20,8 @@ const ageStructure = DDataStructure.number([
 	DDataStructure.integer(),
 	DDataStructure.greaterThanOrEqual(18),
 ]);
+
+type Age = DDataStructure.StructureValue<typeof ageStructure>;
 
 // Plusieurs contraintes peuvent être cumulées.
 // Toutes doivent être vérifiées pour que la donnée soit valide.

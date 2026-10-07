@@ -1,19 +1,15 @@
 /**
- * @title Interprétation des erreurs des `DataStructures`.
+ * @title Interprétation des erreurs de validation et de conversion.
  *
- * Les erreurs produites par les `DataStructures` sont structurées et conservent
- * la source exacte du problème : structure, type, contrainte ou codec.
- *
- * `createErrorInterpreter` permet ensuite de transformer ces informations
- * techniques en messages exploitables grâce à des dictionnaires.
- *
- * Cette séparation permet de conserver une erreur riche et indépendante
- * de sa représentation finale : message utilisateur, API, logs, traduction, etc.
+ * Localiser les données invalides et adapter les messages au contexte ou à la langue.
  */
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 
+// Les erreurs conservent leur source : structure, type, contrainte ou codec.
+// Les dictionnaires séparent cette information technique de sa représentation finale
+// pour une interface utilisateur, une API, des logs ou une traduction.
 const userStructure = DDataStructure.object({
 	email: DDataStructure.string([DDataStructure.email()]),
 	age: DDataStructure.number([DDataStructure.greaterThanOrEqual(18)]),

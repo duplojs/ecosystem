@@ -1,17 +1,12 @@
 /**
- * @title Les `DataStructures` récursives.
+ * @title Contrats de données récursifs.
  *
- * Une structure récursive doit pouvoir se référencer elle-même.
- *
- * TypeScript ne peut pas inférer entièrement ce type de structure.
- * Il faut donc déclarer le type attendu en amont, puis utiliser `lazy`
- * pour différer l'accès à la structure récursive.
- *
- * `contract` permet ensuite de vérifier que le type déclaré manuellement
- * est strictement égal au type réellement produit par la structure.
+ * Références différées et cohérence entre un type déclaré et sa structure runtime.
  */
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 
+// Une structure récursive se référence elle-même. Le type attendu est déclaré en amont
+// pour permettre à TypeScript de typer cette dépendance récursive.
 interface Tree {
 	readonly value: string;
 	readonly children: readonly Tree[];
