@@ -1,25 +1,18 @@
 /**
- * @title Manipuler des chemins
+ * @title Chemins typés
  *
- * Le domaine `Path` fournit des contraintes et des fonctions dédiées
- * à la manipulation des chemins Unix.
- *
- * Un chemin reste représenté par une `string`, mais la contrainte `Path`
- * permet de l'identifier explicitement dans le typage et de garantir
- * qu'il respecte le format attendu.
+ * Contraintes `Path`, `Absolute` et `Segment` pour valider, extraire et résoudre des chemins Unix.
  */
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
 
-// Une valeur littérale peut être transformée directement en `Path`
-// lorsque sa validité peut être vérifiée par TypeScript.
-const resourcePath: string & DPath.Path = DCommon.cast(
-	"resources/images/avatar.png",
-);
+// Un chemin reste une string, enrichie par des contraintes de typage.
+const imagePath: string & DPath.Path = DCommon.cast("resources/images/avatar.png");
+const rootPath: string & DPath.Path & DPath.Absolute = DCommon.cast("/resources");
+const fileSegment: string & DPath.Segment = DCommon.cast("avatar.png");
 
-// Pour une `string` dynamique, `create` permet de construire un `Path`
-// en validant sa valeur à l'exécution.
+// Une string dynamique doit être validée avant d'être utilisée comme `Path`.
 declare const unsafePath: string;
 
 const pathResult = DPath.create(unsafePath);
@@ -29,57 +22,34 @@ if (DEither.isRight(pathResult)) {
 	const path = DEither.unwrapRight(pathResult);
 }
 
-// Le domaine expose trois contraintes principales :
-// - `Path` représente un chemin valide
-// - `Absolute` précise qu'un `Path` est absolu
-// - `Segment` représente un segment pouvant composer un chemin
-// Ces contraintes peuvent être combinées afin d'exprimer plus précisément
-// la nature d'une valeur.
-const absolutePath: string & DPath.Path & DPath.Absolute = DCommon.cast(
-	"/resources/images",
-);
-
-const segment: string & DPath.Segment = DCommon.cast("assets");
-
-// Plusieurs fonctions permettent de récupérer les différentes parties
-// d'un chemin sans manipuler directement sa `string`.
+// Les helpers extraient des parties contraintes sans retravailler la string.
 // (string & DPath.Segment) | null
-const fileName = DPath.getBaseName(resourcePath);
+const fileName = DPath.getBaseName(imagePath);
 
 // (string & DPath.Segment) | null
-const extensionName = DPath.getExtensionName(resourcePath);
+const extensionName = DPath.getExtensionName(imagePath);
 
 // (string & DPath.Path) | null
-const parentFolderPath = DPath.getParentFolderPath(resourcePath);
+const parentFolderPath = DPath.getParentFolderPath(imagePath);
 
-// Les chemins peuvent être construits à partir de plusieurs `Path`
-// ou `Segment` sans avoir à manipuler directement leur représentation
-// sous forme de `string`.
-//
-// Les fonctions de résolution assemblent ces différentes parties
-// et résolvent leur relation pour produire un nouveau chemin valide.
-const imagesPath: string & DPath.Path & DPath.Absolute = DCommon.cast(
-	"/resources/images",
-);
-
-// permet de résoudre à partir d'une origine
+// Les fonctions de résolution assemblent des `Path` et `Segment` validés.
 // (string & DPath.Absolute) | null
 const resolvedPath = DPath.resolveFrom(
-	imagesPath,
+	rootPath,
 	[
 		DCommon.infer("assets"),
-		DCommon.infer("image1.png"),
+		fileSegment,
 	],
 	{
 		stayInOrigin: true,
 	},
 );
 
-// résoud sans restriction
+// Résolution sans origine protectrice.
 // string & DPath.Path & DPath.Absolute
 const relativePath = DPath.resolveRelative(
 	[
-		imagesPath,
+		rootPath,
 		DCommon.infer("assets/logo"),
 		DCommon.infer("logo1.png"),
 	],
