@@ -1,18 +1,7 @@
 /**
- * @title Fonctions intégrées compatibles avec les `pipe`.
+ * @title Réutilisation des fonctions de l’écosystème dans les pipes.
  *
- * L'écosystème DuploJS fournit de nombreuses fonctions conçues pour être
- * directement utilisées dans des `pipe`.
- *
- * Il faut privilégier les fonctions fournies par l'écosystème plutôt que
- * réimplémenter une transformation avec une callback.
- *
- * Avant d'écrire une fonction intermédiaire, il faut rechercher si une
- * fonction curifiée ou directement compatible avec `pipe` existe déjà.
- *
- * Ce principe ne concerne pas uniquement `@duplojs/lang`. Les autres packages
- * de l'écosystème exposent également des fonctions pouvant être composées
- * dans des pipes.
+ * Composer les opérations fournies, sous forme curifiée ou directement compatible avec pipe.
  */
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
@@ -27,6 +16,10 @@ import * as DPattern from "@duplojs/lang/pattern";
 import type * as DPath from "@duplojs/lang/path";
 import * as DSFile from "@duplojs/server/file";
 
+// Avant d’écrire une callback ou de recourir à une API native, rechercher une opération
+// fournie par l’écosystème : sa forme curifiée ou son unique argument peut convenir au pipe.
+// Cette démarche s’applique à tous les packages ; les domaines ci-dessous sont des exemples.
+
 // Les fonctions de `string` et `array` sont faites pour être composées.
 // readonly (Lowercase<string> & DString.MinCharacters<1>)[] & DArray.MaxElements<4>
 const normalizedNames = DCommon.pipe(
@@ -34,7 +27,7 @@ const normalizedNames = DCommon.pipe(
 	DArray.map(DString.trim),
 	DArray.filter(DString.isNotEmpty),
 	DArray.map(DString.toLowerCase),
-	DArray.sort((left, right) => left.localeCompare(right)),
+	DArray.sort(DString.sortCompare),
 );
 
 // Les prédicats de `number` peuvent directement être utilisés

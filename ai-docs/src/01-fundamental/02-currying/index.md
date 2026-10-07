@@ -1,5 +1,3 @@
-## Currying
+## Currification
 
-Dans DuploJS, les fonctions curifiées sont conçues pour être utilisées dans des `pipe`.
-
-Il faut privilégier cette forme pour manipuler et transformer les données, en utilisant en priorité les fonctions déjà fournies par l'écosystème.
+Composition des transformations de données avec les fonctions DuploJS : pipes, callbacks et traitements asynchrones.
