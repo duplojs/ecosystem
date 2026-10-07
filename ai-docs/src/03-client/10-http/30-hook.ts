@@ -1,24 +1,9 @@
 /**
  * @title Utiliser les hooks du client HTTP
  *
- * Les hooks permettent de brancher un comportement commun sur le cycle
- * d'une requête.
- *
- * Ils peuvent être donnés dans la configuration du client, mais les helpers
- * `add*Hook` rendent souvent l'intention plus lisible.
- *
- * Les hooks de requête et de réponse permettent d'intervenir dans le flux :
- * ajouter un header, remplacer des paramètres, transformer une réponse.
- *
- * Les hooks ciblés par `information`, code ou type de réponse servent à
- * centraliser une réaction quand un cas précis apparaît, sans répéter ce
- * traitement autour de chaque requête.
- *
- * En pratique, les hooks les plus sains sont souvent ceux qui produisent un
- * effet de bord : redirection, toast, loader, instrumentation.
- * Les hooks capables de transformer une requête ou une réponse existent.
- * Ils doivent être utilisés avec retenue : l'enrichissement produit par un
- * hook ne change pas le contrat typé de la route.
+ * Centralisation des comportements communs au cycle d'une requête : réactions
+ * globales, effets de bord, instrumentation et transformations techniques sans
+ * élargir le contrat typé des routes.
  */
 import { createHttpClient } from "@duplojs/http/client";
 
@@ -72,9 +57,7 @@ declare function createRequestId(): string;
 declare function getCurrentTime(): number;
 declare function sendMetric(name: string, requestId: string, value: number): void;
 
-// Les hooks de réaction sont adaptés aux effets de bord globaux.
-// Ici, le loader suit le cycle réel de la requête : démarrage avant l'envoi,
-// arrêt à la réception ou en cas d'erreur de transport.
+// Les hooks de cycle portent bien les effets globaux : loader, toast, métrique.
 client.addRequestHook(
 	(requestParams) => {
 		startLoader();
@@ -109,10 +92,7 @@ function getErrorMessage(information: string | undefined) {
 	return undefined;
 }
 
-// Un hook de type de réponse est utile pour appliquer une règle commune
-// à toute une famille de réponses.
-// Ici, chaque erreur client connue peut afficher un toast à partir
-// de son `information`.
+// Un hook de type de réponse applique une règle à toute une famille.
 client.addClientErrorResponseTypeHook(
 	(response) => {
 		const message = getErrorMessage(response.information);
@@ -123,12 +103,8 @@ client.addClientErrorResponseTypeHook(
 	},
 );
 
-// Un hook de transformation doit retourner la valeur transmise à l'étape
-// suivante.
-// Ce pattern reste utile pour enrichir le contexte technique des hooks,
-// par exemple ajouter un identifiant de corrélation ou un timestamp.
-// Ces données sont disponibles dans les hooks suivants, mais elles
-// n'élargissent pas le typage métier de la réponse.
+// Un hook de transformation peut enrichir le contexte technique des hooks
+// suivants, sans modifier le contrat métier typé.
 client.addRequestHook(
 	(requestParams) => ({
 		...requestParams,
@@ -156,8 +132,8 @@ client.addResponseHook(
 	},
 );
 
-// Les hooks n'empêchent pas de traiter la réponse localement.
-// Ils évitent surtout de répéter les réactions globales autour du client.
+// La réponse reste traitée localement ; les hooks retirent les réactions
+// globales répétitives.
 const profile = await client
 	.get("/profile")
 	.iWantInformationOrThrow("profile.found");
