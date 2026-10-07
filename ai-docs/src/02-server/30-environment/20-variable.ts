@@ -1,16 +1,15 @@
 /**
  * @title Manipuler les variables d'environnement
  *
- * `environmentVariable` permet de charger, valider et transformer
- * des variables d'environnement à partir du système et de fichiers.
- *
- * La variante `OrThrow` est particulièrement adaptée au chargement
- * de configuration au démarrage d'une application.
+ * Chargement de sources d'environnement, validation par `DataStructure` et
+ * obtention d'une configuration typée.
  */
 import * as DServerCommon from "@duplojs/server/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DCommon from "@duplojs/lang/common";
 
+// `environmentVariableOrThrow` est adaptée au démarrage d'une application :
+// une configuration invalide interrompt directement l'initialisation.
 const envs = await DServerCommon.environmentVariableOrThrow(
 	{
 		host: DDataStructure.literal(["0.0.0.0", "127.0.0.1", "localhost"]),
@@ -20,14 +19,17 @@ const envs = await DServerCommon.environmentVariableOrThrow(
 		DATABASE_URL: DDataStructure.string([DDataStructure.url()]),
 	},
 	{
-		// Ajoute des fichiers comme sources de variables.
+		// Fichiers `.env` à lire en plus des variables déjà présentes
+		// dans l'environnement du runtime.
 		includedEnvironmentFiles: [DCommon.infer(".env"), DCommon.infer(".env.local")],
 
-		// Lit les fichiers sans enrichir les variables d'environnement du système.
-		justRead: true,
-
-		// Les sources suivantes peuvent remplacer les valeurs précédentes.
+		// `false` garde la priorité aux valeurs déjà présentes.
+		// `true` autorise les fichiers à remplacer ces valeurs.
 		override: false,
+
+		// `true` renvoie la configuration validée sans réécrire
+		// `process.env` ou `Deno.env`.
+		justRead: true,
 	},
 );
 // {

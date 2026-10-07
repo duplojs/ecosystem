@@ -1,21 +1,17 @@
 /**
- * @title Plateformes
+ * @title Capacités de plateforme
  *
- * DuploJS peut fonctionner sur plusieurs plateformes sans exposer directement
- * leurs API spécifiques dans le reste de l'application.
- *
- * Selon la fonctionnalité, cette intégration prend deux formes :
- * une API commune ou un connecteur dédié à la plateforme.
+ * Utilisation des abstractions communes et des connecteurs pour garder le code
+ * applicatif indépendant du runtime.
  */
 import * as DCommon from "@duplojs/lang/common";
 import type * as DPath from "@duplojs/lang/path";
 import * as DServerCommon from "@duplojs/server/common";
 import * as DServerFile from "@duplojs/server/file";
+import { createHub } from "@duplojs/http";
+import { createHttpServer } from "@duplojs/http/node";
 
-// Lorsque les plateformes proposent des capacités suffisamment proches,
-// une même API est exposée pour Node, Deno et Bun.
-// C'est notamment le cas du système de fichiers et des opérations liées
-// au processus courant.
+// Les capacités proches entre runtimes sont exposées par une même API.
 const resourcePath: string & DPath.Path = DCommon.cast("/resources/config.json");
 
 // DEither.Right<file-system-write-json-file, void> | DEither.Left<...> | ...
@@ -27,19 +23,12 @@ const currentWorkingDirectoryResult = DServerCommon.getCurrentWorkDirectory();
 // string[]
 const processArguments = DServerCommon.getProcessArguments();
 
-// Certaines fonctionnalités dépendent davantage de la plateforme.
-// Dans ce cas, le cœur de l'application reste indépendant de celle-ci
-// et un connecteur se charge de l'intégrer à son environnement d'exécution.
-// C'est le cas pour @duplojs/http qui pour manipuler l'interface HTTP de la platform
-// passe par un connecteur dedier.
-import { createHub } from "@duplojs/http";
-import { createHttpServer } from "@duplojs/http/node";
-
 const hub = createHub({
 	environment: "DEV",
 });
 
-// Ici, l'application est démarrée avec le connecteur Node.
+// Les capacités plus liées au runtime passent par un connecteur.
+// Ici, le hub HTTP reste générique et le démarrage utilise le connecteur Node.
 await createHttpServer(
 	hub,
 	{
