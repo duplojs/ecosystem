@@ -42,7 +42,7 @@
   },
   "files": [
     "dist",
-    "README"
+    "README.md"
   ],
   "peerDependencies": {
     "@duplojs/lang": "workspace:*",

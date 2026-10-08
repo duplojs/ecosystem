@@ -50,7 +50,7 @@
   },
   "files": [
     "dist",
-    "README"
+    "README.md"
   ],
   "keywords": [
     "rules",

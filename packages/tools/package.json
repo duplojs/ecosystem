@@ -70,7 +70,7 @@
   },
   "files": [
     "dist",
-    "README"
+    "README.md"
   ],
   "keywords": [
     "duplojs",

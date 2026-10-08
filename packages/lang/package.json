@@ -119,7 +119,7 @@
   },
   "files": [
     "dist",
-    "README"
+    "README.md"
   ],
   "keywords": [
     "typescript",

@@ -67,7 +67,7 @@
   },
   "files": [
     "dist",
-    "README",
+    "README.md",
     "tsconfig"
   ],
   "keywords": [
