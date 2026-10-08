@@ -6,18 +6,18 @@ import { DSDataStructure, DSFile } from "@scripts";
 describe.each([
 	["string", DSDataStructure.codecsString],
 	["json", DSDataStructure.codecsJson],
-] as const)("file default %s codec", (_name, codecs) => {
+] as const)("folder default %s codec", (_name, codecs) => {
 	it("accepts strings and normalizes paths when decoding", async() => {
-		const codec = codecs.definition.file;
+		const codec = codecs.definition.folder;
 
 		type _CheckCodec = DCommon.ExpectType<
 			typeof codec,
-			DDataStructure.Codec<DSDataStructure.TheFile, string>,
+			DDataStructure.Codec<DSDataStructure.TheFolder, string>,
 			"strict"
 		>;
 
 		type _CheckEncoded = DCommon.ExpectType<
-			DDataStructure.EncodedValue<DSFile.FileInterface, typeof codecs>,
+			DDataStructure.EncodedValue<DSFile.FolderInterface, typeof codecs>,
 			string,
 			"strict"
 		>;
@@ -29,21 +29,21 @@ describe.each([
 		] as const) {
 			expect(codec.predicateEncode(input)).toBe(true);
 			const decoded = await codec.decode(input);
-			expect(DSFile.isFileInterface(decoded)).toBe(true);
+			expect(DSFile.isFolderInterface(decoded)).toBe(true);
 			expect(decoded).toMatchObject({ path: expected });
 		}
 	});
 
 	it("encodes interfaces as strings", async() => {
-		const codec = codecs.definition.file;
-		const entry = DSFile.createFileInterface(DCommon.infer("/tmp/example"));
+		const codec = codecs.definition.folder;
+		const entry = DSFile.createFolderInterface(DCommon.infer("/tmp/example"));
 
-		expect(codec.fundamentalType).toBe(DSDataStructure.TheFile);
+		expect(codec.fundamentalType).toBe(DSDataStructure.TheFolder);
 		expect(await codec.encode(entry)).toBe("/tmp/example");
 	});
 
 	it("rejects nonstrings and paths that cannot be normalized", async() => {
-		const codec = codecs.definition.file;
+		const codec = codecs.definition.folder;
 
 		expect(codec.predicateEncode(42)).toBe(false);
 		expect(codec.predicateEncode(null)).toBe(false);
@@ -52,13 +52,13 @@ describe.each([
 	});
 
 	it("preserves types through structure encoding and decoding", async() => {
-		const structure = DSDataStructure.file();
+		const structure = DSDataStructure.folder();
 		const decoded = await structure.asyncDecode(codecs, "tmp//example");
 		const entry = DEither.unwrapByInformationOrThrow(decoded, "decode-success");
 
 		type _CheckDecoded = DCommon.ExpectType<
 			typeof entry,
-			DSFile.FileInterface,
+			DSFile.FolderInterface,
 			"strict"
 		>;
 

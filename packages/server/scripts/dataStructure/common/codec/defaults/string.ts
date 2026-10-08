@@ -7,8 +7,26 @@ export const codecsString = DDataStructure.createCodecs({
 	...DDataStructure.codecsString.definition,
 	file: DDataStructure.createCodec(
 		FundamentalType.TheFile,
-		(data) => typeof data === "string" && DPath.is(data),
+		(data) => typeof data === "string",
 		(data) => data.path,
-		(data) => DSFile.createFileInterface(data),
+		(data) => {
+			const result = DPath.normalize(data);
+			if (!result) {
+				return DDataStructure.ErrorSymbol;
+			}
+			return DSFile.createFileInterface(result);
+		},
+	),
+	folder: DDataStructure.createCodec(
+		FundamentalType.TheFolder,
+		(data) => typeof data === "string",
+		(data) => data.path,
+		(data) => {
+			const result = DPath.normalize(data);
+			if (!result) {
+				return DDataStructure.ErrorSymbol;
+			}
+			return DSFile.createFolderInterface(result);
+		},
 	),
 });

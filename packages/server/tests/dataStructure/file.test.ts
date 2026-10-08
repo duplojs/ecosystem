@@ -2,7 +2,6 @@ import * as DEither from "@duplojs/lang/either";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DChrono from "@duplojs/lang/chrono";
 import * as DCommon from "@duplojs/lang/common";
-import type * as DPath from "@duplojs/lang/path";
 import { DSDataStructure, DSFile } from "@scripts";
 
 function createStatInfo(params?: Partial<DSFile.StatInfo>): DSFile.StatInfo {
@@ -84,7 +83,7 @@ describe("dataStructure file", () => {
 
 		type _CheckStringResult = DCommon.ExpectType<
 			typeof stringResult,
-			| DEither.Right<"encode-success", string & DPath.Path>
+			| DEither.Right<"encode-success", string>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
