@@ -113,6 +113,10 @@ function renderType(
 			DDataStructure.typeIdentifier(DSDataStructure.fileTypeKind),
 			DCommon.justReturn([typeLabel("file")]),
 		)
+		.when(
+			DDataStructure.typeIdentifier(DSDataStructure.folderTypeKind),
+			DCommon.justReturn([typeLabel("folder")]),
+		)
 		.otherwise(
 			DCommon.justReturn([typeLabel("unknown")]),
 		);
@@ -295,6 +299,10 @@ function renderSimpleConstraint(
 		)
 		.when(
 			DDataStructure.constraintIdentifier(DSDataStructure.fileExistConstraintKind),
+			DCommon.justReturn([constraintLabel("exists")]),
+		)
+		.when(
+			DDataStructure.constraintIdentifier(DSDataStructure.folderExistConstraintKind),
 			DCommon.justReturn([constraintLabel("exists")]),
 		)
 		.when(
@@ -500,8 +508,8 @@ function renderOptionDetails(
 		return DArray.filter(
 			[
 				renderInline([DPrinter.indent(depth), renderMetadata(help, option.required ? "required" : "optional")]),
-				renderDescriptionLine(option.description, depth),
 				...renderConstraintLines(help.constraints, depth),
+				renderDescriptionLine(option.description, depth),
 			],
 			DCommon.truthy,
 		);
@@ -553,8 +561,8 @@ export function renderArgumentsHelp(
 						name(argument.name.padEnd(12)),
 						renderMetadata(help, argument.optional ? "optional" : "required"),
 					]),
-					renderDescriptionLine(argument.description, depth + 2),
 					renderConstraintLines(help.constraints, depth + 2),
+					renderDescriptionLine(argument.description, depth + 2),
 				]);
 			},
 		),

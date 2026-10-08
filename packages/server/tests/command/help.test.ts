@@ -1,7 +1,141 @@
+import { stripVTControlCharacters } from "node:util";
+import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import { DSCommand, DSDataStructure } from "@scripts";
 
 describe("help", () => {
+	it("renders folder existence before the argument description", () => {
+		const help = DSCommand.renderArgumentsHelp([
+			DSCommand.createArgument("source", DSDataStructure.folder([DSDataStructure.folderExist()]), {
+				description: "Source directory.",
+			}),
+		], 1);
+
+		expect(stripVTControlCharacters(help).split("\n")).toStrictEqual([
+			"\tARGUMENTS",
+			"\t\tsource      folder · required",
+			"\t\t\t↳ exists",
+			"\t\t\tSource directory.",
+		]);
+	});
+
+	it("renders folder existence in simple and array options", () => {
+		const structure = DSDataStructure.folder([DSDataStructure.folderExist()]);
+		const help = DSCommand.renderOptionsHelp([
+			DSCommand.createOption("destination", structure, {
+				description: "Destination directory.",
+				required: true,
+			}),
+			DSCommand.createArrayOption("sources", structure, {
+				description: "Source directories.",
+				min: 1,
+			}),
+		], 1);
+
+		expect(stripVTControlCharacters(help).split("\n")).toStrictEqual([
+			"\tOPTIONS",
+			"\t\t--destination <value>",
+			"\t\t\tfolder · required",
+			"\t\t\t↳ exists",
+			"\t\t\tDestination directory.",
+			"\t\t--sources <value...>",
+			"\t\t\tfolder[] · optional",
+			"\t\t\t↳ item exists",
+			"\t\t\t↳ min items 1",
+			"\t\t\tSource directories.",
+		]);
+	});
+
+	it("renders folder arguments as required or optional", () => {
+		const help = DSCommand.renderArgumentsHelp([
+			DSCommand.createArgument("source", DSDataStructure.folder()),
+			DSCommand.createArgument("destination", DSDataStructure.folder(), { optional: true }),
+		], 1);
+
+		type _CheckHelp = DCommon.ExpectType<typeof help, string, "strict">;
+
+		expect(stripVTControlCharacters(help).split("\n")).toStrictEqual([
+			"\tARGUMENTS",
+			"\t\tsource      folder · required",
+			"\t\tdestination folder · optional",
+		]);
+	});
+
+	it("renders folder types in simple and array options", () => {
+		const help = DSCommand.renderOptionsHelp([
+			DSCommand.createOption("destination", DSDataStructure.folder(), { required: true }),
+			DSCommand.createArrayOption("sources", DSDataStructure.folder()),
+		], 1);
+
+		type _CheckHelp = DCommon.ExpectType<typeof help, string, "strict">;
+
+		expect(stripVTControlCharacters(help).split("\n")).toStrictEqual([
+			"\tOPTIONS",
+			"\t\t--destination <value>",
+			"\t\t\tfolder · required",
+			"\t\t--sources <value...>",
+			"\t\t\tfolder[] · optional",
+		]);
+	});
+
+	it("renders argument metadata and all constraints before its description", () => {
+		const help = DSCommand.renderArgumentsHelp([
+			DSCommand.createArgument("username", DDataStructure.string([
+				DDataStructure.minCharacters(2),
+				DDataStructure.maxCharacters(4),
+				DDataStructure.trimmed(),
+			]), { description: "User name." }),
+		], 1);
+
+		expect(stripVTControlCharacters(help).split("\n")).toStrictEqual([
+			"\tARGUMENTS",
+			"\t\tusername    string · required",
+			"\t\t\t↳ length 2..4",
+			"\t\t\t↳ trimmed",
+			"\t\t\tUser name.",
+		]);
+	});
+
+	it("renders simple option constraints before its description", () => {
+		const help = DSCommand.renderOptionsHelp([
+			DSCommand.createOption("count", DDataStructure.number([
+				DDataStructure.greaterThanOrEqual(1),
+				DDataStructure.lessThanOrEqual(5),
+			]), {
+				description: "Resource count.",
+				required: true,
+			}),
+		], 1);
+
+		expect(stripVTControlCharacters(help).split("\n")).toStrictEqual([
+			"\tOPTIONS",
+			"\t\t--count <value>",
+			"\t\t\tnumber · required",
+			"\t\t\t↳ min 1",
+			"\t\t\t↳ max 5",
+			"\t\t\tResource count.",
+		]);
+	});
+
+	it("renders array option item and length constraints before its description", () => {
+		const help = DSCommand.renderOptionsHelp([
+			DSCommand.createArrayOption("names", DDataStructure.string([DDataStructure.trimmed()]), {
+				description: "User names.",
+				min: 1,
+				max: 3,
+			}),
+		], 1);
+
+		expect(stripVTControlCharacters(help).split("\n")).toStrictEqual([
+			"\tOPTIONS",
+			"\t\t--names <value...>",
+			"\t\t\tstring[] · optional",
+			"\t\t\t↳ item trimmed",
+			"\t\t\t↳ items 1..3",
+			"\t\t\tUser names.",
+		]);
+	});
+
 	it("renders command help without subject or options", () => {
 		const command = DSCommand.create("root", () => undefined);
 
