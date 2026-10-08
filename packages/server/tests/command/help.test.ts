@@ -208,7 +208,7 @@ describe("help", () => {
 				DSCommand.createArgument("range", DDataStructure.number([DDataStructure.betweenThanOrEqual(1, 5)])),
 				DSCommand.createArgument("multiple", DDataStructure.number([DDataStructure.multipleOf(3)])),
 				DSCommand.createArgument("regex", DDataStructure.string([DDataStructure.regex(/^a/)])),
-				DSCommand.createArgument("exist", DSDataStructure.file([DSDataStructure.exist()])),
+				DSCommand.createArgument("exist", DSDataStructure.file([DSDataStructure.fileExist()])),
 				DSCommand.createArgument("mime", DSDataStructure.file([DSDataStructure.mimeType(/^text\//)])),
 			],
 			0,

@@ -294,7 +294,7 @@ function renderSimpleConstraint(
 			DCommon.justReturn([constraintLabel("path segment")]),
 		)
 		.when(
-			DDataStructure.constraintIdentifier(DSDataStructure.existConstraintKind),
+			DDataStructure.constraintIdentifier(DSDataStructure.fileExistConstraintKind),
 			DCommon.justReturn([constraintLabel("exists")]),
 		)
 		.when(

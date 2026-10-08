@@ -6,7 +6,7 @@ describe("defaultInterpreter", () => {
 		const dataStructureDictionary = DSDataStructure.defaultErrorInterpreterDataStructureDictionary;
 
 		expect(dataStructureDictionary["@DuplojsServerDataStructure/file-type"]()).toBe("Expected a valid file.");
-		expect(dataStructureDictionary["@DuplojsServerDataStructure/exist-constraint"]()).toBe("Expected the file to exist.");
+		expect(dataStructureDictionary["@DuplojsServerDataStructure/file-exist-constraint"]()).toBe("Expected the file to exist.");
 		expect(dataStructureDictionary["@DuplojsServerDataStructure/mime-type-constraint"]({
 			definition: {
 				regex: /^image\//,

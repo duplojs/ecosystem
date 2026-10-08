@@ -22,7 +22,7 @@ export const defaultErrorInterpreterDataStructureDictionary = {
 		return "Expected a valid file size.";
 	},
 	"@DuplojsServerDataStructure/mime-type-constraint": (source) => `Expected a file with a MIME type matching ${source.definition.regex.toString()}.`,
-	"@DuplojsServerDataStructure/exist-constraint": () => "Expected the file to exist.",
+	"@DuplojsServerDataStructure/file-exist-constraint": () => "Expected the file to exist.",
 } as const satisfies Required<DDataStructure.StructureDictionaryParams>;
 
 export const defaultErrorInterpreterCodecDictionary = [

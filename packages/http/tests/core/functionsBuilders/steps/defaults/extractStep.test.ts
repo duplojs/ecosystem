@@ -306,7 +306,7 @@ describe("extract step function builder", () => {
 		TESTImplementation.set("stat", () => Promise.resolve({ isFile: true } as never));
 
 		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.extract({ path: DSDataStructure.file([DSDataStructure.exist()]) })
+			.extract({ path: DSDataStructure.file([DSDataStructure.fileExist()]) })
 			.handler(
 				ResponseContract.ok("good", DSDataStructure.file()),
 				(floor, { response }) => response("good", floor.path),
@@ -350,7 +350,7 @@ describe("extract step function builder", () => {
 		TESTImplementation.set("stat", () => Promise.resolve({ isFile: true } as never));
 
 		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.extract({ body: DSDataStructure.file([DSDataStructure.exist()]) })
+			.extract({ body: DSDataStructure.file([DSDataStructure.fileExist()]) })
 			.handler(
 				ResponseContract.ok("good", DSDataStructure.file()),
 				(floor, { response }) => response("good", floor.body),

@@ -108,7 +108,7 @@ describe("createArgument", () => {
 
 		const argument = DSCommand.createArgument(
 			"file",
-			DSDataStructure.file().addConstraint(DSDataStructure.exist()),
+			DSDataStructure.file().addConstraint(DSDataStructure.fileExist()),
 		);
 		const error = DSCommand.createError("root");
 

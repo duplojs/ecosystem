@@ -131,7 +131,7 @@ describe("dataStructure file", () => {
 		file.stat = stat;
 
 		const success = await DSDataStructure.file([
-			DSDataStructure.exist(),
+			DSDataStructure.fileExist(),
 			DSDataStructure.size({
 				min: "1kb",
 				max: "2kb",
@@ -141,7 +141,7 @@ describe("dataStructure file", () => {
 
 		expect(DEither.isRight(success)).toBe(true);
 		expect(stat).toHaveBeenCalledTimes(2);
-		expect(DSDataStructure.exist().isAsynchronous()).toBe(true);
+		expect(DSDataStructure.fileExist().isAsynchronous()).toBe(true);
 		expect(DSDataStructure.size({}).isAsynchronous()).toBe(true);
 		expect(DSDataStructure.mimeType("text/plain").isAsynchronous()).toBe(false);
 	});
@@ -166,7 +166,7 @@ describe("dataStructure file", () => {
 			sizeBytes: 3000,
 		})));
 
-		const existStructure = DSDataStructure.file([DSDataStructure.exist()]);
+		const existStructure = DSDataStructure.file([DSDataStructure.fileExist()]);
 		const directoryStructure = DSDataStructure.file([DSDataStructure.size({ min: 1 })]);
 		const sizeStructure = DSDataStructure.file([DSDataStructure.size({ min: "1kb" })]);
 		const maxSizeStructure = DSDataStructure.file([DSDataStructure.size({ max: "2kb" })]);

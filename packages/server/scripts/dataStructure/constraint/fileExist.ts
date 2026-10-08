@@ -5,23 +5,23 @@ import * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DSFile from "@scripts/file";
 import { createKind } from "../kind";
 
-export const existConstraintKind = createKind("exist-constraint");
+export const fileExistConstraintKind = createKind("file-exist-constraint");
 
-export interface ExistConstraintDefinition extends DDataStructure.ConstraintDefinition {
+export interface FileExistConstraintDefinition extends DDataStructure.ConstraintDefinition {
 }
 
-export interface ExistConstraint extends DCommon.UnionToIntersection<
+export interface FileExistConstraint extends DCommon.UnionToIntersection<
 	& DDataStructure.Constraint<
 		DSFile.FileInterface,
 		DSFile.FileInterface,
-		ExistConstraintDefinition
+		FileExistConstraintDefinition
 	>
-	& DKind.Kind<typeof existConstraintKind>
+	& DKind.Kind<typeof fileExistConstraintKind>
 > {}
 
-export const ExistConstraint = DDataStructure.createConstraint(
-	existConstraintKind,
-	({ init }) => () => init<ExistConstraint>(
+export const FileExistConstraint = DDataStructure.createConstraint(
+	fileExistConstraintKind,
+	({ init }) => () => init<FileExistConstraint>(
 		{ },
 		{
 			executeCheck: async(_self, data) => {
