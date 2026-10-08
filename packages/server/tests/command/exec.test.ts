@@ -101,6 +101,37 @@ describe("exec", () => {
 		expect(String(consoleErrorSpy.mock.calls[0]?.[0])).toContain("read");
 	});
 
+	it("returns and logs all option errors in a single command failure", async() => {
+		setEnvironment("TEST");
+		TESTImplementation.set("getProcessArguments", vi.fn().mockReturnValue([]));
+		const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+		const executeSpy = vi.fn();
+
+		const result = await DSCommand.exec({
+			displayName: "read",
+			options: [
+				DSCommand.createOption("name", DDataStructure.string(), { required: true }),
+				DSCommand.createOption("count", DDataStructure.number(), { required: true }),
+			],
+		}, executeSpy);
+		const error = DEither.unwrapByInformationOrThrow(result, "error");
+
+		expect(error.issues).toEqual([
+			expect.objectContaining({
+				optionName: "name",
+				path: "read",
+			}),
+			expect.objectContaining({
+				optionName: "count",
+				path: "read",
+			}),
+		]);
+		expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+		expect(String(consoleErrorSpy.mock.calls[0]?.[0])).toContain("--name");
+		expect(String(consoleErrorSpy.mock.calls[0]?.[0])).toContain("--count");
+		expect(executeSpy).not.toHaveBeenCalled();
+	});
+
 	it("uses the custom data structure error interpreter", async() => {
 		setEnvironment("TEST");
 		const getProcessArgumentsSpy = vi.fn().mockReturnValue(["bad"]);

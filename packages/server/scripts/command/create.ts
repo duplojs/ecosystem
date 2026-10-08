@@ -190,15 +190,22 @@ export function create(
 				DGenerator.reduceFrom<{
 					options: Record<string, unknown>;
 					restArgs: readonly string[];
+					hasError: boolean;
 				}>({
 					options: {},
 					restArgs: args,
+					hasError: false,
 				}),
-				async({ item: option, lastValue, next, exit }) => {
+				async({ item: option, lastValue, next }) => {
 					const optionResult = await option.execute(lastValue.restArgs, error);
 
 					if (optionResult === SymbolCommandError) {
-						return exit(SymbolCommandError);
+						return next(
+							DObject.override(
+								lastValue,
+								{ hasError: true },
+							),
+						);
 					}
 
 					return next({
@@ -209,11 +216,12 @@ export function create(
 							},
 						),
 						restArgs: optionResult.argumentRest,
+						hasError: lastValue.hasError,
 					});
 				},
 			);
 
-			if (commandOptions === SymbolCommandError) {
+			if (commandOptions.hasError === true) {
 				return SymbolCommandError;
 			}
 

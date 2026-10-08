@@ -291,6 +291,98 @@ describe("create", () => {
 		]);
 	});
 
+	it("collects all missing required options before returning a command error", async() => {
+		setEnvironment("TEST");
+		const executeSpy = vi.fn();
+		const error = DSCommand.createError("root");
+		const command = DSCommand.create("root", {
+			options: [
+				DSCommand.createOption("name", DDataStructure.string(), { required: true }),
+				DSCommand.createOption("count", DDataStructure.number(), { required: true }),
+				DSCommand.createArrayOption("ids", DDataStructure.number(), { required: true }),
+			],
+		}, executeSpy);
+
+		const result = await command.execute([], error);
+
+		type _CheckResult = DCommon.ExpectType<typeof result, undefined | DSCommand.SymbolCommandError, "strict">;
+
+		expect(result).toBe(DSCommand.SymbolCommandError);
+		expect(error.issues).toEqual([
+			expect.objectContaining({
+				optionName: "name",
+				data: undefined,
+				path: "root",
+			}),
+			expect.objectContaining({
+				optionName: "count",
+				data: undefined,
+				path: "root",
+			}),
+			expect.objectContaining({
+				optionName: "ids",
+				data: undefined,
+				path: "root",
+			}),
+		]);
+		expect(executeSpy).not.toHaveBeenCalled();
+	});
+
+	it("collects mixed option errors across successful options and skips arguments and the handler", async() => {
+		setEnvironment("TEST");
+		const executeSpy = vi.fn();
+		const error = DSCommand.createError("root");
+		const verbose = DSCommand.createBooleanOption("verbose");
+		const quiet = DSCommand.createBooleanOption("quiet");
+		const argument = DSCommand.createArgument("target", DDataStructure.number());
+		const verboseSpy = vi.spyOn(verbose, "execute");
+		const quietSpy = vi.spyOn(quiet, "execute");
+		const argumentSpy = vi.spyOn(argument, "execute");
+		const command = DSCommand.create("root", {
+			options: [
+				DSCommand.createOption("count", DDataStructure.number()),
+				verbose,
+				DSCommand.createOption("name", DDataStructure.string(), { required: true }),
+				DSCommand.createArrayOption("ids", DDataStructure.number()),
+				DSCommand.createOption("title", DDataStructure.string()),
+				quiet,
+			],
+			subjects: [argument],
+		}, executeSpy);
+		const args = ["--count", "bad", "--verbose", "--ids", "1,bad", "--title", "--quiet"];
+
+		await expect(command.execute(args, error)).resolves.toBe(DSCommand.SymbolCommandError);
+
+		expect(error.issues).toEqual([
+			expect.objectContaining({
+				optionName: "count",
+				data: "bad",
+				path: "root",
+				dataStructureError: expect.any(Object),
+			}),
+			expect.objectContaining({
+				optionName: "name",
+				data: undefined,
+				path: "root",
+			}),
+			expect.objectContaining({
+				optionName: "ids",
+				data: "1,bad",
+				path: "root",
+				dataStructureError: expect.any(Object),
+			}),
+			expect.objectContaining({
+				optionName: "title",
+				data: undefined,
+				path: "root",
+			}),
+		]);
+		expect(verboseSpy).toHaveBeenCalledExactlyOnceWith(args, error);
+		expect(quietSpy).toHaveBeenCalledExactlyOnceWith(["--count", "bad", "--ids", "1,bad", "--title", "--quiet"], error);
+		expect(argumentSpy).not.toHaveBeenCalled();
+		expect(executeSpy).not.toHaveBeenCalled();
+	});
+
 	it("returns a command error when the argument count mismatches", async() => {
 		setEnvironment("TEST");
 		const executeSpy = vi.fn();
