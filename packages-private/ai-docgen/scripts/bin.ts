@@ -7,6 +7,7 @@ import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
 import * as DSCommon from "@duplojs/server/common";
 import * as DCommon from "@duplojs/lang/common";
+import * as DSDataStructure from "@duplojs/server/dataStructure";
 
 await DSCommand.exec(
 	{
@@ -15,7 +16,7 @@ await DSCommand.exec(
 		options: [
 			DSCommand.createOption(
 				"input",
-				DDataStructure.string([DDataStructure.path()]),
+				DSDataStructure.folder([DSDataStructure.folderExist()]),
 				{
 					required: true,
 					description: "folder path ai-docs",
@@ -36,7 +37,7 @@ await DSCommand.exec(
 			await directoryToMarkdown({
 				inputPathFolder: DPath.resolveFrom(
 					DSCommon.getCurrentWorkDirectoryOrThrow(),
-					[options.input],
+					[options.input.path],
 				),
 				outputPathFolderFile: DPath.resolveFrom(
 					DSCommon.getCurrentWorkDirectoryOrThrow(),
