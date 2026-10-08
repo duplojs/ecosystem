@@ -1,13 +1,8 @@
 /**
  * @title Initialiser le client E2E
  *
- * DuploJS Playwright s'utilise depuis un client Playwright etendu.
- * La fixture cree un `Website` pour chaque test avec la `page`
- * Playwright et le `BrowserContext`.
- *
- * Ensuite, le test passe par ce `Website` pour naviguer, verifier
- * l'URL, ajouter des cookies, appliquer un prefix, lancer des hooks
- * ou attendre l'hydratation.
+ * Créer une fixture Playwright qui expose un `Website` par test, avec la
+ * `page`, le `BrowserContext`, la base URL et les hooks de navigation.
  */
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -29,8 +24,6 @@ const envs = await DServerCommon.environmentVariableOrThrow(
 );
 
 // La configuration reste une configuration Playwright normale.
-// Ici, les variables sont juste chargees avec les outils d'environnement
-// DuploJS, comme dans la partie serveur.
 export default defineConfig({
 	testDir: "./tests",
 	fullyParallel: true,
@@ -64,8 +57,7 @@ interface TestFixtures {
 	website: Website;
 }
 
-// La fixture ajoute `website` aux tests.
-// `baseUrl` sert ensuite a construire les URLs des pages.
+// La fixture ajoute `website` aux tests et centralise le contexte du site.
 export const testClient = test.extend<TestFixtures>({
 	async website({ page, context }, use) {
 		const website = createWebsite({

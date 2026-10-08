@@ -1,15 +1,9 @@
 /**
  * @title Architecturer une suite E2E
  *
- * La suite est rangee comme le site teste, pas comme une liste de locators.
- *
- * Le `Website` correspond a l'application ouverte par Playwright.
- * Une `Page` correspond a un ecran et connait son path.
- * Un `Component` correspond a une zone d'interface que l'on peut reutiliser.
- *
- * Les tests utilisent ces objets pour raconter un parcours. Les locators
- * restent dans les pages et composants, au lieu d'etre eparpilles dans
- * chaque spec.
+ * Ranger la suite comme le site teste : `Website` pour l'application, `Page`
+ * pour un ecran navigable, `Component` pour une zone reutilisable. Les locators
+ * restent dans ces objets, pas dans chaque spec.
  */
 import { createComponent, createPage } from "@duplojs/playwright";
 
@@ -23,8 +17,7 @@ import { createComponent, createPage } from "@duplojs/playwright";
 //  specs/
 //      home.spec.ts
 
-// Un composant declare son element racine et les elements internes utiles
-// pour les actions ou les assertions.
+// Un composant declare son element racine et les elements utiles au test.
 export const newsletterComponent = createComponent(
 	"newsletter",
 	{
@@ -41,8 +34,7 @@ export const newsletterComponent = createComponent(
 	},
 );
 
-// Une page fonctionne comme un composant, avec un path en plus.
-// Elle peut aussi lister les composants disponibles dans son ecran.
+// Une page ajoute un path et les composants disponibles sur cet ecran.
 export const homePage = createPage(
 	"home",
 	{
@@ -61,8 +53,7 @@ export const homePage = createPage(
 	},
 );
 
-// Pour une page avec parametres, la construction de l'URL reste avec
-// la definition de l'ecran.
+// Les parametres d'URL restent avec la definition de l'ecran.
 export const articlePage = createPage(
 	"article",
 	{

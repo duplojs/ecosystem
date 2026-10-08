@@ -1,13 +1,12 @@
 /**
  * @title Ecrire un parcours de test
  *
- * Un test E2E DuploJS Playwright suit le parcours d'un utilisateur :
- * on navigue, on recupere une page ou un composant, puis on enchaine
- * actions et assertions.
+ * Décrire un scénario utilisateur avec les objets du site : naviguer,
+ * récupérer une page ou un composant, appeler des actions nommées, puis
+ * vérifier l'état attendu.
  *
- * Les helpers `Actions` et `Assertions` travaillent avec les elements nommes
- * dans `getElements`. Ils ajoutent des steps Playwright lisibles et gardent
- * le typage des cles disponibles sur le composant.
+ * Les helpers `Actions` et `Assertions` manipulent les éléments déclarés dans
+ * `getElements` et conservent le typage des clés disponibles.
  */
 import { Actions, Assertions, createComponent, createPage, type Website } from "@duplojs/playwright";
 
@@ -59,6 +58,8 @@ const homePage = createPage(
 	},
 );
 
+// Les actions parcourent l'interface, les assertions vérifient son état.
+// Les clés passées aux helpers viennent des éléments nommés dans `getElements`.
 testClient("visitor subscribes to the newsletter", async({ website }) => {
 	const home = await website.iNavigateTo(homePage);
 
