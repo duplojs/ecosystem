@@ -1,14 +1,9 @@
 /**
  * @title Tester un résultat Either
  *
- * Un test qui reçoit un `Either` doit d'abord exprimer quel résultat il
- * attend. Dans DuploJS, cette intention passe le plus souvent par
- * l'`information` portée par la monade.
- *
- * Le pattern habituel consiste à sélectionner l'information attendue, unwrap
- * sa valeur, puis vérifier uniquement la donnée obtenue. Si le résultat n'est
- * pas celui attendu, les helpers `OrThrow` font échouer le test avant
- * l'assertion finale.
+ * Sélectionner l'`information` attendue, unwrap la valeur correspondante puis
+ * vérifier la donnée obtenue et son type. Les helpers `OrThrow` font échouer le
+ * test quand le résultat n'est pas celui visé.
  */
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
@@ -35,9 +30,7 @@ declare function findUserByEmail(
 	| DEither.Error<Error>
 );
 
-// Le test ne vérifie pas l'implémentation interne de la monade.
-// Il s'appuie sur `DEither` comme passe-plat : si l'information attendue
-// n'est pas présente, l'unwrap échoue déjà.
+// L'unwrap exprime la branche attendue avant l'assertion sur la donnée.
 describe("findUserByEmail", () => {
 	it("returns the found user", () => {
 		const result = findUserByEmail("jane@duplo.dev");
@@ -71,9 +64,7 @@ describe("findUserByEmail", () => {
 	});
 });
 
-// Quand le test accepte plusieurs résultats possibles, la sélection rend la
-// décision explicite. Les résultats marqués `true` sont unwrap. Les autres
-// font échouer le test.
+// La sélection rend explicites les branches acceptées par ce test.
 describe("findUserByEmail selection", () => {
 	it("accepts only the business results handled by this test", () => {
 		const result = findUserByEmail("jane@duplo.dev");
@@ -104,8 +95,7 @@ describe("findUserByEmail selection", () => {
 	});
 });
 
-// `DEither.expect` sert surtout quand le contrat dit qu'une valeur est déjà un
-// `Either` et que le test veut matérialiser cette garantie dans le typage.
+// `DEither.expect` matérialise dans le type qu'une valeur est déjà un `Either`.
 describe("DEither.expect", () => {
 	it("keeps the exact either type", () => {
 		const input = DEither.success(42);
@@ -124,8 +114,7 @@ describe("DEither.expect", () => {
 	});
 });
 
-// Pour une API curifiée, le test de typage doit rester dans le contexte réel
-// d'utilisation. Ici, `unwrapByInformationOrThrow` est testé dans `pipe`.
+// Tester une API curifiée dans son contexte réel conserve l'inférence utile.
 describe("curried Either helpers", () => {
 	it("preserves inference in a pipe", () => {
 		const result = DCommon.pipe(

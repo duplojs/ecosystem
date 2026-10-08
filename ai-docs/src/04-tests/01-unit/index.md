@@ -1,9 +1,7 @@
 # Tests unitaires
 
-Les tests unitaires DuploJS vérifient le comportement runtime et les garanties
-de typage d'une API.
+Tests focalisés sur le contrat d'une API : branche acceptée, donnée obtenue,
+information portée par le résultat et type conservé par TypeScript.
 
-Un test ne doit pas seulement constater la forme d'une valeur produite. Il doit
-exprimer le contrat attendu : quelle branche du flux est acceptée, quelle
-information est attendue, quelle valeur est ensuite vérifiée, et quel type doit
-être conservé par TypeScript.
+Ils vérifient le comportement observé et l'inférence dans le contexte réel
+d'utilisation, notamment quand le résultat porte plusieurs issues possibles.
