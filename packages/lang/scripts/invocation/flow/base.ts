@@ -59,19 +59,21 @@ type ComputeTypeOutput<
 			UnwrapFlowControllerResult<GenericAccumulator[number]> extends infer InferredResult
 				? InferredResult extends FlowControllerExit
 					? DKind.GetValue<
-							typeof flowControllerExitKind,
-							InferredResult
+						typeof flowControllerExitKind,
+						InferredResult
 					>
-					: InferredResult extends Promise<infer InferredExit extends FlowControllerExit>
-						? Promise<
-							DKind.GetValue<
-									typeof flowControllerExitKind,
-									InferredExit
-							>
-						>
-						: InferredResult extends Promise<unknown>
+					: InferredResult extends Promise<infer InferredValue>
+						? DCommon.IsNever<InferredValue> extends true
 							? Promise<never>
-							: never
+							: InferredValue extends FlowControllerExit
+								? Promise<
+									DKind.GetValue<
+									typeof flowControllerExitKind,
+									InferredValue
+									>
+								>
+								: Promise<never>
+						: never
 				: never
 		)
 	) extends infer InferredResult

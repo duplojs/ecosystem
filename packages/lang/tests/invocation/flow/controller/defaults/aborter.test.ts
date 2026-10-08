@@ -8,8 +8,7 @@ describe("aborter", () => {
 	it("should provide an abort controller and continue the flow", async() => {
 		const abortControllers: AbortController[] = [];
 		const useFlow = DInvocation.flow(
-			(input: string) => input,
-			DInvocation.aborter((input, abortController) => {
+			DInvocation.aborter((input: string, abortController) => {
 				type _CheckInput = ExpectType<
 					typeof input,
 					string,
@@ -25,17 +24,18 @@ describe("aborter", () => {
 
 				return `accepted-${input}` as `accepted-${string}`;
 			}),
+			(value) => `test-${value}`,
 		);
 		const result = useFlow("first");
 
-		await expect(result).resolves.toBe("accepted-first");
+		await expect(result).resolves.toBe("test-accepted-first");
 		expect(abortControllers).toHaveLength(1);
 		expect(abortControllers[0]!.signal.aborted).toBe(false);
 
 		type _CheckResult = ExpectType<
 			typeof result,
 			Promise<
-				| `accepted-${string}`
+				| `test-accepted-${string}`
 				| DEither.Left<"signal-aborted", DInvocation.AbortErrorFlowController>
 			>,
 			"strict"
@@ -60,6 +60,7 @@ describe("aborter", () => {
 
 				return Promise.resolve(`accepted-${input}` as `accepted-${string}`);
 			}),
+			(value) => `test-${value}`,
 		);
 		const firstResult = useFlow("first");
 		const secondResult = useFlow("second");
@@ -72,7 +73,7 @@ describe("aborter", () => {
 		await expect(firstResult).resolves.toStrictEqual(
 			DEither.left("signal-aborted", abortControllers[0]!.signal.reason),
 		);
-		await expect(secondResult).resolves.toBe("accepted-second");
+		await expect(secondResult).resolves.toBe("test-accepted-second");
 	});
 
 	it("should exit the flow when the current signal is aborted before completion", async() => {

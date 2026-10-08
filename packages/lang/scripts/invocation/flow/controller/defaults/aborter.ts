@@ -2,7 +2,7 @@ import * as DCommon from "@scripts/common";
 import * as DKind from "@scripts/kind";
 import * as DEither from "@scripts/either";
 import { createKind } from "../../../kind";
-import { createFlowController, flowControllerExitKind, type FlowController } from "../base";
+import { createFlowController, type FlowControllerExit, flowControllerExitKind, type FlowController } from "../base";
 
 export const flowControllerAborterKind = createKind("flow-controller-aborter");
 
@@ -14,7 +14,9 @@ export interface FlowControllerAborter<
 		GenericInput,
 		Promise<
 			| Awaited<GenericOutput>
-			| DEither.Left<"signal-aborted", AbortErrorFlowController>
+			| FlowControllerExit<
+				DEither.Left<"signal-aborted", AbortErrorFlowController>
+			>
 		>
 	>
 	& DKind.Kind<typeof flowControllerAborterKind>
