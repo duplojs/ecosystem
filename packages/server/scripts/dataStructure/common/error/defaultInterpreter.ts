@@ -4,6 +4,7 @@ import { codecsJson } from "../codec";
 export const defaultErrorInterpreterDataStructureDictionary = {
 	...DDataStructure.defaultErrorInterpreterDataStructureDictionary,
 	"@DuplojsServerDataStructure/file-type": () => "Expected a valid file.",
+	"@DuplojsServerDataStructure/folder-type": () => "Expected a valid folder.",
 	"@DuplojsServerDataStructure/size-constraint": (source) => {
 		const { min, max } = source.definition;
 
@@ -23,6 +24,7 @@ export const defaultErrorInterpreterDataStructureDictionary = {
 	},
 	"@DuplojsServerDataStructure/mime-type-constraint": (source) => `Expected a file with a MIME type matching ${source.definition.regex.toString()}.`,
 	"@DuplojsServerDataStructure/file-exist-constraint": () => "Expected the file to exist.",
+	"@DuplojsServerDataStructure/folder-exist-constraint": () => "Expected the folder to exist.",
 } as const satisfies Required<DDataStructure.StructureDictionaryParams>;
 
 export const defaultErrorInterpreterCodecDictionary = [
