@@ -1,12 +1,7 @@
 /**
  * @title Ecrire un parcours de test
  *
- * Décrire un scénario utilisateur avec les objets du site : naviguer,
- * récupérer une page ou un composant, appeler des actions nommées, puis
- * vérifier l'état attendu.
- *
- * Les helpers `Actions` et `Assertions` manipulent les éléments déclarés dans
- * `getElements` et conservent le typage des clés disponibles.
+ * Scénarios utilisateur, interactions et vérifications avec les objets du site.
  */
 import { Actions, Assertions, createComponent, createPage, type Website } from "@duplojs/playwright";
 
@@ -60,6 +55,9 @@ const homePage = createPage(
 
 // Les actions parcourent l'interface, les assertions vérifient son état.
 // Les clés passées aux helpers viennent des éléments nommés dans `getElements`.
+// `Actions` et `Assertions` limitent ces clés aux éléments déclarés sur l’objet ciblé.
+// Le scénario navigue vers une page, récupère son composant, agit sur ses
+// éléments puis vérifie le résultat ; une méthode nommée peut regrouper les actions.
 testClient("visitor subscribes to the newsletter", async({ website }) => {
 	const home = await website.iNavigateTo(homePage);
 

@@ -346,12 +346,12 @@ Configuration d'un `Hub`, plugins et enregistrement des routes d'une application
 
 ### [Créer une route HTTP](ai-docs/src/02-server/20-http/20-route.ts)
 
-Construction avec `useRouteBuilder` : steps, `floor`, extraction, réponse contextualisée et `handler`.
+Construction du flux d’une route : entrées validées, contexte de traitement et réponses contextualisées.
  
 
 ### [Faire une routine de vérification](ai-docs/src/02-server/20-http/30-routine.ts)
 
-Vérifications locales ou réutilisables avec `cut`, `checker`, `presetCheck`, `process` et preflight.
+Vérifications dans les flux HTTP, réutilisation des traitements et adaptation de leurs résultats au contexte.
  
 
 ### [Définir une politique de gestion de tokens](ai-docs/src/02-server/20-http/40-jwt.ts)
@@ -386,8 +386,7 @@ Création d’interfaces en ligne de commande (CLI) pour les applications serveu
 
 ### [Définir une commande](ai-docs/src/02-server/40-command/10-use.ts)
 
-Déclaration d'arguments, d'options et récupération des valeurs typées
-dans le callback d'exécution.
+Définition des entrées et du traitement d’une commande CLI.
  
 
 ### [Créer des sous-commandes](ai-docs/src/02-server/40-command/20-sub-command.ts)
@@ -411,16 +410,12 @@ serveur.
 
 ### [Effectuer une requête HTTP](ai-docs/src/03-client/10-http/20-request.ts)
 
-Construction d'une `PromiseRequest`, envoi des paramètres attendus par la
-route et sélection des réponses typées par `information`, code HTTP ou
-famille de statut.
+Envoi de données et traitement des réponses typées d’une API HTTP.
  
 
 ### [Utiliser les hooks du client HTTP](ai-docs/src/03-client/10-http/30-hook.ts)
 
-Centralisation des comportements communs au cycle d'une requête : réactions
-globales, effets de bord, instrumentation et transformations techniques sans
-élargir le contrat typé des routes.
+Comportements transversaux et instrumentation du cycle des échanges HTTP.
  
 ## Form
 
@@ -429,39 +424,22 @@ Création et gestion de formulaires typés pour les interfaces utilisateur.
 
 ### [Créer un formulaire](ai-docs/src/03-client/20-form/10-init.ts)
 
-Initialisation d'un formulaire à partir de templates et d'un `FormField`
-racine pour obtenir son composant Vue, sa valeur courante et ses opérations.
+Initialisation et cycle de vie d’un formulaire Vue typé.
  
 
-### [Créer/Utiliser un input](ai-docs/src/03-client/20-form/20-input.ts)
+### [Inputs de formulaire réutilisables](ai-docs/src/03-client/20-form/20-input.ts)
 
-Un composant Vue d'input n'est pas encore une brique de formulaire.
-
-Pour créer un input réutilisable, le raisonnement est toujours le même :
-partir d'un composant Vue compatible, le transformer avec `createInput`,
-puis composer le champ obtenu dans un formulaire.
-
-Les inputs du design system suivent déjà ce modèle. Ils peuvent être utilisés
-directement, ou servir de référence lorsqu'une application crée ses propres
-inputs.
+Création, intégration et validation des champs de saisie d’un formulaire Vue.
  
 
 ### [Composer avec les layouts](ai-docs/src/03-client/20-form/30-layout.ts)
 
-Un layout reçoit un ou plusieurs champs et retourne un nouveau champ.
-
-C'est ce qui permet de construire un formulaire par composition : un input
-peut être donné à un layout, ce layout peut être donné à un autre layout,
-puis le résultat final devient le champ racine passé à `useForm`.
-
-Les layouts structurent la valeur du formulaire ou pilotent un comportement
-autour d'un ou plusieurs champs.
+Composition de la structure des données et des comportements d’un formulaire.
  
 
 ### [Personnaliser les templates](ai-docs/src/03-client/20-form/40-template.ts)
 
-Adapter le rendu Vue des formulaires, inputs et layouts sans changer la
-structure, les validations ou les valeurs manipulées par `@duplojs/form`.
+Personnalisation globale ou locale du rendu Vue des formulaires et de leurs champs.
  
 # Tests
 
@@ -472,9 +450,7 @@ Vérification du comportement et du typage des unités de code.
 
 ### [Tester un résultat Either](ai-docs/src/04-tests/01-unit/10-either.ts)
 
-Sélectionner l'`information` attendue, unwrap la valeur correspondante puis
-vérifier la donnée obtenue et son type. Les helpers `OrThrow` font échouer le
-test quand le résultat n'est pas celui visé.
+Vérification des branches, des valeurs et du typage d’un contrat Either.
  
 ## Tests E2E
 
@@ -483,23 +459,15 @@ Vérification des parcours utilisateur dans une application web.
 
 ### [Initialiser le client E2E](ai-docs/src/04-tests/02-e2e/10-init.ts)
 
-Créer une fixture Playwright qui expose un `Website` par test, avec la
-`page`, le `BrowserContext`, la base URL et les hooks de navigation.
+Configuration de l’environnement de test et intégration du site aux fixtures Playwright.
  
 
 ### [Architecturer une suite E2E](ai-docs/src/04-tests/02-e2e/20-architecture.ts)
 
-Ranger la suite comme le site teste : `Website` pour l'application, `Page`
-pour un ecran navigable, `Component` pour une zone reutilisable. Les locators
-restent dans ces objets, pas dans chaque spec.
+Organisation d’une suite E2E selon les pages et les composants du site testé.
  
 
 ### [Ecrire un parcours de test](ai-docs/src/04-tests/02-e2e/30-testing.ts)
 
-Décrire un scénario utilisateur avec les objets du site : naviguer,
-récupérer une page ou un composant, appeler des actions nommées, puis
-vérifier l'état attendu.
-
-Les helpers `Actions` et `Assertions` manipulent les éléments déclarés dans
-`getElements` et conservent le typage des clés disponibles.
+Scénarios utilisateur, interactions et vérifications avec les objets du site.
  

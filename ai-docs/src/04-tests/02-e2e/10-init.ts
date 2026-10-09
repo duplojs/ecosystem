@@ -1,8 +1,7 @@
 /**
  * @title Initialiser le client E2E
  *
- * Créer une fixture Playwright qui expose un `Website` par test, avec la
- * `page`, le `BrowserContext`, la base URL et les hooks de navigation.
+ * Configuration de l’environnement de test et intégration du site aux fixtures Playwright.
  */
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -58,6 +57,9 @@ interface TestFixtures {
 }
 
 // La fixture ajoute `website` aux tests et centralise le contexte du site.
+// Elle crée un `Website` par test à partir de la `page` et du `BrowserContext`
+// fournis par Playwright. `baseUrl` fixe l’adresse du site ; le hook attend la
+// fin du chargement réseau après chaque navigation.
 export const testClient = test.extend<TestFixtures>({
 	async website({ page, context }, use) {
 		const website = createWebsite({

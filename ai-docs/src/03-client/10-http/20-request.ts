@@ -1,9 +1,7 @@
 /**
  * @title Effectuer une requête HTTP
  *
- * Construction d'une `PromiseRequest`, envoi des paramètres attendus par la
- * route et sélection des réponses typées par `information`, code HTTP ou
- * famille de statut.
+ * Envoi de données et traitement des réponses typées d’une API HTTP.
  */
 import { createHttpClient } from "@duplojs/http/client";
 import type * as DArray from "@duplojs/lang/array";
@@ -88,6 +86,8 @@ const client = createHttpClient<Routes>({
 });
 
 // La méthode choisie filtre les paths et paramètres autorisés.
+// L’appel retourne une `PromiseRequest` sur laquelle composer le traitement
+// des réponses avant d’attendre le résultat avec `await`.
 const promiseRequestCreateUser = client
 	.post(
 		"/users",

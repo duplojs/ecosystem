@@ -1,7 +1,7 @@
 /**
  * @title Faire une routine de vérification
  *
- * Vérifications locales ou réutilisables avec `cut`, `checker`, `presetCheck`, `process` et preflight.
+ * Vérifications dans les flux HTTP, réutilisation des traitements et adaptation de leurs résultats au contexte.
  */
 import { ResponseContract, createPresetChecker, useCheckerBuilder, usePreflightBuilder, useProcessBuilder, useRouteBuilder } from "@duplojs/http";
 import * as DEither from "@duplojs/lang/either";
@@ -144,7 +144,7 @@ export const authenticationProcess = useProcessBuilder()
 				(user) => output({
 					authenticatedUserId: user.id,
 				}),
-				() => response("token.invalid")
+				() => response("token.invalid"),
 			),
 		),
 	)

@@ -1,8 +1,7 @@
 /**
  * @title Personnaliser les templates
  *
- * Adapter le rendu Vue des formulaires, inputs et layouts sans changer la
- * structure, les validations ou les valeurs manipulées par `@duplojs/form`.
+ * Personnalisation globale ou locale du rendu Vue des formulaires et de leurs champs.
  */
 import { createForm, createTemplate, useMultiLayout, type InputTemplateProperties, type VueComponent } from "@duplojs/form/vue";
 import { templateFormAddButton, templateFormNextButton, templateFormPreviousButton, templateFormRemoveButton, templateFormResetButton, templateFormSelect, useTextareaInput, useTextInput } from "@duplojs/form/vueDesignSystem";
@@ -10,6 +9,8 @@ import { createGridTemplates } from "@duplojs/form/vueGrid";
 
 // Un template transforme les props système et les slots en interface Vue.
 // Il reste générique : la connaissance métier appartient au formulaire.
+// Remplacer le template change le rendu ; la structure des champs, leurs
+// validations et leurs valeurs restent définies par les inputs et les layouts.
 interface HeroInputTemplateProperties {
 	props: (
 		& InputTemplateProperties["props"]

@@ -1,9 +1,7 @@
 /**
  * @title Utiliser les hooks du client HTTP
  *
- * Centralisation des comportements communs au cycle d'une requête : réactions
- * globales, effets de bord, instrumentation et transformations techniques sans
- * élargir le contrat typé des routes.
+ * Comportements transversaux et instrumentation du cycle des échanges HTTP.
  */
 import { createHttpClient } from "@duplojs/http/client";
 

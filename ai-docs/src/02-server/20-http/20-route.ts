@@ -1,7 +1,7 @@
 /**
  * @title Créer une route HTTP
  *
- * Construction avec `useRouteBuilder` : steps, `floor`, extraction, réponse contextualisée et `handler`.
+ * Construction du flux d’une route : entrées validées, contexte de traitement et réponses contextualisées.
  */
 import { ResponseContract, useRouteBuilder, controlBodyAsFormData } from "@duplojs/http";
 import * as DDataStructure from "@duplojs/lang/dataStructure";

@@ -1,8 +1,7 @@
 /**
  * @title Créer un formulaire
  *
- * Initialisation d'un formulaire à partir de templates et d'un `FormField`
- * racine pour obtenir son composant Vue, sa valeur courante et ses opérations.
+ * Initialisation et cycle de vie d’un formulaire Vue typé.
  */
 import { createForm, useCheckLayout, useMultiLayout } from "@duplojs/form/vue";
 import { templateFormAddButton, templateFormNextButton, templateFormPreviousButton, templateFormRemoveButton, templateFormResetButton, templateFormSelect, useNumberInput, useTextInput } from "@duplojs/form/vueDesignSystem";
@@ -36,6 +35,8 @@ const useForm = createForm(
 
 // Le champ racine porte le schéma métier du formulaire.
 // Il peut être un input simple ou une composition de layouts et d'inputs.
+// Ce champ est un `FormField` : `useForm` l’associe aux templates configurés
+// pour exposer le composant Vue, la valeur courante et les opérations du formulaire.
 const { check, component: TheForm, currentValue, dispose, reset } = useForm(
 	useMultiLayout({
 		name: useTextInput({

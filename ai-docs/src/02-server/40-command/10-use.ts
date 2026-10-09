@@ -1,14 +1,15 @@
 /**
  * @title Définir une commande
  *
- * Déclaration d'arguments, d'options et récupération des valeurs typées
- * dans le callback d'exécution.
+ * Définition des entrées et du traitement d’une commande CLI.
  */
 import * as DSCommand from "@duplojs/server/command";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 
 // Une commande simple peut uniquement déclarer les arguments
 // dont elle a besoin.
+// `exec` interprète les entrées selon leurs déclarations, puis transmet les
+// valeurs typées au callback : les arguments dans `args`, les options dans `options`.
 await DSCommand.exec(
 	{
 		description: "Display a greeting",

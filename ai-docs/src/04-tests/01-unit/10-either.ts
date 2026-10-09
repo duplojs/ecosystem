@@ -1,9 +1,7 @@
 /**
  * @title Tester un résultat Either
  *
- * Sélectionner l'`information` attendue, unwrap la valeur correspondante puis
- * vérifier la donnée obtenue et son type. Les helpers `OrThrow` font échouer le
- * test quand le résultat n'est pas celui visé.
+ * Vérification des branches, des valeurs et du typage d’un contrat Either.
  */
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
@@ -31,6 +29,9 @@ declare function findUserByEmail(
 );
 
 // L'unwrap exprime la branche attendue avant l'assertion sur la donnée.
+// `unwrapByInformationOrThrow` sélectionne l’information visée et extrait sa
+// valeur. Une information différente provoque une exception et fait échouer le test.
+// L’assertion vérifie ensuite la donnée ; `ExpectType` vérifie son type à la compilation.
 describe("findUserByEmail", () => {
 	it("returns the found user", () => {
 		const result = findUserByEmail("jane@duplo.dev");
@@ -65,6 +66,8 @@ describe("findUserByEmail", () => {
 });
 
 // La sélection rend explicites les branches acceptées par ce test.
+// `unwrapSelectionOrThrow` lève aussi une exception si le résultat appartient
+// à une branche exclue, ici `error`.
 describe("findUserByEmail selection", () => {
 	it("accepts only the business results handled by this test", () => {
 		const result = findUserByEmail("jane@duplo.dev");

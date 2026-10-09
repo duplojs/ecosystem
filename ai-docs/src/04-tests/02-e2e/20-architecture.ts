@@ -1,12 +1,15 @@
 /**
  * @title Architecturer une suite E2E
  *
- * Ranger la suite comme le site teste : `Website` pour l'application, `Page`
- * pour un ecran navigable, `Component` pour une zone reutilisable. Les locators
- * restent dans ces objets, pas dans chaque spec.
+ * Organisation d’une suite E2E selon les pages et les composants du site testé.
  */
 import { createComponent, createPage } from "@duplojs/playwright";
 
+// `Website` représente l’application et son contexte global, `Page` un écran
+// navigable et `Component` une zone réutilisable de l’interface.
+// Les locators sont déclarés dans ces objets ; les specs utilisent leurs
+// éléments et leurs méthodes sans répéter les sélecteurs.
+//
 // tests/
 //   website.ts
 //   pages/

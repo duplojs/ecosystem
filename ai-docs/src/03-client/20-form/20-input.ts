@@ -1,15 +1,7 @@
 /**
- * @title Créer/Utiliser un input
+ * @title Inputs de formulaire réutilisables
  *
- * Un composant Vue d'input n'est pas encore une brique de formulaire.
- *
- * Pour créer un input réutilisable, le raisonnement est toujours le même :
- * partir d'un composant Vue compatible, le transformer avec `createInput`,
- * puis composer le champ obtenu dans un formulaire.
- *
- * Les inputs du design system suivent déjà ce modèle. Ils peuvent être utilisés
- * directement, ou servir de référence lorsqu'une application crée ses propres
- * inputs.
+ * Création, intégration et validation des champs de saisie d’un formulaire Vue.
  */
 import { createForm, createInput, useMultiLayout } from "@duplojs/form/vue";
 import { TextInput, templateFormAddButton, templateFormNextButton, templateFormPreviousButton, templateFormRemoveButton, templateFormResetButton, templateFormSelect, useNumberInput, useTextInput } from "@duplojs/form/vueDesignSystem";
@@ -41,6 +33,8 @@ const useForm = createForm(
 // Les inputs du design system sont déjà des briques de formulaire.
 // Ils retournent directement des champs composables dans `useForm`, avec des
 // props inférées depuis leur composant Vue.
+// Leur association composant/input peut aussi servir de référence pour créer
+// les inputs propres à une application.
 const { component: TheForm, currentValue } = useForm(
 	useMultiLayout({
 		name: useTextInput({
@@ -64,6 +58,8 @@ void currentValue;
 void TheForm;
 
 // `createInput` transforme un composant Vue compatible en input de formulaire.
+// Le composant seul ne fournit pas de `FormField` : la fonction obtenue avec
+// `createInput` crée ce champ, composable dans un layout ou directement dans `useForm`.
 // Le contrat minimal du composant est de porter sa valeur avec `modelValue`
 // et `update:modelValue`. Il peut aussi exposer `check`, `reset` ou `dispose`
 // si son comportement interne en a besoin.

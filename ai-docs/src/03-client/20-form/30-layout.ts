@@ -1,14 +1,7 @@
 /**
  * @title Composer avec les layouts
  *
- * Un layout reçoit un ou plusieurs champs et retourne un nouveau champ.
- *
- * C'est ce qui permet de construire un formulaire par composition : un input
- * peut être donné à un layout, ce layout peut être donné à un autre layout,
- * puis le résultat final devient le champ racine passé à `useForm`.
- *
- * Les layouts structurent la valeur du formulaire ou pilotent un comportement
- * autour d'un ou plusieurs champs.
+ * Composition de la structure des données et des comportements d’un formulaire.
  */
 import { createForm, useCheckLayout, useDisabledLayout, useMultiLayout, useRepeatLayout, useSectionLayout, useSlotLayout, useStepLayout, useUnionLayout } from "@duplojs/form/vue";
 import { templateFormAddButton, templateFormNextButton, templateFormPreviousButton, templateFormRemoveButton, templateFormResetButton, templateFormSelect, useTextareaInput, useTextInput } from "@duplojs/form/vueDesignSystem";
@@ -40,6 +33,9 @@ const useForm = createForm(
 
 // Les layouts de structure modifient directement la forme de `currentValue`
 // et la forme de la valeur retournée par `check`.
+// Un layout reçoit un ou plusieurs champs et produit un nouveau `FormField`.
+// Ici, les inputs sont composés dans des layouts, eux-mêmes imbriqués dans
+// `useMultiLayout`, puis `useSectionLayout` fournit le champ racine à `useForm`.
 const { check: checkStructureForm, component: StructureForm, currentValue: currentStructureValue } = useForm(
 	useSectionLayout(
 		useMultiLayout({
