@@ -75,7 +75,10 @@ export const aborter = createFlowController(
 				}
 
 				try {
-					const abortResult = await theFunction(result as never, currentAborter);
+					const abortResult = await theFunction(
+						result as never,
+						currentAborter,
+					);
 
 					if (currentAborter.signal.aborted === true) {
 						return exitFlow(

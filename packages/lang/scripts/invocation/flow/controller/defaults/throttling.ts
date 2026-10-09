@@ -25,7 +25,7 @@ export interface FlowControllerThrottling<
 export const throttling = createFlowController(
 	flowControllerThrottlingKind,
 	({ init, exitFlow }) => <
-		GenericInput extends unknown = unknown,
+		GenericInput extends unknown,
 	>(
 		throttling: DCommon.TimeInString,
 	) => {

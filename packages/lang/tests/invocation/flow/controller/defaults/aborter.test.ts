@@ -1,4 +1,6 @@
-import { DCommon, DEither, DInvocation, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
+import * as DInvocation from "@scripts/invocation";
 
 describe("aborter", () => {
 	afterEach(() => {
@@ -7,23 +9,24 @@ describe("aborter", () => {
 
 	it("should provide an abort controller and continue the flow", async() => {
 		const abortControllers: AbortController[] = [];
+		const callback = vi.fn((input: string, abortController: AbortController) => {
+			type _CheckInput = DCommon.ExpectType<
+				typeof input,
+				string,
+				"strict"
+			>;
+			type _CheckAbortController = DCommon.ExpectType<
+				typeof abortController,
+				AbortController,
+				"strict"
+			>;
+
+			abortControllers.push(abortController);
+
+			return `accepted-${input}` as `accepted-${string}`;
+		});
 		const useFlow = DInvocation.flow(
-			DInvocation.aborter((input: string, abortController) => {
-				type _CheckInput = ExpectType<
-					typeof input,
-					string,
-					"strict"
-				>;
-				type _CheckAbortController = ExpectType<
-					typeof abortController,
-					AbortController,
-					"strict"
-				>;
-
-				abortControllers.push(abortController);
-
-				return `accepted-${input}` as `accepted-${string}`;
-			}),
+			DInvocation.aborter(callback),
 			(value) => `test-${value}`,
 		);
 		const result = useFlow("first");
@@ -31,8 +34,9 @@ describe("aborter", () => {
 		await expect(result).resolves.toBe("test-accepted-first");
 		expect(abortControllers).toHaveLength(1);
 		expect(abortControllers[0]!.signal.aborted).toBe(false);
+		expect(callback).toHaveBeenCalledExactlyOnceWith("first", abortControllers[0]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<
 				| `test-accepted-${string}`
@@ -40,6 +44,57 @@ describe("aborter", () => {
 			>,
 			"strict"
 		>;
+	});
+
+	it("should preserve the original argument for the callback following the aborter", async() => {
+		interface Argument {
+			value: number;
+			label: string;
+		}
+		const originalArgument: Argument = {
+			value: 41,
+			label: "original",
+		};
+		const useFlow = DInvocation.flow(
+			(input: Argument) => input.value + 1,
+			DInvocation.aborter((input, abortController) => {
+				type _CheckInput = DCommon.ExpectType<typeof input, number, "strict">;
+				type _CheckAbortController = DCommon.ExpectType<
+					typeof abortController,
+					AbortController,
+					"strict"
+				>;
+
+				expect(input).toBe(42);
+
+				return `accepted-${input}` as const;
+			}),
+			(input, argument) => {
+				type _CheckInput = DCommon.ExpectType<typeof input, `accepted-${number}`, "strict">;
+				type _CheckArgument = DCommon.ExpectType<typeof argument, Argument, "strict">;
+
+				expect(argument).toBe(originalArgument);
+
+				return `${argument.label}-${input}` as const;
+			},
+		);
+		const result = useFlow(originalArgument);
+
+		await expect(result).resolves.toBe("original-accepted-42");
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			Promise<
+				| `${string}-accepted-${number}`
+				| DEither.Left<"signal-aborted", DInvocation.AbortErrorFlowController>
+			>,
+			"strict"
+		>;
+	});
+
+	it("should reject an aborter callback requiring the original argument", () => {
+		// @ts-expect-error aborter callbacks only receive the current input and abort controller
+		DInvocation.aborter((input: number, _abortController, argument: string) => `${argument}-${input}`);
 	});
 
 	it("should abort the previous execution when the flow is called again", async() => {
@@ -145,7 +200,7 @@ describe("aborter", () => {
 		expect(abortControllers).toHaveLength(1);
 		expect(abortControllers[0]!.signal.aborted).toBe(false);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<
 				| `accepted-${string}`

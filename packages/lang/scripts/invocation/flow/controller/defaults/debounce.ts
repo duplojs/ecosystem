@@ -25,7 +25,7 @@ export interface FlowControllerDebounce<
 export const debounce = createFlowController(
 	flowControllerDebounceKind,
 	({ init, exitFlow }) => <
-		GenericInput extends unknown = unknown,
+		GenericInput extends unknown,
 	>(
 		debounce: DCommon.TimeInString,
 	) => {

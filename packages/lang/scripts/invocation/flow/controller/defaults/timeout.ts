@@ -17,7 +17,7 @@ export interface FlowControllerTimeout<
 export const timeout = createFlowController(
 	flowControllerTimeoutKind,
 	({ init }) => <
-		GenericInput extends unknown = unknown,
+		GenericInput extends unknown,
 	>(
 		timeout: DCommon.TimeInString,
 	) => {

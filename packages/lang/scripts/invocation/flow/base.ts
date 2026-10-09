@@ -1824,7 +1824,9 @@ export function flow(
 	const accumulateFunction = args.reduce<DCommon.AnyFunction<[any, any]>>(
 		(accumulator, currentValue) => {
 			if (flowControllerKind.has(currentValue)) {
-				return (input, argument) => currentValue.exec(() => accumulator(input, argument));
+				return (input, argument) => currentValue.exec(
+					() => accumulator(input, argument),
+				);
 			} else {
 				const preparedResultTreatment = (result: any, argument: any) => flowControllerExitKind.has(result)
 					? result

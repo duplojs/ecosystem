@@ -1,11 +1,13 @@
-import { DEither, DInvocation, type DCommon, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
+import * as DInvocation from "@scripts/invocation";
 
 describe("filter", () => {
 	it("should continue the flow with a raw filtered value", () => {
 		const useFlow = DInvocation.flow(
 			(input: string) => input.length,
 			DInvocation.filter((input) => {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					number,
 					"strict"
@@ -19,11 +21,38 @@ describe("filter", () => {
 
 		expect(result).toBe("value-5");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			`value-${number}`,
 			"strict"
 		>;
+	});
+
+	it("should pass only the resolved input to each filter callback", async() => {
+		const filterFunction = vi.fn((input: number) => Promise.resolve(input + 1));
+		const useFlow = DInvocation.flow(
+			(input: { readonly value: number }) => Promise.resolve(input.value + 10),
+			DInvocation.filter(filterFunction),
+		);
+		const firstResult = useFlow({ value: 1 });
+		const secondResult = useFlow({ value: 2 });
+
+		await expect(firstResult).resolves.toBe(12);
+		await expect(secondResult).resolves.toBe(13);
+		expect(filterFunction).toHaveBeenCalledTimes(2);
+		expect(filterFunction).toHaveBeenNthCalledWith(1, 11);
+		expect(filterFunction).toHaveBeenNthCalledWith(2, 12);
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof firstResult,
+			Promise<number>,
+			"strict"
+		>;
+	});
+
+	it("should reject a filter callback requiring the original argument", () => {
+		// @ts-expect-error filter callbacks only receive the current input
+		DInvocation.filter((input: number, argument: string) => `${argument}-${input}`);
 	});
 
 	it("should type the flow as async when a filter returns an async raw value", async() => {
@@ -36,7 +65,7 @@ describe("filter", () => {
 
 		await expect(result).resolves.toBe("value-5");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<`value-${number}`>,
 			"strict"
@@ -55,7 +84,7 @@ describe("filter", () => {
 
 		expect(result).toBe("value-5");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DCommon.MaybePromise<`value-${number}`>,
 			"strict"
@@ -80,7 +109,7 @@ describe("filter", () => {
 
 		expect(result).toBe("value-5");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			`value-${number}`,
 			"strict"
@@ -99,7 +128,7 @@ describe("filter", () => {
 
 		expect(result).toStrictEqual(DEither.left("too-short", 4));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| `value-${number}`
 			| DEither.Left<"too-short", number>,
@@ -121,7 +150,7 @@ describe("filter", () => {
 
 		await expect(result).resolves.toStrictEqual(DEither.left("too-short", 4));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<
 				| `value-${number}`
@@ -143,7 +172,7 @@ describe("filter", () => {
 
 		await expect(result).resolves.toStrictEqual(DEither.left("too-short", 4));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DCommon.MaybePromise<
 				| `value-${number}`

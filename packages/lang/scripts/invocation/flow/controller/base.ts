@@ -44,7 +44,10 @@ export interface FlowController<
 	GenericInput extends unknown = unknown,
 	GenericOutput extends unknown = unknown,
 > extends DKind.Kind<typeof flowControllerKind> {
-	(this: never, input: GenericInput): FlowControllerResult<GenericOutput>;
+	(
+		this: never,
+		input: GenericInput,
+	): FlowControllerResult<GenericOutput>;
 	exec(
 		previousFunction: () => FlowControllerPreviousFunctionResult,
 	): (

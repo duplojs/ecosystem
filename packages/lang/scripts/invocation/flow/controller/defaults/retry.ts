@@ -23,7 +23,7 @@ export interface RetryParams {
 export const retry = createFlowController(
 	flowControllerRetryKind,
 	({ init }) => <
-		GenericInput extends unknown = unknown,
+		GenericInput extends unknown,
 	>(
 		{
 			timeout,
