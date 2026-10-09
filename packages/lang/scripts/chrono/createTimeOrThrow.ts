@@ -1,14 +1,10 @@
-import * as DKind from "@scripts/kind";
-import { createKind } from "./kind";
+import * as DCommon from "@scripts/common";
 import type { SerializedTheTime, SpoolingTime } from "./types";
 import * as DEither from "@scripts/either";
 import { createTime } from "./createTime";
 import type { TheTime } from "./theTime";
 
-export class CreateTheTimeError extends DKind.parentClass(
-	createKind("create-the-time-error"),
-	Error,
-) {
+export class CreateTheTimeError extends DCommon.DuploJSError.parentClass("chrono-create-the-time-error") {
 	public constructor(public input: TheTime | number | SpoolingTime | SerializedTheTime) {
 		const value = typeof input === "object"
 			? JSON.stringify(input)

@@ -1,16 +1,12 @@
+import { DuploJSError } from "./error";
 /* eslint-disable id-length */
-import * as DKind from "@scripts/kind";
 import * as DString from "@scripts/string";
-import { createKind } from "./kind";
 
-export class InvalidMillisecondInStringError extends DKind.parentClass(
-	createKind("invalid-millisecond-in-string-error"),
-	Error,
-) {
+export class InvalidMillisecondInStringError extends DuploJSError.parentClass("common-invalid-millisecond-in-string-error") {
 	public constructor(
 		public input: string,
 	) {
-		super(undefined, `Invalid Input: ${input}`);
+		super(`Invalid Input: ${input}`);
 	}
 }
 

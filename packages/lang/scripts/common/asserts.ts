@@ -1,14 +1,10 @@
-import * as DKind from "@scripts/kind";
-import { createKind } from "./kind";
+import { DuploJSError } from "./error";
 
-export class AssertsError extends DKind.parentClass(
-	createKind("asserts-error"),
-	Error,
-) {
+export class AssertsError extends DuploJSError.parentClass("common-asserts-error") {
 	public constructor(
 		public value: unknown,
 	) {
-		super(undefined, "Asserts Error.");
+		super("Asserts Error.");
 	}
 }
 

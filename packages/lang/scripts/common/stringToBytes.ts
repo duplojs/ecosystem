@@ -1,16 +1,12 @@
+import { DuploJSError } from "./error";
 /* eslint-disable id-length */
-import * as DKind from "@scripts/kind";
 import * as DString from "@scripts/string";
-import { createKind } from "./kind";
 
-export class InvalidBytesInStringError extends DKind.parentClass(
-	createKind("invalid-bytes-in-string-error"),
-	Error,
-) {
+export class InvalidBytesInStringError extends DuploJSError.parentClass("common-invalid-bytes-in-string-error") {
 	public constructor(
 		public input: string,
 	) {
-		super(undefined, `Invalid Input: ${input}`);
+		super(`Invalid Input: ${input}`);
 	}
 }
 

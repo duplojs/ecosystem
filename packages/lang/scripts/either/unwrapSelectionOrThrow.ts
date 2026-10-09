@@ -1,20 +1,17 @@
-import type * as DCommon from "@scripts/common";
-import * as DKind from "@scripts/kind";
+import * as DCommon from "@scripts/common";
+import type * as DKind from "@scripts/kind";
 import type * as DObject from "@scripts/object";
 import type { Left } from "./left";
 import type { Right } from "./right";
-import { createKind, informationKind, valueKind } from "./kind";
+import { informationKind, valueKind } from "./kind";
 import type { GetInformation, GetValue } from "./types";
 
-export class HasNotSelectedInformationError extends DKind.parentClass(
-	createKind("has-not-selected-information-error"),
-	Error,
-) {
+export class HasNotSelectedInformationError extends DCommon.DuploJSError.parentClass("either-has-not-selected-information-error") {
 	public constructor(
 		public value: unknown,
 		public selector: Record<string, boolean>,
 	) {
-		super(undefined, "Value information is not selected.");
+		super("Value information is not selected.");
 	}
 }
 

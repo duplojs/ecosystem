@@ -1,17 +1,14 @@
-import * as DKind from "@scripts/kind";
+import * as DCommon from "@scripts/common";
 import type { Right } from "./create";
 import { isRight } from "./is";
-import { createKind, valueKind } from "../kind";
+import { valueKind } from "../kind";
 import type { GetValue } from "../types";
 
-export class NotRightError extends DKind.parentClass(
-	createKind("not-right-error"),
-	Error,
-) {
+export class NotRightError extends DCommon.DuploJSError.parentClass("either-not-right-error") {
 	public constructor(
 		public value: unknown,
 	) {
-		super(undefined, "Value is not Right.");
+		super("Value is not Right.");
 	}
 }
 

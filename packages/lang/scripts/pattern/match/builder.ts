@@ -1,8 +1,6 @@
 import * as DCommon from "@scripts/common";
-import * as DKind from "@scripts/kind";
 import { type ComplexMatchedValue, type ComplexUnMatchedValue, type Pattern, type PatternValue } from "../types";
 import { isMatch } from "../isMatch";
-import { createKind } from "../kind";
 
 export interface BuilderMatcher {
 	isMatch(value: unknown): boolean;
@@ -102,10 +100,7 @@ export interface MatchBuilder<
 	): GenericResult | GenericOtherwiseResult;
 }
 
-export class InvalidExhaustivePatternError extends DKind.parentClass(
-	createKind("invalid-exhaustive-pattern-error"),
-	Error,
-) {
+export class InvalidExhaustivePatternError extends DCommon.DuploJSError.parentClass("pattern-invalid-exhaustive-pattern-error") {
 	public constructor(
 		public input: unknown,
 	) {

@@ -1,17 +1,13 @@
-import * as DKind from "@scripts/kind";
+import * as DCommon from "@scripts/common";
 import * as DEither from "@scripts/either";
-import { createKind } from "./kind";
 import type { Absolute } from "./constraints";
 import { createAbsolute } from "./createAbsolute";
 
-export class CreateAbsolutePathError extends DKind.parentClass(
-	createKind("create-absolute-path-error"),
-	Error,
-) {
+export class CreateAbsolutePathError extends DCommon.DuploJSError.parentClass("path-create-absolute-path-error") {
 	public constructor(
 		public value: string,
 	) {
-		super(null, `Invalid absolute path: ${value}`);
+		super(`Invalid absolute path: ${value}`);
 	}
 }
 

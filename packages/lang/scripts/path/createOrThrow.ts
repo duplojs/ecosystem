@@ -1,17 +1,13 @@
-import * as DKind from "@scripts/kind";
+import * as DCommon from "@scripts/common";
 import * as DEither from "@scripts/either";
-import { createKind } from "./kind";
 import type { Path } from "./constraints";
 import { create } from "./create";
 
-export class CreatePathError extends DKind.parentClass(
-	createKind("create-path-error"),
-	Error,
-) {
+export class CreatePathError extends DCommon.DuploJSError.parentClass("path-create-path-error") {
 	public constructor(
 		public value: string,
 	) {
-		super(null, `Invalid path: ${value}`);
+		super(`Invalid path: ${value}`);
 	}
 }
 

@@ -1,11 +1,30 @@
 import * as DCommon from "@scripts/common";
 import * as DObject from "@scripts/object";
 import * as DPattern from "@scripts/pattern";
+import * as DPath from "@scripts/path";
 
 describe("matchWithErrorOtherwise", () => {
 	class MessageError extends DCommon.DuploJSError.parentClass("message") {}
 	class CausedError extends DCommon.DuploJSError.parentClass("caused", Error) {}
 	type Input = MessageError | CausedError;
+
+	it.each([
+		new DCommon.AssertsError(42),
+		new DPath.CreatePathError("invalid"),
+	])("handles existing Lang errors and narrows the fallback", (input) => {
+		const result = DPattern.matchWithErrorOtherwise(input, {
+			"common-asserts-error": (error) => {
+				type _CheckError = DCommon.ExpectType<typeof error, DCommon.AssertsError, "strict">;
+				return 42 as const;
+			},
+		}, (error) => {
+			type _CheckError = DCommon.ExpectType<typeof error, DPath.CreatePathError, "strict">;
+			return error.value;
+		});
+
+		type _CheckResult = DCommon.ExpectType<typeof result, 42 | string, "strict">;
+		expect(result).toBe(input.value);
+	});
 
 	it("narrows both the selected handler and the remaining error in the fallback", () => {
 		const input = new CausedError(new Error("Original error.")) as Input;

@@ -1,19 +1,16 @@
-import type * as DCommon from "@scripts/common";
-import * as DKind from "@scripts/kind";
+import * as DCommon from "@scripts/common";
+import type * as DKind from "@scripts/kind";
 import type * as DObject from "@scripts/object";
 import type { Left } from "./left";
 import type { Right } from "./right";
-import { createKind, informationKind } from "./kind";
+import { informationKind } from "./kind";
 
-export class ForwardAssertsSelectionError extends DKind.parentClass(
-	createKind("forward-asserts-selection-error"),
-	Error,
-) {
+export class ForwardAssertsSelectionError extends DCommon.DuploJSError.parentClass("either-forward-asserts-selection-error") {
 	public constructor(
 		public value: unknown,
 		public selector: Record<string, boolean>,
 	) {
-		super(undefined, "Either information is not selected.");
+		super("Either information is not selected.");
 	}
 }
 

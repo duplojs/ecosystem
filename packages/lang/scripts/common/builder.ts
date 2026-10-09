@@ -1,4 +1,5 @@
-import * as DKind from "@scripts/kind";
+import { DuploJSError } from "./error";
+import type * as DKind from "@scripts/kind";
 import type * as DObject from "@scripts/object";
 import { createGlobalStore } from "./globalStore";
 import type { IsEqual, AnyFunction, ObjectKey } from "./types";
@@ -84,10 +85,7 @@ export interface BuilderHandler<
 	): GenericCurrentBuilder;
 }
 
-export class MissingBuilderMethodsError extends DKind.parentClass(
-	createKind("missing-builder-methods-error"),
-	Error,
-) {
+export class MissingBuilderMethodsError extends DuploJSError.parentClass("common-missing-builder-methods-error") {
 	public constructor(
 		public method: string,
 	) {

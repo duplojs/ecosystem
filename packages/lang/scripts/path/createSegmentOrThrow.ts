@@ -1,17 +1,13 @@
-import * as DKind from "@scripts/kind";
+import * as DCommon from "@scripts/common";
 import * as DEither from "@scripts/either";
-import { createKind } from "./kind";
 import type { Segment } from "./constraints";
 import { createSegment } from "./createSegment";
 
-export class CreateSegmentPathError extends DKind.parentClass(
-	createKind("create-segment-path-error"),
-	Error,
-) {
+export class CreateSegmentPathError extends DCommon.DuploJSError.parentClass("path-create-segment-path-error") {
 	public constructor(
 		public value: string,
 	) {
-		super(null, `Invalid segment path: ${value}`);
+		super(`Invalid segment path: ${value}`);
 	}
 }
 

@@ -1,3 +1,4 @@
+import * as DPath from "@scripts/path";
 import * as DCommon from "@scripts/common";
 import * as DObject from "@scripts/object";
 import * as DPattern from "@scripts/pattern";
@@ -6,6 +7,40 @@ describe("matchWithError", () => {
 	class MessageError extends DCommon.DuploJSError.parentClass("message") {}
 	class CausedError extends DCommon.DuploJSError.parentClass("caused", Error) {}
 	type Input = MessageError | CausedError;
+
+	it.each([
+		new DCommon.AssertsError(42),
+		new DPath.CreatePathError("invalid"),
+	])("narrows errors from different Lang domains in direct and piped matches", (input) => {
+		const result = DPattern.matchWithError(input, {
+			"common-asserts-error": (error) => {
+				type _CheckError = DCommon.ExpectType<typeof error, DCommon.AssertsError, "strict">;
+				return error.value;
+			},
+			"path-create-path-error": (error) => {
+				type _CheckError = DCommon.ExpectType<typeof error, DPath.CreatePathError, "strict">;
+				return error.value;
+			},
+		});
+		expect(result).toBe(input.value);
+
+		const pipedResult = DCommon.pipe(
+			input,
+			DPattern.matchWithError({
+				"common-asserts-error": (error) => {
+					type _CheckError = DCommon.ExpectType<typeof error, DCommon.AssertsError, "strict">;
+					return 42 as const;
+				},
+				"path-create-path-error": (error) => {
+					type _CheckError = DCommon.ExpectType<typeof error, DPath.CreatePathError, "strict">;
+					return error.value;
+				},
+			}),
+		);
+
+		type _CheckResult = DCommon.ExpectType<typeof pipedResult, 42 | string, "strict">;
+		expect(pipedResult).toBe(input.value);
+	});
 
 	it("matches the generic error identifier and narrows the handler and cause", () => {
 		const cause = new Error("Original error.");

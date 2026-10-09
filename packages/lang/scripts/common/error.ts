@@ -52,7 +52,13 @@ export abstract class DuploJSError<
 			GenericIdentifier,
 			string
 		>
-		& DKind.Kind<DKind.Handler<DKind.Definition<`@${DKind.GetNamespaceName<typeof createKind>}/duplojs-error-${GenericIdentifier}`>>>
+		& DKind.Kind<
+			DKind.Handler<
+				DKind.Definition<
+					`@${DKind.GetNamespaceName<typeof createKind>}/duplojs-error-${GenericIdentifier}`
+				>
+			>
+		>
 	);
 
 	public static parentClass<
@@ -68,7 +74,13 @@ export abstract class DuploJSError<
 			GenericIdentifier,
 			InstanceType<GenericCauseConstructor>
 		>
-		& DKind.Kind<DKind.Handler<DKind.Definition<`@${DKind.GetNamespaceName<typeof createKind>}/duplojs-error-${GenericIdentifier}`>>>
+		& DKind.Kind<
+			DKind.Handler<
+				DKind.Definition<
+					`@${DKind.GetNamespaceName<typeof createKind>}/duplojs-error-${GenericIdentifier}`
+				>
+			>
+		>
 	);
 
 	public static parentClass(
@@ -88,5 +100,57 @@ export abstract class DuploJSError<
 
 		return LocalDuploJSError as never;
 	}
-}
 
+	public static hasIdentifier<
+		GenericInput extends unknown,
+		GenericIdentifier extends DKind.GetValue<
+			typeof duploJSErrorKind,
+			Extract<GenericInput, DuploJSError>
+		>,
+	>(
+		identifier: GenericIdentifier | GenericIdentifier[],
+	): (
+		input: GenericInput,
+	) => input is Extract<
+		GenericInput,
+		DuploJSError<GenericIdentifier>
+	>;
+
+	public static hasIdentifier<
+		GenericInput extends unknown,
+		GenericIdentifier extends DKind.GetValue<
+			typeof duploJSErrorKind,
+			Extract<
+				GenericInput,
+				DuploJSError
+			>
+		>,
+	>(
+		input: GenericInput,
+		identifier: GenericIdentifier | GenericIdentifier[],
+	): input is Extract<
+		GenericInput,
+		DuploJSError<GenericIdentifier>
+	>;
+
+	public static hasIdentifier(
+		...args:
+			| [identifier: string | string[]]
+			| [input: unknown, identifier: string | string[]]
+	): any {
+		if (args.length === 1) {
+			const [identifier] = args;
+
+			return (input: unknown) => DuploJSError.hasIdentifier(input as never, identifier as never);
+		}
+
+		const [input, identifier] = args;
+		const formattedIdentifier = identifier instanceof Array
+			? identifier
+			: [identifier];
+
+		return input instanceof DuploJSError && formattedIdentifier.includes(
+			duploJSErrorKind.getValue(input as DuploJSError),
+		);
+	}
+}

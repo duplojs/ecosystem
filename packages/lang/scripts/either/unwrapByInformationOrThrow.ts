@@ -1,15 +1,12 @@
-import * as DKind from "@scripts/kind";
-import type * as DCommon from "@scripts/common";
+import type * as DKind from "@scripts/kind";
+import * as DCommon from "@scripts/common";
 import type { Left } from "./left";
 import type { Right } from "./right";
-import { createKind, valueKind, type informationKind } from "./kind";
+import { valueKind, type informationKind } from "./kind";
 import { hasInformation } from "./hasInformation";
 import type { GetInformation, GetValue } from "./types";
 
-export class HasNotInformationError extends DKind.parentClass(
-	createKind("has-not-information-error"),
-	Error,
-) {
+export class HasNotInformationError extends DCommon.DuploJSError.parentClass("either-has-not-information-error") {
 	public constructor(
 		public value: unknown,
 		public information: DCommon.MaybeArray<string>,
@@ -18,7 +15,7 @@ export class HasNotInformationError extends DKind.parentClass(
 			? information.join(" or ")
 			: information;
 
-		super(undefined, `Value has not information "${formattedInformation}".`);
+		super(`Value has not information "${formattedInformation}".`);
 	}
 }
 

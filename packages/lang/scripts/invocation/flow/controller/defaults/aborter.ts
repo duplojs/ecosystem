@@ -1,5 +1,5 @@
 import * as DCommon from "@scripts/common";
-import * as DKind from "@scripts/kind";
+import type * as DKind from "@scripts/kind";
 import * as DEither from "@scripts/either";
 import { createKind } from "../../../kind";
 import { createFlowController, type FlowControllerExit, flowControllerExitKind, type FlowController } from "../base";
@@ -24,14 +24,11 @@ export interface FlowControllerAborter<
 
 }
 
-export class AbortErrorFlowController extends DKind.parentClass(
-	createKind("abort-error-flow-controller"),
-	Error,
-) {
+export class AbortErrorFlowController extends DCommon.DuploJSError.parentClass("invocation-abort-error-flow-controller") {
 	public constructor(
 		public abortController: AbortController,
 	) {
-		super(null, "Flow is aborted by FlowControllerAborter.");
+		super("Flow is aborted by FlowControllerAborter.");
 	}
 }
 

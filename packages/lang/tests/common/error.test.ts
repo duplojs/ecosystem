@@ -1,5 +1,6 @@
 import * as DCommon from "@scripts/common";
 import type * as DKind from "@scripts/kind";
+import * as DPath from "@scripts/path";
 
 describe("DuploJSError", () => {
 	it("distinguishes DuploJS errors from ordinary errors and unrelated values", () => {
@@ -7,6 +8,148 @@ describe("DuploJSError", () => {
 		expect(DCommon.duploJSErrorKind.has({})).toBe(false);
 		expect(DCommon.duploJSErrorKind.has(null)).toBe(false);
 		expect(new Error("Ordinary error.")).not.toBeInstanceOf(DCommon.DuploJSError);
+	});
+
+	describe("hasIdentifier", () => {
+		type Input = DCommon.AssertsError | DPath.CreatePathError | DCommon.InvalidBytesInStringError | null;
+		const assertsError = new DCommon.AssertsError(42);
+		const pathError = new DPath.CreatePathError("invalid");
+		const invalidBytesError = new DCommon.InvalidBytesInStringError("invalid");
+
+		it("narrows a single identifier in an if and excludes it from the else branch", () => {
+			const input = new DCommon.AssertsError(42) as Input;
+
+			if (DCommon.DuploJSError.hasIdentifier(input, "common-asserts-error")) {
+				type _CheckInput = DCommon.ExpectType<typeof input, DCommon.AssertsError, "strict">;
+				expect(input.value).toBe(42);
+			} else {
+				type _CheckInput = DCommon.ExpectType<typeof input, Exclude<Input, DCommon.AssertsError>, "strict">;
+				expect.unreachable("The identifier must match.");
+			}
+		});
+
+		it("narrows multiple identifiers in an if", () => {
+			const input = new DPath.CreatePathError("invalid") as Input;
+
+			if (DCommon.DuploJSError.hasIdentifier(input, ["common-asserts-error", "path-create-path-error"])) {
+				type _CheckInput = DCommon.ExpectType<typeof input, DCommon.AssertsError | DPath.CreatePathError, "strict">;
+				expect(input.value).toBe("invalid");
+			} else {
+				type _CheckInput = DCommon.ExpectType<typeof input, DCommon.InvalidBytesInStringError | null, "strict">;
+				expect.unreachable("One of the identifiers must match.");
+			}
+		});
+
+		it.each([
+			[new DCommon.AssertsError(42), "common-asserts-error", true],
+			[new DPath.CreatePathError("invalid"), "common-asserts-error", false],
+			[new DCommon.AssertsError(42), ["path-create-path-error", "common-asserts-error"], true],
+			[new DPath.CreatePathError("invalid"), ["common-asserts-error"], false],
+			[new DCommon.AssertsError(42), [], false],
+			[new Error("Ordinary error."), "common-asserts-error", false],
+			[{}, "common-asserts-error", false],
+			[null, "common-asserts-error", false],
+			[undefined, "common-asserts-error", false],
+			[42, "common-asserts-error", false],
+			["common-asserts-error", "common-asserts-error", false],
+		] as [unknown, string | string[], boolean][])("checks identifiers and rejects unrelated values (%#)", (input, identifier, expected) => {
+			const result = DCommon.DuploJSError.hasIdentifier(
+				input as DCommon.DuploJSError | Error | object | null | undefined | number | string,
+				identifier,
+			);
+
+			type _CheckResult = DCommon.ExpectType<typeof result, boolean, "strict">;
+			expect(result).toBe(expected);
+		});
+
+		it.each([
+			{
+				input: assertsError,
+				expected: 42,
+				expectedCalls: 1,
+			},
+			{
+				input: pathError,
+				expected: pathError,
+				expectedCalls: 0,
+			},
+			{
+				input: invalidBytesError,
+				expected: invalidBytesError,
+				expectedCalls: 0,
+			},
+			{
+				input: null,
+				expected: null,
+				expectedCalls: 0,
+			},
+		])("narrows a single identifier in a pipe with when (%#)", ({ input, expected, expectedCalls }) => {
+			const onMatch = vi.fn(() => 42 as const);
+			const result = DCommon.pipe(
+				input,
+				DCommon.when(
+					DCommon.DuploJSError.hasIdentifier("common-asserts-error"),
+					(error) => {
+						type _CheckError = DCommon.ExpectType<typeof error, DCommon.AssertsError, "strict">;
+						return onMatch();
+					},
+				),
+			);
+
+			type _CheckResult = DCommon.ExpectType<typeof result, 42 | DPath.CreatePathError | DCommon.InvalidBytesInStringError | null, "strict">;
+			expect(result).toBe(expected);
+			expect(onMatch).toHaveBeenCalledTimes(expectedCalls);
+		});
+
+		it.each([
+			{
+				input: assertsError,
+				expected: 42,
+			},
+			{
+				input: pathError,
+				expected: 42,
+			},
+			{
+				input: invalidBytesError,
+				expected: invalidBytesError,
+			},
+			{
+				input: null,
+				expected: null,
+			},
+		])("narrows multiple identifiers in a pipe with when (%#)", ({ input, expected }) => {
+			const result = DCommon.pipe(
+				input,
+				DCommon.when(
+					DCommon.DuploJSError.hasIdentifier(["common-asserts-error", "path-create-path-error"]),
+					(error) => {
+						type _CheckError = DCommon.ExpectType<typeof error, DCommon.AssertsError | DPath.CreatePathError, "strict">;
+						return 42 as const;
+					},
+				),
+			);
+
+			type _CheckResult = DCommon.ExpectType<typeof result, 42 | DCommon.InvalidBytesInStringError | null, "strict">;
+			expect(result).toBe(expected);
+		});
+
+		it("rejects identifiers absent from the input union in both forms", () => {
+			const input = new DCommon.AssertsError(42) as Input;
+
+			// @ts-expect-error identifier must belong to the input errors
+			DCommon.DuploJSError.hasIdentifier(input, "missing");
+			// @ts-expect-error every identifier must belong to the input errors
+			DCommon.DuploJSError.hasIdentifier(input, ["common-asserts-error", "missing"]);
+			DCommon.pipe(
+				input,
+				DCommon.when(
+					// @ts-expect-error identifier must belong to the piped input errors
+					DCommon.DuploJSError.hasIdentifier("missing"),
+					() => 42,
+				),
+			);
+		});
 	});
 
 	describe("parentClass", () => {
