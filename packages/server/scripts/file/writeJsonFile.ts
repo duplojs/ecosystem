@@ -18,7 +18,7 @@ class WriteJsonFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClas
 class WriteJsonFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-write-json-file-busy", Error) {}
 class WriteJsonFileError extends DCommon.DuploJSError.parentClass("file-system-write-json-file-error", Error) {}
 
-type WriteJsonFileErrors = (
+export type WriteJsonFileErrors = (
 	| WriteJsonFileErrorNotFound
 	| WriteJsonFileErrorPermissionDenied
 	| WriteJsonFileErrorIsDirectory

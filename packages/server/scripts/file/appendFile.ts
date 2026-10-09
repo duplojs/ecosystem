@@ -14,7 +14,7 @@ class AppendFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("
 class AppendFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-append-file-busy", Error) {}
 class AppendFileError extends DCommon.DuploJSError.parentClass("file-system-append-file-error", Error) {}
 
-type AppendFileErrors = (
+export type AppendFileErrors = (
 	| AppendFileErrorNotFound
 	| AppendFileErrorPermissionDenied
 	| AppendFileErrorIsDirectory

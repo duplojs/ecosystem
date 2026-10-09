@@ -14,7 +14,7 @@ class CopyErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-s
 class CopyErrorBusy extends DCommon.DuploJSError.parentClass("file-system-copy-busy", Error) {}
 class CopyError extends DCommon.DuploJSError.parentClass("file-system-copy-error", Error) {}
 
-type CopyErrors = (
+export type CopyErrors = (
 	| CopyErrorNotFound
 	| CopyErrorPermissionDenied
 	| CopyErrorAlreadyExists

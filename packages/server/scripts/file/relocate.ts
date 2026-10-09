@@ -15,7 +15,7 @@ class RelocateErrorBusy extends DCommon.DuploJSError.parentClass("file-system-re
 class RelocateErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-relocate-cross-device", Error) {}
 class RelocateError extends DCommon.DuploJSError.parentClass("file-system-relocate-error", Error) {}
 
-type RelocateErrors = (
+export type RelocateErrors = (
 	| RelocateErrorNotFound
 	| RelocateErrorPermissionDenied
 	| RelocateErrorAlreadyExists

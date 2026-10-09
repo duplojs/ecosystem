@@ -14,7 +14,7 @@ class ReadDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClas
 class ReadDirectoryErrorBusy extends DCommon.DuploJSError.parentClass("file-system-read-directory-busy", Error) {}
 class ReadDirectoryError extends DCommon.DuploJSError.parentClass("file-system-read-directory-error", Error) {}
 
-type ReadDirectoryErrors = (
+export type ReadDirectoryErrors = (
 	| ReadDirectoryErrorNotFound
 	| ReadDirectoryErrorPermissionDenied
 	| ReadDirectoryErrorNotDirectory

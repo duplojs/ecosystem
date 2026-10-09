@@ -13,7 +13,7 @@ class LinkStatErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("fi
 class LinkStatErrorBusy extends DCommon.DuploJSError.parentClass("file-system-link-stat-busy", Error) {}
 class LinkStatError extends DCommon.DuploJSError.parentClass("file-system-link-stat-error", Error) {}
 
-type LinkStatErrors = (
+export type LinkStatErrors = (
 	| LinkStatErrorNotFound
 	| LinkStatErrorPermissionDenied
 	| LinkStatErrorNotDirectory

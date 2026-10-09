@@ -16,7 +16,7 @@ class SetTimeErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system
 class SetTimeErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-set-time-invalid-argument", Error) {}
 class SetTimeError extends DCommon.DuploJSError.parentClass("file-system-set-time-error", Error) {}
 
-type SetTimeErrors = (
+export type SetTimeErrors = (
 	| SetTimeErrorNotFound
 	| SetTimeErrorPermissionDenied
 	| SetTimeErrorNotDirectory

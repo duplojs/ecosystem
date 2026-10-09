@@ -9,7 +9,7 @@ class ExistsErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-sys
 class ExistsErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-exists-too-many-open-files", Error) {}
 class ExistsError extends DCommon.DuploJSError.parentClass("file-system-exists-error", Error) {}
 
-type ExistsErrors = (
+export type ExistsErrors = (
 	| ExistsErrorNotFound
 	| ExistsErrorPermissionDenied
 	| ExistsErrorNotDirectory

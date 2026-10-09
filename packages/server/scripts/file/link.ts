@@ -15,7 +15,7 @@ class LinkErrorBusy extends DCommon.DuploJSError.parentClass("file-system-link-b
 class LinkErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-link-cross-device", Error) {}
 class LinkError extends DCommon.DuploJSError.parentClass("file-system-link-error", Error) {}
 
-type LinkErrors = (
+export type LinkErrors = (
 	| LinkErrorNotFound
 	| LinkErrorPermissionDenied
 	| LinkErrorAlreadyExists

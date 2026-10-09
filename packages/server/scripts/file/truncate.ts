@@ -14,7 +14,7 @@ class TruncateErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("fi
 class TruncateErrorBusy extends DCommon.DuploJSError.parentClass("file-system-truncate-busy", Error) {}
 class TruncateError extends DCommon.DuploJSError.parentClass("file-system-truncate-error", Error) {}
 
-type TruncateErrors = (
+export type TruncateErrors = (
 	| TruncateErrorNotFound
 	| TruncateErrorPermissionDenied
 	| TruncateErrorIsDirectory

@@ -10,7 +10,7 @@ class MakeTemporaryDirectoryErrorInvalidArgument extends DCommon.DuploJSError.pa
 class MakeTemporaryDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-too-many-open-files", Error) {}
 class MakeTemporaryDirectoryError extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-error", Error) {}
 
-type MakeTemporaryDirectoryErrors = (
+export type MakeTemporaryDirectoryErrors = (
 	| MakeTemporaryDirectoryErrorPermissionDenied
 	| MakeTemporaryDirectoryErrorNotDirectory
 	| MakeTemporaryDirectoryErrorNoSpace

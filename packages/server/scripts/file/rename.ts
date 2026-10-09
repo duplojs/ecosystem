@@ -15,7 +15,7 @@ class RenameErrorBusy extends DCommon.DuploJSError.parentClass("file-system-rena
 class RenameErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-rename-cross-device", Error) {}
 class RenameError extends DCommon.DuploJSError.parentClass("file-system-rename-error", Error) {}
 
-type RenameErrors = (
+export type RenameErrors = (
 	| RenameErrorNotFound
 	| RenameErrorPermissionDenied
 	| RenameErrorAlreadyExists

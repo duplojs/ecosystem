@@ -15,7 +15,7 @@ class SetOwnerErrorReadOnly extends DCommon.DuploJSError.parentClass("file-syste
 class SetOwnerErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-set-owner-invalid-argument", Error) {}
 class SetOwnerError extends DCommon.DuploJSError.parentClass("file-system-set-owner-error", Error) {}
 
-type SetOwnerErrors = (
+export type SetOwnerErrors = (
 	| SetOwnerErrorNotFound
 	| SetOwnerErrorPermissionDenied
 	| SetOwnerErrorNotDirectory

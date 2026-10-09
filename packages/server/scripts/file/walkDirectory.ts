@@ -19,7 +19,7 @@ class WalkDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClas
 class WalkDirectoryErrorBusy extends DCommon.DuploJSError.parentClass("file-system-walk-directory-busy", Error) {}
 class WalkDirectoryError extends DCommon.DuploJSError.parentClass("file-system-walk-directory-error", Error) {}
 
-type WalkDirectoryErrors = (
+export type WalkDirectoryErrors = (
 	| WalkDirectoryErrorNotFound
 	| WalkDirectoryErrorPermissionDenied
 	| WalkDirectoryErrorNotDirectory

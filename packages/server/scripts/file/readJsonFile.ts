@@ -11,7 +11,7 @@ class ReadJsonFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass
 class ReadJsonFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-read-json-file-busy", Error) {}
 class ReadJsonFileError extends DCommon.DuploJSError.parentClass("file-system-read-json-file-error", Error) {}
 
-type ReadJsonFileErrors = (
+export type ReadJsonFileErrors = (
 	| ReadJsonFileErrorNotFound
 	| ReadJsonFileErrorPermissionDenied
 	| ReadJsonFileErrorIsDirectory

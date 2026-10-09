@@ -9,6 +9,7 @@ import { makeRouteFile, MissingSelectedStaticFileError, SelectedStaticFileIsNotF
 import { useTestRouteFunctionBuilder } from "@test-utils/useTestRouteFunctionBuilder";
 import { createBodyReader } from "@test-utils/bodyReader";
 import * as DPath from "@duplojs/lang/path";
+import * as DCommon from "@duplojs/lang/common";
 
 describe("makeRouteFile", async() => {
 	setEnvironment("TEST");
@@ -173,7 +174,8 @@ describe("makeRouteFile", async() => {
 	});
 
 	it("source does not exist", async() => {
-		const spyStat = vi.fn(() => Promise.resolve(DEither.left("file-system-stat-error", undefined)));
+		class SpyStatError extends DCommon.DuploJSError.parentClass("file-system-stat-error", Error) {}
+		const spyStat = vi.fn(() => Promise.resolve(DEither.left("file-system-stat-error", new SpyStatError(new Error("boom !")))));
 		TESTImplementation.set("stat", spyStat);
 
 		await buildedRoute(

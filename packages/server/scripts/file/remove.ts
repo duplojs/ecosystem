@@ -17,7 +17,7 @@ class RemoveErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-
 class RemoveErrorBusy extends DCommon.DuploJSError.parentClass("file-system-remove-busy", Error) {}
 class RemoveError extends DCommon.DuploJSError.parentClass("file-system-remove-error", Error) {}
 
-type RemoveErrors = (
+export type RemoveErrors = (
 	| RemoveErrorNotFound
 	| RemoveErrorPermissionDenied
 	| RemoveErrorIsDirectory

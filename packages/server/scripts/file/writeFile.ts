@@ -14,7 +14,7 @@ class WriteFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("f
 class WriteFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-write-file-busy", Error) {}
 class WriteFileError extends DCommon.DuploJSError.parentClass("file-system-write-file-error", Error) {}
 
-type WriteFileErrors = (
+export type WriteFileErrors = (
 	| WriteFileErrorNotFound
 	| WriteFileErrorPermissionDenied
 	| WriteFileErrorIsDirectory

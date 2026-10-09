@@ -5,6 +5,7 @@ import { createHub, launchHookServer } from "@core";
 import { staticPlugin } from "@plugin-static";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
+import * as DCommon from "@duplojs/lang/common";
 
 describe("static plugin implementation", () => {
 	setEnvironment("TEST");
@@ -19,7 +20,8 @@ describe("static plugin implementation", () => {
 		.plug(staticPlugin(sourceFolder, { prefix: "/folder" }));
 
 	it("API file source not exist", async() => {
-		const spyStat = vi.fn(() => Promise.resolve(DEither.left("file-system-stat-error")));
+		class SpyStatError extends DCommon.DuploJSError.parentClass("file-system-stat-error", Error) {}
+		const spyStat = vi.fn(() => Promise.resolve(DEither.left("file-system-stat-error", new SpyStatError(new Error("boom !")))));
 		TESTImplementation.set("stat", spyStat);
 
 		await expect(

@@ -12,7 +12,7 @@ class MakeTemporaryFileErrorInvalidArgument extends DCommon.DuploJSError.parentC
 class MakeTemporaryFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-too-many-open-files", Error) {}
 class MakeTemporaryFileError extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-error", Error) {}
 
-type MakeTemporaryFileErrors = (
+export type MakeTemporaryFileErrors = (
 	| MakeTemporaryFileErrorPermissionDenied
 	| MakeTemporaryFileErrorAlreadyExists
 	| MakeTemporaryFileErrorNotDirectory

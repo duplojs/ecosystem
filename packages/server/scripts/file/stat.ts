@@ -52,7 +52,7 @@ class StatErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-s
 class StatErrorBusy extends DCommon.DuploJSError.parentClass("file-system-stat-busy", Error) {}
 class StatError extends DCommon.DuploJSError.parentClass("file-system-stat-error", Error) {}
 
-type StatErrors = (
+export type StatErrors = (
 	| StatErrorNotFound
 	| StatErrorPermissionDenied
 	| StatErrorNotDirectory

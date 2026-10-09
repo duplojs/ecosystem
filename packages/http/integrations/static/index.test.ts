@@ -6,6 +6,7 @@ import * as DChrono from "@duplojs/lang/chrono";
 import { createHttpServer } from "@duplojs/http/node";
 
 import { hub } from "@core";
+import * as DCommon from "@duplojs/lang/common";
 
 describe("static plugin", async() => {
 	const mockedModifiedAt = DChrono.createDate("2026-03-02");
@@ -48,7 +49,9 @@ describe("static plugin", async() => {
 			);
 		}
 
-		return DEither.left("file-system-stat-error");
+		class SpyStatError extends DCommon.DuploJSError.parentClass("file-system-stat-error", Error) {}
+
+		return DEither.left("file-system-stat-error", new SpyStatError(new Error("boom !")));
 	});
 
 	const server = await createHttpServer(hub, {

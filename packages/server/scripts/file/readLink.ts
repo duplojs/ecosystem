@@ -10,7 +10,7 @@ class ReadLinkErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-s
 class ReadLinkErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-read-link-too-many-open-files", Error) {}
 class ReadLinkError extends DCommon.DuploJSError.parentClass("file-system-read-link-error", Error) {}
 
-type ReadLinkErrors = (
+export type ReadLinkErrors = (
 	| ReadLinkErrorNotFound
 	| ReadLinkErrorPermissionDenied
 	| ReadLinkErrorInvalidArgument

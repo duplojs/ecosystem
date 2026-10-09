@@ -23,7 +23,7 @@ class SymlinkErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("fil
 class SymlinkErrorBusy extends DCommon.DuploJSError.parentClass("file-system-symlink-busy", Error) {}
 class SymlinkError extends DCommon.DuploJSError.parentClass("file-system-symlink-error", Error) {}
 
-type SymlinkErrors = (
+export type SymlinkErrors = (
 	| SymlinkErrorNotFound
 	| SymlinkErrorPermissionDenied
 	| SymlinkErrorAlreadyExists

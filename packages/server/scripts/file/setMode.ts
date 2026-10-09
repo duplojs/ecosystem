@@ -28,7 +28,7 @@ class SetModeErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system
 class SetModeErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-set-mode-invalid-argument", Error) {}
 class SetModeError extends DCommon.DuploJSError.parentClass("file-system-set-mode-error", Error) {}
 
-type SetModeErrors = (
+export type SetModeErrors = (
 	| SetModeErrorNotFound
 	| SetModeErrorPermissionDenied
 	| SetModeErrorNotDirectory

@@ -15,7 +15,7 @@ class MoveErrorBusy extends DCommon.DuploJSError.parentClass("file-system-move-b
 class MoveErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-move-cross-device", Error) {}
 class MoveError extends DCommon.DuploJSError.parentClass("file-system-move-error", Error) {}
 
-type MoveErrors = (
+export type MoveErrors = (
 	| MoveErrorNotFound
 	| MoveErrorPermissionDenied
 	| MoveErrorAlreadyExists

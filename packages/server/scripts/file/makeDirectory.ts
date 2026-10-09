@@ -18,7 +18,7 @@ class MakeDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClas
 class MakeDirectoryErrorBusy extends DCommon.DuploJSError.parentClass("file-system-make-directory-busy", Error) {}
 class MakeDirectoryError extends DCommon.DuploJSError.parentClass("file-system-make-directory-error", Error) {}
 
-type MakeDirectoryErrors = (
+export type MakeDirectoryErrors = (
 	| MakeDirectoryErrorNotFound
 	| MakeDirectoryErrorPermissionDenied
 	| MakeDirectoryErrorAlreadyExists

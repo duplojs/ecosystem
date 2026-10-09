@@ -9,7 +9,7 @@ class RealPathErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-s
 class RealPathErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-real-path-too-many-open-files", Error) {}
 class RealPathError extends DCommon.DuploJSError.parentClass("file-system-real-path-error", Error) {}
 
-type RealPathErrors = (
+export type RealPathErrors = (
 	| RealPathErrorNotFound
 	| RealPathErrorPermissionDenied
 	| RealPathErrorNotDirectory
