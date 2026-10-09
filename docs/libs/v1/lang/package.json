@@ -1,0 +1,59 @@
+{
+  "name": "@duplojs-v1/lang",
+  "private": true,
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts"
+    },
+    "./common": {
+      "types": "./dist/common/index.d.ts"
+    },
+    "./kind": {
+      "types": "./dist/kind/index.d.ts"
+    },
+    "./object": {
+      "types": "./dist/object/index.d.ts"
+    },
+    "./string": {
+      "types": "./dist/string/index.d.ts"
+    },
+    "./either": {
+      "types": "./dist/either/index.d.ts"
+    },
+    "./dataStructure": {
+      "types": "./dist/dataStructure/index.d.ts"
+    },
+    "./array": {
+      "types": "./dist/array/index.d.ts"
+    },
+    "./chrono": {
+      "types": "./dist/chrono/index.d.ts"
+    },
+    "./tuple": {
+      "types": "./dist/tuple/index.d.ts"
+    },
+    "./number": {
+      "types": "./dist/number/index.d.ts"
+    },
+    "./modeling": {
+      "types": "./dist/modeling/index.d.ts"
+    },
+    "./pattern": {
+      "types": "./dist/pattern/index.d.ts"
+    },
+    "./generator": {
+      "types": "./dist/generator/index.d.ts"
+    },
+    "./invocation": {
+      "types": "./dist/invocation/index.d.ts"
+    },
+    "./path": {
+      "types": "./dist/path/index.d.ts"
+    },
+    "./printer": {
+      "types": "./dist/printer/index.d.ts"
+    }
+  }
+}

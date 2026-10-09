@@ -1,0 +1,47 @@
+{
+  "name": "@duplojs-v1/http",
+  "private": true,
+  "type": "module",
+  "types": "./dist/core/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/core/index.d.ts"
+    },
+    "./client": {
+      "types": "./dist/client/index.d.ts"
+    },
+    "./node": {
+      "types": "./dist/interfaces/node/index.d.ts"
+    },
+    "./bun": {
+      "types": "./dist/interfaces/bun/index.d.ts"
+    },
+    "./deno": {
+      "types": "./dist/interfaces/deno/index.d.ts"
+    },
+    "./codeGenerator": {
+      "types": "./dist/plugins/codeGenerator/index.d.ts"
+    },
+    "./openApiGenerator": {
+      "types": "./dist/plugins/openApiGenerator/index.d.ts"
+    },
+    "./cacheController": {
+      "types": "./dist/plugins/cacheController/index.d.ts"
+    },
+    "./cookie": {
+      "types": "./dist/plugins/cookie/index.d.ts"
+    },
+    "./static": {
+      "types": "./dist/plugins/static/index.d.ts"
+    },
+    "./cors": {
+      "types": "./dist/plugins/cors/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@duplojs-v1/lang": "workspace:*",
+    "@duplojs-v1/server": "workspace:*",
+    "@duplojs-v1/tools": "workspace:*",
+    "@types/node": "24.13.3"
+  }
+}

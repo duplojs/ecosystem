@@ -1,0 +1,27 @@
+{
+  "name": "@duplojs-v1/server",
+  "private": true,
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts"
+    },
+    "./file": {
+      "types": "./dist/file/index.d.ts"
+    },
+    "./common": {
+      "types": "./dist/common/index.d.ts"
+    },
+    "./dataStructure": {
+      "types": "./dist/dataStructure/index.d.ts"
+    },
+    "./command": {
+      "types": "./dist/command/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@duplojs-v1/lang": "workspace:*",
+    "@types/node": "24.13.3"
+  }
+}

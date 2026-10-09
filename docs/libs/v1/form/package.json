@@ -1,0 +1,21 @@
+{
+  "name": "@duplojs-v1/form",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./vue": {
+      "types": "./dist/vue/index.d.ts"
+    },
+    "./vueGrid": {
+      "types": "./dist/vue/templates/grid/index.d.ts"
+    },
+    "./vueDesignSystem": {
+      "types": "./dist/vue/designSystem/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@duplojs-v1/lang": "workspace:*",
+    "vite": "8.3.0",
+    "vue": ">=3.5.42 <4.0.0"
+  }
+}

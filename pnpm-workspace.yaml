@@ -5,6 +5,8 @@ packages:
   - "packages-private/*"
   - "packages-private/*/integrations"
   - "ai-docs"
+  - "docs"
+  - "docs/libs/*/*"
 nodeLinker: hoisted
 allowBuilds:
   '@parcel/watcher': false

@@ -1,0 +1,26 @@
+{
+  "name": "@duplojs-v1/code-config",
+  "private": true,
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts"
+    },
+    "./oxlint": {
+      "types": "./dist/oxlint/index.d.ts"
+    },
+    "./oxlint/plugin": {
+      "types": "./dist/oxlint/plugin/index.d.ts"
+    },
+    "./commitlint": {
+      "types": "./dist/commitlint/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@commitlint/types": "21.2.0",
+    "@stylistic/eslint-plugin": "5.10.0",
+    "eslint": "10.10.0",
+    "oxlint": "1.82.0"
+  }
+}

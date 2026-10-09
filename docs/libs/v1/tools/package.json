@@ -1,0 +1,31 @@
+{
+  "name": "@duplojs-v1/tools",
+  "private": true,
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts"
+    },
+    "./toTypescript": {
+      "types": "./dist/toTypescript/index.d.ts"
+    },
+    "./toJsonSchema": {
+      "types": "./dist/toJsonSchema/index.d.ts"
+    },
+    "./toDataStructure": {
+      "types": "./dist/toDataStructure/index.d.ts"
+    },
+    "./structureFinder": {
+      "types": "./dist/structureFinder/index.d.ts"
+    },
+    "./typescript": {
+      "types": "./dist/typescript/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@duplojs-v1/lang": "workspace:*",
+    "@duplojs-v1/server": "workspace:*",
+    "typescript": "6.0.3"
+  }
+}

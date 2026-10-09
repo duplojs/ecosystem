@@ -15,6 +15,7 @@ const scopes = [
 	"ai-docgen",
 	"jsdoc-include",
 	"ci-cd",
+	"docs"
 ];
 
 const scopePattern = scopes.join("|");

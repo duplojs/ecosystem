@@ -1,0 +1,33 @@
+{
+  "name": "docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:types": "./.commands/test-types.sh",
+    "test:lint": "./.commands/test-lint.sh",
+    "dev": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true ./.commands/dev.sh",
+    "build": "./.commands/build.sh"
+  },
+  "dependencies": {
+    "@duplojs-v1/code-config": "workspace:*",
+    "@duplojs-v1/eslint": "workspace:*",
+    "@duplojs-v1/form": "workspace:*",
+    "@duplojs-v1/http": "workspace:*",
+    "@duplojs-v1/json-web-token": "workspace:*",
+    "@duplojs-v1/lang": "workspace:*",
+    "@duplojs-v1/playwright": "workspace:*",
+    "@duplojs-v1/server": "workspace:*",
+    "@duplojs-v1/tools": "workspace:*",
+    "@duplojs/code-config": "workspace:*",
+    "@duplojs/eslint": "workspace:*",
+    "@shikijs/vitepress-twoslash": "4.5.0",
+    "@types/node": "24.13.3",
+    "@types/web": "0.0.358",
+    "@vue/tsconfig": "0.9.1",
+    "vitepress": "2.0.0-alpha.20",
+    "vitepress-plugin-group-icons": "1.7.6",
+    "vitepress-plugin-llms": "1.14.0",
+    "vue": "3.5.43",
+    "vue-tsc": "3.3.11"
+  }
+}

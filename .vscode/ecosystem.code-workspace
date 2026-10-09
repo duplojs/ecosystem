@@ -41,6 +41,10 @@
 			"path": "../ai-docs"
 		},
 		{
+			"name": "docs",
+			"path": "../docs"
+		},
+		{
 			"name": "@duplojs/ai-docgen",
 			"path": "../packages-private/ai-docgen"
 		},
