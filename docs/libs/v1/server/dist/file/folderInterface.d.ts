@@ -1,0 +1,32 @@
+import { MoveResult } from './move';
+import { ExistsResult } from './exists';
+import { RenameResult } from './rename';
+import { RemoveResult } from './remove';
+import { ReadDirectoryResult } from './readDirectory';
+import { StatResult } from './stat';
+import { WalkDirectoryParams, WalkDirectoryResult } from './walkDirectory';
+import { RelocateResult } from './relocate';
+import type * as DKind from "@duplojs-v1/lang/kind";
+import * as DPath from "@duplojs-v1/lang/path";
+import * as DEither from "@duplojs-v1/lang/either";
+declare const folderInterfaceKind: DKind.Handler<DKind.Definition<"@DuplojsServer/folderInterface", unknown>>;
+type FolderInterfaceRenameResult = Exclude<RenameResult, DEither.Right> | DEither.Right<"file-system-rename", FolderInterface>;
+type FolderInterfaceRelocateResult = Exclude<RelocateResult, DEither.Right> | DEither.Right<"file-system-relocate", FolderInterface>;
+type FolderInterfaceMoveResult = Exclude<MoveResult, DEither.Right> | DEither.Right<"file-system-move", FolderInterface>;
+export interface FolderInterface extends DKind.Kind<typeof folderInterfaceKind> {
+    path: string & DPath.Path;
+    getName(): (string & DPath.Segment) | null;
+    getParentPath(): (string & DPath.Path) | null;
+    rename(newName: (string & DPath.Segment)): Promise<FolderInterfaceRenameResult>;
+    exists(): Promise<ExistsResult>;
+    relocate(parentPath: string & DPath.Path): Promise<FolderInterfaceRelocateResult>;
+    move(newPath: string & DPath.Path): Promise<FolderInterfaceMoveResult>;
+    remove(): Promise<RemoveResult>;
+    getChildren(): Promise<ReadDirectoryResult>;
+    stat(): Promise<StatResult>;
+    walk(params?: WalkDirectoryParams): Promise<WalkDirectoryResult>;
+    isFolder(): Promise<boolean>;
+}
+export declare function createFolderInterface(path: string & DPath.Path): FolderInterface;
+export declare function isFolderInterface(input: unknown): input is FolderInterface;
+export {};

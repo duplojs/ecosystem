@@ -1,0 +1,7 @@
+import { ExtractMaxElements, ExtractMinElements, MaxElements, MinElements } from './constraints';
+import type * as DCommon from '../common';
+import type * as DNumber from '../number';
+type PushOutput<GenericArray extends readonly unknown[], GenericValue extends unknown, GenericValuesRest extends readonly unknown[] = []> = GenericArray extends unknown ? (readonly (GenericArray[number] | GenericValue | GenericValuesRest[number])[] & (ExtractMinElements<GenericArray, unknown> extends MinElements<infer InferredValue> ? DCommon.UnionToIntersection<InferredValue extends number ? MinElements<DNumber.AddOne<InferredValue>> : never> : unknown) & (DCommon.IsEqual<GenericValuesRest, []> extends true ? ExtractMaxElements<GenericArray, unknown> extends MaxElements<infer InferredValue> ? DCommon.UnionToIntersection<InferredValue extends number ? MaxElements<DNumber.AddOne<InferredValue>> : never> : unknown : unknown)) : never;
+export declare function push<GenericArray extends readonly unknown[], const GenericValue extends unknown>(value: GenericValue): (array: GenericArray) => PushOutput<GenericArray, GenericValue>;
+export declare function push<GenericArray extends readonly unknown[], const GenericValue extends unknown, GenericValuesRest extends readonly unknown[]>(array: GenericArray, value: GenericValue, ...valuesRest: GenericValuesRest): PushOutput<GenericArray, GenericValue, GenericValuesRest>;
+export {};

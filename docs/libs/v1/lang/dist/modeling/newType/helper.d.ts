@@ -1,0 +1,5 @@
+import { NewType, NewTypeStructure } from './base';
+import type * as DCommon from '../../common';
+import type * as DDataStructure from '../../dataStructure';
+export type ForbiddenTopLevelNewType<GenericValue extends unknown> = GenericValue extends NewType ? DCommon.ComputedTypeError<"NewType on top level of NewType declaration is forbidden."> : never;
+export declare function createNewType<GenericName extends Capitalize<string>, GenericStructure extends DDataStructure.Structure, const GenericNewTypeConstraint extends readonly DDataStructure.Constraint<DDataStructure.StructureValue<GenericStructure>>[] = readonly []>(name: (GenericName & DCommon.NeverCoalescing<ForbiddenTopLevelNewType<DDataStructure.StructureValue<GenericStructure>>, unknown>), structure: GenericStructure, newTypeConstraints?: GenericNewTypeConstraint): NewTypeStructure<GenericName & DCommon.NeverCoalescing<ForbiddenTopLevelNewType<DDataStructure.StructureValue<GenericStructure>>, unknown>, DDataStructure.StructureValue<GenericStructure>, GenericNewTypeConstraint>;

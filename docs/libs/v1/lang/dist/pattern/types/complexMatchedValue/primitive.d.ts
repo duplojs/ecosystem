@@ -1,0 +1,9 @@
+import { EligiblePrimitiveMatch } from '..';
+import type * as DCommon from '../../../common';
+export type ComplexMatchedPrimitive<GenericInput extends unknown, GenericPatternValue extends unknown> = ([
+    Extract<GenericInput, EligiblePrimitiveMatch>,
+    Extract<GenericPatternValue, EligiblePrimitiveMatch>
+] extends [
+    infer inferredInput extends EligiblePrimitiveMatch,
+    infer inferredPatternValue extends EligiblePrimitiveMatch
+] ? Extract<inferredInput, inferredPatternValue> extends infer inferredValue ? DCommon.IsEqual<inferredValue, never> extends true ? inferredPatternValue : inferredValue : never : never);

@@ -1,0 +1,12 @@
+import { StructureTransformer } from '../create';
+export * from './type';
+export * from './array';
+export * from './entity';
+export * from './lazy';
+export * from './newType';
+export * from './nonEncodableString';
+export * from './object';
+export * from './record';
+export * from './taggedObject';
+export * from './union';
+export declare const defaultStructureTransformers: readonly [StructureTransformer, StructureTransformer, StructureTransformer, StructureTransformer, StructureTransformer, StructureTransformer, StructureTransformer, StructureTransformer, StructureTransformer, StructureTransformer];

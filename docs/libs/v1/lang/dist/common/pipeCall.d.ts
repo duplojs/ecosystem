@@ -1,0 +1,1 @@
+export declare function pipeCall<GenericInput extends unknown, GenericOutput extends unknown>(callback: (input: NoInfer<GenericInput>) => GenericOutput): (input: GenericInput) => NoInfer<GenericOutput>;

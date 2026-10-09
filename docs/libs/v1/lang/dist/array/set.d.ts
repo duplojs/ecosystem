@@ -1,0 +1,2 @@
+export declare function set<GenericArray extends readonly unknown[], const GenericValue extends unknown>(index: number, value: GenericValue): (array: GenericArray) => (GenericArray[number] | GenericValue)[];
+export declare function set<GenericArray extends readonly unknown[], const GenericValue extends unknown>(array: GenericArray, index: number, value: GenericValue): (GenericArray[number] | GenericValue)[];

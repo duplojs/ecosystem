@@ -1,0 +1,10 @@
+import { Command } from './create';
+import { Argument } from './argument';
+import { Options } from './options';
+export declare const helpOption: NoInfer<import('./options').BooleanOption<"help">>;
+export declare function renderOptionsHelp(options: readonly Options[], depth: number): string;
+export declare function renderArgumentsHelp(args: readonly Argument[], depth: number): string;
+export declare function renderCommandHelp(command: Command, depth: number): string[];
+export declare function logCommandHelp(command: Command): void;
+export declare function renderExecOptionHelp(options: readonly Options[], depth: number): string[];
+export declare function logExecOptionHelp(options: readonly Options[]): void;

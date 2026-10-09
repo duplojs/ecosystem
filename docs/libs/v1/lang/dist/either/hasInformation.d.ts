@@ -1,0 +1,10 @@
+import { Left } from './left';
+import { Right } from './right';
+import { informationKind, valueKind } from './kind';
+import { GetInformation } from './types';
+import type * as DKind from '../kind';
+import type * as DCommon from '../common';
+type Either = Right | Left;
+export declare function hasInformation<const GenericInput extends Either | DCommon.AnyValue, GenericInformation extends (GenericInput extends Either ? GetInformation<GenericInput> : never)>(information: GenericInformation | GenericInformation[]): (input: GenericInput) => input is Extract<GenericInput, DKind.Kind<typeof informationKind, GenericInformation> & DKind.Kind<typeof valueKind>>;
+export declare function hasInformation<const GenericInput extends Either | DCommon.AnyValue, GenericInformation extends (GenericInput extends Either ? GetInformation<GenericInput> : never)>(input: GenericInput, information: GenericInformation | GenericInformation[]): input is Extract<GenericInput, DKind.Kind<typeof informationKind, GenericInformation> & DKind.Kind<typeof valueKind>>;
+export {};

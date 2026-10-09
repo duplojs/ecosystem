@@ -9,4 +9,4 @@ cache
 **/*.generate.*
 **/*.generate
 packages/**/**/ai-docs
-#!docs/libs/**/dist
+!docs/libs/**/dist

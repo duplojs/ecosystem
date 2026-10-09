@@ -1,0 +1,3 @@
+import { Constraint } from '../constraint';
+import { RecordStructure, RecordStructureValue, Structure, TypeStructure, UnionStructure } from '../structure';
+export declare function record<GenericKey extends (UnionStructure<string> | TypeStructure<string>), GenericValueStructure extends Structure, const GenericConstraints extends readonly Constraint<RecordStructureValue<GenericKey, GenericValueStructure>>[] = readonly []>(key: GenericKey, value: GenericValueStructure, constraints?: GenericConstraints): NoInfer<RecordStructure<RecordStructureValue<GenericKey, GenericValueStructure>, readonly [...GenericConstraints]>>;

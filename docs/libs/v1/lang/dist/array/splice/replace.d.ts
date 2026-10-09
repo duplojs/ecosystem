@@ -1,0 +1,2 @@
+export declare function spliceReplace<GenericElements extends readonly unknown[]>(indexFrom: number, elements: GenericElements): <GenericArray extends readonly unknown[]>(array: GenericArray) => (GenericArray[number] | GenericElements[number])[];
+export declare function spliceReplace<GenericArray extends readonly unknown[], GenericElements extends readonly unknown[]>(array: GenericArray, indexFrom: number, elements: GenericElements): (GenericArray[number] | GenericElements[number])[];

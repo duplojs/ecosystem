@@ -1,0 +1,2 @@
+export declare function asyncConcat<const GenericItem extends unknown>(items: AsyncIterable<GenericItem> | Iterable<GenericItem>): (iterator: AsyncIterable<GenericItem> | Iterable<GenericItem>) => AsyncGenerator<GenericItem, unknown, unknown>;
+export declare function asyncConcat<const GenericItem extends unknown>(iterator: AsyncIterable<GenericItem> | Iterable<GenericItem>, items: AsyncIterable<GenericItem> | Iterable<GenericItem>, ...itemsRest: (AsyncIterable<GenericItem> | Iterable<GenericItem>)[]): AsyncGenerator<GenericItem, unknown, unknown>;

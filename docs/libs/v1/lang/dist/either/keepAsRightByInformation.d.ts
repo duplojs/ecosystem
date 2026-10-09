@@ -1,0 +1,10 @@
+import { informationKind } from './kind';
+import { Left } from './left';
+import { Right } from './right';
+import { GetInformation, GetValue } from './types';
+import type * as DKind from '../kind';
+import type * as DCommon from '../common';
+type Either = Right | Left;
+export declare function keepAsRightByInformation<GenericInput extends Either | DCommon.AnyValue, const GenericInformation extends (GenericInput extends Either ? GetInformation<GenericInput> : never)>(information: GenericInformation | GenericInformation[]): (input: GenericInput) => GenericInput extends Either ? GenericInput extends DKind.Kind<typeof informationKind, GenericInformation> ? GenericInput extends Right ? GenericInput : Right<GetInformation<GenericInput>, GetValue<GenericInput>> : Left<GetInformation<GenericInput>, GetValue<GenericInput>> : GenericInput;
+export declare function keepAsRightByInformation<GenericInput extends Either | DCommon.AnyValue, const GenericInformation extends (GenericInput extends Either ? GetInformation<GenericInput> : never)>(input: GenericInput, information: GenericInformation | GenericInformation[]): GenericInput extends Either ? GenericInput extends DKind.Kind<typeof informationKind, GenericInformation> ? GenericInput extends Right ? GenericInput : Right<GetInformation<GenericInput>, GetValue<GenericInput>> : Left<GetInformation<GenericInput>, GetValue<GenericInput>> : GenericInput;
+export {};

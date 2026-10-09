@@ -1,0 +1,14 @@
+import { informationKind } from './kind';
+import { Left } from './left';
+import { Right } from './right';
+import { GetInformation, GetValue } from './types';
+import type * as DCommon from '../common';
+import type * as DKind from '../kind';
+import type * as DObject from '../object';
+type Either = Right | Left;
+type ForbiddenMoreKey<GenericInput extends unknown, GenericSelector extends Record<string, boolean>> = DObject.ForbiddenKey<GenericSelector, Extract<Exclude<keyof GenericSelector, GetInformation<Extract<GenericInput, Either>>>, string>>;
+type SelectedKind<GenericSelector extends Record<string, boolean>> = DKind.Kind<typeof informationKind, Extract<DObject.GetPropsWithValue<GenericSelector, true>, string>>;
+type CallbackSelectedKind<GenericSelector extends Record<string, boolean>> = DKind.Kind<typeof informationKind, Extract<(DObject.GetPropsWithValue<GenericSelector, true> | DObject.GetPropsWithValue<GenericSelector, boolean>), string>>;
+export declare function whenIsSelectedOtherwise<GenericInput extends Either | DCommon.AnyValue, const GenericSelector extends Record<GetInformation<Extract<GenericInput, Either>>, boolean>, const GenericOutput extends unknown, const GenericOtherwiseOutput extends unknown>(selector: GenericSelector & ForbiddenMoreKey<GenericInput, GenericSelector>, theFunction: (value: GetValue<Extract<GenericInput, Either & CallbackSelectedKind<GenericSelector>>>) => GenericOutput, otherwiseFunction: (value: Exclude<GenericInput, SelectedKind<GenericSelector>>) => GenericOtherwiseOutput): (input: GenericInput) => GenericOutput | GenericOtherwiseOutput;
+export declare function whenIsSelectedOtherwise<GenericInput extends Either | DCommon.AnyValue, const GenericSelector extends Record<GetInformation<Extract<GenericInput, Either>>, boolean>, const GenericOutput extends unknown, const GenericOtherwiseOutput extends unknown>(input: GenericInput, selector: GenericSelector & ForbiddenMoreKey<GenericInput, GenericSelector>, theFunction: (value: GetValue<Extract<GenericInput, Either & CallbackSelectedKind<GenericSelector>>>) => GenericOutput, otherwiseFunction: (value: Exclude<GenericInput, SelectedKind<GenericSelector>>) => GenericOtherwiseOutput): GenericOutput | GenericOtherwiseOutput;
+export {};

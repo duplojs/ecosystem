@@ -1,0 +1,42 @@
+import { Request } from '../request';
+import { HookResponse, ResponseCode, Response } from '../response';
+import type * as DKind from "@duplojs-v1/lang/kind";
+import type * as DCommon from "@duplojs-v1/lang/common";
+export declare const hookRouteExitKind: DKind.Handler<DKind.Definition<"@DuplojsHttpCore/route-hook-exit", unknown>>;
+export interface RouteHookExit extends DKind.Kind<typeof hookRouteExitKind> {
+}
+export declare const hookRouteNextKind: DKind.Handler<DKind.Definition<"@DuplojsHttpCore/route-hook-next", unknown>>;
+export interface RouteHookNext extends DKind.Kind<typeof hookRouteNextKind> {
+}
+export interface RouteHookParams {
+    readonly request: Request;
+    next(): RouteHookNext;
+    exit(): RouteHookExit;
+    response<GenericCode extends ResponseCode = ResponseCode, GenericInformation extends string = string, GenericBody extends unknown = unknown>(code: GenericCode, information: GenericInformation, body?: GenericBody): HookResponse<GenericCode, GenericInformation, GenericBody | undefined>;
+}
+export type HookBeforeRouteExecution = (params: RouteHookParams) => DCommon.MaybePromise<HookResponse | RouteHookExit | RouteHookNext>;
+export interface RouteHookErrorParams<GenericRequest extends Request = Request> {
+    readonly request: GenericRequest;
+    readonly error: unknown;
+    next(): RouteHookNext;
+    exit(): RouteHookExit;
+    response<GenericCode extends ResponseCode = ResponseCode, GenericInformation extends string = string, GenericBody extends unknown = unknown>(code: GenericCode, information: GenericInformation, body?: GenericBody): HookResponse<GenericCode, GenericInformation, GenericBody | undefined>;
+}
+export type HookError = (params: RouteHookErrorParams<Request>) => DCommon.MaybePromise<HookResponse | RouteHookExit | RouteHookNext>;
+export interface RouteHookParamsAfter {
+    readonly request: Request;
+    readonly currentResponse: Response;
+    next(): RouteHookNext;
+    exit(): RouteHookExit;
+}
+export type HookBeforeSendResponse = (params: RouteHookParamsAfter) => DCommon.MaybePromise<RouteHookExit | RouteHookNext>;
+export type HookSendResponse = (params: RouteHookParamsAfter) => DCommon.MaybePromise<RouteHookExit | RouteHookNext>;
+export type HookAfterSendResponse = (params: RouteHookParamsAfter) => DCommon.MaybePromise<RouteHookExit | RouteHookNext>;
+export interface HookRouteLifeCycle {
+    beforeRouteExecution?: HookBeforeRouteExecution;
+    error?: HookError;
+    beforeSendResponse?: HookBeforeSendResponse;
+    sendResponse?: HookSendResponse;
+    afterSendResponse?: HookAfterSendResponse;
+}
+export declare function createHookRouteLifeCycle<const GenericHookLiveCycle extends HookRouteLifeCycle>(hookRouteLifeCycle: GenericHookLiveCycle): GenericHookLiveCycle;

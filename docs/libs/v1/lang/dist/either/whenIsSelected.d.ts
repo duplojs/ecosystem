@@ -1,0 +1,12 @@
+import { Left } from './left';
+import { Right } from './right';
+import { informationKind } from './kind';
+import { GetInformation, GetValue } from './types';
+import type * as DCommon from '../common';
+import type * as DKind from '../kind';
+import type * as DObject from '../object';
+type Either = Right | Left;
+type ForbiddenMoreKey<GenericInput extends unknown, GenericSelector extends Record<string, boolean>> = DObject.ForbiddenKey<GenericSelector, Extract<Exclude<keyof GenericSelector, DKind.GetValue<typeof informationKind, Extract<GenericInput, Either>>>, string>>;
+export declare function whenIsSelected<GenericInput extends Either | DCommon.AnyValue, const GenericSelector extends Record<GetInformation<Extract<GenericInput, Either>>, boolean>, const GenericOutput extends unknown>(selector: GenericSelector & ForbiddenMoreKey<GenericInput, GenericSelector>, theFunction: (value: GetValue<Extract<GenericInput, Either & DKind.Kind<typeof informationKind, Extract<(DObject.GetPropsWithValue<GenericSelector, true> | DObject.GetPropsWithValue<GenericSelector, boolean>), string>>>>) => GenericOutput): (input: GenericInput) => (GenericOutput | Exclude<GenericInput, DKind.Kind<typeof informationKind, Extract<DObject.GetPropsWithValue<GenericSelector, true>, string>>>);
+export declare function whenIsSelected<GenericInput extends Either | DCommon.AnyValue, const GenericSelector extends Record<GetInformation<Extract<GenericInput, Either>>, boolean>, const GenericOutput extends unknown>(input: GenericInput, selector: GenericSelector & ForbiddenMoreKey<GenericInput, GenericSelector>, theFunction: (value: GetValue<Extract<GenericInput, Either & DKind.Kind<typeof informationKind, Extract<(DObject.GetPropsWithValue<GenericSelector, true> | DObject.GetPropsWithValue<GenericSelector, boolean>), string>>>>) => GenericOutput): (GenericOutput | Exclude<GenericInput, DKind.Kind<typeof informationKind, Extract<DObject.GetPropsWithValue<GenericSelector, true>, string>>>);
+export {};

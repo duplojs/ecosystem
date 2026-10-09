@@ -1,0 +1,10 @@
+import { Left } from './left';
+import { Right } from './right';
+import { informationKind } from './kind';
+import { GetInformation, GetValue } from './types';
+import type * as DKind from '../kind';
+import type * as DCommon from '../common';
+type Either = Right | Left;
+export declare function unwrapByInformation<GenericInput extends Either | DCommon.AnyValue, const GenericInformation extends (GenericInput extends Either ? GetInformation<GenericInput> : never)>(information: GenericInformation | GenericInformation[]): (input: GenericInput) => GenericInput extends DKind.Kind<typeof informationKind, GenericInformation> ? GetValue<Extract<GenericInput, Either>> : GenericInput;
+export declare function unwrapByInformation<GenericInput extends Either | DCommon.AnyValue, GenericInformation extends (GenericInput extends Either ? GetInformation<GenericInput> : never)>(input: GenericInput, information: GenericInformation | GenericInformation[]): GenericInput extends DKind.Kind<typeof informationKind, GenericInformation> ? GetValue<Extract<GenericInput, Either>> : GenericInput;
+export {};

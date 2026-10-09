@@ -1,0 +1,30 @@
+import { RenameResult } from './rename';
+import { ExistsResult } from './exists';
+import { MoveResult } from './move';
+import { RemoveResult } from './remove';
+import { StatResult } from './stat';
+import { RelocateResult } from './relocate';
+import type * as DKind from "@duplojs-v1/lang/kind";
+import * as DPath from "@duplojs-v1/lang/path";
+import * as DEither from "@duplojs-v1/lang/either";
+declare const fileInterfaceKind: DKind.Handler<DKind.Definition<"@DuplojsServer/fileInterface", unknown>>;
+type FileInterfaceRenameResult = Exclude<RenameResult, DEither.Right> | DEither.Right<"file-system-rename", FileInterface>;
+type FileInterfaceRelocateResult = Exclude<RelocateResult, DEither.Right> | DEither.Right<"file-system-relocate", FileInterface>;
+type FileInterfaceMoveResult = Exclude<MoveResult, DEither.Right> | DEither.Right<"file-system-move", FileInterface>;
+export interface FileInterface extends DKind.Kind<typeof fileInterfaceKind> {
+    path: string & DPath.Path;
+    getName(): (string & DPath.Segment) | null;
+    getMimeType(): string | null;
+    getExtension(params?: DPath.GetExtensionNameParams): (string & DPath.Segment) | null;
+    getParentPath(): (string & DPath.Path) | null;
+    rename(newName: string & DPath.Segment): Promise<FileInterfaceRenameResult>;
+    relocate(parentPath: string & DPath.Path): Promise<FileInterfaceRelocateResult>;
+    move(newPath: string & DPath.Path): Promise<FileInterfaceMoveResult>;
+    exists(): Promise<ExistsResult>;
+    remove(): Promise<RemoveResult>;
+    stat(): Promise<StatResult>;
+    isFile(): Promise<boolean>;
+}
+export declare function createFileInterface(path: string & DPath.Path): FileInterface;
+export declare function isFileInterface(input: unknown): input is FileInterface;
+export {};

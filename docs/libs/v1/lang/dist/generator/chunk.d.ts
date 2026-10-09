@@ -1,0 +1,3 @@
+import type * as DArray from '../array';
+export declare function chunk<const GenericItem extends unknown, GenericSize extends number>(size: GenericSize): (iterator: Iterable<GenericItem>) => Generator<readonly GenericItem[] & DArray.MinElements<1> & (number extends GenericSize ? unknown : DArray.MaxElements<GenericSize>), unknown, unknown>;
+export declare function chunk<const GenericItem extends unknown, GenericSize extends number>(iterator: Iterable<GenericItem>, size: GenericSize): Generator<readonly GenericItem[] & DArray.MinElements<1> & (number extends GenericSize ? unknown : DArray.MaxElements<GenericSize>), unknown, unknown>;

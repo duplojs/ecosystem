@@ -1,0 +1,10 @@
+import { MultipleOf } from './constraints';
+import { RequireSimpleLiteral } from './types';
+import type * as DCommon from '../common';
+type RequireApplyMultiplyOf<GenericMultiple extends number> = RequireSimpleLiteral<GenericMultiple>;
+type RequireApplyMultiplyOfBoolean<GenericMultiple extends number> = DCommon.IsEqual<GenericMultiple, number> extends true ? unknown : RequireApplyMultiplyOf<GenericMultiple>;
+export declare function isMultipleOf<GenericValue extends number, const GenericMultiple extends number>(multiple: GenericMultiple & RequireApplyMultiplyOf<GenericMultiple>): (value: GenericValue) => value is GenericValue & MultipleOf<GenericMultiple>;
+export declare function isMultipleOf<GenericValue extends number, const GenericMultiple extends number>(multiple: GenericMultiple & RequireApplyMultiplyOfBoolean<GenericMultiple>): (value: GenericValue) => boolean;
+export declare function isMultipleOf<GenericValue extends number, const GenericMultiple extends number>(value: GenericValue, multiple: GenericMultiple & RequireApplyMultiplyOf<GenericMultiple>): value is GenericValue & MultipleOf<GenericMultiple>;
+export declare function isMultipleOf<GenericValue extends number, const GenericMultiple extends number>(value: GenericValue, multiple: GenericMultiple & RequireApplyMultiplyOfBoolean<GenericMultiple>): boolean;
+export {};

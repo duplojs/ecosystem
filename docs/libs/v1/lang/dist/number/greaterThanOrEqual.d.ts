@@ -1,0 +1,11 @@
+import { ComputeGreaterThanOrEqualCompatibility, GreaterThanOrEqual, IsImpossibleToApplyGreaterThanOrEqual } from './constraints';
+import { RequireSimpleLiteral } from './types';
+import type * as DCommon from '../common';
+type GreaterThanOrEqualOutput<GenericValue extends number, GenericThreshold extends number> = GenericValue extends unknown ? IsImpossibleToApplyGreaterThanOrEqual<GenericValue, GreaterThanOrEqual<GenericThreshold>> extends true ? never : ComputeGreaterThanOrEqualCompatibility<GenericValue, GreaterThanOrEqual<GenericThreshold>, DCommon.CompatibilityConstraintResult<false, number, number>> extends infer InferredResult ? DCommon.ContainExtends<InferredResult, DCommon.CompatibilityConstraintResult<true>> extends true ? GenericValue : GenericValue & GreaterThanOrEqual<GenericThreshold> : never : never;
+type RequireApplyGreaterThanOrEqual<GenericThreshold extends number> = RequireSimpleLiteral<GenericThreshold>;
+type RequireApplyGreaterThanOrEqualBoolean<GenericThreshold extends number> = DCommon.IsEqual<GenericThreshold, number> extends true ? unknown : RequireApplyGreaterThanOrEqual<GenericThreshold>;
+export declare function greaterThanOrEqual<GenericValue extends number, const GenericThreshold extends number>(threshold: GenericThreshold & RequireApplyGreaterThanOrEqual<GenericThreshold>): (value: GenericValue) => value is GreaterThanOrEqualOutput<GenericValue, GenericThreshold>;
+export declare function greaterThanOrEqual<GenericValue extends number, const GenericThreshold extends number>(threshold: GenericThreshold & RequireApplyGreaterThanOrEqualBoolean<GenericThreshold>): (value: GenericValue) => boolean;
+export declare function greaterThanOrEqual<GenericValue extends number, const GenericThreshold extends number>(value: GenericValue, threshold: GenericThreshold & RequireApplyGreaterThanOrEqual<GenericThreshold>): value is GreaterThanOrEqualOutput<GenericValue, GenericThreshold>;
+export declare function greaterThanOrEqual<GenericValue extends number, const GenericThreshold extends number>(value: GenericValue, threshold: GenericThreshold & RequireApplyGreaterThanOrEqualBoolean<GenericThreshold>): boolean;
+export {};
