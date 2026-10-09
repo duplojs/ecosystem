@@ -1,56 +1,73 @@
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
+import * as DCommon from "@duplojs/lang/common";
 
-export type CopyResult = FileSystemEither<
-	| DEither.Right<"copy", void>
-	| DEither.Left<"copy-not-found", unknown>
-	| DEither.Left<"copy-permission-denied", unknown>
-	| DEither.Left<"copy-already-exists", unknown>
-	| DEither.Left<"copy-not-directory", unknown>
-	| DEither.Left<"copy-no-space", unknown>
-	| DEither.Left<"copy-read-only", unknown>
-	| DEither.Left<"copy-invalid-argument", unknown>
-	| DEither.Left<"copy-too-many-open-files", unknown>
-	| DEither.Left<"copy-busy", unknown>
-	| DEither.Left<"copy-error", unknown>
->;
+class CopyErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-copy-not-found", Error) {}
+class CopyErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-copy-permission-denied", Error) {}
+class CopyErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-copy-already-exists", Error) {}
+class CopyErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-copy-not-directory", Error) {}
+class CopyErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-copy-no-space", Error) {}
+class CopyErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-copy-read-only", Error) {}
+class CopyErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-copy-invalid-argument", Error) {}
+class CopyErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-copy-too-many-open-files", Error) {}
+class CopyErrorBusy extends DCommon.DuploJSError.parentClass("file-system-copy-busy", Error) {}
+class CopyError extends DCommon.DuploJSError.parentClass("file-system-copy-error", Error) {}
 
-function handleNodeCopyError(error: unknown): CopyResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type CopyErrors = (
+	| CopyErrorNotFound
+	| CopyErrorPermissionDenied
+	| CopyErrorAlreadyExists
+	| CopyErrorNotDirectory
+	| CopyErrorNoSpace
+	| CopyErrorReadOnly
+	| CopyErrorInvalidArgument
+	| CopyErrorTooManyOpenFiles
+	| CopyErrorBusy
+	| CopyError
+);
+
+export type CopyResult = (
+	| DEither.Right<"file-system-copy", void>
+	| DEither.Left<"file-system-copy-error", CopyErrors>
+);
+
+function handleNodeCopyError(error: Error) {
+	let copyError: CopyErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-copy-not-found", error);
+			copyError = new CopyErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-copy-permission-denied", error);
+			copyError = new CopyErrorPermissionDenied(error);
 		} else if (error.code === "EEXIST") {
-			return DEither.left("file-system-copy-already-exists", error);
+			copyError = new CopyErrorAlreadyExists(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-copy-not-directory", error);
+			copyError = new CopyErrorNotDirectory(error);
 		} else if (error.code === "ENOSPC") {
-			return DEither.left("file-system-copy-no-space", error);
+			copyError = new CopyErrorNoSpace(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-copy-read-only", error);
+			copyError = new CopyErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-copy-invalid-argument", error);
+			copyError = new CopyErrorInvalidArgument(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-copy-too-many-open-files", error);
+			copyError = new CopyErrorTooManyOpenFiles(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-copy-busy", error);
+			copyError = new CopyErrorBusy(error);
 		}
 	}
 
-	return DEither.left("file-system-copy-error", error);
+	if (copyError === undefined) {
+		copyError = new CopyError(error);
+	}
+
+	return DEither.left("file-system-copy-error", copyError);
 }
 
 declare module "@scripts/implementor" {

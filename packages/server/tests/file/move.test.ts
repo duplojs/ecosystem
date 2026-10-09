@@ -3,6 +3,7 @@ import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("move", () => {
 	afterEach(() => {
@@ -65,13 +66,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-not-found", error);
 	});
 
 	it("returns permission-denied when NODE move rejects with EACCES", async() => {
@@ -86,13 +81,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE move rejects with EPERM", async() => {
@@ -107,13 +96,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-permission-denied", error);
 	});
 
 	it("returns already-exists when NODE move rejects with EEXIST", async() => {
@@ -128,13 +111,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-already-exists",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-already-exists", error);
 	});
 
 	it("returns is-directory when NODE move rejects with EISDIR", async() => {
@@ -149,13 +126,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-is-directory", error);
 	});
 
 	it("returns not-directory when NODE move rejects with ENOTDIR", async() => {
@@ -170,13 +141,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-not-directory", error);
 	});
 
 	it("returns directory-not-empty when NODE move rejects with ENOTEMPTY", async() => {
@@ -191,13 +156,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-directory-not-empty",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-directory-not-empty", error);
 	});
 
 	it("returns read-only when NODE move rejects with EROFS", async() => {
@@ -212,13 +171,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE move rejects with EINVAL", async() => {
@@ -233,13 +186,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-invalid-argument", error);
 	});
 
 	it("returns busy when NODE move rejects with EBUSY", async() => {
@@ -254,13 +201,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-busy", error);
 	});
 
 	it("returns cross-device when NODE move rejects with EXDEV", async() => {
@@ -275,13 +216,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-cross-device",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-cross-device", error);
 	});
 
 	it("returns error when NODE move rejects with an unknown error", async() => {
@@ -293,13 +228,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-error", error);
 	});
 
 	it("returns error when NODE move rejects with an unknown code", async() => {
@@ -314,13 +243,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-error", error);
 	});
 
 	it("returns not-found when DENO move rejects with NotFound", async() => {
@@ -332,13 +255,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-not-found", error);
 	});
 
 	it("returns permission-denied when DENO move rejects with PermissionDenied", async() => {
@@ -350,13 +267,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO move rejects with NotCapable", async() => {
@@ -368,13 +279,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-permission-denied", error);
 	});
 
 	it("returns already-exists when DENO move rejects with AlreadyExists", async() => {
@@ -386,13 +291,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-already-exists",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-already-exists", error);
 	});
 
 	it("returns is-directory when DENO move rejects with IsADirectory", async() => {
@@ -404,13 +303,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-is-directory", error);
 	});
 
 	it("returns not-directory when DENO move rejects with NotADirectory", async() => {
@@ -422,13 +315,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO move rejects with InvalidData", async() => {
@@ -440,13 +327,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-invalid-argument", error);
 	});
 
 	it("returns busy when DENO move rejects with Busy", async() => {
@@ -458,13 +339,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-busy", error);
 	});
 
 	it("returns error when DENO move rejects with an unknown error", async() => {
@@ -476,13 +351,7 @@ describe("move", () => {
 
 		const result = await DSFile.move(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-move-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-move-error", error);
 	});
 
 	it("supports pipeable move signature", async() => {

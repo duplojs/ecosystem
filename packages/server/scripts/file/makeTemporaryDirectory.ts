@@ -1,67 +1,82 @@
 import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
+import * as DCommon from "@duplojs/lang/common";
 
-export type MakeTemporaryDirectoryResult = FileSystemEither<
-	| DEither.Right<"make-temporary-directory", string>
-	| DEither.Left<"make-temporary-directory-permission-denied", unknown>
-	| DEither.Left<"make-temporary-directory-not-directory", unknown>
-	| DEither.Left<"make-temporary-directory-no-space", unknown>
-	| DEither.Left<"make-temporary-directory-read-only", unknown>
-	| DEither.Left<"make-temporary-directory-invalid-argument", unknown>
-	| DEither.Left<"make-temporary-directory-too-many-open-files", unknown>
-	| DEither.Left<"make-temporary-directory-error", unknown>
->;
+class MakeTemporaryDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-permission-denied", Error) {}
+class MakeTemporaryDirectoryErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-not-directory", Error) {}
+class MakeTemporaryDirectoryErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-no-space", Error) {}
+class MakeTemporaryDirectoryErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-read-only", Error) {}
+class MakeTemporaryDirectoryErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-invalid-argument", Error) {}
+class MakeTemporaryDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-too-many-open-files", Error) {}
+class MakeTemporaryDirectoryError extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-error", Error) {}
 
-function handleNodeMakeTemporaryDirectoryError(error: unknown): MakeTemporaryDirectoryResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type MakeTemporaryDirectoryErrors = (
+	| MakeTemporaryDirectoryErrorPermissionDenied
+	| MakeTemporaryDirectoryErrorNotDirectory
+	| MakeTemporaryDirectoryErrorNoSpace
+	| MakeTemporaryDirectoryErrorReadOnly
+	| MakeTemporaryDirectoryErrorInvalidArgument
+	| MakeTemporaryDirectoryErrorTooManyOpenFiles
+	| MakeTemporaryDirectoryError
+);
+
+export type MakeTemporaryDirectoryResult = (
+	| DEither.Right<"file-system-make-temporary-directory", string>
+	| DEither.Left<"file-system-make-temporary-directory-error", MakeTemporaryDirectoryErrors>
+);
+
+function handleNodeMakeTemporaryDirectoryError(error: Error) {
+	let makeTemporaryDirectoryError: MakeTemporaryDirectoryErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-make-temporary-directory-permission-denied", error);
+			makeTemporaryDirectoryError = new MakeTemporaryDirectoryErrorPermissionDenied(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-make-temporary-directory-not-directory", error);
+			makeTemporaryDirectoryError = new MakeTemporaryDirectoryErrorNotDirectory(error);
 		} else if (error.code === "ENOSPC") {
-			return DEither.left("file-system-make-temporary-directory-no-space", error);
+			makeTemporaryDirectoryError = new MakeTemporaryDirectoryErrorNoSpace(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-make-temporary-directory-read-only", error);
+			makeTemporaryDirectoryError = new MakeTemporaryDirectoryErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-make-temporary-directory-invalid-argument", error);
+			makeTemporaryDirectoryError = new MakeTemporaryDirectoryErrorInvalidArgument(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-make-temporary-directory-too-many-open-files", error);
+			makeTemporaryDirectoryError = new MakeTemporaryDirectoryErrorTooManyOpenFiles(error);
 		}
 	}
 
-	return DEither.left("file-system-make-temporary-directory-error", error);
+	if (makeTemporaryDirectoryError === undefined) {
+		makeTemporaryDirectoryError = new MakeTemporaryDirectoryError(error);
+	}
+
+	return DEither.left("file-system-make-temporary-directory-error", makeTemporaryDirectoryError);
 }
 
-function handleDenoMakeTemporaryDirectoryError(error: unknown): MakeTemporaryDirectoryResult {
+function handleDenoMakeTemporaryDirectoryError(error: Error) {
+	let makeTemporaryDirectoryError: MakeTemporaryDirectoryErrors | undefined = undefined;
+
 	if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-make-temporary-directory-permission-denied", error);
+		makeTemporaryDirectoryError = new MakeTemporaryDirectoryErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		makeTemporaryDirectoryError = new MakeTemporaryDirectoryErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		makeTemporaryDirectoryError = new MakeTemporaryDirectoryErrorInvalidArgument(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-make-temporary-directory-not-directory", error);
+	if (makeTemporaryDirectoryError === undefined) {
+		makeTemporaryDirectoryError = new MakeTemporaryDirectoryError(error);
 	}
 
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-make-temporary-directory-invalid-argument", error);
-	}
-
-	return DEither.left("file-system-make-temporary-directory-error", error);
+	return DEither.left("file-system-make-temporary-directory-error", makeTemporaryDirectoryError);
 }
-
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		makeTemporaryDirectory(prefix: string): Promise<MakeTemporaryDirectoryResult>;

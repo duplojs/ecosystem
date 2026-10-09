@@ -3,6 +3,7 @@ import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("setOwner", () => {
 	afterEach(() => {
@@ -83,13 +84,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-not-found", error);
 	});
 
 	it("returns permission-denied when NODE setOwner rejects with EACCES", async() => {
@@ -110,13 +105,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE setOwner rejects with EPERM", async() => {
@@ -137,13 +126,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-permission-denied", error);
 	});
 
 	it("returns not-directory when NODE setOwner rejects with ENOTDIR", async() => {
@@ -164,13 +147,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-not-directory", error);
 	});
 
 	it("returns read-only when NODE setOwner rejects with EROFS", async() => {
@@ -191,13 +168,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE setOwner rejects with EINVAL", async() => {
@@ -218,13 +189,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-invalid-argument", error);
 	});
 
 	it("returns error when NODE setOwner rejects with an unknown error", async() => {
@@ -242,13 +207,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-error", error);
 	});
 
 	it("returns error when NODE setOwner rejects with an unknown code", async() => {
@@ -269,13 +228,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-error", error);
 	});
 
 	it("returns not-found when DENO setOwner rejects with NotFound", async() => {
@@ -293,13 +246,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-not-found", error);
 	});
 
 	it("returns permission-denied when DENO setOwner rejects with PermissionDenied", async() => {
@@ -317,13 +264,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO setOwner rejects with NotCapable", async() => {
@@ -341,13 +282,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-permission-denied", error);
 	});
 
 	it("returns not-directory when DENO setOwner rejects with NotADirectory", async() => {
@@ -365,13 +300,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO setOwner rejects with InvalidData", async() => {
@@ -389,13 +318,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-invalid-argument", error);
 	});
 
 	it("returns error when DENO setOwner rejects with an unknown error", async() => {
@@ -413,13 +336,7 @@ describe("setOwner", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-owner-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-owner-error", error);
 	});
 
 	it("supports pipeable setOwner signature", async() => {

@@ -1,91 +1,104 @@
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
+import * as DCommon from "@duplojs/lang/common";
 
 interface MakeDirectoryParams {
 	recursive?: boolean;
 }
 
-export type MakeDirectoryResult = FileSystemEither<
-	| DEither.Right<"make-directory", void>
-	| DEither.Left<"make-directory-not-found", unknown>
-	| DEither.Left<"make-directory-permission-denied", unknown>
-	| DEither.Left<"make-directory-already-exists", unknown>
-	| DEither.Left<"make-directory-not-directory", unknown>
-	| DEither.Left<"make-directory-no-space", unknown>
-	| DEither.Left<"make-directory-read-only", unknown>
-	| DEither.Left<"make-directory-invalid-argument", unknown>
-	| DEither.Left<"make-directory-too-many-open-files", unknown>
-	| DEither.Left<"make-directory-busy", unknown>
-	| DEither.Left<"make-directory-error", unknown>
->;
+class MakeDirectoryErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-make-directory-not-found", Error) {}
+class MakeDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-make-directory-permission-denied", Error) {}
+class MakeDirectoryErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-make-directory-already-exists", Error) {}
+class MakeDirectoryErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-make-directory-not-directory", Error) {}
+class MakeDirectoryErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-make-directory-no-space", Error) {}
+class MakeDirectoryErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-make-directory-read-only", Error) {}
+class MakeDirectoryErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-make-directory-invalid-argument", Error) {}
+class MakeDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-make-directory-too-many-open-files", Error) {}
+class MakeDirectoryErrorBusy extends DCommon.DuploJSError.parentClass("file-system-make-directory-busy", Error) {}
+class MakeDirectoryError extends DCommon.DuploJSError.parentClass("file-system-make-directory-error", Error) {}
 
-function handleNodeMakeDirectoryError(error: unknown): MakeDirectoryResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type MakeDirectoryErrors = (
+	| MakeDirectoryErrorNotFound
+	| MakeDirectoryErrorPermissionDenied
+	| MakeDirectoryErrorAlreadyExists
+	| MakeDirectoryErrorNotDirectory
+	| MakeDirectoryErrorNoSpace
+	| MakeDirectoryErrorReadOnly
+	| MakeDirectoryErrorInvalidArgument
+	| MakeDirectoryErrorTooManyOpenFiles
+	| MakeDirectoryErrorBusy
+	| MakeDirectoryError
+);
+
+export type MakeDirectoryResult = (
+	| DEither.Right<"file-system-make-directory", void>
+	| DEither.Left<"file-system-make-directory-error", MakeDirectoryErrors>
+);
+
+function handleNodeMakeDirectoryError(error: Error) {
+	let makeDirectoryError: MakeDirectoryErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-make-directory-not-found", error);
+			makeDirectoryError = new MakeDirectoryErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-make-directory-permission-denied", error);
+			makeDirectoryError = new MakeDirectoryErrorPermissionDenied(error);
 		} else if (error.code === "EEXIST") {
-			return DEither.left("file-system-make-directory-already-exists", error);
+			makeDirectoryError = new MakeDirectoryErrorAlreadyExists(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-make-directory-not-directory", error);
+			makeDirectoryError = new MakeDirectoryErrorNotDirectory(error);
 		} else if (error.code === "ENOSPC") {
-			return DEither.left("file-system-make-directory-no-space", error);
+			makeDirectoryError = new MakeDirectoryErrorNoSpace(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-make-directory-read-only", error);
+			makeDirectoryError = new MakeDirectoryErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-make-directory-invalid-argument", error);
+			makeDirectoryError = new MakeDirectoryErrorInvalidArgument(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-make-directory-too-many-open-files", error);
+			makeDirectoryError = new MakeDirectoryErrorTooManyOpenFiles(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-make-directory-busy", error);
+			makeDirectoryError = new MakeDirectoryErrorBusy(error);
 		}
 	}
 
-	return DEither.left("file-system-make-directory-error", error);
-}
-
-function handleDenoMakeDirectoryError(error: unknown): MakeDirectoryResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-make-directory-not-found", error);
+	if (makeDirectoryError === undefined) {
+		makeDirectoryError = new MakeDirectoryError(error);
 	}
 
-	if (
+	return DEither.left("file-system-make-directory-error", makeDirectoryError);
+}
+
+function handleDenoMakeDirectoryError(error: Error) {
+	let makeDirectoryError: MakeDirectoryErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		makeDirectoryError = new MakeDirectoryErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-make-directory-permission-denied", error);
+		makeDirectoryError = new MakeDirectoryErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.AlreadyExists) {
+		makeDirectoryError = new MakeDirectoryErrorAlreadyExists(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		makeDirectoryError = new MakeDirectoryErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		makeDirectoryError = new MakeDirectoryErrorInvalidArgument(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		makeDirectoryError = new MakeDirectoryErrorBusy(error);
 	}
 
-	if (error instanceof Deno.errors.AlreadyExists) {
-		return DEither.left("file-system-make-directory-already-exists", error);
+	if (makeDirectoryError === undefined) {
+		makeDirectoryError = new MakeDirectoryError(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-make-directory-not-directory", error);
-	}
-
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-make-directory-invalid-argument", error);
-	}
-
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-make-directory-busy", error);
-	}
-
-	return DEither.left("file-system-make-directory-error", error);
+	return DEither.left("file-system-make-directory-error", makeDirectoryError);
 }
 
 declare module "@scripts/implementor" {

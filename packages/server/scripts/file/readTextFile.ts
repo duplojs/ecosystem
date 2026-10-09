@@ -1,74 +1,86 @@
+import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
 
-export type ReadTextFileResult = FileSystemEither<
-	| DEither.Right<"read-text-file", string>
-	| DEither.Left<"read-text-file-not-found", unknown>
-	| DEither.Left<"read-text-file-permission-denied", unknown>
-	| DEither.Left<"read-text-file-is-directory", unknown>
-	| DEither.Left<"read-text-file-not-directory", unknown>
-	| DEither.Left<"read-text-file-too-many-open-files", unknown>
-	| DEither.Left<"read-text-file-busy", unknown>
-	| DEither.Left<"read-text-file-error", unknown>
->;
+class ReadTextFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-text-file-not-found", Error) {}
+class ReadTextFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-text-file-permission-denied", Error) {}
+class ReadTextFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-read-text-file-is-directory", Error) {}
+class ReadTextFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-read-text-file-not-directory", Error) {}
+class ReadTextFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-read-text-file-too-many-open-files", Error) {}
+class ReadTextFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-read-text-file-busy", Error) {}
+class ReadTextFileError extends DCommon.DuploJSError.parentClass("file-system-read-text-file-error", Error) {}
 
-function handleNodeReadTextFileError(error: unknown): ReadTextFileResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type ReadTextFileErrors = (
+	| ReadTextFileErrorNotFound
+	| ReadTextFileErrorPermissionDenied
+	| ReadTextFileErrorIsDirectory
+	| ReadTextFileErrorNotDirectory
+	| ReadTextFileErrorTooManyOpenFiles
+	| ReadTextFileErrorBusy
+	| ReadTextFileError
+);
+
+export type ReadTextFileResult = (
+	| DEither.Right<"file-system-read-text-file", string>
+	| DEither.Left<"file-system-read-text-file-error", ReadTextFileErrors>
+);
+
+function handleNodeReadTextFileError(error: Error) {
+	let readTextFileError: ReadTextFileErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-read-text-file-not-found", error);
+			readTextFileError = new ReadTextFileErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-read-text-file-permission-denied", error);
+			readTextFileError = new ReadTextFileErrorPermissionDenied(error);
 		} else if (error.code === "EISDIR") {
-			return DEither.left("file-system-read-text-file-is-directory", error);
+			readTextFileError = new ReadTextFileErrorIsDirectory(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-read-text-file-not-directory", error);
+			readTextFileError = new ReadTextFileErrorNotDirectory(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-read-text-file-too-many-open-files", error);
+			readTextFileError = new ReadTextFileErrorTooManyOpenFiles(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-read-text-file-busy", error);
+			readTextFileError = new ReadTextFileErrorBusy(error);
 		}
 	}
 
-	return DEither.left("file-system-read-text-file-error", error);
-}
-
-function handleDenoReadTextFileError(error: unknown): ReadTextFileResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-read-text-file-not-found", error);
+	if (readTextFileError === undefined) {
+		readTextFileError = new ReadTextFileError(error);
 	}
 
-	if (
+	return DEither.left("file-system-read-text-file-error", readTextFileError);
+}
+
+function handleDenoReadTextFileError(error: Error) {
+	let readTextFileError: ReadTextFileErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		readTextFileError = new ReadTextFileErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-read-text-file-permission-denied", error);
+		readTextFileError = new ReadTextFileErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.IsADirectory) {
+		readTextFileError = new ReadTextFileErrorIsDirectory(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		readTextFileError = new ReadTextFileErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		readTextFileError = new ReadTextFileErrorBusy(error);
 	}
 
-	if (error instanceof Deno.errors.IsADirectory) {
-		return DEither.left("file-system-read-text-file-is-directory", error);
+	if (readTextFileError === undefined) {
+		readTextFileError = new ReadTextFileError(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-read-text-file-not-directory", error);
-	}
-
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-read-text-file-busy", error);
-	}
-
-	return DEither.left("file-system-read-text-file-error", error);
+	return DEither.left("file-system-read-text-file-error", readTextFileError);
 }
 
 declare module "@scripts/implementor" {

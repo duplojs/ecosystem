@@ -1,91 +1,103 @@
 import type * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
+import * as DCommon from "@duplojs/lang/common";
 
-export type MoveResult = FileSystemEither<
-	| DEither.Right<"move", void>
-	| DEither.Left<"move-not-found", unknown>
-	| DEither.Left<"move-permission-denied", unknown>
-	| DEither.Left<"move-already-exists", unknown>
-	| DEither.Left<"move-is-directory", unknown>
-	| DEither.Left<"move-not-directory", unknown>
-	| DEither.Left<"move-directory-not-empty", unknown>
-	| DEither.Left<"move-read-only", unknown>
-	| DEither.Left<"move-invalid-argument", unknown>
-	| DEither.Left<"move-busy", unknown>
-	| DEither.Left<"move-cross-device", unknown>
-	| DEither.Left<"move-error", unknown>
->;
+class MoveErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-move-not-found", Error) {}
+class MoveErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-move-permission-denied", Error) {}
+class MoveErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-move-already-exists", Error) {}
+class MoveErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-move-is-directory", Error) {}
+class MoveErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-move-not-directory", Error) {}
+class MoveErrorDirectoryNotEmpty extends DCommon.DuploJSError.parentClass("file-system-move-directory-not-empty", Error) {}
+class MoveErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-move-read-only", Error) {}
+class MoveErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-move-invalid-argument", Error) {}
+class MoveErrorBusy extends DCommon.DuploJSError.parentClass("file-system-move-busy", Error) {}
+class MoveErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-move-cross-device", Error) {}
+class MoveError extends DCommon.DuploJSError.parentClass("file-system-move-error", Error) {}
 
-function handleNodeMoveError(error: unknown): MoveResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type MoveErrors = (
+	| MoveErrorNotFound
+	| MoveErrorPermissionDenied
+	| MoveErrorAlreadyExists
+	| MoveErrorIsDirectory
+	| MoveErrorNotDirectory
+	| MoveErrorDirectoryNotEmpty
+	| MoveErrorReadOnly
+	| MoveErrorInvalidArgument
+	| MoveErrorBusy
+	| MoveErrorCrossDevice
+	| MoveError
+);
+
+export type MoveResult = (
+	| DEither.Right<"file-system-move", void>
+	| DEither.Left<"file-system-move-error", MoveErrors>
+);
+
+function handleNodeMoveError(error: Error) {
+	let moveError: MoveErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-move-not-found", error);
+			moveError = new MoveErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-move-permission-denied", error);
+			moveError = new MoveErrorPermissionDenied(error);
 		} else if (error.code === "EEXIST") {
-			return DEither.left("file-system-move-already-exists", error);
+			moveError = new MoveErrorAlreadyExists(error);
 		} else if (error.code === "EISDIR") {
-			return DEither.left("file-system-move-is-directory", error);
+			moveError = new MoveErrorIsDirectory(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-move-not-directory", error);
+			moveError = new MoveErrorNotDirectory(error);
 		} else if (error.code === "ENOTEMPTY") {
-			return DEither.left("file-system-move-directory-not-empty", error);
+			moveError = new MoveErrorDirectoryNotEmpty(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-move-read-only", error);
+			moveError = new MoveErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-move-invalid-argument", error);
+			moveError = new MoveErrorInvalidArgument(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-move-busy", error);
+			moveError = new MoveErrorBusy(error);
 		} else if (error.code === "EXDEV") {
-			return DEither.left("file-system-move-cross-device", error);
+			moveError = new MoveErrorCrossDevice(error);
 		}
 	}
 
-	return DEither.left("file-system-move-error", error);
-}
-
-function handleDenoMoveError(error: unknown): MoveResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-move-not-found", error);
+	if (moveError === undefined) {
+		moveError = new MoveError(error);
 	}
 
-	if (
+	return DEither.left("file-system-move-error", moveError);
+}
+
+function handleDenoMoveError(error: Error) {
+	let moveError: MoveErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		moveError = new MoveErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-move-permission-denied", error);
+		moveError = new MoveErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.AlreadyExists) {
+		moveError = new MoveErrorAlreadyExists(error);
+	} else if (error instanceof Deno.errors.IsADirectory) {
+		moveError = new MoveErrorIsDirectory(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		moveError = new MoveErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		moveError = new MoveErrorInvalidArgument(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		moveError = new MoveErrorBusy(error);
 	}
 
-	if (error instanceof Deno.errors.AlreadyExists) {
-		return DEither.left("file-system-move-already-exists", error);
+	if (moveError === undefined) {
+		moveError = new MoveError(error);
 	}
 
-	if (error instanceof Deno.errors.IsADirectory) {
-		return DEither.left("file-system-move-is-directory", error);
-	}
-
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-move-not-directory", error);
-	}
-
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-move-invalid-argument", error);
-	}
-
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-move-busy", error);
-	}
-
-	return DEither.left("file-system-move-error", error);
+	return DEither.left("file-system-move-error", moveError);
 }
 
 declare module "@scripts/implementor" {

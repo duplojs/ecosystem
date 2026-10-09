@@ -2,7 +2,6 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
 
 interface Permissions {
 	read?: boolean;
@@ -22,62 +21,75 @@ interface ModeObject {
 
 type SetMode = ModeObject | number;
 
-export type SetModeResult = FileSystemEither<
-	| DEither.Right<"set-mode", void>
-	| DEither.Left<"set-mode-not-found", unknown>
-	| DEither.Left<"set-mode-permission-denied", unknown>
-	| DEither.Left<"set-mode-not-directory", unknown>
-	| DEither.Left<"set-mode-read-only", unknown>
-	| DEither.Left<"set-mode-invalid-argument", unknown>
-	| DEither.Left<"set-mode-error", unknown>
->;
+class SetModeErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-set-mode-not-found", Error) {}
+class SetModeErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-set-mode-permission-denied", Error) {}
+class SetModeErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-set-mode-not-directory", Error) {}
+class SetModeErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-set-mode-read-only", Error) {}
+class SetModeErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-set-mode-invalid-argument", Error) {}
+class SetModeError extends DCommon.DuploJSError.parentClass("file-system-set-mode-error", Error) {}
 
-function handleNodeSetModeError(error: unknown): SetModeResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type SetModeErrors = (
+	| SetModeErrorNotFound
+	| SetModeErrorPermissionDenied
+	| SetModeErrorNotDirectory
+	| SetModeErrorReadOnly
+	| SetModeErrorInvalidArgument
+	| SetModeError
+);
+
+export type SetModeResult = (
+	| DEither.Right<"file-system-set-mode", void>
+	| DEither.Left<"file-system-set-mode-error", SetModeErrors>
+);
+
+function handleNodeSetModeError(error: Error) {
+	let setModeError: SetModeErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-set-mode-not-found", error);
+			setModeError = new SetModeErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-set-mode-permission-denied", error);
+			setModeError = new SetModeErrorPermissionDenied(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-set-mode-not-directory", error);
+			setModeError = new SetModeErrorNotDirectory(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-set-mode-read-only", error);
+			setModeError = new SetModeErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-set-mode-invalid-argument", error);
+			setModeError = new SetModeErrorInvalidArgument(error);
 		}
 	}
 
-	return DEither.left("file-system-set-mode-error", error);
-}
-
-function handleDenoSetModeError(error: unknown): SetModeResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-set-mode-not-found", error);
+	if (setModeError === undefined) {
+		setModeError = new SetModeError(error);
 	}
 
-	if (
+	return DEither.left("file-system-set-mode-error", setModeError);
+}
+
+function handleDenoSetModeError(error: Error) {
+	let setModeError: SetModeErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		setModeError = new SetModeErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-set-mode-permission-denied", error);
+		setModeError = new SetModeErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		setModeError = new SetModeErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		setModeError = new SetModeErrorInvalidArgument(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-set-mode-not-directory", error);
+	if (setModeError === undefined) {
+		setModeError = new SetModeError(error);
 	}
 
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-set-mode-invalid-argument", error);
-	}
-
-	return DEither.left("file-system-set-mode-error", error);
+	return DEither.left("file-system-set-mode-error", setModeError);
 }
 
 function calculatePermissions(permissions?: Permissions): number {

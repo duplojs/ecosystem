@@ -2,69 +2,82 @@ import * as DEither from "@duplojs/lang/either";
 import * as DChrono from "@duplojs/lang/chrono";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
+import * as DCommon from "@duplojs/lang/common";
 
 interface SetTimeParams {
 	accessTime: DChrono.TheDate;
 	modifiedTime: DChrono.TheDate;
 }
 
-export type SetTimeResult = FileSystemEither<
-	| DEither.Right<"set-time", void>
-	| DEither.Left<"set-time-not-found", unknown>
-	| DEither.Left<"set-time-permission-denied", unknown>
-	| DEither.Left<"set-time-not-directory", unknown>
-	| DEither.Left<"set-time-read-only", unknown>
-	| DEither.Left<"set-time-invalid-argument", unknown>
-	| DEither.Left<"set-time-error", unknown>
->;
+class SetTimeErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-set-time-not-found", Error) {}
+class SetTimeErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-set-time-permission-denied", Error) {}
+class SetTimeErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-set-time-not-directory", Error) {}
+class SetTimeErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-set-time-read-only", Error) {}
+class SetTimeErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-set-time-invalid-argument", Error) {}
+class SetTimeError extends DCommon.DuploJSError.parentClass("file-system-set-time-error", Error) {}
 
-function handleNodeSetTimeError(error: unknown): SetTimeResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type SetTimeErrors = (
+	| SetTimeErrorNotFound
+	| SetTimeErrorPermissionDenied
+	| SetTimeErrorNotDirectory
+	| SetTimeErrorReadOnly
+	| SetTimeErrorInvalidArgument
+	| SetTimeError
+);
+
+export type SetTimeResult = (
+	| DEither.Right<"file-system-set-time", void>
+	| DEither.Left<"file-system-set-time-error", SetTimeErrors>
+);
+
+function handleNodeSetTimeError(error: Error) {
+	let setTimeError: SetTimeErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-set-time-not-found", error);
+			setTimeError = new SetTimeErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-set-time-permission-denied", error);
+			setTimeError = new SetTimeErrorPermissionDenied(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-set-time-not-directory", error);
+			setTimeError = new SetTimeErrorNotDirectory(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-set-time-read-only", error);
+			setTimeError = new SetTimeErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-set-time-invalid-argument", error);
+			setTimeError = new SetTimeErrorInvalidArgument(error);
 		}
 	}
 
-	return DEither.left("file-system-set-time-error", error);
-}
-
-function handleDenoSetTimeError(error: unknown): SetTimeResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-set-time-not-found", error);
+	if (setTimeError === undefined) {
+		setTimeError = new SetTimeError(error);
 	}
 
-	if (
+	return DEither.left("file-system-set-time-error", setTimeError);
+}
+
+function handleDenoSetTimeError(error: Error) {
+	let setTimeError: SetTimeErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		setTimeError = new SetTimeErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-set-time-permission-denied", error);
+		setTimeError = new SetTimeErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		setTimeError = new SetTimeErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		setTimeError = new SetTimeErrorInvalidArgument(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-set-time-not-directory", error);
+	if (setTimeError === undefined) {
+		setTimeError = new SetTimeError(error);
 	}
 
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-set-time-invalid-argument", error);
-	}
-
-	return DEither.left("file-system-set-time-error", error);
+	return DEither.left("file-system-set-time-error", setTimeError);
 }
 
 declare module "@scripts/implementor" {

@@ -4,6 +4,7 @@ import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
 import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("walkDirectory", () => {
 	afterEach(() => {
@@ -73,13 +74,7 @@ describe("walkDirectory", () => {
 
 		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-walk-directory-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-walk-directory-not-found", error);
 	});
 
 	it("returns permission-denied when NODE walkDirectory rejects with EACCES", async() => {
@@ -94,13 +89,7 @@ describe("walkDirectory", () => {
 
 		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-walk-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-walk-directory-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE walkDirectory rejects with EPERM", async() => {
@@ -115,13 +104,7 @@ describe("walkDirectory", () => {
 
 		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-walk-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-walk-directory-permission-denied", error);
 	});
 
 	it("returns not-directory when NODE walkDirectory rejects with ENOTDIR", async() => {
@@ -136,13 +119,7 @@ describe("walkDirectory", () => {
 
 		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-walk-directory-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-walk-directory-not-directory", error);
 	});
 
 	it("returns too-many-open-files when NODE walkDirectory rejects with EMFILE", async() => {
@@ -157,13 +134,7 @@ describe("walkDirectory", () => {
 
 		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-walk-directory-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-walk-directory-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE walkDirectory rejects with ENFILE", async() => {
@@ -178,13 +149,7 @@ describe("walkDirectory", () => {
 
 		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-walk-directory-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-walk-directory-too-many-open-files", error);
 	});
 
 	it("returns busy when NODE walkDirectory rejects with EBUSY", async() => {
@@ -199,13 +164,7 @@ describe("walkDirectory", () => {
 
 		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-walk-directory-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-walk-directory-busy", error);
 	});
 
 	it("returns error when NODE walkDirectory rejects with an unknown error", async() => {
@@ -217,13 +176,7 @@ describe("walkDirectory", () => {
 
 		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-walk-directory-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-walk-directory-error", error);
 	});
 
 	it("returns error when NODE walkDirectory rejects with an unknown code", async() => {
@@ -238,13 +191,7 @@ describe("walkDirectory", () => {
 
 		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-walk-directory-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-walk-directory-error", error);
 	});
 
 	it("normalizes paths for every entry kind and preserves their types", async() => {

@@ -1,85 +1,97 @@
+import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
 
 interface RemoveDirectoryParams {
 	recursive?: boolean;
 }
 
-export type RemoveResult = FileSystemEither<
-	| DEither.Right<"remove", void>
-	| DEither.Left<"remove-not-found", unknown>
-	| DEither.Left<"remove-permission-denied", unknown>
-	| DEither.Left<"remove-is-directory", unknown>
-	| DEither.Left<"remove-not-directory", unknown>
-	| DEither.Left<"remove-directory-not-empty", unknown>
-	| DEither.Left<"remove-read-only", unknown>
-	| DEither.Left<"remove-invalid-argument", unknown>
-	| DEither.Left<"remove-busy", unknown>
-	| DEither.Left<"remove-error", unknown>
->;
+class RemoveErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-remove-not-found", Error) {}
+class RemoveErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-remove-permission-denied", Error) {}
+class RemoveErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-remove-is-directory", Error) {}
+class RemoveErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-remove-not-directory", Error) {}
+class RemoveErrorDirectoryNotEmpty extends DCommon.DuploJSError.parentClass("file-system-remove-directory-not-empty", Error) {}
+class RemoveErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-remove-read-only", Error) {}
+class RemoveErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-remove-invalid-argument", Error) {}
+class RemoveErrorBusy extends DCommon.DuploJSError.parentClass("file-system-remove-busy", Error) {}
+class RemoveError extends DCommon.DuploJSError.parentClass("file-system-remove-error", Error) {}
 
-function handleNodeRemoveError(error: unknown): RemoveResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type RemoveErrors = (
+	| RemoveErrorNotFound
+	| RemoveErrorPermissionDenied
+	| RemoveErrorIsDirectory
+	| RemoveErrorNotDirectory
+	| RemoveErrorDirectoryNotEmpty
+	| RemoveErrorReadOnly
+	| RemoveErrorInvalidArgument
+	| RemoveErrorBusy
+	| RemoveError
+);
+
+export type RemoveResult = (
+	| DEither.Right<"file-system-remove", void>
+	| DEither.Left<"file-system-remove-error", RemoveErrors>
+);
+
+function handleNodeRemoveError(error: Error) {
+	let removeError: RemoveErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-remove-not-found", error);
+			removeError = new RemoveErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-remove-permission-denied", error);
+			removeError = new RemoveErrorPermissionDenied(error);
 		} else if (error.code === "EISDIR") {
-			return DEither.left("file-system-remove-is-directory", error);
+			removeError = new RemoveErrorIsDirectory(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-remove-not-directory", error);
+			removeError = new RemoveErrorNotDirectory(error);
 		} else if (error.code === "ENOTEMPTY") {
-			return DEither.left("file-system-remove-directory-not-empty", error);
+			removeError = new RemoveErrorDirectoryNotEmpty(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-remove-read-only", error);
+			removeError = new RemoveErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-remove-invalid-argument", error);
+			removeError = new RemoveErrorInvalidArgument(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-remove-busy", error);
+			removeError = new RemoveErrorBusy(error);
 		}
 	}
 
-	return DEither.left("file-system-remove-error", error);
-}
-
-function handleDenoRemoveError(error: unknown): RemoveResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-remove-not-found", error);
+	if (removeError === undefined) {
+		removeError = new RemoveError(error);
 	}
 
-	if (
+	return DEither.left("file-system-remove-error", removeError);
+}
+
+function handleDenoRemoveError(error: Error) {
+	let removeError: RemoveErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		removeError = new RemoveErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-remove-permission-denied", error);
+		removeError = new RemoveErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.IsADirectory) {
+		removeError = new RemoveErrorIsDirectory(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		removeError = new RemoveErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		removeError = new RemoveErrorInvalidArgument(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		removeError = new RemoveErrorBusy(error);
 	}
 
-	if (error instanceof Deno.errors.IsADirectory) {
-		return DEither.left("file-system-remove-is-directory", error);
+	if (removeError === undefined) {
+		removeError = new RemoveError(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-remove-not-directory", error);
-	}
-
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-remove-invalid-argument", error);
-	}
-
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-remove-busy", error);
-	}
-
-	return DEither.left("file-system-remove-error", error);
+	return DEither.left("file-system-remove-error", removeError);
 }
 
 declare module "@scripts/implementor" {

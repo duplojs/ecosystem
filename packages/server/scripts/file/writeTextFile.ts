@@ -1,87 +1,100 @@
+import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
 
-export type WriteTextFileResult = FileSystemEither<
-	| DEither.Right<"write-text-file", void>
-	| DEither.Left<"write-text-file-not-found", unknown>
-	| DEither.Left<"write-text-file-permission-denied", unknown>
-	| DEither.Left<"write-text-file-is-directory", unknown>
-	| DEither.Left<"write-text-file-not-directory", unknown>
-	| DEither.Left<"write-text-file-no-space", unknown>
-	| DEither.Left<"write-text-file-read-only", unknown>
-	| DEither.Left<"write-text-file-invalid-argument", unknown>
-	| DEither.Left<"write-text-file-too-many-open-files", unknown>
-	| DEither.Left<"write-text-file-busy", unknown>
-	| DEither.Left<"write-text-file-error", unknown>
->;
+class WriteTextFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-write-text-file-not-found", Error) {}
+class WriteTextFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-write-text-file-permission-denied", Error) {}
+class WriteTextFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-write-text-file-is-directory", Error) {}
+class WriteTextFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-write-text-file-not-directory", Error) {}
+class WriteTextFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-write-text-file-no-space", Error) {}
+class WriteTextFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-write-text-file-read-only", Error) {}
+class WriteTextFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-write-text-file-invalid-argument", Error) {}
+class WriteTextFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-write-text-file-too-many-open-files", Error) {}
+class WriteTextFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-write-text-file-busy", Error) {}
+class WriteTextFileError extends DCommon.DuploJSError.parentClass("file-system-write-text-file-error", Error) {}
 
-function handleNodeWriteTextFileError(error: unknown): WriteTextFileResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type WriteTextFileErrors = (
+	| WriteTextFileErrorNotFound
+	| WriteTextFileErrorPermissionDenied
+	| WriteTextFileErrorIsDirectory
+	| WriteTextFileErrorNotDirectory
+	| WriteTextFileErrorNoSpace
+	| WriteTextFileErrorReadOnly
+	| WriteTextFileErrorInvalidArgument
+	| WriteTextFileErrorTooManyOpenFiles
+	| WriteTextFileErrorBusy
+	| WriteTextFileError
+);
+
+export type WriteTextFileResult = (
+	| DEither.Right<"file-system-write-text-file", void>
+	| DEither.Left<"file-system-write-text-file-error", WriteTextFileErrors>
+);
+
+function handleNodeWriteTextFileError(error: Error) {
+	let writeTextFileError: WriteTextFileErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-write-text-file-not-found", error);
+			writeTextFileError = new WriteTextFileErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-write-text-file-permission-denied", error);
+			writeTextFileError = new WriteTextFileErrorPermissionDenied(error);
 		} else if (error.code === "EISDIR") {
-			return DEither.left("file-system-write-text-file-is-directory", error);
+			writeTextFileError = new WriteTextFileErrorIsDirectory(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-write-text-file-not-directory", error);
+			writeTextFileError = new WriteTextFileErrorNotDirectory(error);
 		} else if (error.code === "ENOSPC") {
-			return DEither.left("file-system-write-text-file-no-space", error);
+			writeTextFileError = new WriteTextFileErrorNoSpace(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-write-text-file-read-only", error);
+			writeTextFileError = new WriteTextFileErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-write-text-file-invalid-argument", error);
+			writeTextFileError = new WriteTextFileErrorInvalidArgument(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-write-text-file-too-many-open-files", error);
+			writeTextFileError = new WriteTextFileErrorTooManyOpenFiles(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-write-text-file-busy", error);
+			writeTextFileError = new WriteTextFileErrorBusy(error);
 		}
 	}
 
-	return DEither.left("file-system-write-text-file-error", error);
-}
-
-function handleDenoWriteTextFileError(error: unknown): WriteTextFileResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-write-text-file-not-found", error);
+	if (writeTextFileError === undefined) {
+		writeTextFileError = new WriteTextFileError(error);
 	}
 
-	if (
+	return DEither.left("file-system-write-text-file-error", writeTextFileError);
+}
+
+function handleDenoWriteTextFileError(error: Error) {
+	let writeTextFileError: WriteTextFileErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		writeTextFileError = new WriteTextFileErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-write-text-file-permission-denied", error);
+		writeTextFileError = new WriteTextFileErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.IsADirectory) {
+		writeTextFileError = new WriteTextFileErrorIsDirectory(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		writeTextFileError = new WriteTextFileErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		writeTextFileError = new WriteTextFileErrorInvalidArgument(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		writeTextFileError = new WriteTextFileErrorBusy(error);
 	}
 
-	if (error instanceof Deno.errors.IsADirectory) {
-		return DEither.left("file-system-write-text-file-is-directory", error);
+	if (writeTextFileError === undefined) {
+		writeTextFileError = new WriteTextFileError(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-write-text-file-not-directory", error);
-	}
-
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-write-text-file-invalid-argument", error);
-	}
-
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-write-text-file-busy", error);
-	}
-
-	return DEither.left("file-system-write-text-file-error", error);
+	return DEither.left("file-system-write-text-file-error", writeTextFileError);
 }
 
 declare module "@scripts/implementor" {

@@ -4,6 +4,7 @@ import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
 import { setBunMock } from "@tests/_utils/bun.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("writeTextFile", () => {
 	afterEach(() => {
@@ -94,13 +95,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-not-found", error);
 	});
 
 	it("returns permission-denied when NODE writeTextFile rejects with EACCES", async() => {
@@ -115,13 +110,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE writeTextFile rejects with EPERM", async() => {
@@ -136,13 +125,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-permission-denied", error);
 	});
 
 	it("returns is-directory when NODE writeTextFile rejects with EISDIR", async() => {
@@ -157,13 +140,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-is-directory", error);
 	});
 
 	it("returns not-directory when NODE writeTextFile rejects with ENOTDIR", async() => {
@@ -178,13 +155,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-not-directory", error);
 	});
 
 	it("returns no-space when NODE writeTextFile rejects with ENOSPC", async() => {
@@ -199,13 +170,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-no-space",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-no-space", error);
 	});
 
 	it("returns read-only when NODE writeTextFile rejects with EROFS", async() => {
@@ -220,13 +185,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE writeTextFile rejects with EINVAL", async() => {
@@ -241,13 +200,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-invalid-argument", error);
 	});
 
 	it("returns too-many-open-files when NODE writeTextFile rejects with EMFILE", async() => {
@@ -262,13 +215,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE writeTextFile rejects with ENFILE", async() => {
@@ -283,13 +230,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-too-many-open-files", error);
 	});
 
 	it("returns busy when NODE writeTextFile rejects with EBUSY", async() => {
@@ -304,13 +245,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-busy", error);
 	});
 
 	it("returns error when NODE writeTextFile rejects with an unknown error", async() => {
@@ -322,13 +257,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-error", error);
 	});
 
 	it("returns error when NODE writeTextFile rejects with an unknown code", async() => {
@@ -343,13 +272,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-error", error);
 	});
 
 	it("returns not-found when DENO writeTextFile rejects with NotFound", async() => {
@@ -361,13 +284,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-not-found", error);
 	});
 
 	it("returns permission-denied when DENO writeTextFile rejects with PermissionDenied", async() => {
@@ -379,13 +296,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO writeTextFile rejects with NotCapable", async() => {
@@ -397,13 +308,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-permission-denied", error);
 	});
 
 	it("returns is-directory when DENO writeTextFile rejects with IsADirectory", async() => {
@@ -415,13 +320,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-is-directory", error);
 	});
 
 	it("returns not-directory when DENO writeTextFile rejects with NotADirectory", async() => {
@@ -433,13 +332,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO writeTextFile rejects with InvalidData", async() => {
@@ -451,13 +344,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-invalid-argument", error);
 	});
 
 	it("returns busy when DENO writeTextFile rejects with Busy", async() => {
@@ -469,13 +356,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-busy", error);
 	});
 
 	it("returns error when DENO writeTextFile rejects with an unknown error", async() => {
@@ -487,13 +368,7 @@ describe("writeTextFile", () => {
 
 		const result = await DSFile.writeTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-text-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-text-file-error", error);
 	});
 
 	it("supports pipeable writeTextFile signature", async() => {

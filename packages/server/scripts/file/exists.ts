@@ -1,60 +1,74 @@
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
+import * as DCommon from "@duplojs/lang/common";
 
-export type ExistsResult = FileSystemEither<
-	| DEither.Right<"exists", void>
-	| DEither.Left<"exists-not-found", unknown>
-	| DEither.Left<"exists-permission-denied", unknown>
-	| DEither.Left<"exists-not-directory", unknown>
-	| DEither.Left<"exists-too-many-open-files", unknown>
-	| DEither.Left<"exists-error", unknown>
->;
+class ExistsErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-exists-not-found", Error) {}
+class ExistsErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-exists-permission-denied", Error) {}
+class ExistsErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-exists-not-directory", Error) {}
+class ExistsErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-exists-too-many-open-files", Error) {}
+class ExistsError extends DCommon.DuploJSError.parentClass("file-system-exists-error", Error) {}
 
-function handleNodeExistsError(error: unknown): ExistsResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type ExistsErrors = (
+	| ExistsErrorNotFound
+	| ExistsErrorPermissionDenied
+	| ExistsErrorNotDirectory
+	| ExistsErrorTooManyOpenFiles
+	| ExistsError
+);
+
+export type ExistsResult = (
+	| DEither.Right<"file-system-exists", void>
+	| DEither.Left<"file-system-exists-error", ExistsErrors>
+);
+
+function handleNodeExistsError(error: Error) {
+	let existsError: ExistsErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-exists-not-found", error);
+			existsError = new ExistsErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-exists-permission-denied", error);
+			existsError = new ExistsErrorPermissionDenied(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-exists-not-directory", error);
+			existsError = new ExistsErrorNotDirectory(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-exists-too-many-open-files", error);
+			existsError = new ExistsErrorTooManyOpenFiles(error);
 		}
 	}
 
-	return DEither.left("file-system-exists-error", error);
-}
-
-function handleDenoExistsError(error: unknown): ExistsResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-exists-not-found", error);
+	if (existsError === undefined) {
+		existsError = new ExistsError(error);
 	}
 
-	if (
+	return DEither.left("file-system-exists-error", existsError);
+}
+
+function handleDenoExistsError(error: Error) {
+	let existsError: ExistsErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		existsError = new ExistsErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-exists-permission-denied", error);
+		existsError = new ExistsErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		existsError = new ExistsErrorNotDirectory(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-exists-not-directory", error);
+	if (existsError === undefined) {
+		existsError = new ExistsError(error);
 	}
 
-	return DEither.left("file-system-exists-error", error);
+	return DEither.left("file-system-exists-error", existsError);
 }
 
 declare module "@scripts/implementor" {
@@ -81,7 +95,10 @@ export const exists = implementFunction(
 			.then(
 				(value) => value
 					? DEither.right("file-system-exists")
-					: DEither.left("file-system-exists-not-found", new Error("Path does not exist")),
+					: DEither.left(
+						"file-system-exists-error",
+						new ExistsErrorNotFound(new Error("Path does not exist")),
+					),
 			)
 			.catch(handleNodeExistsError),
 	},

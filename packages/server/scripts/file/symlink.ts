@@ -1,7 +1,7 @@
+import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
 
 export interface SymlinkParams {
 
@@ -13,82 +13,94 @@ export interface SymlinkParams {
 	type: "file" | "dir" | "junction";
 }
 
-export type SymlinkResult = FileSystemEither<
-	| DEither.Right<"symlink", void>
-	| DEither.Left<"symlink-not-found", unknown>
-	| DEither.Left<"symlink-permission-denied", unknown>
-	| DEither.Left<"symlink-already-exists", unknown>
-	| DEither.Left<"symlink-not-directory", unknown>
-	| DEither.Left<"symlink-read-only", unknown>
-	| DEither.Left<"symlink-invalid-argument", unknown>
-	| DEither.Left<"symlink-too-many-open-files", unknown>
-	| DEither.Left<"symlink-busy", unknown>
-	| DEither.Left<"symlink-error", unknown>
->;
+class SymlinkErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-symlink-not-found", Error) {}
+class SymlinkErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-symlink-permission-denied", Error) {}
+class SymlinkErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-symlink-already-exists", Error) {}
+class SymlinkErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-symlink-not-directory", Error) {}
+class SymlinkErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-symlink-read-only", Error) {}
+class SymlinkErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-symlink-invalid-argument", Error) {}
+class SymlinkErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-symlink-too-many-open-files", Error) {}
+class SymlinkErrorBusy extends DCommon.DuploJSError.parentClass("file-system-symlink-busy", Error) {}
+class SymlinkError extends DCommon.DuploJSError.parentClass("file-system-symlink-error", Error) {}
 
-function handleNodeSymlinkError(error: unknown): SymlinkResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type SymlinkErrors = (
+	| SymlinkErrorNotFound
+	| SymlinkErrorPermissionDenied
+	| SymlinkErrorAlreadyExists
+	| SymlinkErrorNotDirectory
+	| SymlinkErrorReadOnly
+	| SymlinkErrorInvalidArgument
+	| SymlinkErrorTooManyOpenFiles
+	| SymlinkErrorBusy
+	| SymlinkError
+);
+
+export type SymlinkResult = (
+	| DEither.Right<"file-system-symlink", void>
+	| DEither.Left<"file-system-symlink-error", SymlinkErrors>
+);
+
+function handleNodeSymlinkError(error: Error) {
+	let symlinkError: SymlinkErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-symlink-not-found", error);
+			symlinkError = new SymlinkErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-symlink-permission-denied", error);
+			symlinkError = new SymlinkErrorPermissionDenied(error);
 		} else if (error.code === "EEXIST") {
-			return DEither.left("file-system-symlink-already-exists", error);
+			symlinkError = new SymlinkErrorAlreadyExists(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-symlink-not-directory", error);
+			symlinkError = new SymlinkErrorNotDirectory(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-symlink-read-only", error);
+			symlinkError = new SymlinkErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-symlink-invalid-argument", error);
+			symlinkError = new SymlinkErrorInvalidArgument(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-symlink-too-many-open-files", error);
+			symlinkError = new SymlinkErrorTooManyOpenFiles(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-symlink-busy", error);
+			symlinkError = new SymlinkErrorBusy(error);
 		}
 	}
 
-	return DEither.left("file-system-symlink-error", error);
-}
-
-function handleDenoSymlinkError(error: unknown): SymlinkResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-symlink-not-found", error);
+	if (symlinkError === undefined) {
+		symlinkError = new SymlinkError(error);
 	}
 
-	if (
+	return DEither.left("file-system-symlink-error", symlinkError);
+}
+
+function handleDenoSymlinkError(error: Error) {
+	let symlinkError: SymlinkErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		symlinkError = new SymlinkErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-symlink-permission-denied", error);
+		symlinkError = new SymlinkErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.AlreadyExists) {
+		symlinkError = new SymlinkErrorAlreadyExists(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		symlinkError = new SymlinkErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		symlinkError = new SymlinkErrorInvalidArgument(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		symlinkError = new SymlinkErrorBusy(error);
 	}
 
-	if (error instanceof Deno.errors.AlreadyExists) {
-		return DEither.left("file-system-symlink-already-exists", error);
+	if (symlinkError === undefined) {
+		symlinkError = new SymlinkError(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-symlink-not-directory", error);
-	}
-
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-symlink-invalid-argument", error);
-	}
-
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-symlink-busy", error);
-	}
-
-	return DEither.left("file-system-symlink-error", error);
+	return DEither.left("file-system-symlink-error", symlinkError);
 }
 
 declare module "@scripts/implementor" {

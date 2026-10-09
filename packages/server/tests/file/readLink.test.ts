@@ -4,6 +4,7 @@ import type * as DPath from "@duplojs/lang/path";
 import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("readLink", () => {
 	afterEach(() => {
@@ -69,13 +70,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-not-found", error);
 	});
 
 	it("returns permission-denied when NODE readLink rejects with EACCES", async() => {
@@ -90,13 +85,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE readLink rejects with EPERM", async() => {
@@ -111,13 +100,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-permission-denied", error);
 	});
 
 	it("returns invalid-argument when NODE readLink rejects with EINVAL", async() => {
@@ -132,13 +115,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-invalid-argument", error);
 	});
 
 	it("returns not-directory when NODE readLink rejects with ENOTDIR", async() => {
@@ -153,13 +130,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-not-directory", error);
 	});
 
 	it("returns too-many-open-files when NODE readLink rejects with EMFILE", async() => {
@@ -174,13 +145,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE readLink rejects with ENFILE", async() => {
@@ -195,13 +160,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-too-many-open-files", error);
 	});
 
 	it("returns error when NODE readLink rejects with an unknown error", async() => {
@@ -213,13 +172,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-error", error);
 	});
 
 	it("returns error when NODE readLink rejects with an unknown code", async() => {
@@ -234,13 +187,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-error", error);
 	});
 
 	it("returns not-found when DENO readLink rejects with NotFound", async() => {
@@ -252,13 +199,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-not-found", error);
 	});
 
 	it("returns permission-denied when DENO readLink rejects with PermissionDenied", async() => {
@@ -270,13 +211,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO readLink rejects with NotCapable", async() => {
@@ -288,13 +223,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-permission-denied", error);
 	});
 
 	it("returns invalid-argument when DENO readLink rejects with InvalidData", async() => {
@@ -306,13 +235,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-invalid-argument", error);
 	});
 
 	it("returns not-directory when DENO readLink rejects with NotADirectory", async() => {
@@ -324,13 +247,7 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-not-directory", error);
 	});
 
 	it("returns error when DENO readLink rejects with an unknown error", async() => {
@@ -342,12 +259,6 @@ describe("readLink", () => {
 
 		const result = await DSFile.readLink(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-link-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-link-error", error);
 	});
 });

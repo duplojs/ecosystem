@@ -5,6 +5,7 @@ import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
 import { setBunMock } from "@tests/_utils/bun.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("readTextFile", () => {
 	afterEach(() => {
@@ -101,13 +102,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-not-found", error);
 	});
 
 	it("returns permission-denied when NODE readTextFile rejects with EACCES", async() => {
@@ -122,13 +117,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE readTextFile rejects with EPERM", async() => {
@@ -143,13 +132,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-permission-denied", error);
 	});
 
 	it("returns is-directory when NODE readTextFile rejects with EISDIR", async() => {
@@ -164,13 +147,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-is-directory", error);
 	});
 
 	it("returns not-directory when NODE readTextFile rejects with ENOTDIR", async() => {
@@ -185,13 +162,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-not-directory", error);
 	});
 
 	it("returns too-many-open-files when NODE readTextFile rejects with EMFILE", async() => {
@@ -206,13 +177,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE readTextFile rejects with ENFILE", async() => {
@@ -227,13 +192,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-too-many-open-files", error);
 	});
 
 	it("returns busy when NODE readTextFile rejects with EBUSY", async() => {
@@ -248,13 +207,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-busy", error);
 	});
 
 	it("returns error when NODE readTextFile rejects with an unknown error", async() => {
@@ -266,13 +219,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-error", error);
 	});
 
 	it("returns error when NODE readTextFile rejects with an unknown code", async() => {
@@ -287,13 +234,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-error", error);
 	});
 
 	it("returns not-found when DENO readTextFile rejects with NotFound", async() => {
@@ -305,13 +246,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-not-found", error);
 	});
 
 	it("returns permission-denied when DENO readTextFile rejects with PermissionDenied", async() => {
@@ -323,13 +258,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO readTextFile rejects with NotCapable", async() => {
@@ -341,13 +270,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-permission-denied", error);
 	});
 
 	it("returns is-directory when DENO readTextFile rejects with IsADirectory", async() => {
@@ -359,13 +282,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-is-directory", error);
 	});
 
 	it("returns not-directory when DENO readTextFile rejects with NotADirectory", async() => {
@@ -377,13 +294,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-not-directory", error);
 	});
 
 	it("returns busy when DENO readTextFile rejects with Busy", async() => {
@@ -395,13 +306,7 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-busy", error);
 	});
 
 	it("returns error when DENO readTextFile rejects with an unknown error", async() => {
@@ -413,12 +318,6 @@ describe("readTextFile", () => {
 
 		const result = await DSFile.readTextFile(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-read-text-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-read-text-file-error", error);
 	});
 });

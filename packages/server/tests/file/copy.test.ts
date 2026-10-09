@@ -2,6 +2,7 @@ import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("copy", () => {
 	afterEach(() => {
@@ -42,13 +43,7 @@ describe("copy", () => {
 
 		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-copy-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-copy-not-found", error);
 	});
 
 	it("returns permission-denied when NODE copy rejects with EACCES", async() => {
@@ -63,13 +58,7 @@ describe("copy", () => {
 
 		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-copy-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-copy-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE copy rejects with EPERM", async() => {
@@ -84,13 +73,7 @@ describe("copy", () => {
 
 		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-copy-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-copy-permission-denied", error);
 	});
 
 	it("returns already-exists when NODE copy rejects with EEXIST", async() => {
@@ -105,13 +88,7 @@ describe("copy", () => {
 
 		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-copy-already-exists",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-copy-already-exists", error);
 	});
 
 	it("returns not-directory when NODE copy rejects with ENOTDIR", async() => {
@@ -126,13 +103,7 @@ describe("copy", () => {
 
 		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-copy-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-copy-not-directory", error);
 	});
 
 	it("returns no-space when NODE copy rejects with ENOSPC", async() => {
@@ -147,13 +118,7 @@ describe("copy", () => {
 
 		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-copy-no-space",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-copy-no-space", error);
 	});
 
 	it("returns read-only when NODE copy rejects with EROFS", async() => {
@@ -168,13 +133,7 @@ describe("copy", () => {
 
 		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-copy-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-copy-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE copy rejects with EINVAL", async() => {
@@ -189,13 +148,7 @@ describe("copy", () => {
 
 		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-copy-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-copy-invalid-argument", error);
 	});
 
 	it("returns too-many-open-files when NODE copy rejects with EMFILE", async() => {
@@ -210,13 +163,7 @@ describe("copy", () => {
 
 		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-copy-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-copy-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE copy rejects with ENFILE", async() => {
@@ -231,13 +178,7 @@ describe("copy", () => {
 
 		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-copy-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-copy-too-many-open-files", error);
 	});
 
 	it("returns busy when NODE copy rejects with EBUSY", async() => {
@@ -252,13 +193,7 @@ describe("copy", () => {
 
 		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-copy-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-copy-busy", error);
 	});
 
 	it("returns error when NODE copy rejects with an unknown error", async() => {
@@ -270,13 +205,7 @@ describe("copy", () => {
 
 		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-copy-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-copy-error", error);
 	});
 
 	it("returns error when NODE copy rejects with an unknown code", async() => {
@@ -291,13 +220,7 @@ describe("copy", () => {
 
 		const result = await DSFile.copy(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-copy-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-copy-error", error);
 	});
 
 	it("supports pipeable copy signature", async() => {

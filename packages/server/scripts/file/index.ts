@@ -28,7 +28,6 @@ export * from "./setTime";
 export * from "./stat";
 export * from "./symlink";
 export * from "./truncate";
-export type * from "./types";
 export * from "./unknownEntryInterface";
 export * from "./walkDirectory";
 export * from "./writeFile";

@@ -5,6 +5,7 @@ import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
 import { setBunMock } from "@tests/_utils/bun.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("exists", () => {
 	afterEach(() => {
@@ -105,13 +106,7 @@ describe("exists", () => {
 
 		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-exists-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-exists-not-found", error);
 	});
 
 	it("returns permission-denied when NODE exists rejects with EACCES", async() => {
@@ -126,13 +121,7 @@ describe("exists", () => {
 
 		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-exists-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-exists-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE exists rejects with EPERM", async() => {
@@ -147,13 +136,7 @@ describe("exists", () => {
 
 		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-exists-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-exists-permission-denied", error);
 	});
 
 	it("returns not-directory when NODE exists rejects with ENOTDIR", async() => {
@@ -168,13 +151,7 @@ describe("exists", () => {
 
 		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-exists-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-exists-not-directory", error);
 	});
 
 	it("returns too-many-open-files when NODE exists rejects with EMFILE", async() => {
@@ -189,13 +166,7 @@ describe("exists", () => {
 
 		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-exists-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-exists-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE exists rejects with ENFILE", async() => {
@@ -210,13 +181,7 @@ describe("exists", () => {
 
 		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-exists-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-exists-too-many-open-files", error);
 	});
 
 	it("returns error when NODE exists rejects with an unknown error", async() => {
@@ -228,13 +193,7 @@ describe("exists", () => {
 
 		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-exists-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-exists-error", error);
 	});
 
 	it("returns error when NODE exists rejects with an unknown code", async() => {
@@ -249,13 +208,7 @@ describe("exists", () => {
 
 		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-exists-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-exists-error", error);
 	});
 
 	it("returns not-found when DENO exists rejects with NotFound", async() => {
@@ -267,13 +220,7 @@ describe("exists", () => {
 
 		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-exists-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-exists-not-found", error);
 	});
 
 	it("returns permission-denied when DENO exists rejects with PermissionDenied", async() => {
@@ -285,13 +232,7 @@ describe("exists", () => {
 
 		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-exists-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-exists-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO exists rejects with NotCapable", async() => {
@@ -303,13 +244,7 @@ describe("exists", () => {
 
 		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-exists-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-exists-permission-denied", error);
 	});
 
 	it("returns not-directory when DENO exists rejects with NotADirectory", async() => {
@@ -321,13 +256,7 @@ describe("exists", () => {
 
 		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-exists-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-exists-not-directory", error);
 	});
 
 	it("returns error when DENO exists rejects with an unknown error", async() => {
@@ -339,12 +268,6 @@ describe("exists", () => {
 
 		const result = await DSFile.exists(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-exists-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-exists-error", error);
 	});
 });

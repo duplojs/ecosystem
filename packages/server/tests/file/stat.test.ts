@@ -5,6 +5,7 @@ import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
 import { setBunMock } from "@tests/_utils/bun.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 interface DenoFileInfoMock {
 	isFile: boolean;
@@ -243,13 +244,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-not-found", error);
 	});
 
 	it("returns permission-denied when NODE stat rejects with EACCES", async() => {
@@ -264,13 +259,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE stat rejects with EPERM", async() => {
@@ -285,13 +274,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-permission-denied", error);
 	});
 
 	it("returns not-directory when NODE stat rejects with ENOTDIR", async() => {
@@ -306,13 +289,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-not-directory", error);
 	});
 
 	it("returns too-many-open-files when NODE stat rejects with EMFILE", async() => {
@@ -327,13 +304,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE stat rejects with ENFILE", async() => {
@@ -348,13 +319,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-too-many-open-files", error);
 	});
 
 	it("returns busy when NODE stat rejects with EBUSY", async() => {
@@ -369,13 +334,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-busy", error);
 	});
 
 	it("returns error when NODE stat rejects with an unknown error", async() => {
@@ -387,13 +346,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-error", error);
 	});
 
 	it("returns error when NODE stat rejects with an unknown code", async() => {
@@ -408,13 +361,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-error", error);
 	});
 
 	it("returns not-found when DENO stat rejects with NotFound", async() => {
@@ -426,13 +373,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-not-found", error);
 	});
 
 	it("returns permission-denied when DENO stat rejects with PermissionDenied", async() => {
@@ -444,13 +385,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO stat rejects with NotCapable", async() => {
@@ -462,13 +397,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-permission-denied", error);
 	});
 
 	it("returns not-directory when DENO stat rejects with NotADirectory", async() => {
@@ -480,13 +409,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-not-directory", error);
 	});
 
 	it("returns busy when DENO stat rejects with Busy", async() => {
@@ -498,13 +421,7 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-busy", error);
 	});
 
 	it("returns error when DENO stat rejects with an unknown error", async() => {
@@ -516,12 +433,6 @@ describe("stat", () => {
 
 		const result = await DSFile.stat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-stat-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-stat-error", error);
 	});
 });

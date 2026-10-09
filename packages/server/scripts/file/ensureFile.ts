@@ -1,82 +1,95 @@
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
+import * as DCommon from "@duplojs/lang/common";
 
-export type EnsureFileResult = FileSystemEither<
-	| DEither.Right<"ensure-file", void>
-	| DEither.Left<"ensure-file-permission-denied", unknown>
-	| DEither.Left<"ensure-file-is-directory", unknown>
-	| DEither.Left<"ensure-file-not-directory", unknown>
-	| DEither.Left<"ensure-file-no-space", unknown>
-	| DEither.Left<"ensure-file-read-only", unknown>
-	| DEither.Left<"ensure-file-invalid-argument", unknown>
-	| DEither.Left<"ensure-file-too-many-open-files", unknown>
-	| DEither.Left<"ensure-file-busy", unknown>
-	| DEither.Left<"ensure-file-error", unknown>
->;
+class EnsureFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-ensure-file-permission-denied", Error) {}
+class EnsureFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-ensure-file-is-directory", Error) {}
+class EnsureFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-ensure-file-not-directory", Error) {}
+class EnsureFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-ensure-file-no-space", Error) {}
+class EnsureFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-ensure-file-read-only", Error) {}
+class EnsureFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-ensure-file-invalid-argument", Error) {}
+class EnsureFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-ensure-file-too-many-open-files", Error) {}
+class EnsureFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-ensure-file-busy", Error) {}
+class EnsureFileError extends DCommon.DuploJSError.parentClass("file-system-ensure-file-error", Error) {}
 
-function handleNodeEnsureFileError(error: unknown): EnsureFileResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type EnsureFileErrors = (
+	| EnsureFileErrorPermissionDenied
+	| EnsureFileErrorIsDirectory
+	| EnsureFileErrorNotDirectory
+	| EnsureFileErrorNoSpace
+	| EnsureFileErrorReadOnly
+	| EnsureFileErrorInvalidArgument
+	| EnsureFileErrorTooManyOpenFiles
+	| EnsureFileErrorBusy
+	| EnsureFileError
+);
+
+export type EnsureFileResult = (
+	| DEither.Right<"file-system-ensure-file", void>
+	| DEither.Left<"file-system-ensure-file-error", EnsureFileErrors>
+);
+
+function handleNodeEnsureFileError(error: Error) {
+	let ensureFileError: EnsureFileErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-ensure-file-permission-denied", error);
+			ensureFileError = new EnsureFileErrorPermissionDenied(error);
 		} else if (error.code === "EISDIR") {
-			return DEither.left("file-system-ensure-file-is-directory", error);
+			ensureFileError = new EnsureFileErrorIsDirectory(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-ensure-file-not-directory", error);
+			ensureFileError = new EnsureFileErrorNotDirectory(error);
 		} else if (error.code === "ENOSPC") {
-			return DEither.left("file-system-ensure-file-no-space", error);
+			ensureFileError = new EnsureFileErrorNoSpace(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-ensure-file-read-only", error);
+			ensureFileError = new EnsureFileErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-ensure-file-invalid-argument", error);
+			ensureFileError = new EnsureFileErrorInvalidArgument(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-ensure-file-too-many-open-files", error);
+			ensureFileError = new EnsureFileErrorTooManyOpenFiles(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-ensure-file-busy", error);
+			ensureFileError = new EnsureFileErrorBusy(error);
 		}
 	}
 
-	return DEither.left("file-system-ensure-file-error", error);
+	if (ensureFileError === undefined) {
+		ensureFileError = new EnsureFileError(error);
+	}
+
+	return DEither.left("file-system-ensure-file-error", ensureFileError);
 }
 
-function handleDenoEnsureFileError(error: unknown): EnsureFileResult {
+function handleDenoEnsureFileError(error: Error) {
+	let ensureFileError: EnsureFileErrors | undefined = undefined;
+
 	if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-ensure-file-permission-denied", error);
+		ensureFileError = new EnsureFileErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.IsADirectory) {
+		ensureFileError = new EnsureFileErrorIsDirectory(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		ensureFileError = new EnsureFileErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		ensureFileError = new EnsureFileErrorInvalidArgument(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		ensureFileError = new EnsureFileErrorBusy(error);
 	}
 
-	if (error instanceof Deno.errors.IsADirectory) {
-		return DEither.left("file-system-ensure-file-is-directory", error);
+	if (ensureFileError === undefined) {
+		ensureFileError = new EnsureFileError(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-ensure-file-not-directory", error);
-	}
-
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-ensure-file-invalid-argument", error);
-	}
-
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-ensure-file-busy", error);
-	}
-
-	return DEither.left("file-system-ensure-file-error", error);
+	return DEither.left("file-system-ensure-file-error", ensureFileError);
 }
-
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		ensureFile(path: string & DPath.Path): Promise<EnsureFileResult>;

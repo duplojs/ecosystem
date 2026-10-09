@@ -4,7 +4,6 @@ import * as DEither from "@duplojs/lang/either";
 import * as DChrono from "@duplojs/lang/chrono";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import type { Stats } from "node:fs";
-import type { FileSystemEither } from "./types";
 
 export interface StatInfo {
 
@@ -46,65 +45,78 @@ export interface StatInfo {
 	isSocket: boolean | null;
 }
 
-export type StatResult = FileSystemEither<
-	| DEither.Right<"stat", StatInfo>
-	| DEither.Left<"stat-not-found", unknown>
-	| DEither.Left<"stat-permission-denied", unknown>
-	| DEither.Left<"stat-not-directory", unknown>
-	| DEither.Left<"stat-too-many-open-files", unknown>
-	| DEither.Left<"stat-busy", unknown>
-	| DEither.Left<"stat-error", unknown>
->;
+class StatErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-stat-not-found", Error) {}
+class StatErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-stat-permission-denied", Error) {}
+class StatErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-stat-not-directory", Error) {}
+class StatErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-stat-too-many-open-files", Error) {}
+class StatErrorBusy extends DCommon.DuploJSError.parentClass("file-system-stat-busy", Error) {}
+class StatError extends DCommon.DuploJSError.parentClass("file-system-stat-error", Error) {}
 
-function handleNodeStatError(error: unknown): StatResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type StatErrors = (
+	| StatErrorNotFound
+	| StatErrorPermissionDenied
+	| StatErrorNotDirectory
+	| StatErrorTooManyOpenFiles
+	| StatErrorBusy
+	| StatError
+);
+
+export type StatResult = (
+	| DEither.Right<"file-system-stat", StatInfo>
+	| DEither.Left<"file-system-stat-error", StatErrors>
+);
+
+function handleNodeStatError(error: Error) {
+	let statError: StatErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-stat-not-found", error);
+			statError = new StatErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-stat-permission-denied", error);
+			statError = new StatErrorPermissionDenied(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-stat-not-directory", error);
+			statError = new StatErrorNotDirectory(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-stat-too-many-open-files", error);
+			statError = new StatErrorTooManyOpenFiles(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-stat-busy", error);
+			statError = new StatErrorBusy(error);
 		}
 	}
 
-	return DEither.left("file-system-stat-error", error);
-}
-
-function handleDenoStatError(error: unknown): StatResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-stat-not-found", error);
+	if (statError === undefined) {
+		statError = new StatError(error);
 	}
 
-	if (
+	return DEither.left("file-system-stat-error", statError);
+}
+
+function handleDenoStatError(error: Error) {
+	let statError: StatErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		statError = new StatErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-stat-permission-denied", error);
+		statError = new StatErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		statError = new StatErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		statError = new StatErrorBusy(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-stat-not-directory", error);
+	if (statError === undefined) {
+		statError = new StatError(error);
 	}
 
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-stat-busy", error);
-	}
-
-	return DEither.left("file-system-stat-error", error);
+	return DEither.left("file-system-stat-error", statError);
 }
 
 declare module "@scripts/implementor" {

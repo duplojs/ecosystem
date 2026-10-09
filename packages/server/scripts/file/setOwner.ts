@@ -1,69 +1,82 @@
+import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
 
 export interface SetOwnerParams {
 	userId: number;
 	groupId: number;
 }
 
-export type SetOwnerResult = FileSystemEither<
-	| DEither.Right<"set-owner", void>
-	| DEither.Left<"set-owner-not-found", unknown>
-	| DEither.Left<"set-owner-permission-denied", unknown>
-	| DEither.Left<"set-owner-not-directory", unknown>
-	| DEither.Left<"set-owner-read-only", unknown>
-	| DEither.Left<"set-owner-invalid-argument", unknown>
-	| DEither.Left<"set-owner-error", unknown>
->;
+class SetOwnerErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-set-owner-not-found", Error) {}
+class SetOwnerErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-set-owner-permission-denied", Error) {}
+class SetOwnerErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-set-owner-not-directory", Error) {}
+class SetOwnerErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-set-owner-read-only", Error) {}
+class SetOwnerErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-set-owner-invalid-argument", Error) {}
+class SetOwnerError extends DCommon.DuploJSError.parentClass("file-system-set-owner-error", Error) {}
 
-function handleNodeSetOwnerError(error: unknown): SetOwnerResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type SetOwnerErrors = (
+	| SetOwnerErrorNotFound
+	| SetOwnerErrorPermissionDenied
+	| SetOwnerErrorNotDirectory
+	| SetOwnerErrorReadOnly
+	| SetOwnerErrorInvalidArgument
+	| SetOwnerError
+);
+
+export type SetOwnerResult = (
+	| DEither.Right<"file-system-set-owner", void>
+	| DEither.Left<"file-system-set-owner-error", SetOwnerErrors>
+);
+
+function handleNodeSetOwnerError(error: Error) {
+	let setOwnerError: SetOwnerErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-set-owner-not-found", error);
+			setOwnerError = new SetOwnerErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-set-owner-permission-denied", error);
+			setOwnerError = new SetOwnerErrorPermissionDenied(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-set-owner-not-directory", error);
+			setOwnerError = new SetOwnerErrorNotDirectory(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-set-owner-read-only", error);
+			setOwnerError = new SetOwnerErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-set-owner-invalid-argument", error);
+			setOwnerError = new SetOwnerErrorInvalidArgument(error);
 		}
 	}
 
-	return DEither.left("file-system-set-owner-error", error);
-}
-
-function handleDenoSetOwnerError(error: unknown): SetOwnerResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-set-owner-not-found", error);
+	if (setOwnerError === undefined) {
+		setOwnerError = new SetOwnerError(error);
 	}
 
-	if (
+	return DEither.left("file-system-set-owner-error", setOwnerError);
+}
+
+function handleDenoSetOwnerError(error: Error) {
+	let setOwnerError: SetOwnerErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		setOwnerError = new SetOwnerErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-set-owner-permission-denied", error);
+		setOwnerError = new SetOwnerErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		setOwnerError = new SetOwnerErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		setOwnerError = new SetOwnerErrorInvalidArgument(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-set-owner-not-directory", error);
+	if (setOwnerError === undefined) {
+		setOwnerError = new SetOwnerError(error);
 	}
 
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-set-owner-invalid-argument", error);
-	}
-
-	return DEither.left("file-system-set-owner-error", error);
+	return DEither.left("file-system-set-owner-error", setOwnerError);
 }
 
 declare module "@scripts/implementor" {

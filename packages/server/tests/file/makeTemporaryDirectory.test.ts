@@ -2,6 +2,7 @@ import * as DEither from "@duplojs/lang/either";
 import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("makeTemporaryDirectory", () => {
 	afterEach(() => {
@@ -67,13 +68,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE makeTemporaryDirectory rejects with EPERM", async() => {
@@ -88,13 +83,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-permission-denied", error);
 	});
 
 	it("returns not-directory when NODE makeTemporaryDirectory rejects with ENOTDIR", async() => {
@@ -109,13 +98,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-not-directory", error);
 	});
 
 	it("returns no-space when NODE makeTemporaryDirectory rejects with ENOSPC", async() => {
@@ -130,13 +113,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-no-space",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-no-space", error);
 	});
 
 	it("returns read-only when NODE makeTemporaryDirectory rejects with EROFS", async() => {
@@ -151,13 +128,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE makeTemporaryDirectory rejects with EINVAL", async() => {
@@ -172,13 +143,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-invalid-argument", error);
 	});
 
 	it("returns too-many-open-files when NODE makeTemporaryDirectory rejects with EMFILE", async() => {
@@ -193,13 +158,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE makeTemporaryDirectory rejects with ENFILE", async() => {
@@ -214,13 +173,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-too-many-open-files", error);
 	});
 
 	it("returns error when NODE makeTemporaryDirectory rejects with an unknown error", async() => {
@@ -232,13 +185,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-error", error);
 	});
 
 	it("returns error when NODE makeTemporaryDirectory rejects with an unknown code", async() => {
@@ -253,13 +200,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-error", error);
 	});
 
 	it("returns permission-denied when DENO makeTemporaryDirectory rejects with PermissionDenied", async() => {
@@ -271,13 +212,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO makeTemporaryDirectory rejects with NotCapable", async() => {
@@ -289,13 +224,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-permission-denied", error);
 	});
 
 	it("returns not-directory when DENO makeTemporaryDirectory rejects with NotADirectory", async() => {
@@ -307,13 +236,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO makeTemporaryDirectory rejects with InvalidData", async() => {
@@ -325,13 +248,7 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-invalid-argument", error);
 	});
 
 	it("returns error when DENO makeTemporaryDirectory rejects with an unknown error", async() => {
@@ -343,12 +260,6 @@ describe("makeTemporaryDirectory", () => {
 
 		const result = await DSFile.makeTemporaryDirectory("prefix-");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-directory-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-directory-error", error);
 	});
 });

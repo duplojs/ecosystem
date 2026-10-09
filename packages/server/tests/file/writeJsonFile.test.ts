@@ -4,6 +4,7 @@ import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
 import { setBunMock } from "@tests/_utils/bun.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("writeJsonFile", () => {
 	afterEach(() => {
@@ -144,13 +145,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-not-found", error);
 	});
 
 	it("returns permission-denied when NODE writeJsonFile rejects with EACCES", async() => {
@@ -165,13 +160,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE writeJsonFile rejects with EPERM", async() => {
@@ -186,13 +175,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-permission-denied", error);
 	});
 
 	it("returns is-directory when NODE writeJsonFile rejects with EISDIR", async() => {
@@ -207,13 +190,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-is-directory", error);
 	});
 
 	it("returns not-directory when NODE writeJsonFile rejects with ENOTDIR", async() => {
@@ -228,13 +205,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-not-directory", error);
 	});
 
 	it("returns no-space when NODE writeJsonFile rejects with ENOSPC", async() => {
@@ -249,13 +220,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-no-space",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-no-space", error);
 	});
 
 	it("returns read-only when NODE writeJsonFile rejects with EROFS", async() => {
@@ -270,13 +235,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE writeJsonFile rejects with EINVAL", async() => {
@@ -291,13 +250,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-invalid-argument", error);
 	});
 
 	it("returns too-many-open-files when NODE writeJsonFile rejects with EMFILE", async() => {
@@ -312,13 +265,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE writeJsonFile rejects with ENFILE", async() => {
@@ -333,13 +280,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-too-many-open-files", error);
 	});
 
 	it("returns busy when NODE writeJsonFile rejects with EBUSY", async() => {
@@ -354,13 +295,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-busy", error);
 	});
 
 	it("returns error when NODE writeJsonFile rejects with an unknown error", async() => {
@@ -372,13 +307,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-error", error);
 	});
 
 	it("returns error when NODE writeJsonFile rejects with an unknown code", async() => {
@@ -393,13 +322,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-error", error);
 	});
 
 	it("returns not-found when DENO writeJsonFile rejects with NotFound", async() => {
@@ -411,13 +334,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-not-found", error);
 	});
 
 	it("returns permission-denied when DENO writeJsonFile rejects with PermissionDenied", async() => {
@@ -429,13 +346,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO writeJsonFile rejects with NotCapable", async() => {
@@ -447,13 +358,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-permission-denied", error);
 	});
 
 	it("returns is-directory when DENO writeJsonFile rejects with IsADirectory", async() => {
@@ -465,13 +370,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-is-directory", error);
 	});
 
 	it("returns not-directory when DENO writeJsonFile rejects with NotADirectory", async() => {
@@ -483,13 +382,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO writeJsonFile rejects with InvalidData", async() => {
@@ -501,13 +394,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-invalid-argument", error);
 	});
 
 	it("returns busy when DENO writeJsonFile rejects with Busy", async() => {
@@ -519,13 +406,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-busy", error);
 	});
 
 	it("returns error when DENO writeJsonFile rejects with an unknown error", async() => {
@@ -537,13 +418,7 @@ describe("writeJsonFile", () => {
 
 		const result = await DSFile.writeJsonFile(DCommon.infer("/tmp/mock"), { value: true });
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-write-json-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-write-json-file-error", error);
 	});
 
 	it("supports pipeable writeJsonFile signature", async() => {

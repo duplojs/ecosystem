@@ -1,67 +1,80 @@
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
+import * as DCommon from "@duplojs/lang/common";
 
-export type ReadLinkResult = FileSystemEither<
-	| DEither.Right<"read-link", string>
-	| DEither.Left<"read-link-not-found", unknown>
-	| DEither.Left<"read-link-permission-denied", unknown>
-	| DEither.Left<"read-link-invalid-argument", unknown>
-	| DEither.Left<"read-link-not-directory", unknown>
-	| DEither.Left<"read-link-too-many-open-files", unknown>
-	| DEither.Left<"read-link-error", unknown>
->;
+class ReadLinkErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-link-not-found", Error) {}
+class ReadLinkErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-link-permission-denied", Error) {}
+class ReadLinkErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-read-link-invalid-argument", Error) {}
+class ReadLinkErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-read-link-not-directory", Error) {}
+class ReadLinkErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-read-link-too-many-open-files", Error) {}
+class ReadLinkError extends DCommon.DuploJSError.parentClass("file-system-read-link-error", Error) {}
 
-function handleNodeReadLinkError(error: unknown): ReadLinkResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type ReadLinkErrors = (
+	| ReadLinkErrorNotFound
+	| ReadLinkErrorPermissionDenied
+	| ReadLinkErrorInvalidArgument
+	| ReadLinkErrorNotDirectory
+	| ReadLinkErrorTooManyOpenFiles
+	| ReadLinkError
+);
+
+export type ReadLinkResult = (
+	| DEither.Right<"file-system-read-link", string>
+	| DEither.Left<"file-system-read-link-error", ReadLinkErrors>
+);
+
+function handleNodeReadLinkError(error: Error) {
+	let readLinkError: ReadLinkErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-read-link-not-found", error);
+			readLinkError = new ReadLinkErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-read-link-permission-denied", error);
+			readLinkError = new ReadLinkErrorPermissionDenied(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-read-link-invalid-argument", error);
+			readLinkError = new ReadLinkErrorInvalidArgument(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-read-link-not-directory", error);
+			readLinkError = new ReadLinkErrorNotDirectory(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-read-link-too-many-open-files", error);
+			readLinkError = new ReadLinkErrorTooManyOpenFiles(error);
 		}
 	}
 
-	return DEither.left("file-system-read-link-error", error);
-}
-
-function handleDenoReadLinkError(error: unknown): ReadLinkResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-read-link-not-found", error);
+	if (readLinkError === undefined) {
+		readLinkError = new ReadLinkError(error);
 	}
 
-	if (
+	return DEither.left("file-system-read-link-error", readLinkError);
+}
+
+function handleDenoReadLinkError(error: Error) {
+	let readLinkError: ReadLinkErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		readLinkError = new ReadLinkErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-read-link-permission-denied", error);
+		readLinkError = new ReadLinkErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		readLinkError = new ReadLinkErrorInvalidArgument(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		readLinkError = new ReadLinkErrorNotDirectory(error);
 	}
 
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-read-link-invalid-argument", error);
+	if (readLinkError === undefined) {
+		readLinkError = new ReadLinkError(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-read-link-not-directory", error);
-	}
-
-	return DEither.left("file-system-read-link-error", error);
+	return DEither.left("file-system-read-link-error", readLinkError);
 }
 
 declare module "@scripts/implementor" {

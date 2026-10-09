@@ -1,73 +1,88 @@
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
+import * as DCommon from "@duplojs/lang/common";
 
-export type EnsureDirectoryResult = FileSystemEither<
-	| DEither.Right<"ensure-directory", void>
-	| DEither.Left<"ensure-directory-permission-denied", unknown>
-	| DEither.Left<"ensure-directory-not-directory", unknown>
-	| DEither.Left<"ensure-directory-no-space", unknown>
-	| DEither.Left<"ensure-directory-read-only", unknown>
-	| DEither.Left<"ensure-directory-invalid-argument", unknown>
-	| DEither.Left<"ensure-directory-too-many-open-files", unknown>
-	| DEither.Left<"ensure-directory-busy", unknown>
-	| DEither.Left<"ensure-directory-error", unknown>
->;
+class EnsureDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-ensure-directory-permission-denied", Error) {}
+class EnsureDirectoryErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-ensure-directory-not-directory", Error) {}
+class EnsureDirectoryErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-ensure-directory-no-space", Error) {}
+class EnsureDirectoryErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-ensure-directory-read-only", Error) {}
+class EnsureDirectoryErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-ensure-directory-invalid-argument", Error) {}
+class EnsureDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-ensure-directory-too-many-open-files", Error) {}
+class EnsureDirectoryErrorBusy extends DCommon.DuploJSError.parentClass("file-system-ensure-directory-busy", Error) {}
+class EnsureDirectoryError extends DCommon.DuploJSError.parentClass("file-system-ensure-directory-error", Error) {}
 
-function handleNodeEnsureDirectoryError(error: unknown): EnsureDirectoryResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type EnsureDirectoryErrors = (
+	| EnsureDirectoryErrorPermissionDenied
+	| EnsureDirectoryErrorNotDirectory
+	| EnsureDirectoryErrorNoSpace
+	| EnsureDirectoryErrorReadOnly
+	| EnsureDirectoryErrorInvalidArgument
+	| EnsureDirectoryErrorTooManyOpenFiles
+	| EnsureDirectoryErrorBusy
+	| EnsureDirectoryError
+);
+
+export type EnsureDirectoryResult = (
+	| DEither.Right<"file-system-ensure-directory", void>
+	| DEither.Left<"file-system-ensure-directory-error", EnsureDirectoryErrors>
+);
+
+function handleNodeEnsureDirectoryError(error: Error) {
+	let ensureDirectoryError: EnsureDirectoryErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-ensure-directory-permission-denied", error);
+			ensureDirectoryError = new EnsureDirectoryErrorPermissionDenied(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-ensure-directory-not-directory", error);
+			ensureDirectoryError = new EnsureDirectoryErrorNotDirectory(error);
 		} else if (error.code === "ENOSPC") {
-			return DEither.left("file-system-ensure-directory-no-space", error);
+			ensureDirectoryError = new EnsureDirectoryErrorNoSpace(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-ensure-directory-read-only", error);
+			ensureDirectoryError = new EnsureDirectoryErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-ensure-directory-invalid-argument", error);
+			ensureDirectoryError = new EnsureDirectoryErrorInvalidArgument(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-ensure-directory-too-many-open-files", error);
+			ensureDirectoryError = new EnsureDirectoryErrorTooManyOpenFiles(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-ensure-directory-busy", error);
+			ensureDirectoryError = new EnsureDirectoryErrorBusy(error);
 		}
 	}
 
-	return DEither.left("file-system-ensure-directory-error", error);
+	if (ensureDirectoryError === undefined) {
+		ensureDirectoryError = new EnsureDirectoryError(error);
+	}
+
+	return DEither.left("file-system-ensure-directory-error", ensureDirectoryError);
 }
 
-function handleDenoEnsureDirectoryError(error: unknown): EnsureDirectoryResult {
+function handleDenoEnsureDirectoryError(error: Error) {
+	let ensureDirectoryError: EnsureDirectoryErrors | undefined = undefined;
+
 	if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-ensure-directory-permission-denied", error);
+		ensureDirectoryError = new EnsureDirectoryErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		ensureDirectoryError = new EnsureDirectoryErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		ensureDirectoryError = new EnsureDirectoryErrorInvalidArgument(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		ensureDirectoryError = new EnsureDirectoryErrorBusy(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-ensure-directory-not-directory", error);
+	if (ensureDirectoryError === undefined) {
+		ensureDirectoryError = new EnsureDirectoryError(error);
 	}
 
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-ensure-directory-invalid-argument", error);
-	}
-
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-ensure-directory-busy", error);
-	}
-
-	return DEither.left("file-system-ensure-directory-error", error);
+	return DEither.left("file-system-ensure-directory-error", ensureDirectoryError);
 }
 
 declare module "@scripts/implementor" {

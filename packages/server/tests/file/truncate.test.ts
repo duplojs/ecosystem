@@ -4,6 +4,7 @@ import { DSFile, setEnvironment } from "@scripts";
 import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("truncate", () => {
 	afterEach(() => {
@@ -77,13 +78,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-not-found", error);
 	});
 
 	it("returns permission-denied when NODE truncate rejects with EACCES", async() => {
@@ -98,13 +93,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE truncate rejects with EPERM", async() => {
@@ -119,13 +108,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-permission-denied", error);
 	});
 
 	it("returns is-directory when NODE truncate rejects with EISDIR", async() => {
@@ -140,13 +123,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-is-directory", error);
 	});
 
 	it("returns not-directory when NODE truncate rejects with ENOTDIR", async() => {
@@ -161,13 +138,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-not-directory", error);
 	});
 
 	it("returns no-space when NODE truncate rejects with ENOSPC", async() => {
@@ -182,13 +153,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-no-space",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-no-space", error);
 	});
 
 	it("returns read-only when NODE truncate rejects with EROFS", async() => {
@@ -203,13 +168,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE truncate rejects with EINVAL", async() => {
@@ -224,13 +183,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-invalid-argument", error);
 	});
 
 	it("returns too-many-open-files when NODE truncate rejects with EMFILE", async() => {
@@ -245,13 +198,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE truncate rejects with ENFILE", async() => {
@@ -266,13 +213,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-too-many-open-files", error);
 	});
 
 	it("returns busy when NODE truncate rejects with EBUSY", async() => {
@@ -287,13 +228,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-busy", error);
 	});
 
 	it("returns error when NODE truncate rejects with an unknown error", async() => {
@@ -305,13 +240,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-error", error);
 	});
 
 	it("returns error when NODE truncate rejects with an unknown code", async() => {
@@ -326,13 +255,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-error", error);
 	});
 
 	it("returns not-found when DENO truncate rejects with NotFound", async() => {
@@ -344,13 +267,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-not-found", error);
 	});
 
 	it("returns permission-denied when DENO truncate rejects with PermissionDenied", async() => {
@@ -362,13 +279,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO truncate rejects with NotCapable", async() => {
@@ -380,13 +291,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-permission-denied", error);
 	});
 
 	it("returns is-directory when DENO truncate rejects with IsADirectory", async() => {
@@ -398,13 +303,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-is-directory", error);
 	});
 
 	it("returns not-directory when DENO truncate rejects with NotADirectory", async() => {
@@ -416,13 +315,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO truncate rejects with InvalidData", async() => {
@@ -434,13 +327,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-invalid-argument", error);
 	});
 
 	it("returns busy when DENO truncate rejects with Busy", async() => {
@@ -452,13 +339,7 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-busy", error);
 	});
 
 	it("returns error when DENO truncate rejects with an unknown error", async() => {
@@ -470,12 +351,6 @@ describe("truncate", () => {
 
 		const result = await DSFile.truncate(DCommon.infer("/tmp/mock"), 10);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-truncate-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-truncate-error", error);
 	});
 });

@@ -4,6 +4,7 @@ import { DSFile, setEnvironment } from "@scripts";
 import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("makeDirectory", () => {
 	afterEach(() => {
@@ -66,13 +67,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-not-found", error);
 	});
 
 	it("returns permission-denied when NODE makeDirectory rejects with EACCES", async() => {
@@ -87,13 +82,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE makeDirectory rejects with EPERM", async() => {
@@ -108,13 +97,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-permission-denied", error);
 	});
 
 	it("returns already-exists when NODE makeDirectory rejects with EEXIST", async() => {
@@ -129,13 +112,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-already-exists",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-already-exists", error);
 	});
 
 	it("returns not-directory when NODE makeDirectory rejects with ENOTDIR", async() => {
@@ -150,13 +127,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-not-directory", error);
 	});
 
 	it("returns no-space when NODE makeDirectory rejects with ENOSPC", async() => {
@@ -171,13 +142,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-no-space",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-no-space", error);
 	});
 
 	it("returns read-only when NODE makeDirectory rejects with EROFS", async() => {
@@ -192,13 +157,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE makeDirectory rejects with EINVAL", async() => {
@@ -213,13 +172,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-invalid-argument", error);
 	});
 
 	it("returns too-many-open-files when NODE makeDirectory rejects with EMFILE", async() => {
@@ -234,13 +187,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE makeDirectory rejects with ENFILE", async() => {
@@ -255,13 +202,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-too-many-open-files", error);
 	});
 
 	it("returns busy when NODE makeDirectory rejects with EBUSY", async() => {
@@ -276,13 +217,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-busy", error);
 	});
 
 	it("returns error when NODE makeDirectory rejects with an unknown error", async() => {
@@ -294,13 +229,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-error", error);
 	});
 
 	it("returns error when NODE makeDirectory rejects with an unknown code", async() => {
@@ -315,13 +244,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-error", error);
 	});
 
 	it("returns not-found when DENO makeDirectory rejects with NotFound", async() => {
@@ -333,13 +256,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-not-found", error);
 	});
 
 	it("returns permission-denied when DENO makeDirectory rejects with PermissionDenied", async() => {
@@ -351,13 +268,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO makeDirectory rejects with NotCapable", async() => {
@@ -369,13 +280,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-permission-denied", error);
 	});
 
 	it("returns already-exists when DENO makeDirectory rejects with AlreadyExists", async() => {
@@ -387,13 +292,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-already-exists",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-already-exists", error);
 	});
 
 	it("returns not-directory when DENO makeDirectory rejects with NotADirectory", async() => {
@@ -405,13 +304,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO makeDirectory rejects with InvalidData", async() => {
@@ -423,13 +316,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-invalid-argument", error);
 	});
 
 	it("returns busy when DENO makeDirectory rejects with Busy", async() => {
@@ -441,13 +328,7 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-busy", error);
 	});
 
 	it("returns error when DENO makeDirectory rejects with an unknown error", async() => {
@@ -459,12 +340,6 @@ describe("makeDirectory", () => {
 
 		const result = await DSFile.makeDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-directory-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-directory-error", error);
 	});
 });

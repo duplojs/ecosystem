@@ -1,87 +1,98 @@
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
+import * as DCommon from "@duplojs/lang/common";
 
-export type AppendFileResult = FileSystemEither<
-	| DEither.Right<"append-file", void>
-	| DEither.Left<"append-file-not-found", unknown>
-	| DEither.Left<"append-file-permission-denied", unknown>
-	| DEither.Left<"append-file-is-directory", unknown>
-	| DEither.Left<"append-file-not-directory", unknown>
-	| DEither.Left<"append-file-no-space", unknown>
-	| DEither.Left<"append-file-read-only", unknown>
-	| DEither.Left<"append-file-invalid-argument", unknown>
-	| DEither.Left<"append-file-too-many-open-files", unknown>
-	| DEither.Left<"append-file-busy", unknown>
-	| DEither.Left<"append-file-error", unknown>
->;
+class AppendFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-append-file-not-found", Error) {}
+class AppendFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-append-file-permission-denied", Error) {}
+class AppendFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-append-file-is-directory", Error) {}
+class AppendFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-append-file-not-directory", Error) {}
+class AppendFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-append-file-no-space", Error) {}
+class AppendFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-append-file-read-only", Error) {}
+class AppendFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-append-file-invalid-argument", Error) {}
+class AppendFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-append-file-too-many-open-files", Error) {}
+class AppendFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-append-file-busy", Error) {}
+class AppendFileError extends DCommon.DuploJSError.parentClass("file-system-append-file-error", Error) {}
 
-function handleNodeAppendFileError(error: unknown): AppendFileResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type AppendFileErrors = (
+	| AppendFileErrorNotFound
+	| AppendFileErrorPermissionDenied
+	| AppendFileErrorIsDirectory
+	| AppendFileErrorNotDirectory
+	| AppendFileErrorNoSpace
+	| AppendFileErrorReadOnly
+	| AppendFileErrorInvalidArgument
+	| AppendFileErrorTooManyOpenFiles
+	| AppendFileErrorBusy
+	| AppendFileError
+);
+
+export type AppendFileResult = (
+	| DEither.Right<"file-system-append-file", void>
+	| DEither.Left<"file-system-append-file-error", AppendFileErrors>
+);
+
+function handleNodeAppendFileError(error: Error) {
+	let appendFileError: AppendFileErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-append-file-not-found", error);
+			appendFileError = new AppendFileErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-append-file-permission-denied", error);
+			appendFileError = new AppendFileErrorPermissionDenied(error);
 		} else if (error.code === "EISDIR") {
-			return DEither.left("file-system-append-file-is-directory", error);
+			appendFileError = new AppendFileErrorIsDirectory(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-append-file-not-directory", error);
+			appendFileError = new AppendFileErrorNotDirectory(error);
 		} else if (error.code === "ENOSPC") {
-			return DEither.left("file-system-append-file-no-space", error);
+			appendFileError = new AppendFileErrorNoSpace(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-append-file-read-only", error);
+			appendFileError = new AppendFileErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-append-file-invalid-argument", error);
+			appendFileError = new AppendFileErrorInvalidArgument(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-append-file-too-many-open-files", error);
+			appendFileError = new AppendFileErrorTooManyOpenFiles(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-append-file-busy", error);
+			appendFileError = new AppendFileErrorBusy(error);
+		} else {
+			appendFileError = new AppendFileError(error);
 		}
+	} else {
+		appendFileError = new AppendFileError(error);
 	}
 
-	return DEither.left("file-system-append-file-error", error);
+	return DEither.left("file-system-append-file-error", appendFileError);
 }
 
-function handleDenoAppendFileError(error: unknown): AppendFileResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-append-file-not-found", error);
-	}
+function handleDenoAppendFileError(error: Error) {
+	let appendFileError: AppendFileErrors | undefined = undefined;
 
-	if (
+	if (error instanceof Deno.errors.NotFound) {
+		appendFileError = new AppendFileErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-append-file-permission-denied", error);
+		appendFileError = new AppendFileErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.IsADirectory) {
+		appendFileError = new AppendFileErrorIsDirectory(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		appendFileError = new AppendFileErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		appendFileError = new AppendFileErrorInvalidArgument(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		appendFileError = new AppendFileErrorBusy(error);
+	} else {
+		appendFileError = new AppendFileError(error);
 	}
 
-	if (error instanceof Deno.errors.IsADirectory) {
-		return DEither.left("file-system-append-file-is-directory", error);
-	}
-
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-append-file-not-directory", error);
-	}
-
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-append-file-invalid-argument", error);
-	}
-
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-append-file-busy", error);
-	}
-
-	return DEither.left("file-system-append-file-error", error);
+	return DEither.left("file-system-append-file-error", appendFileError);
 }
 
 declare module "@scripts/implementor" {

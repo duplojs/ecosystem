@@ -2,91 +2,103 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
 
-interface WriteJsonFile {
+interface WriteJsonFileParams {
 	space?: number;
 }
 
-export type WriteJsonFileResult = FileSystemEither<
-	| DEither.Right<"write-json-file", void>
-	| DEither.Left<"write-json-file-not-found", unknown>
-	| DEither.Left<"write-json-file-permission-denied", unknown>
-	| DEither.Left<"write-json-file-is-directory", unknown>
-	| DEither.Left<"write-json-file-not-directory", unknown>
-	| DEither.Left<"write-json-file-no-space", unknown>
-	| DEither.Left<"write-json-file-read-only", unknown>
-	| DEither.Left<"write-json-file-invalid-argument", unknown>
-	| DEither.Left<"write-json-file-too-many-open-files", unknown>
-	| DEither.Left<"write-json-file-busy", unknown>
-	| DEither.Left<"write-json-file-error", unknown>
->;
+class WriteJsonFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-write-json-file-not-found", Error) {}
+class WriteJsonFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-write-json-file-permission-denied", Error) {}
+class WriteJsonFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-write-json-file-is-directory", Error) {}
+class WriteJsonFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-write-json-file-not-directory", Error) {}
+class WriteJsonFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-write-json-file-no-space", Error) {}
+class WriteJsonFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-write-json-file-read-only", Error) {}
+class WriteJsonFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-write-json-file-invalid-argument", Error) {}
+class WriteJsonFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-write-json-file-too-many-open-files", Error) {}
+class WriteJsonFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-write-json-file-busy", Error) {}
+class WriteJsonFileError extends DCommon.DuploJSError.parentClass("file-system-write-json-file-error", Error) {}
 
-function handleNodeWriteJsonFileError(error: unknown): WriteJsonFileResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type WriteJsonFileErrors = (
+	| WriteJsonFileErrorNotFound
+	| WriteJsonFileErrorPermissionDenied
+	| WriteJsonFileErrorIsDirectory
+	| WriteJsonFileErrorNotDirectory
+	| WriteJsonFileErrorNoSpace
+	| WriteJsonFileErrorReadOnly
+	| WriteJsonFileErrorInvalidArgument
+	| WriteJsonFileErrorTooManyOpenFiles
+	| WriteJsonFileErrorBusy
+	| WriteJsonFileError
+);
+
+export type WriteJsonFileResult = (
+	| DEither.Right<"file-system-write-json-file", void>
+	| DEither.Left<"file-system-write-json-file-error", WriteJsonFileErrors>
+);
+
+function handleNodeWriteJsonFileError(error: Error) {
+	let writeJsonFileError: WriteJsonFileErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-write-json-file-not-found", error);
+			writeJsonFileError = new WriteJsonFileErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-write-json-file-permission-denied", error);
+			writeJsonFileError = new WriteJsonFileErrorPermissionDenied(error);
 		} else if (error.code === "EISDIR") {
-			return DEither.left("file-system-write-json-file-is-directory", error);
+			writeJsonFileError = new WriteJsonFileErrorIsDirectory(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-write-json-file-not-directory", error);
+			writeJsonFileError = new WriteJsonFileErrorNotDirectory(error);
 		} else if (error.code === "ENOSPC") {
-			return DEither.left("file-system-write-json-file-no-space", error);
+			writeJsonFileError = new WriteJsonFileErrorNoSpace(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-write-json-file-read-only", error);
+			writeJsonFileError = new WriteJsonFileErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-write-json-file-invalid-argument", error);
+			writeJsonFileError = new WriteJsonFileErrorInvalidArgument(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-write-json-file-too-many-open-files", error);
+			writeJsonFileError = new WriteJsonFileErrorTooManyOpenFiles(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-write-json-file-busy", error);
+			writeJsonFileError = new WriteJsonFileErrorBusy(error);
 		}
 	}
 
-	return DEither.left("file-system-write-json-file-error", error);
-}
-
-function handleDenoWriteJsonFileError(error: unknown): WriteJsonFileResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-write-json-file-not-found", error);
+	if (writeJsonFileError === undefined) {
+		writeJsonFileError = new WriteJsonFileError(error);
 	}
 
-	if (
+	return DEither.left("file-system-write-json-file-error", writeJsonFileError);
+}
+
+function handleDenoWriteJsonFileError(error: Error) {
+	let writeJsonFileError: WriteJsonFileErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		writeJsonFileError = new WriteJsonFileErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-write-json-file-permission-denied", error);
+		writeJsonFileError = new WriteJsonFileErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.IsADirectory) {
+		writeJsonFileError = new WriteJsonFileErrorIsDirectory(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		writeJsonFileError = new WriteJsonFileErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		writeJsonFileError = new WriteJsonFileErrorInvalidArgument(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		writeJsonFileError = new WriteJsonFileErrorBusy(error);
 	}
 
-	if (error instanceof Deno.errors.IsADirectory) {
-		return DEither.left("file-system-write-json-file-is-directory", error);
+	if (writeJsonFileError === undefined) {
+		writeJsonFileError = new WriteJsonFileError(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-write-json-file-not-directory", error);
-	}
-
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-write-json-file-invalid-argument", error);
-	}
-
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-write-json-file-busy", error);
-	}
-
-	return DEither.left("file-system-write-json-file-error", error);
+	return DEither.left("file-system-write-json-file-error", writeJsonFileError);
 }
 
 declare module "@scripts/implementor" {
@@ -94,7 +106,7 @@ declare module "@scripts/implementor" {
 		writeJsonFile(
 			path: string & DPath.Path,
 			data: unknown,
-			params?: WriteJsonFile
+			params?: WriteJsonFileParams
 		): Promise<WriteJsonFileResult>;
 	}
 }
@@ -113,7 +125,10 @@ const writeJsonFileImplementation = implementFunction(
 					),
 				),
 				DEither.matchInformation({
-					"safe-callback-error": (value) => DEither.left("file-system-write-json-file-error", value),
+					"safe-callback-error": (value) => DEither.left(
+						"file-system-write-json-file-error",
+						new WriteJsonFileError(value as never),
+					),
 					"safe-callback-success": (value) => fs
 						.writeFile(
 							path,
@@ -134,7 +149,10 @@ const writeJsonFileImplementation = implementFunction(
 				),
 			),
 			DEither.matchInformation({
-				"safe-callback-error": (value) => DEither.left("file-system-write-json-file-error", value),
+				"safe-callback-error": (value) => DEither.left(
+					"file-system-write-json-file-error",
+					new WriteJsonFileError(value as never),
+				),
 				"safe-callback-success": (value) => Deno
 					.writeTextFile(
 						path,
@@ -153,7 +171,10 @@ const writeJsonFileImplementation = implementFunction(
 				),
 			),
 			DEither.matchInformation({
-				"safe-callback-error": (value) => DEither.left("file-system-write-json-file-error", value),
+				"safe-callback-error": (value) => DEither.left(
+					"file-system-write-json-file-error",
+					new WriteJsonFileError(value as never),
+				),
 				"safe-callback-success": (value) => Bun.file(path)
 					.write(value)
 					.then(() => DEither.right("file-system-write-json-file"))
@@ -172,13 +193,13 @@ export function writeJsonFile(
 export function writeJsonFile(
 	path: string & DPath.Path,
 	data: unknown,
-	params?: WriteJsonFile,
+	params?: WriteJsonFileParams,
 ): Promise<WriteJsonFileResult>;
 
 export function writeJsonFile(
 	...args:
 		| [data: unknown]
-		| [path: string & DPath.Path, data: unknown, params?: WriteJsonFile]
+		| [path: string & DPath.Path, data: unknown, params?: WriteJsonFileParams]
 ) {
 	if (args.length === 1) {
 		const [data] = args;

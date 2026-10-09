@@ -4,6 +4,7 @@ import { DSFile, setEnvironment } from "@scripts";
 import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("realPath", () => {
 	afterEach(() => {
@@ -71,13 +72,7 @@ describe("realPath", () => {
 
 		const result = await DSFile.realPath(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-real-path-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-real-path-not-found", error);
 	});
 
 	it("returns permission-denied when NODE realPath rejects with EACCES", async() => {
@@ -92,13 +87,7 @@ describe("realPath", () => {
 
 		const result = await DSFile.realPath(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-real-path-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-real-path-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE realPath rejects with EPERM", async() => {
@@ -113,13 +102,7 @@ describe("realPath", () => {
 
 		const result = await DSFile.realPath(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-real-path-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-real-path-permission-denied", error);
 	});
 
 	it("returns not-directory when NODE realPath rejects with ENOTDIR", async() => {
@@ -134,13 +117,7 @@ describe("realPath", () => {
 
 		const result = await DSFile.realPath(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-real-path-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-real-path-not-directory", error);
 	});
 
 	it("returns too-many-open-files when NODE realPath rejects with EMFILE", async() => {
@@ -155,13 +132,7 @@ describe("realPath", () => {
 
 		const result = await DSFile.realPath(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-real-path-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-real-path-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE realPath rejects with ENFILE", async() => {
@@ -176,13 +147,7 @@ describe("realPath", () => {
 
 		const result = await DSFile.realPath(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-real-path-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-real-path-too-many-open-files", error);
 	});
 
 	it("returns error when NODE realPath rejects with an unknown error", async() => {
@@ -194,13 +159,7 @@ describe("realPath", () => {
 
 		const result = await DSFile.realPath(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-real-path-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-real-path-error", error);
 	});
 
 	it("returns error when NODE realPath rejects with an unknown code", async() => {
@@ -215,13 +174,7 @@ describe("realPath", () => {
 
 		const result = await DSFile.realPath(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-real-path-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-real-path-error", error);
 	});
 
 	it("returns not-found when DENO realPath rejects with NotFound", async() => {
@@ -233,13 +186,7 @@ describe("realPath", () => {
 
 		const result = await DSFile.realPath(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-real-path-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-real-path-not-found", error);
 	});
 
 	it("returns permission-denied when DENO realPath rejects with PermissionDenied", async() => {
@@ -251,13 +198,7 @@ describe("realPath", () => {
 
 		const result = await DSFile.realPath(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-real-path-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-real-path-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO realPath rejects with NotCapable", async() => {
@@ -269,13 +210,7 @@ describe("realPath", () => {
 
 		const result = await DSFile.realPath(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-real-path-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-real-path-permission-denied", error);
 	});
 
 	it("returns not-directory when DENO realPath rejects with NotADirectory", async() => {
@@ -287,13 +222,7 @@ describe("realPath", () => {
 
 		const result = await DSFile.realPath(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-real-path-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-real-path-not-directory", error);
 	});
 
 	it("returns error when DENO realPath rejects with an unknown error", async() => {
@@ -305,12 +234,6 @@ describe("realPath", () => {
 
 		const result = await DSFile.realPath(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-real-path-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-real-path-error", error);
 	});
 });

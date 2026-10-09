@@ -3,6 +3,7 @@ import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("setMode", () => {
 	afterEach(() => {
@@ -107,13 +108,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-not-found", error);
 	});
 
 	it("returns permission-denied when NODE setMode rejects with EACCES", async() => {
@@ -128,13 +123,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE setMode rejects with EPERM", async() => {
@@ -149,13 +138,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-permission-denied", error);
 	});
 
 	it("returns not-directory when NODE setMode rejects with ENOTDIR", async() => {
@@ -170,13 +153,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-not-directory", error);
 	});
 
 	it("returns read-only when NODE setMode rejects with EROFS", async() => {
@@ -191,13 +168,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE setMode rejects with EINVAL", async() => {
@@ -212,13 +183,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-invalid-argument", error);
 	});
 
 	it("returns error when NODE setMode rejects with an unknown error", async() => {
@@ -230,13 +195,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-error", error);
 	});
 
 	it("returns error when NODE setMode rejects with an unknown code", async() => {
@@ -251,13 +210,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-error", error);
 	});
 
 	it("returns not-found when DENO setMode rejects with NotFound", async() => {
@@ -269,13 +222,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-not-found", error);
 	});
 
 	it("returns permission-denied when DENO setMode rejects with PermissionDenied", async() => {
@@ -287,13 +234,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO setMode rejects with NotCapable", async() => {
@@ -305,13 +246,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-permission-denied", error);
 	});
 
 	it("returns not-directory when DENO setMode rejects with NotADirectory", async() => {
@@ -323,13 +258,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO setMode rejects with InvalidData", async() => {
@@ -341,13 +270,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-invalid-argument", error);
 	});
 
 	it("returns error when DENO setMode rejects with an unknown error", async() => {
@@ -359,13 +282,7 @@ describe("setMode", () => {
 
 		const result = await DSFile.setMode(DCommon.infer("/tmp/mock"), 0o644);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-mode-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-mode-error", error);
 	});
 
 	it("supports pipeable setMode signature", async() => {

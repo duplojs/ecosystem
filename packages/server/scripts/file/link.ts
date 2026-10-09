@@ -1,90 +1,104 @@
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
+import * as DCommon from "@duplojs/lang/common";
 
-export type LinkResult = FileSystemEither<
-	| DEither.Right<"link", void>
-	| DEither.Left<"link-not-found", unknown>
-	| DEither.Left<"link-permission-denied", unknown>
-	| DEither.Left<"link-already-exists", unknown>
-	| DEither.Left<"link-not-directory", unknown>
-	| DEither.Left<"link-no-space", unknown>
-	| DEither.Left<"link-read-only", unknown>
-	| DEither.Left<"link-invalid-argument", unknown>
-	| DEither.Left<"link-too-many-open-files", unknown>
-	| DEither.Left<"link-busy", unknown>
-	| DEither.Left<"link-cross-device", unknown>
-	| DEither.Left<"link-error", unknown>
->;
+class LinkErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-link-not-found", Error) {}
+class LinkErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-link-permission-denied", Error) {}
+class LinkErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-link-already-exists", Error) {}
+class LinkErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-link-not-directory", Error) {}
+class LinkErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-link-no-space", Error) {}
+class LinkErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-link-read-only", Error) {}
+class LinkErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-link-invalid-argument", Error) {}
+class LinkErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-link-too-many-open-files", Error) {}
+class LinkErrorBusy extends DCommon.DuploJSError.parentClass("file-system-link-busy", Error) {}
+class LinkErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-link-cross-device", Error) {}
+class LinkError extends DCommon.DuploJSError.parentClass("file-system-link-error", Error) {}
 
-function handleNodeLinkError(error: unknown): LinkResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type LinkErrors = (
+	| LinkErrorNotFound
+	| LinkErrorPermissionDenied
+	| LinkErrorAlreadyExists
+	| LinkErrorNotDirectory
+	| LinkErrorNoSpace
+	| LinkErrorReadOnly
+	| LinkErrorInvalidArgument
+	| LinkErrorTooManyOpenFiles
+	| LinkErrorBusy
+	| LinkErrorCrossDevice
+	| LinkError
+);
+
+export type LinkResult = (
+	| DEither.Right<"file-system-link", void>
+	| DEither.Left<"file-system-link-error", LinkErrors>
+);
+
+function handleNodeLinkError(error: Error) {
+	let linkError: LinkErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-link-not-found", error);
+			linkError = new LinkErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-link-permission-denied", error);
+			linkError = new LinkErrorPermissionDenied(error);
 		} else if (error.code === "EEXIST") {
-			return DEither.left("file-system-link-already-exists", error);
+			linkError = new LinkErrorAlreadyExists(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-link-not-directory", error);
+			linkError = new LinkErrorNotDirectory(error);
 		} else if (error.code === "ENOSPC") {
-			return DEither.left("file-system-link-no-space", error);
+			linkError = new LinkErrorNoSpace(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-link-read-only", error);
+			linkError = new LinkErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-link-invalid-argument", error);
+			linkError = new LinkErrorInvalidArgument(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-link-too-many-open-files", error);
+			linkError = new LinkErrorTooManyOpenFiles(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-link-busy", error);
+			linkError = new LinkErrorBusy(error);
 		} else if (error.code === "EXDEV") {
-			return DEither.left("file-system-link-cross-device", error);
+			linkError = new LinkErrorCrossDevice(error);
 		}
 	}
 
-	return DEither.left("file-system-link-error", error);
-}
-
-function handleDenoLinkError(error: unknown): LinkResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-link-not-found", error);
+	if (linkError === undefined) {
+		linkError = new LinkError(error);
 	}
 
-	if (
+	return DEither.left("file-system-link-error", linkError);
+}
+
+function handleDenoLinkError(error: Error) {
+	let linkError: LinkErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		linkError = new LinkErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-link-permission-denied", error);
+		linkError = new LinkErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.AlreadyExists) {
+		linkError = new LinkErrorAlreadyExists(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		linkError = new LinkErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		linkError = new LinkErrorInvalidArgument(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		linkError = new LinkErrorBusy(error);
 	}
 
-	if (error instanceof Deno.errors.AlreadyExists) {
-		return DEither.left("file-system-link-already-exists", error);
+	if (linkError === undefined) {
+		linkError = new LinkError(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-link-not-directory", error);
-	}
-
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-link-invalid-argument", error);
-	}
-
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-link-busy", error);
-	}
-
-	return DEither.left("file-system-link-error", error);
+	return DEither.left("file-system-link-error", linkError);
 }
 
 declare module "@scripts/implementor" {

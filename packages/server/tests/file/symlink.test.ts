@@ -3,6 +3,7 @@ import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("symlink", () => {
 	afterEach(() => {
@@ -65,13 +66,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-not-found", error);
 	});
 
 	it("returns permission-denied when NODE symlink rejects with EACCES", async() => {
@@ -86,13 +81,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE symlink rejects with EPERM", async() => {
@@ -107,13 +96,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-permission-denied", error);
 	});
 
 	it("returns already-exists when NODE symlink rejects with EEXIST", async() => {
@@ -128,13 +111,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-already-exists",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-already-exists", error);
 	});
 
 	it("returns not-directory when NODE symlink rejects with ENOTDIR", async() => {
@@ -149,13 +126,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-not-directory", error);
 	});
 
 	it("returns read-only when NODE symlink rejects with EROFS", async() => {
@@ -170,13 +141,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE symlink rejects with EINVAL", async() => {
@@ -191,13 +156,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-invalid-argument", error);
 	});
 
 	it("returns too-many-open-files when NODE symlink rejects with EMFILE", async() => {
@@ -212,13 +171,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE symlink rejects with ENFILE", async() => {
@@ -233,13 +186,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-too-many-open-files", error);
 	});
 
 	it("returns busy when NODE symlink rejects with EBUSY", async() => {
@@ -254,13 +201,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-busy", error);
 	});
 
 	it("returns error when NODE symlink rejects with an unknown error", async() => {
@@ -272,13 +213,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-error", error);
 	});
 
 	it("returns error when NODE symlink rejects with an unknown code", async() => {
@@ -293,13 +228,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-error", error);
 	});
 
 	it("returns not-found when DENO symlink rejects with NotFound", async() => {
@@ -311,13 +240,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-not-found", error);
 	});
 
 	it("returns permission-denied when DENO symlink rejects with PermissionDenied", async() => {
@@ -329,13 +252,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO symlink rejects with NotCapable", async() => {
@@ -347,13 +264,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-permission-denied", error);
 	});
 
 	it("returns already-exists when DENO symlink rejects with AlreadyExists", async() => {
@@ -365,13 +276,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-already-exists",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-already-exists", error);
 	});
 
 	it("returns not-directory when DENO symlink rejects with NotADirectory", async() => {
@@ -383,13 +288,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO symlink rejects with InvalidData", async() => {
@@ -401,13 +300,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-invalid-argument", error);
 	});
 
 	it("returns busy when DENO symlink rejects with Busy", async() => {
@@ -419,13 +312,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-busy", error);
 	});
 
 	it("returns error when DENO symlink rejects with an unknown error", async() => {
@@ -437,13 +324,7 @@ describe("symlink", () => {
 
 		const result = await DSFile.symlink(DCommon.infer("/tmp/from"), DCommon.infer("/tmp/to"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-symlink-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-symlink-error", error);
 	});
 
 	it("supports pipeable symlink signature", async() => {

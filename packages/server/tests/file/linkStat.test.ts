@@ -4,6 +4,7 @@ import { DSFile, setEnvironment } from "@scripts";
 import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 interface DenoFileInfoMock {
 	isFile: boolean;
@@ -202,13 +203,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-not-found", error);
 	});
 
 	it("returns permission-denied when NODE linkStat rejects with EACCES", async() => {
@@ -223,13 +218,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE linkStat rejects with EPERM", async() => {
@@ -244,13 +233,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-permission-denied", error);
 	});
 
 	it("returns not-directory when NODE linkStat rejects with ENOTDIR", async() => {
@@ -265,13 +248,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-not-directory", error);
 	});
 
 	it("returns too-many-open-files when NODE linkStat rejects with EMFILE", async() => {
@@ -286,13 +263,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE linkStat rejects with ENFILE", async() => {
@@ -307,13 +278,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-too-many-open-files", error);
 	});
 
 	it("returns busy when NODE linkStat rejects with EBUSY", async() => {
@@ -328,13 +293,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-busy", error);
 	});
 
 	it("returns error when NODE linkStat rejects with an unknown error", async() => {
@@ -346,13 +305,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-error", error);
 	});
 
 	it("returns error when NODE linkStat rejects with an unknown code", async() => {
@@ -367,13 +320,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-error", error);
 	});
 
 	it("returns not-found when DENO linkStat rejects with NotFound", async() => {
@@ -385,13 +332,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-not-found", error);
 	});
 
 	it("returns permission-denied when DENO linkStat rejects with PermissionDenied", async() => {
@@ -403,13 +344,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO linkStat rejects with NotCapable", async() => {
@@ -421,13 +356,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-permission-denied", error);
 	});
 
 	it("returns not-directory when DENO linkStat rejects with NotADirectory", async() => {
@@ -439,13 +368,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-not-directory", error);
 	});
 
 	it("returns busy when DENO linkStat rejects with Busy", async() => {
@@ -457,13 +380,7 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-busy", error);
 	});
 
 	it("returns error when DENO linkStat rejects with an unknown error", async() => {
@@ -475,12 +392,6 @@ describe("linkStat", () => {
 
 		const result = await DSFile.linkStat(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-link-stat-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-link-stat-error", error);
 	});
 });

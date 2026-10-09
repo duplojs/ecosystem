@@ -2,6 +2,7 @@ import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 function createNodeStatsMock() {
 	const now = new Date("2020-01-01T00:00:00Z");
@@ -82,12 +83,17 @@ describe("createEntryInterface", () => {
 		expect(entry.path).toBe("/tmp/entry");
 	});
 
-	it.each(["ENOENT", "EACCES", "UNKNOWN"])("wraps the stat error %s", async(code) => {
+	it.each([
+		["ENOENT", "file-system-stat-not-found"],
+		["EACCES", "file-system-stat-permission-denied"],
+		["UNKNOWN", "file-system-stat-error"],
+	] as const)("wraps the stat error %s", async(code, identifier) => {
 		setEnvironment("NODE");
 		const error = Object.assign(new Error("stat failed"), { code });
 		setFsPromisesMock({ stat: vi.fn().mockRejectedValue(error) });
 		const result = await DSFile.createEntryInterface(DCommon.infer("/tmp/entry"));
 
-		expect(DEither.unwrapByInformationOrThrow(result, "create-entry-interface-error")).toBe(error);
+		const fileSystemError = DEither.unwrapByInformationOrThrow(result, "create-entry-interface-error");
+		expectFileSystemError(DEither.left("file-system-stat-error", fileSystemError), identifier, error);
 	});
 });

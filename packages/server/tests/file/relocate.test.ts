@@ -3,6 +3,7 @@ import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("relocate", () => {
 	afterEach(() => {
@@ -33,10 +34,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/file.txt"), DCommon.infer("/new/parent"));
 
-		expect(DEither.isLeft(result)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-error", error);
 	});
 
 	it("returns fail when NODE source path has no base name", async() => {
@@ -47,11 +45,8 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/"), DCommon.infer("/new/parent"));
 
-		expect(DEither.isLeft(result)).toBe(true);
+		expectFileSystemError(result, "file-system-relocate-invalid-argument");
 		expect(fs.rename).not.toHaveBeenCalled();
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBeInstanceOf(Error);
-		}
 	});
 
 	it("relocates entry in DENO env", async() => {
@@ -86,11 +81,8 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/"), DCommon.infer("/new/parent"));
 
-		expect(DEither.isLeft(result)).toBe(true);
+		expectFileSystemError(result, "file-system-relocate-invalid-argument");
 		expect(rename).not.toHaveBeenCalled();
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBeInstanceOf(Error);
-		}
 	});
 	it("returns not-found when NODE relocate rejects with ENOENT", async() => {
 		setEnvironment("NODE");
@@ -104,13 +96,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-not-found", error);
 	});
 
 	it("returns permission-denied when NODE relocate rejects with EACCES", async() => {
@@ -125,13 +111,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE relocate rejects with EPERM", async() => {
@@ -146,13 +126,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-permission-denied", error);
 	});
 
 	it("returns already-exists when NODE relocate rejects with EEXIST", async() => {
@@ -167,13 +141,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-already-exists",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-already-exists", error);
 	});
 
 	it("returns is-directory when NODE relocate rejects with EISDIR", async() => {
@@ -188,13 +156,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-is-directory", error);
 	});
 
 	it("returns not-directory when NODE relocate rejects with ENOTDIR", async() => {
@@ -209,13 +171,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-not-directory", error);
 	});
 
 	it("returns directory-not-empty when NODE relocate rejects with ENOTEMPTY", async() => {
@@ -230,13 +186,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-directory-not-empty",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-directory-not-empty", error);
 	});
 
 	it("returns read-only when NODE relocate rejects with EROFS", async() => {
@@ -251,13 +201,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE relocate rejects with EINVAL", async() => {
@@ -272,13 +216,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-invalid-argument", error);
 	});
 
 	it("returns busy when NODE relocate rejects with EBUSY", async() => {
@@ -293,13 +231,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-busy", error);
 	});
 
 	it("returns cross-device when NODE relocate rejects with EXDEV", async() => {
@@ -314,13 +246,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-cross-device",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-cross-device", error);
 	});
 
 	it("returns error when NODE relocate rejects with an unknown error", async() => {
@@ -332,13 +258,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-error", error);
 	});
 
 	it("returns error when NODE relocate rejects with an unknown code", async() => {
@@ -353,13 +273,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-error", error);
 	});
 
 	it("returns not-found when DENO relocate rejects with NotFound", async() => {
@@ -371,13 +285,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-not-found", error);
 	});
 
 	it("returns permission-denied when DENO relocate rejects with PermissionDenied", async() => {
@@ -389,13 +297,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO relocate rejects with NotCapable", async() => {
@@ -407,13 +309,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-permission-denied", error);
 	});
 
 	it("returns already-exists when DENO relocate rejects with AlreadyExists", async() => {
@@ -425,13 +321,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-already-exists",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-already-exists", error);
 	});
 
 	it("returns is-directory when DENO relocate rejects with IsADirectory", async() => {
@@ -443,13 +333,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-is-directory", error);
 	});
 
 	it("returns not-directory when DENO relocate rejects with NotADirectory", async() => {
@@ -461,13 +345,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO relocate rejects with InvalidData", async() => {
@@ -479,13 +357,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-invalid-argument", error);
 	});
 
 	it("returns busy when DENO relocate rejects with Busy", async() => {
@@ -497,13 +369,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-busy", error);
 	});
 
 	it("returns error when DENO relocate rejects with an unknown error", async() => {
@@ -515,13 +381,7 @@ describe("relocate", () => {
 
 		const result = await DSFile.relocate(DCommon.infer("/tmp/from.txt"), DCommon.infer("/tmp/parent"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-relocate-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-relocate-error", error);
 	});
 
 	it("supports pipeable relocate signature", async() => {

@@ -2,87 +2,99 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
 
-export type TruncateResult = FileSystemEither<
-	| DEither.Right<"truncate", void>
-	| DEither.Left<"truncate-not-found", unknown>
-	| DEither.Left<"truncate-permission-denied", unknown>
-	| DEither.Left<"truncate-is-directory", unknown>
-	| DEither.Left<"truncate-not-directory", unknown>
-	| DEither.Left<"truncate-no-space", unknown>
-	| DEither.Left<"truncate-read-only", unknown>
-	| DEither.Left<"truncate-invalid-argument", unknown>
-	| DEither.Left<"truncate-too-many-open-files", unknown>
-	| DEither.Left<"truncate-busy", unknown>
-	| DEither.Left<"truncate-error", unknown>
->;
+class TruncateErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-truncate-not-found", Error) {}
+class TruncateErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-truncate-permission-denied", Error) {}
+class TruncateErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-truncate-is-directory", Error) {}
+class TruncateErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-truncate-not-directory", Error) {}
+class TruncateErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-truncate-no-space", Error) {}
+class TruncateErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-truncate-read-only", Error) {}
+class TruncateErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-truncate-invalid-argument", Error) {}
+class TruncateErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-truncate-too-many-open-files", Error) {}
+class TruncateErrorBusy extends DCommon.DuploJSError.parentClass("file-system-truncate-busy", Error) {}
+class TruncateError extends DCommon.DuploJSError.parentClass("file-system-truncate-error", Error) {}
 
-function handleNodeTruncateError(error: unknown): TruncateResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type TruncateErrors = (
+	| TruncateErrorNotFound
+	| TruncateErrorPermissionDenied
+	| TruncateErrorIsDirectory
+	| TruncateErrorNotDirectory
+	| TruncateErrorNoSpace
+	| TruncateErrorReadOnly
+	| TruncateErrorInvalidArgument
+	| TruncateErrorTooManyOpenFiles
+	| TruncateErrorBusy
+	| TruncateError
+);
+
+export type TruncateResult = (
+	| DEither.Right<"file-system-truncate", void>
+	| DEither.Left<"file-system-truncate-error", TruncateErrors>
+);
+
+function handleNodeTruncateError(error: Error) {
+	let truncateError: TruncateErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-truncate-not-found", error);
+			truncateError = new TruncateErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-truncate-permission-denied", error);
+			truncateError = new TruncateErrorPermissionDenied(error);
 		} else if (error.code === "EISDIR") {
-			return DEither.left("file-system-truncate-is-directory", error);
+			truncateError = new TruncateErrorIsDirectory(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-truncate-not-directory", error);
+			truncateError = new TruncateErrorNotDirectory(error);
 		} else if (error.code === "ENOSPC") {
-			return DEither.left("file-system-truncate-no-space", error);
+			truncateError = new TruncateErrorNoSpace(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-truncate-read-only", error);
+			truncateError = new TruncateErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-truncate-invalid-argument", error);
+			truncateError = new TruncateErrorInvalidArgument(error);
 		} else if (
 			error.code === "EMFILE"
 			|| error.code === "ENFILE"
 		) {
-			return DEither.left("file-system-truncate-too-many-open-files", error);
+			truncateError = new TruncateErrorTooManyOpenFiles(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-truncate-busy", error);
+			truncateError = new TruncateErrorBusy(error);
 		}
 	}
 
-	return DEither.left("file-system-truncate-error", error);
-}
-
-function handleDenoTruncateError(error: unknown): TruncateResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-truncate-not-found", error);
+	if (truncateError === undefined) {
+		truncateError = new TruncateError(error);
 	}
 
-	if (
+	return DEither.left("file-system-truncate-error", truncateError);
+}
+
+function handleDenoTruncateError(error: Error) {
+	let truncateError: TruncateErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		truncateError = new TruncateErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-truncate-permission-denied", error);
+		truncateError = new TruncateErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.IsADirectory) {
+		truncateError = new TruncateErrorIsDirectory(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		truncateError = new TruncateErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		truncateError = new TruncateErrorInvalidArgument(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		truncateError = new TruncateErrorBusy(error);
 	}
 
-	if (error instanceof Deno.errors.IsADirectory) {
-		return DEither.left("file-system-truncate-is-directory", error);
+	if (truncateError === undefined) {
+		truncateError = new TruncateError(error);
 	}
 
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-truncate-not-directory", error);
-	}
-
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-truncate-invalid-argument", error);
-	}
-
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-truncate-busy", error);
-	}
-
-	return DEither.left("file-system-truncate-error", error);
+	return DEither.left("file-system-truncate-error", truncateError);
 }
 
 declare module "@scripts/implementor" {

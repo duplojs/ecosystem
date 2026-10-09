@@ -4,6 +4,7 @@ import { DSFile, setEnvironment } from "@scripts";
 import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("ensureDirectory", () => {
 	afterEach(() => {
@@ -66,13 +67,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE ensureDirectory rejects with EPERM", async() => {
@@ -87,13 +82,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-permission-denied", error);
 	});
 
 	it("returns not-directory when NODE ensureDirectory rejects with ENOTDIR", async() => {
@@ -108,13 +97,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-not-directory", error);
 	});
 
 	it("returns no-space when NODE ensureDirectory rejects with ENOSPC", async() => {
@@ -129,13 +112,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-no-space",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-no-space", error);
 	});
 
 	it("returns read-only when NODE ensureDirectory rejects with EROFS", async() => {
@@ -150,13 +127,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE ensureDirectory rejects with EINVAL", async() => {
@@ -171,13 +142,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-invalid-argument", error);
 	});
 
 	it("returns too-many-open-files when NODE ensureDirectory rejects with EMFILE", async() => {
@@ -192,13 +157,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE ensureDirectory rejects with ENFILE", async() => {
@@ -213,13 +172,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-too-many-open-files", error);
 	});
 
 	it("returns busy when NODE ensureDirectory rejects with EBUSY", async() => {
@@ -234,13 +187,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-busy", error);
 	});
 
 	it("returns error when NODE ensureDirectory rejects with an unknown error", async() => {
@@ -252,13 +199,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-error", error);
 	});
 
 	it("returns error when NODE ensureDirectory rejects with an unknown code", async() => {
@@ -273,13 +214,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-error", error);
 	});
 
 	it("returns permission-denied when DENO ensureDirectory rejects with PermissionDenied", async() => {
@@ -291,13 +226,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO ensureDirectory rejects with NotCapable", async() => {
@@ -309,13 +238,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-permission-denied", error);
 	});
 
 	it("returns not-directory when DENO ensureDirectory rejects with NotADirectory", async() => {
@@ -327,13 +250,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO ensureDirectory rejects with InvalidData", async() => {
@@ -345,13 +262,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-invalid-argument", error);
 	});
 
 	it("returns busy when DENO ensureDirectory rejects with Busy", async() => {
@@ -363,13 +274,7 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-busy", error);
 	});
 
 	it("returns error when DENO ensureDirectory rejects with an unknown error", async() => {
@@ -381,12 +286,6 @@ describe("ensureDirectory", () => {
 
 		const result = await DSFile.ensureDirectory(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-ensure-directory-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-ensure-directory-error", error);
 	});
 });

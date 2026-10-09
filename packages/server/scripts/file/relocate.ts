@@ -1,91 +1,103 @@
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
-import type { FileSystemEither } from "./types";
+import * as DCommon from "@duplojs/lang/common";
 
-export type RelocateResult = FileSystemEither<
-	| DEither.Right<"relocate", string & DPath.Path>
-	| DEither.Left<"relocate-not-found", unknown>
-	| DEither.Left<"relocate-permission-denied", unknown>
-	| DEither.Left<"relocate-already-exists", unknown>
-	| DEither.Left<"relocate-is-directory", unknown>
-	| DEither.Left<"relocate-not-directory", unknown>
-	| DEither.Left<"relocate-directory-not-empty", unknown>
-	| DEither.Left<"relocate-read-only", unknown>
-	| DEither.Left<"relocate-invalid-argument", unknown>
-	| DEither.Left<"relocate-busy", unknown>
-	| DEither.Left<"relocate-cross-device", unknown>
-	| DEither.Left<"relocate-error", unknown>
->;
+class RelocateErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-relocate-not-found", Error) {}
+class RelocateErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-relocate-permission-denied", Error) {}
+class RelocateErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-relocate-already-exists", Error) {}
+class RelocateErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-relocate-is-directory", Error) {}
+class RelocateErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-relocate-not-directory", Error) {}
+class RelocateErrorDirectoryNotEmpty extends DCommon.DuploJSError.parentClass("file-system-relocate-directory-not-empty", Error) {}
+class RelocateErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-relocate-read-only", Error) {}
+class RelocateErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-relocate-invalid-argument", Error) {}
+class RelocateErrorBusy extends DCommon.DuploJSError.parentClass("file-system-relocate-busy", Error) {}
+class RelocateErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-relocate-cross-device", Error) {}
+class RelocateError extends DCommon.DuploJSError.parentClass("file-system-relocate-error", Error) {}
 
-function handleNodeRelocateError(error: unknown): RelocateResult {
-	if (
-		typeof error === "object"
-		&& error !== null
-		&& "code" in error
-	) {
+type RelocateErrors = (
+	| RelocateErrorNotFound
+	| RelocateErrorPermissionDenied
+	| RelocateErrorAlreadyExists
+	| RelocateErrorIsDirectory
+	| RelocateErrorNotDirectory
+	| RelocateErrorDirectoryNotEmpty
+	| RelocateErrorReadOnly
+	| RelocateErrorInvalidArgument
+	| RelocateErrorBusy
+	| RelocateErrorCrossDevice
+	| RelocateError
+);
+
+export type RelocateResult = (
+	| DEither.Right<"file-system-relocate", string & DPath.Path>
+	| DEither.Left<"file-system-relocate-error", RelocateErrors>
+);
+
+function handleNodeRelocateError(error: Error) {
+	let relocateError: RelocateErrors | undefined = undefined;
+
+	if ("code" in error) {
 		if (error.code === "ENOENT") {
-			return DEither.left("file-system-relocate-not-found", error);
+			relocateError = new RelocateErrorNotFound(error);
 		} else if (
 			error.code === "EACCES"
 			|| error.code === "EPERM"
 		) {
-			return DEither.left("file-system-relocate-permission-denied", error);
+			relocateError = new RelocateErrorPermissionDenied(error);
 		} else if (error.code === "EEXIST") {
-			return DEither.left("file-system-relocate-already-exists", error);
+			relocateError = new RelocateErrorAlreadyExists(error);
 		} else if (error.code === "EISDIR") {
-			return DEither.left("file-system-relocate-is-directory", error);
+			relocateError = new RelocateErrorIsDirectory(error);
 		} else if (error.code === "ENOTDIR") {
-			return DEither.left("file-system-relocate-not-directory", error);
+			relocateError = new RelocateErrorNotDirectory(error);
 		} else if (error.code === "ENOTEMPTY") {
-			return DEither.left("file-system-relocate-directory-not-empty", error);
+			relocateError = new RelocateErrorDirectoryNotEmpty(error);
 		} else if (error.code === "EROFS") {
-			return DEither.left("file-system-relocate-read-only", error);
+			relocateError = new RelocateErrorReadOnly(error);
 		} else if (error.code === "EINVAL") {
-			return DEither.left("file-system-relocate-invalid-argument", error);
+			relocateError = new RelocateErrorInvalidArgument(error);
 		} else if (error.code === "EBUSY") {
-			return DEither.left("file-system-relocate-busy", error);
+			relocateError = new RelocateErrorBusy(error);
 		} else if (error.code === "EXDEV") {
-			return DEither.left("file-system-relocate-cross-device", error);
+			relocateError = new RelocateErrorCrossDevice(error);
 		}
 	}
 
-	return DEither.left("file-system-relocate-error", error);
-}
-
-function handleDenoRelocateError(error: unknown): RelocateResult {
-	if (error instanceof Deno.errors.NotFound) {
-		return DEither.left("file-system-relocate-not-found", error);
+	if (relocateError === undefined) {
+		relocateError = new RelocateError(error);
 	}
 
-	if (
+	return DEither.left("file-system-relocate-error", relocateError);
+}
+
+function handleDenoRelocateError(error: Error) {
+	let relocateError: RelocateErrors | undefined = undefined;
+
+	if (error instanceof Deno.errors.NotFound) {
+		relocateError = new RelocateErrorNotFound(error);
+	} else if (
 		error instanceof Deno.errors.PermissionDenied
 		|| error instanceof Deno.errors.NotCapable
 	) {
-		return DEither.left("file-system-relocate-permission-denied", error);
+		relocateError = new RelocateErrorPermissionDenied(error);
+	} else if (error instanceof Deno.errors.AlreadyExists) {
+		relocateError = new RelocateErrorAlreadyExists(error);
+	} else if (error instanceof Deno.errors.IsADirectory) {
+		relocateError = new RelocateErrorIsDirectory(error);
+	} else if (error instanceof Deno.errors.NotADirectory) {
+		relocateError = new RelocateErrorNotDirectory(error);
+	} else if (error instanceof Deno.errors.InvalidData) {
+		relocateError = new RelocateErrorInvalidArgument(error);
+	} else if (error instanceof Deno.errors.Busy) {
+		relocateError = new RelocateErrorBusy(error);
 	}
 
-	if (error instanceof Deno.errors.AlreadyExists) {
-		return DEither.left("file-system-relocate-already-exists", error);
+	if (relocateError === undefined) {
+		relocateError = new RelocateError(error);
 	}
 
-	if (error instanceof Deno.errors.IsADirectory) {
-		return DEither.left("file-system-relocate-is-directory", error);
-	}
-
-	if (error instanceof Deno.errors.NotADirectory) {
-		return DEither.left("file-system-relocate-not-directory", error);
-	}
-
-	if (error instanceof Deno.errors.InvalidData) {
-		return DEither.left("file-system-relocate-invalid-argument", error);
-	}
-
-	if (error instanceof Deno.errors.Busy) {
-		return DEither.left("file-system-relocate-busy", error);
-	}
-
-	return DEither.left("file-system-relocate-error", error);
+	return DEither.left("file-system-relocate-error", relocateError);
 }
 
 declare module "@scripts/implementor" {
@@ -105,7 +117,10 @@ const relocateImplementation = implementFunction(
 			const baseName = DPath.getBaseName(fromPath);
 
 			if (!baseName) {
-				return DEither.left("file-system-relocate-invalid-argument", new Error(`Invalid base name ${fromPath}`));
+				return DEither.left(
+					"file-system-relocate-error",
+					new RelocateErrorInvalidArgument(new Error(`Invalid base name ${fromPath}`)),
+				);
 			}
 
 			const newPath = DPath.resolveRelative([newParentPath, baseName]);
@@ -117,11 +132,16 @@ const relocateImplementation = implementFunction(
 				.then(() => DEither.right("file-system-relocate", newPath))
 				.catch(handleNodeRelocateError);
 		},
-		DENO: (fromPath, newParentPath) => {
+		DENO: async(fromPath, newParentPath) => {
 			const baseName = DPath.getBaseName(fromPath);
 
 			if (!baseName) {
-				return Promise.resolve(DEither.left("file-system-relocate-invalid-argument", new Error(`Invalid base name ${fromPath}`)));
+				return Promise.resolve(
+					DEither.left(
+						"file-system-relocate-error",
+						new RelocateErrorInvalidArgument(new Error(`Invalid base name ${fromPath}`)),
+					),
+				);
 			}
 
 			const newPath = DPath.resolveRelative([newParentPath, baseName]);

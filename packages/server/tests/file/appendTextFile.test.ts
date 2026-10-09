@@ -3,6 +3,7 @@ import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("appendTextFile", () => {
 	afterEach(() => {
@@ -67,13 +68,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-not-found", error);
 	});
 
 	it("returns permission-denied when NODE appendTextFile rejects with EACCES", async() => {
@@ -88,13 +83,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE appendTextFile rejects with EPERM", async() => {
@@ -109,13 +98,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-permission-denied", error);
 	});
 
 	it("returns is-directory when NODE appendTextFile rejects with EISDIR", async() => {
@@ -130,13 +113,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-is-directory", error);
 	});
 
 	it("returns not-directory when NODE appendTextFile rejects with ENOTDIR", async() => {
@@ -151,13 +128,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-not-directory", error);
 	});
 
 	it("returns no-space when NODE appendTextFile rejects with ENOSPC", async() => {
@@ -172,13 +143,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-no-space",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-no-space", error);
 	});
 
 	it("returns read-only when NODE appendTextFile rejects with EROFS", async() => {
@@ -193,13 +158,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE appendTextFile rejects with EINVAL", async() => {
@@ -214,13 +173,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-invalid-argument", error);
 	});
 
 	it("returns too-many-open-files when NODE appendTextFile rejects with EMFILE", async() => {
@@ -235,13 +188,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE appendTextFile rejects with ENFILE", async() => {
@@ -256,13 +203,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-too-many-open-files", error);
 	});
 
 	it("returns busy when NODE appendTextFile rejects with EBUSY", async() => {
@@ -277,13 +218,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-busy", error);
 	});
 
 	it("returns error when NODE appendTextFile rejects with an unknown error", async() => {
@@ -295,13 +230,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-error", error);
 	});
 
 	it("returns error when NODE appendTextFile rejects with an unknown code", async() => {
@@ -316,13 +245,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-error", error);
 	});
 
 	it("returns not-found when DENO appendTextFile rejects with NotFound", async() => {
@@ -334,13 +257,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-not-found", error);
 	});
 
 	it("returns permission-denied when DENO appendTextFile rejects with PermissionDenied", async() => {
@@ -352,13 +269,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO appendTextFile rejects with NotCapable", async() => {
@@ -370,13 +281,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-permission-denied", error);
 	});
 
 	it("returns is-directory when DENO appendTextFile rejects with IsADirectory", async() => {
@@ -388,13 +293,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-is-directory", error);
 	});
 
 	it("returns not-directory when DENO appendTextFile rejects with NotADirectory", async() => {
@@ -406,13 +305,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO appendTextFile rejects with InvalidData", async() => {
@@ -424,13 +317,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-invalid-argument", error);
 	});
 
 	it("returns busy when DENO appendTextFile rejects with Busy", async() => {
@@ -442,13 +329,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-busy", error);
 	});
 
 	it("returns error when DENO appendTextFile rejects with an unknown error", async() => {
@@ -460,13 +341,7 @@ describe("appendTextFile", () => {
 
 		const result = await DSFile.appendTextFile(DCommon.infer("/tmp/mock"), "hello");
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-append-text-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-append-text-file-error", error);
 	});
 
 	it("supports pipeable appendTextFile signature", async() => {

@@ -4,6 +4,7 @@ import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("setTime", () => {
 	afterEach(() => {
@@ -100,13 +101,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-not-found", error);
 	});
 
 	it("returns permission-denied when NODE setTime rejects with EACCES", async() => {
@@ -127,13 +122,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE setTime rejects with EPERM", async() => {
@@ -154,13 +143,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-permission-denied", error);
 	});
 
 	it("returns not-directory when NODE setTime rejects with ENOTDIR", async() => {
@@ -181,13 +164,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-not-directory", error);
 	});
 
 	it("returns read-only when NODE setTime rejects with EROFS", async() => {
@@ -208,13 +185,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE setTime rejects with EINVAL", async() => {
@@ -235,13 +206,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-invalid-argument", error);
 	});
 
 	it("returns error when NODE setTime rejects with an unknown error", async() => {
@@ -259,13 +224,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-error", error);
 	});
 
 	it("returns error when NODE setTime rejects with an unknown code", async() => {
@@ -286,13 +245,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-error", error);
 	});
 
 	it("returns not-found when DENO setTime rejects with NotFound", async() => {
@@ -310,13 +263,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-not-found", error);
 	});
 
 	it("returns permission-denied when DENO setTime rejects with PermissionDenied", async() => {
@@ -334,13 +281,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO setTime rejects with NotCapable", async() => {
@@ -358,13 +299,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-permission-denied", error);
 	});
 
 	it("returns not-directory when DENO setTime rejects with NotADirectory", async() => {
@@ -382,13 +317,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO setTime rejects with InvalidData", async() => {
@@ -406,13 +335,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-invalid-argument", error);
 	});
 
 	it("returns error when DENO setTime rejects with an unknown error", async() => {
@@ -430,13 +353,7 @@ describe("setTime", () => {
 			},
 		);
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-set-time-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-set-time-error", error);
 	});
 
 	it("supports pipeable setTime signature", async() => {

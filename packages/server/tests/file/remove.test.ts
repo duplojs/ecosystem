@@ -4,6 +4,7 @@ import { DSFile, setEnvironment } from "@scripts";
 import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("remove", () => {
 	afterEach(() => {
@@ -69,13 +70,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-not-found", error);
 	});
 
 	it("returns permission-denied when NODE remove rejects with EACCES", async() => {
@@ -90,13 +85,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE remove rejects with EPERM", async() => {
@@ -111,13 +100,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-permission-denied", error);
 	});
 
 	it("returns is-directory when NODE remove rejects with EISDIR", async() => {
@@ -132,13 +115,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-is-directory", error);
 	});
 
 	it("returns not-directory when NODE remove rejects with ENOTDIR", async() => {
@@ -153,13 +130,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-not-directory", error);
 	});
 
 	it("returns directory-not-empty when NODE remove rejects with ENOTEMPTY", async() => {
@@ -174,13 +145,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-directory-not-empty",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-directory-not-empty", error);
 	});
 
 	it("returns read-only when NODE remove rejects with EROFS", async() => {
@@ -195,13 +160,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE remove rejects with EINVAL", async() => {
@@ -216,13 +175,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-invalid-argument", error);
 	});
 
 	it("returns busy when NODE remove rejects with EBUSY", async() => {
@@ -237,13 +190,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-busy", error);
 	});
 
 	it("returns error when NODE remove rejects with an unknown error", async() => {
@@ -255,13 +202,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-error", error);
 	});
 
 	it("returns error when NODE remove rejects with an unknown code", async() => {
@@ -276,13 +217,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-error", error);
 	});
 
 	it("returns not-found when DENO remove rejects with NotFound", async() => {
@@ -294,13 +229,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-not-found",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-not-found", error);
 	});
 
 	it("returns permission-denied when DENO remove rejects with PermissionDenied", async() => {
@@ -312,13 +241,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO remove rejects with NotCapable", async() => {
@@ -330,13 +253,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-permission-denied", error);
 	});
 
 	it("returns is-directory when DENO remove rejects with IsADirectory", async() => {
@@ -348,13 +265,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-is-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-is-directory", error);
 	});
 
 	it("returns not-directory when DENO remove rejects with NotADirectory", async() => {
@@ -366,13 +277,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO remove rejects with InvalidData", async() => {
@@ -384,13 +289,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-invalid-argument", error);
 	});
 
 	it("returns busy when DENO remove rejects with Busy", async() => {
@@ -402,13 +301,7 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-busy",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-busy", error);
 	});
 
 	it("returns error when DENO remove rejects with an unknown error", async() => {
@@ -420,12 +313,6 @@ describe("remove", () => {
 
 		const result = await DSFile.remove(DCommon.infer("/tmp/mock"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-remove-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-remove-error", error);
 	});
 });

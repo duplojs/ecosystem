@@ -5,6 +5,7 @@ import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";
 import { setOsMock } from "@tests/_utils/os.mock";
 import { setCryptoMock } from "@tests/_utils/crypto.mock";
+import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
 describe("makeTemporaryFile", () => {
 	afterEach(() => {
@@ -104,13 +105,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-permission-denied", error);
 	});
 
 	it("returns permission-denied when NODE makeTemporaryFile rejects with EPERM", async() => {
@@ -131,13 +126,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-permission-denied", error);
 	});
 
 	it("returns already-exists when NODE makeTemporaryFile rejects with EEXIST", async() => {
@@ -158,13 +147,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-already-exists",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-already-exists", error);
 	});
 
 	it("returns not-directory when NODE makeTemporaryFile rejects with ENOTDIR", async() => {
@@ -185,13 +168,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-not-directory", error);
 	});
 
 	it("returns no-space when NODE makeTemporaryFile rejects with ENOSPC", async() => {
@@ -212,13 +189,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-no-space",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-no-space", error);
 	});
 
 	it("returns read-only when NODE makeTemporaryFile rejects with EROFS", async() => {
@@ -239,13 +210,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-read-only",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-read-only", error);
 	});
 
 	it("returns invalid-argument when NODE makeTemporaryFile rejects with EINVAL", async() => {
@@ -266,13 +231,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-invalid-argument", error);
 	});
 
 	it("returns too-many-open-files when NODE makeTemporaryFile rejects with EMFILE", async() => {
@@ -293,13 +252,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-too-many-open-files", error);
 	});
 
 	it("returns too-many-open-files when NODE makeTemporaryFile rejects with ENFILE", async() => {
@@ -320,13 +273,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-too-many-open-files",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-too-many-open-files", error);
 	});
 
 	it("returns error when NODE makeTemporaryFile rejects with an unknown error", async() => {
@@ -344,13 +291,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-error", error);
 	});
 
 	it("returns error when NODE makeTemporaryFile rejects with an unknown code", async() => {
@@ -371,13 +312,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-error", error);
 	});
 
 	it("returns permission-denied when DENO makeTemporaryFile rejects with PermissionDenied", async() => {
@@ -389,13 +324,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-permission-denied", error);
 	});
 
 	it("returns permission-denied when DENO makeTemporaryFile rejects with NotCapable", async() => {
@@ -407,13 +336,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-permission-denied",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-permission-denied", error);
 	});
 
 	it("returns already-exists when DENO makeTemporaryFile rejects with AlreadyExists", async() => {
@@ -425,13 +348,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-already-exists",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-already-exists", error);
 	});
 
 	it("returns not-directory when DENO makeTemporaryFile rejects with NotADirectory", async() => {
@@ -443,13 +360,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-not-directory",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-not-directory", error);
 	});
 
 	it("returns invalid-argument when DENO makeTemporaryFile rejects with InvalidData", async() => {
@@ -461,13 +372,7 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-invalid-argument",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-invalid-argument", error);
 	});
 
 	it("returns error when DENO makeTemporaryFile rejects with an unknown error", async() => {
@@ -479,12 +384,6 @@ describe("makeTemporaryFile", () => {
 
 		const result = await DSFile.makeTemporaryFile(DCommon.infer("prefix-"), DCommon.cast(".txt"));
 
-		expect(DEither.hasInformation(
-			result,
-			"file-system-make-temporary-file-error",
-		)).toBe(true);
-		if (DEither.isLeft(result)) {
-			expect(DEither.unwrapLeft(result)).toBe(error);
-		}
+		expectFileSystemError(result, "file-system-make-temporary-file-error", error);
 	});
 });
