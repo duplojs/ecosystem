@@ -10,3 +10,6 @@ cache
 **/*.generate
 packages/**/**/ai-docs
 !docs/libs/**/dist
+!docs/.vitepress/cache/
+docs/.vitepress/cache/*
+!docs/.vitepress/cache/twoslash/

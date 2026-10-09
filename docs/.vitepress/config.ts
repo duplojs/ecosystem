@@ -6,7 +6,7 @@ import { groupIconMdPlugin, groupIconVitePlugin } from "vitepress-plugin-group-i
 import llmsTxtPlugin from "vitepress-plugin-llms";
 import Typescript from "typescript";
 import { locales } from "./locales";
-import { createTwoslashCache, duplojsLlmsPlugin, duplojsMarkdownIncludePlugin, duplojsPublicPackageNames } from "./plugins/index";
+import { createTwoslashCache, duplojsLlmsPlugin, duplojsMarkdownIncludePlugin, duplojsPublicPackageNames } from "./plugins";
 
 const docsRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const version = "v1";
@@ -42,8 +42,6 @@ export default defineConfig({
 				explicitTrigger: true,
 				typesCache: createTwoslashCache({
 					root: docsRoot,
-					version,
-					tsconfig: "tsconfig.v1.json",
 					cacheDir: ".vitepress/cache/twoslash",
 				}),
 				twoslashOptions: {

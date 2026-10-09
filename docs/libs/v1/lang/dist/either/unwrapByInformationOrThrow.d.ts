@@ -2,9 +2,9 @@ import { Left } from './left';
 import { Right } from './right';
 import { informationKind } from './kind';
 import { GetInformation, GetValue } from './types';
-import * as DKind from '../kind';
-import type * as DCommon from '../common';
-declare const HasNotInformationError_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsLangEither/has-not-information-error", unknown>>, ErrorConstructor>;
+import type * as DKind from '../kind';
+import * as DCommon from '../common';
+declare const HasNotInformationError_base: abstract new (error: string) => DCommon.DuploJSError<"either-has-not-information-error", string> & DKind.Kind<DKind.Handler<DKind.Definition<"@DuplojsLangCommon/duplojs-error-either-has-not-information-error", unknown>>, unknown>;
 export declare class HasNotInformationError extends HasNotInformationError_base {
     value: unknown;
     information: DCommon.MaybeArray<string>;

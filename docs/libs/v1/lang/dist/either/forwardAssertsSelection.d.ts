@@ -1,10 +1,10 @@
 import { Left } from './left';
 import { Right } from './right';
 import { informationKind } from './kind';
-import type * as DCommon from '../common';
-import * as DKind from '../kind';
+import * as DCommon from '../common';
+import type * as DKind from '../kind';
 import type * as DObject from '../object';
-declare const ForwardAssertsSelectionError_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsLangEither/forward-asserts-selection-error", unknown>>, ErrorConstructor>;
+declare const ForwardAssertsSelectionError_base: abstract new (error: string) => DCommon.DuploJSError<"either-forward-asserts-selection-error", string> & DKind.Kind<DKind.Handler<DKind.Definition<"@DuplojsLangCommon/duplojs-error-either-forward-asserts-selection-error", unknown>>, unknown>;
 export declare class ForwardAssertsSelectionError extends ForwardAssertsSelectionError_base {
     value: unknown;
     selector: Record<string, boolean>;

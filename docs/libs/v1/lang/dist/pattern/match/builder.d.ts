@@ -1,6 +1,5 @@
 import { ComplexMatchedValue, ComplexUnMatchedValue, Pattern, PatternValue } from '../types';
 import * as DCommon from '../../common';
-import * as DKind from '../../kind';
 export interface BuilderMatcher {
     isMatch(value: unknown): boolean;
     theFunction(value: unknown): unknown;
@@ -20,7 +19,7 @@ export interface MatchBuilder<GenericValue extends unknown = never, GenericResul
     });
     otherwise<GenericOtherwiseResult extends unknown>(theFunction: (value: GenericValue) => GenericOtherwiseResult): GenericResult | GenericOtherwiseResult;
 }
-declare const InvalidExhaustivePatternError_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsLangPattern/invalid-exhaustive-pattern-error", unknown>>, ErrorConstructor>;
+declare const InvalidExhaustivePatternError_base: abstract new (error: string) => DCommon.DuploJSError<"pattern-invalid-exhaustive-pattern-error", string> & import('../../kind').Kind<import('../../kind').Handler<import('../../kind').Definition<"@DuplojsLangCommon/duplojs-error-pattern-invalid-exhaustive-pattern-error", unknown>>, unknown>;
 export declare class InvalidExhaustivePatternError extends InvalidExhaustivePatternError_base {
     input: unknown;
     constructor(input: unknown);

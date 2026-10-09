@@ -1,65 +1,132 @@
-import { createHash } from "node:crypto";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { join, relative } from "node:path";
+
+import { createHash, type Hash } from "node:crypto";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { join, relative, resolve } from "node:path";
 import { createFileSystemTypesCache } from "@shikijs/vitepress-twoslash/cache-fs";
 import type { TwoslashTypesCache } from "@shikijs/twoslash";
-import Typescript from "typescript";
 import { removeTsExpectErrorDirectives } from "./publicPackageNames";
 
 export interface CreateTwoslashCacheOptions {
 	root: string;
-	version: string;
-	tsconfig: string;
 	cacheDir: string;
 }
 
-export function createTwoslashCache(options: CreateTwoslashCacheOptions): TwoslashTypesCache {
-	const cache = createFileSystemTypesCache({ dir: options.cacheDir });
-	const cachePrefix = `// @duplojs-doc-cache: ${createTwoslashCacheStamp(options)}\n`;
+const exampleExtensions = [".ts", ".tsx", ".vue"];
+const libsExtensions = [".d.ts", ".json"];
+
+export function createTwoslashCache({
+	root,
+	cacheDir,
+}: CreateTwoslashCacheOptions): TwoslashTypesCache {
+	const cache = createFileSystemTypesCache({
+		dir: cacheDir,
+	});
+
+	const projectRoot = resolve(root);
+	const stamp = createCacheStamp(projectRoot);
+
+	function getCacheKey(code: string): string {
+		return `${stamp}\n${code}`;
+	}
 
 	return {
 		...cache,
+
 		preprocess(code) {
 			return removeTsExpectErrorDirectives(code);
 		},
+
 		read(code) {
-			return cache.read(`${cachePrefix}${code}`);
+			const result = cache.read(getCacheKey(code));
+
+			if (result === undefined && process.env.CI) {
+				throw new Error(
+					"Twoslash: missing precomputed cache. Generate and commit the cache locally before deploying.",
+				);
+			}
+
+			return result;
 		},
+
 		write(code, data) {
-			cache.write(`${cachePrefix}${code}`, data);
+			cache.write(getCacheKey(code), data);
 		},
 	};
 }
 
-function createTwoslashCacheStamp(options: CreateTwoslashCacheOptions): string {
-	return createHash("SHA256")
-		.update(Typescript.version)
-		.update(readFileSync(join(options.root, options.tsconfig), "utf-8"))
-		.update(hashDirectory(options.root, join(options.root, "examples", options.version), [".ts"]))
-		.update(hashDirectory(options.root, join(options.root, "libs", options.version), [".d.ts", "package.json"]))
-		.digest("hex")
-		.slice(0, 12);
+function createCacheStamp(root: string): string {
+	const hash = createHash("sha256");
+
+	hashDirectory(
+		hash,
+		root,
+		join(root, "examples"),
+		exampleExtensions,
+	);
+
+	hashDirectory(
+		hash,
+		root,
+		join(root, "libs"),
+		libsExtensions,
+	);
+
+	return hash.digest("hex");
 }
 
-function hashDirectory(root: string, directoryPath: string, extensions: string[]): string {
-	if (!existsSync(directoryPath)) {
-		return "";
+function hashDirectory(
+	hash: Hash,
+	root: string,
+	directory: string,
+	extensions: string[],
+): void {
+	if (!existsSync(directory)) {
+		throw new Error(
+			`Twoslash: missing directory "${directory}".`,
+		);
 	}
 
-	return readdirSync(directoryPath, { withFileTypes: true })
-		.sort((left, right) => left.name.localeCompare(right.name))
-		.map((dirent) => {
-			const currentPath = join(directoryPath, dirent.name);
-
-			if (dirent.isDirectory()) {
-				return hashDirectory(root, currentPath, extensions);
+	const entries = readdirSync(directory, {
+		withFileTypes: true,
+	}).sort(
+		(first, second) => {
+			if (first.name < second.name) {
+				return -1;
 			}
-
-			if (!dirent.isFile() || !extensions.some((extension) => dirent.name.endsWith(extension))) {
-				return "";
+			if (first.name > second.name) {
+				return 1;
 			}
+			return 0;
+		},
+	);
 
-			return `${relative(root, currentPath)}\n${readFileSync(currentPath, "utf-8")}`;
-		})
-		.join("\n");
+	for (const entry of entries) {
+		const path = join(directory, entry.name);
+
+		if (entry.isDirectory()) {
+			hashDirectory(hash, root, path, extensions);
+			continue;
+		}
+
+		if (
+			entry.isFile()
+			&& extensions.some((extension) => entry.name.endsWith(extension))
+		) {
+			hashFile(hash, root, path);
+		}
+	}
+}
+
+function hashFile(
+	hash: Hash,
+	root: string,
+	path: string,
+): void {
+	const name = relative(root, path).replaceAll("\\", "/");
+	const content = readFileSync(path);
+
+	hash.update(name);
+	hash.update("\0");
+	hash.update(content);
+	hash.update("\0");
 }

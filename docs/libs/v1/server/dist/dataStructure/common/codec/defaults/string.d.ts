@@ -1,8 +1,8 @@
-import * as DPath from "@duplojs-v1/lang/path";
 import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
 import * as FundamentalType from "../../../fundamentalType";
 export declare const codecsString: DDataStructure.Codecs<{
-    file: DDataStructure.Codec<FundamentalType.TheFile, string & DPath.Path>;
+    file: DDataStructure.Codec<FundamentalType.TheFile, string>;
+    folder: DDataStructure.Codec<FundamentalType.TheFolder, string>;
     bigint: import('@duplojs-v1/lang/dataStructure').Codec<DDataStructure.TheBigint, string>;
     boolean: import('@duplojs-v1/lang/dataStructure').Codec<DDataStructure.TheBoolean, "true" | "false">;
     date: import('@duplojs-v1/lang/dataStructure').Codec<DDataStructure.TheDate, string>;

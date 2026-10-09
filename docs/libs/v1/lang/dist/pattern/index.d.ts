@@ -13,6 +13,8 @@ export * from './matchWithStringOtherwise';
 export * from './matchWithNumberOtherwise';
 export * from './matchWithTaggedObject';
 export * from './matchWithTaggedObjectOtherwise';
+export * from './matchWithError';
+export * from './matchWithErrorOtherwise';
 export * from './matchWithEntity';
 export * from './matchWithEntityOtherwise';
 export * from './matchWithFact';

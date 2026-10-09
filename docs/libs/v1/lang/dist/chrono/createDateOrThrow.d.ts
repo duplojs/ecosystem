@@ -1,7 +1,7 @@
 import { SerializedTheDate, SpoolingDate } from './types';
 import { TheDate } from './theDate';
-import * as DKind from '../kind';
-declare const CreateTheDateError_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsLangChrono/create-the-date-error", unknown>>, ErrorConstructor>;
+import * as DCommon from '../common';
+declare const CreateTheDateError_base: abstract new (error: string) => DCommon.DuploJSError<"chrono-create-the-date-error", string> & import('../kind').Kind<import('../kind').Handler<import('../kind').Definition<"@DuplojsLangCommon/duplojs-error-chrono-create-the-date-error", unknown>>, unknown>;
 export declare class CreateTheDateError extends CreateTheDateError_base {
     input: string | Date | number | SpoolingDate | TheDate;
     constructor(input: string | Date | number | SpoolingDate | TheDate);

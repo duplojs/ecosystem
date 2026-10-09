@@ -2,8 +2,8 @@ import { Constraint } from '../../constraint';
 import { Structure } from '../../structure';
 import { Type } from '../../type';
 import { Codec } from '../codec';
-import type * as DCommon from '../../../common';
-import * as DKind from '../../../kind';
+import * as DCommon from '../../../common';
+import type * as DKind from '../../../kind';
 export declare const issueKind: DKind.Handler<DKind.Definition<"@DuplojsLangDataStructure/issue", unknown>>;
 export interface Issue extends DKind.Kind<typeof issueKind> {
     readonly path: string;
@@ -32,12 +32,12 @@ export interface PathStageErrorHandler {
     setCurrentPath(path: string): void;
     close(): void;
 }
-declare const Error_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsLangDataStructure/error", unknown>>, ErrorConstructor>;
+declare const Error_base: abstract new (error: string) => DCommon.DuploJSError<"data-structure-error", string> & DKind.Kind<DKind.Handler<DKind.Definition<"@DuplojsLangCommon/duplojs-error-data-structure-error", unknown>>, unknown>;
 export declare class Error extends Error_base {
     readonly issues: readonly Issues[];
     constructor(issues: readonly Issues[]);
 }
-declare const ErrorPromise_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsLangDataStructure/error-promise", unknown>>, ErrorConstructor>;
+declare const ErrorPromise_base: abstract new (error: string) => DCommon.DuploJSError<"data-structure-error-promise", string> & DKind.Kind<DKind.Handler<DKind.Definition<"@DuplojsLangCommon/duplojs-error-data-structure-error-promise", unknown>>, unknown>;
 export declare class ErrorPromise extends ErrorPromise_base {
     constructor();
 }

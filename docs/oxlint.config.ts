@@ -46,5 +46,6 @@ export default defineConfig({
 		".vitepress/cache/**",
 		".vitepress/dist/**",
 		".vitepress/.temp/**",
+		"libs/**",
 	],
 });

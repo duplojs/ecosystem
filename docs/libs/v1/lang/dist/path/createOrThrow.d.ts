@@ -1,6 +1,6 @@
 import { Path } from './constraints';
-import * as DKind from '../kind';
-declare const CreatePathError_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsLangPath/create-path-error", unknown>>, ErrorConstructor>;
+import * as DCommon from '../common';
+declare const CreatePathError_base: abstract new (error: string) => DCommon.DuploJSError<"path-create-path-error", string> & import('../kind').Kind<import('../kind').Handler<import('../kind').Definition<"@DuplojsLangCommon/duplojs-error-path-create-path-error", unknown>>, unknown>;
 export declare class CreatePathError extends CreatePathError_base {
     value: string;
     constructor(value: string);

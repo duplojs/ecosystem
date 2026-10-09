@@ -34,3 +34,6 @@ pnpm --filter @duplojs/form build
 
 printf "\n${GREEN}@duplojs/http${RESET}\n"
 pnpm --filter @duplojs/http build
+
+printf "\n${GREEN}docs${RESET}\n"
+pnpm --filter docs build

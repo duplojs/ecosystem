@@ -1,7 +1,7 @@
 import { Right } from './create';
 import { GetValue } from '../types';
-import * as DKind from '../../kind';
-declare const NotRightError_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsLangEither/not-right-error", unknown>>, ErrorConstructor>;
+import * as DCommon from '../../common';
+declare const NotRightError_base: abstract new (error: string) => DCommon.DuploJSError<"either-not-right-error", string> & import('../../kind').Kind<import('../../kind').Handler<import('../../kind').Definition<"@DuplojsLangCommon/duplojs-error-either-not-right-error", unknown>>, unknown>;
 export declare class NotRightError extends NotRightError_base {
     value: unknown;
     constructor(value: unknown);

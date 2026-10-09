@@ -1,7 +1,0 @@
-{
-  "extends": "@duplojs/code-config/tsconfig/base.json",
-  "compilerOptions": {
-	"types": ["web"],
-  },
-  "include": ["examples/v1/**/*.ts", "libs/v1/**/*.d.ts"],
-}

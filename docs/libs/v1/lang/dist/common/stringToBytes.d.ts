@@ -1,5 +1,5 @@
-import * as DKind from '../kind';
-declare const InvalidBytesInStringError_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsLangCommon/invalid-bytes-in-string-error", unknown>>, ErrorConstructor>;
+import { DuploJSError } from './error';
+declare const InvalidBytesInStringError_base: abstract new (error: string) => DuploJSError<"common-invalid-bytes-in-string-error", string> & import('../kind').Kind<import('../kind').Handler<import('../kind').Definition<"@DuplojsLangCommon/duplojs-error-common-invalid-bytes-in-string-error", unknown>>, unknown>;
 export declare class InvalidBytesInStringError extends InvalidBytesInStringError_base {
     input: string;
     constructor(input: string);

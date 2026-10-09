@@ -1,5 +1,5 @@
-import * as DKind from '../kind';
-declare const InvalidMillisecondInStringError_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsLangCommon/invalid-millisecond-in-string-error", unknown>>, ErrorConstructor>;
+import { DuploJSError } from './error';
+declare const InvalidMillisecondInStringError_base: abstract new (error: string) => DuploJSError<"common-invalid-millisecond-in-string-error", string> & import('../kind').Kind<import('../kind').Handler<import('../kind').Definition<"@DuplojsLangCommon/duplojs-error-common-invalid-millisecond-in-string-error", unknown>>, unknown>;
 export declare class InvalidMillisecondInStringError extends InvalidMillisecondInStringError_base {
     input: string;
     constructor(input: string);

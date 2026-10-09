@@ -1,5 +1,5 @@
-import * as DKind from '../kind';
-declare const AssertsError_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsLangCommon/asserts-error", unknown>>, ErrorConstructor>;
+import { DuploJSError } from './error';
+declare const AssertsError_base: abstract new (error: string) => DuploJSError<"common-asserts-error", string> & import('../kind').Kind<import('../kind').Handler<import('../kind').Definition<"@DuplojsLangCommon/duplojs-error-common-asserts-error", unknown>>, unknown>;
 export declare class AssertsError extends AssertsError_base {
     value: unknown;
     constructor(value: unknown);

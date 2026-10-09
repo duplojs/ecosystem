@@ -12,6 +12,7 @@ export * from './constraint';
 export * from './detachObjectMethod';
 export * from './enum';
 export * from './equal';
+export * from './error';
 export * from './escapeRegExp';
 export * from './externalPromise';
 export * from './falsy';
