@@ -140,13 +140,11 @@ export const authenticationProcess = useProcessBuilder()
 		({ authorization }, { response, output }) => DCommon.pipe(
 			authorization,
 			checkToken,
-			DEither.whenIsRight(
+			DEither.whenIsRightOtherwise(
 				(user) => output({
 					authenticatedUserId: user.id,
 				}),
-			),
-			DEither.whenIsLeft(
-				() => response("token.invalid"),
+				() => response("token.invalid")
 			),
 		),
 	)

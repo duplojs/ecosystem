@@ -36,12 +36,12 @@ export namespace Client {
 		typeof Entity
 	>("CantRentBook");
 
-	export type NoBookRentalSlotsAvailable = DModeling.Flag<
+	export type NoBookRentalSlotsAvailableFlag = DModeling.Flag<
 		"NoBookRentalSlotsAvailable",
 		undefined
 	>;
-	export const NoBookRentalSlotsAvailable = DModeling.createFlag<
-		NoBookRentalSlotsAvailable,
+	export const NoBookRentalSlotsAvailableFlag = DModeling.createFlag<
+		NoBookRentalSlotsAvailableFlag,
 		typeof Entity
 	>("NoBookRentalSlotsAvailable");
 
@@ -49,9 +49,15 @@ export namespace Client {
 		GenericEntity extends Entity,
 	>(client: GenericEntity) {
 		if (DArray.maxElements(client.borrowedBooks, 4)) {
-			return CantRentBookFlag.append(client, client.borrowedBooks);
+			return DEither.result(
+				"CantRentBook",
+				CantRentBookFlag.append(client, client.borrowedBooks),
+			);
 		} else {
-			return NoBookRentalSlotsAvailable.append(client, undefined);
+			return DEither.result(
+				"NoBookRentalSlotsAvailable",
+				NoBookRentalSlotsAvailableFlag.append(client, undefined),
+			);
 		}
 	}
 

@@ -1,8 +1,5 @@
-## Duplojs ecosystem
+# Fondamentaux.
 
-L'écosystème DuploJS a pour but de compenser les manquements de TypeScript grâce à la puissance des génériques de celui-ci. Les features fondatrices sont surtout là pour améliorer la modélisation de la donnée et également pour la manipuler.
-
-Le principe d'un logiciel c'est de gérer de la donnée. Donc il faut particulièrement faire attention à ses structures, â ses états et â ses transitions des données qui constitueront leurs cycle de vie. DuploJS a pour vocation de vouloir améliorés et standardiser la modélisation de tout ça afin de créer des logiciels robustes et scalables.
 ## Contraintes de typage
 
 Garanties sur les valeurs : acquisition, composition, propagation, compatibilité statique et contraintes personnalisées.
@@ -323,20 +320,7 @@ Affiner les branches et réduire les cas restants, avec sélection positive ou i
  
 # Serveur
 
-La partie serveur regroupe les abstractions qui relient une application
-DuploJS à son environnement d'exécution.
-
-Elle couvre les points de contact avec le runtime : interface HTTP, système de
-fichiers, variables d'environnement, processus courant et commandes CLI. Le
-code applicatif peut ainsi rester organisé autour de contrats typés, tandis que
-les détails propres à Node.js, Deno ou Bun restent portés par les connecteurs
-ou les implémentations de plateforme.
-
-HTTP structure le flux exposé aux clients. Les autres domaines servent à
-manipuler les ressources du runtime sans disperser ces dépendances dans le
-reste de l'application.
-
-# Manipuler des fichiers
+## Manipuler des fichiers
 
 Accès cross-platform au système de fichiers : chemins typés avec `Path`, opérations sur fichiers/dossiers/liens et erreurs représentées par `Either`.
 
@@ -350,17 +334,9 @@ Lecture, écriture et opérations de système de fichiers avec chemins typés et
 
 Contraintes `Path`, `Absolute` et `Segment` pour valider, extraire et résoudre des chemins Unix.
  
-# HTTP
+## HTTP
 
-Une application HTTP DuploJS décrit l'interface par laquelle un domaine reçoit une requête, valide ses entrées, exécute un flux explicite et produit une réponse contextualisée.
-
-Le `Hub` regroupe la configuration, les routes et les plugins de cette interface.
-
-Une route n'est pas un objet métier : elle organise le passage entre protocole HTTP et logique applicative. Ses étapes valident les données de requête, partagent un contexte de traitement et déclarent les réponses que le flux peut produire.
-
-Les routines déplacent les vérifications et séquences réutilisables hors des routes sans cacher les données qui entrent ou ressortent du flux.
-
-La génération de code transforme ces déclarations en contrat statique partageable sans exposer la codebase serveur.
+Interfaces HTTP côté serveur : réception et validation des requêtes, orchestration des traitements et contrats de réponse typés partageables avec les clients.
 
 
 ### [Créer une application HTTP](ai-docs/src/02-server/20-http/10-init.ts)
@@ -387,20 +363,9 @@ Déclaration d'une politique unique pour créer et vérifier une famille de toke
 
 Génération du typage des routes et des `DataStructure` pour partager un contrat statique.
  
-# Environnement
+## Environnement
 
-L'environnement regroupe ce que la plateforme d'exécution fournit à
-l'application : système de fichiers, processus courant, dossier de travail,
-variables d'environnement ou capacité à exposer une interface HTTP.
-
-DuploJS évite de lier le code applicatif à l'API particulière de Node.js,
-Deno ou Bun. Quand les plateformes partagent un modèle proche, le package
-serveur expose une API commune. Quand l'intégration dépend davantage du
-runtime, elle passe par un connecteur dédié.
-
-Cette partie regroupe donc les outils qui permettent au serveur d'observer son
-contexte d'exécution sans disperser les détails de plateforme dans le reste de
-l'application.
+Exploitation des capacités de l’environnement serveur et adaptation aux API des différentes plateformes d’exécution.
 
 
 ### [Capacités de plateforme](ai-docs/src/02-server/30-environment/10-platform.ts)
@@ -414,17 +379,9 @@ applicatif indépendant du runtime.
 Chargement de sources d'environnement, validation par `DataStructure` et
 obtention d'une configuration typée.
  
-# Créer des commandes
+## Créer des commandes
 
-Le domaine commande permet de construire des entrées CLI typées pour une
-application serveur.
-
-Une commande décrit les arguments et options qu'elle accepte, puis reçoit ces
-valeurs déjà interprétées dans son callback d'exécution. La même déclaration
-sert aussi à produire l'aide et les erreurs de ligne de commande.
-
-Les sous-commandes permettent ensuite de structurer une CLI comme un arbre,
-sans changer le modèle d'exécution d'une commande simple.
+Création d’interfaces en ligne de commande (CLI) pour les applications serveur.
 
 
 ### [Définir une commande](ai-docs/src/02-server/40-command/10-use.ts)
@@ -440,19 +397,9 @@ une branche spécialisée.
  
 # Client
 
-Le client est l'endroit où les données typées rencontrent l'interaction utilisateur : requêtes HTTP, formulaires, validations et comportements d'interface.
+## Client HTTP
 
-DuploJS ramène ces usages vers des contrats et des compositions déclaratives afin de garder un code homogène, fortement typé et adaptable sans disperser la logique propre à chaque écran.
-
-# Client HTTP
-
-Consommation typée d'une interface HTTP DuploJS à partir de son contrat
-statique : initialisation du client, requêtes disponibles, réponses attendues
-et réactions communes au cycle des échanges.
-
-Le client conserve le lien entre une route appelée et les réponses qu'elle peut
-produire. Les `information` déclarées côté serveur deviennent le discriminant
-principal pour traiter un cas de réponse précis côté client.
+Communication typée avec des API HTTP.
 
 
 ### [Initialiser un client HTTP](ai-docs/src/03-client/10-http/10-init.ts)
@@ -475,21 +422,9 @@ Centralisation des comportements communs au cycle d'une requête : réactions
 globales, effets de bord, instrumentation et transformations techniques sans
 élargir le contrat typé des routes.
  
-# Form
+## Form
 
-Formulaires déclaratifs et typés : composition de champs, layouts, validations,
-états internes et templates de rendu.
-
-L'objectif est d'éviter que chaque écran reconstruise sa propre manière de
-gérer les valeurs, les erreurs et les comportements locaux. Le formulaire est
-décrit par composition : chaque élément annonce ce qu'il porte, comment il
-s'intègre aux autres et quelle place il occupe dans la valeur finale.
-
-Les inputs portent les valeurs, les layouts structurent ou contrôlent leur
-composition, et les templates transforment cette structure en interface Vue.
-Cette séparation garde un modèle commun pour `currentValue`, `check`, `reset`
-et `dispose`, tout en laissant l'application personnaliser les comportements ou
-le rendu quand l'interface l'exige.
+Création et gestion de formulaires typés pour les interfaces utilisateur.
 
 
 ### [Créer un formulaire](ai-docs/src/03-client/20-form/10-init.ts)
@@ -530,16 +465,9 @@ structure, les validations ou les valeurs manipulées par `@duplojs/form`.
  
 # Tests
 
-Repères pour tester un contrat : comportement runtime, branche attendue,
-information transportée, valeur obtenue et type conservé.
+## Tests unitaires
 
-# Tests unitaires
-
-Tests focalisés sur le contrat d'une API : branche acceptée, donnée obtenue,
-information portée par le résultat et type conservé par TypeScript.
-
-Ils vérifient le comportement observé et l'inférence dans le contexte réel
-d'utilisation, notamment quand le résultat porte plusieurs issues possibles.
+Vérification du comportement et du typage des unités de code.
 
 
 ### [Tester un résultat Either](ai-docs/src/04-tests/01-unit/10-either.ts)
@@ -548,16 +476,9 @@ Sélectionner l'`information` attendue, unwrap la valeur correspondante puis
 vérifier la donnée obtenue et son type. Les helpers `OrThrow` font échouer le
 test quand le résultat n'est pas celui visé.
  
-# Tests E2E
+## Tests E2E
 
-`@duplojs/playwright` organise Playwright autour du site teste.
-
-La suite nomme les parties du parcours : `Website` pour le contexte global,
-`Page` pour les ecrans navigables, `Component` pour les zones reutilisables.
-
-Le test reste un test Playwright, mais il se lit comme une specification :
-naviguer, recuperer une page ou un composant, agir, verifier un etat. Les
-locators restent dans les objets qui representent l'interface.
+Vérification des parcours utilisateur dans une application web.
 
 
 ### [Initialiser le client E2E](ai-docs/src/04-tests/02-e2e/10-init.ts)
