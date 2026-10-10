@@ -4,6 +4,7 @@ export * from "./create";
 export * from "./createAbsolute";
 export * from "./createAbsoluteOrThrow";
 export * from "./createOrThrow";
+export * from "./createPattern";
 export * from "./createSegment";
 export * from "./createSegmentOrThrow";
 export * from "./declareAbsolutePath";
