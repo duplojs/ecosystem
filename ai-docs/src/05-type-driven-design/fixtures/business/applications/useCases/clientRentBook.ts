@@ -16,7 +16,7 @@ export const ClientRentBookUseCase = DInvocation.createReader(
 		emailRepository,
 	}) => (
 		params: {
-			client: Client.Entity & Client.CantRentBookFlag;
+			client: Client.Entity & Client.CanRentBookFlag;
 			book: Book.Entity & Book.AvailableFlag;
 		},
 	) => DEither.rightAsyncPipe(

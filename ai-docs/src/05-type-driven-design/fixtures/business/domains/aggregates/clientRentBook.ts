@@ -4,7 +4,7 @@ import * as DEither from "@duplojs/lang/either";
 import { type EmailRepository } from "../repositories/email";
 
 export function clientRentBook(
-	client: Client.Entity & Client.CantRentBookFlag,
+	client: Client.Entity & Client.CanRentBookFlag,
 	book: Book.Entity & Book.AvailableFlag,
 ) {
 	return DInvocation.createResolver({

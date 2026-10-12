@@ -27,14 +27,14 @@ export namespace Client {
 		| ClientGiveBackBook
 	);
 
-	export type CantRentBookFlag = DModeling.Flag<
-		"CantRentBook",
+	export type CanRentBookFlag = DModeling.Flag<
+		"CanRentBook",
 		readonly Book.Id[] & DArray.MaxElements<4>
 	>;
-	export const CantRentBookFlag = DModeling.createFlag<
-		CantRentBookFlag,
+	export const CanRentBookFlag = DModeling.createFlag<
+		CanRentBookFlag,
 		typeof Entity
-	>("CantRentBook");
+	>("CanRentBook");
 
 	export type NoBookRentalSlotsAvailableFlag = DModeling.Flag<
 		"NoBookRentalSlotsAvailable",
@@ -45,13 +45,13 @@ export namespace Client {
 		typeof Entity
 	>("NoBookRentalSlotsAvailable");
 
-	export function cantRentBook<
+	export function canRentBook<
 		GenericEntity extends Entity,
 	>(client: GenericEntity) {
 		if (DArray.maxElements(client.borrowedBooks, 4)) {
 			return DEither.result(
-				"CantRentBook",
-				CantRentBookFlag.append(client, client.borrowedBooks),
+				"CanRentBook",
+				CanRentBookFlag.append(client, client.borrowedBooks),
 			);
 		} else {
 			return DEither.result(

@@ -49,7 +49,51 @@ export const directoryToMarkdown: (
 			await DEither.rightAsyncPipe(
 				entryGroupe.markdowns,
 				DEither.toMaybe,
-				DArray.map((file) => DSFile.readTextFile(file.path)),
+				DArray.map(
+					(file) => {
+						const fileName = file.getName();
+						if (
+							!fileName
+							|| (
+								fileName !== "index.md"
+								&& !DString.test(fileName, /^[0-9]+-/)
+							)
+						) {
+							return DEither.fail();
+						}
+
+						return DEither.rightAsyncPipe(
+							DSFile.readTextFile(file.path),
+							(content) => {
+								if (DString.startsWith(fileName, "0")) {
+									return DEither.success(content);
+								}
+
+								if (DString.includes(content, "---")) {
+									const filePath = file.path;
+
+									if (!DPath.isAbsolute(filePath)) {
+										return DEither.fail();
+									}
+
+									return DCommon.pipe(
+										content,
+										DString.split("---"),
+										DArray.first,
+										DString.replace(
+											/(?<hashtag>#+) (?<title>[^\n]+)/g,
+											({ namedGroups }) => `${namedGroups.hashtag} [${namedGroups.title}](${DPath.computeRelative(argument.outputPathFolderFile, filePath)})`,
+										),
+										DEither.success,
+									);
+								}
+
+								return DEither.success(content);
+							},
+							DString.concat("\n"),
+						);
+					},
+				),
 				DCommon.promiseAll,
 				DArray.filter(DEither.isRight),
 				DArray.map(DEither.unwrapRight),
@@ -92,6 +136,7 @@ export const directoryToMarkdown: (
 								DArray.filter(DString.isNotEmpty),
 								DArray.map(DString.replace(/^ *\* */, "")),
 								DString.join("\n"),
+								DString.concat("\n"),
 							),
 							DEither.unwrapOr(null),
 						);
@@ -117,7 +162,7 @@ export const directoryToMarkdown: (
 										"###",
 									),
 									"",
-									`\`\`\`${item.getExtension() ?? "txt"}${exampleContent}\`\`\``,
+									`\`\`\`${item.getExtension() ?? "txt"}${exampleContent}\`\`\`\n\n`,
 								),
 								next,
 							);
@@ -168,5 +213,5 @@ export const directoryToMarkdown: (
 			folderContent ?? [],
 		);
 	},
-	(value) => DEither.right("render-success", DString.join(value, "\n")),
+	(value) => DEither.right("render-success", DString.join(value, "")),
 );

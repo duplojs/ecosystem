@@ -3,7 +3,7 @@ import * as DModeling from "@duplojs/lang/modeling";
 import { Client } from "../client";
 import * as DPattern from "@duplojs/lang/pattern";
 import * as DEither from "@duplojs/lang/either";
-import { type BookRentalFact, type ReturnBookFact } from "./facts";
+import { type CreateBookFact, type BookRentalFact, type ReturnBookFact } from "./facts";
 
 export * from "./facts";
 
@@ -12,6 +12,12 @@ export namespace Book {
 
 	export const Id = namespace.createNewType("Id", DDataStructure.string(), [DDataStructure.uuid()]);
 	export type Id = DDataStructure.StructureValue<typeof Id>;
+
+	export const Title = namespace.createNewType("Title", DDataStructure.string(), [
+		DDataStructure.minCharacters(1),
+		DDataStructure.maxCharacters(150),
+	]);
+	export type Title = DDataStructure.StructureValue<typeof Title>;
 
 	export const AvailableState = DModeling.createTaggedObject(
 		"AvailableState",
@@ -29,6 +35,7 @@ export namespace Book {
 
 	export const Entity = namespace.createEntity(() => ({
 		id: Id,
+		title: Title,
 		state: DDataStructure.union([
 			AvailableState,
 			BorrowedState,
@@ -37,6 +44,7 @@ export namespace Book {
 	export type Entity = DDataStructure.StructureValue<typeof Entity>;
 
 	export type Facts = (
+		| CreateBookFact
 		| BookRentalFact
 		| ReturnBookFact
 	);

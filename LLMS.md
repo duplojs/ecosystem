@@ -4,12 +4,10 @@
 
 Garanties sur les valeurs : acquisition, composition, propagation, compatibilité statique et contraintes personnalisées.
 
-
 ### Acquisition des contraintes.
 
 Vérification runtime et narrowing vers un type contraint.
  
-
 ```ts
 import * as DNumber from "@duplojs/lang/number";
 
@@ -34,17 +32,14 @@ if (
 
 Réutilisation et composition des contraintes disponibles dans les domaines.
  
-
 ### [Manipulation des valeurs contraintes.](ai-docs/src/01-fundamental/01-constraint/20-manipulation.ts)
 
 Exploitation des contraintes par les fonctions DuploJS pour simplifier la manipulation des valeurs.
  
-
 ### [Compatibilité statique des contraintes.](ai-docs/src/01-fundamental/01-constraint/30-cast.ts)
 
 Cast par implication, valeurs littérales et inférence en contexte générique.
  
-
 ### [Contraintes personnalisées.](ai-docs/src/01-fundamental/01-constraint/40-custom-constraint.ts)
 
 Déclaration, predicate de validation et extension des règles de cast.
@@ -53,12 +48,10 @@ Déclaration, predicate de validation et extension des règles de cast.
 
 Composition des transformations de données avec les fonctions DuploJS : pipes, callbacks et traitements asynchrones.
 
-
 ### Currification et composition avec pipe.
 
 Configurer les opérations avant de recevoir la donnée et enchaîner ses transformations.
  
-
 ```ts
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
@@ -86,12 +79,10 @@ const normalizedTags = DCommon.pipe(
 
 Composer les opérations fournies, sous forme curifiée ou directement compatible avec pipe.
  
-
 ### [Composition dans une callback.](ai-docs/src/01-fundamental/02-currying/20-inner-pipe.ts)
 
 Enchaîner des transformations lorsque la fonction appelante attend une fonction.
  
-
 ### [Composition de traitements asynchrones.](ai-docs/src/01-fundamental/02-currying/30-async-pipe.ts)
 
 Enchaîner des étapes synchrones et asynchrones dans un pipe ou une callback.
@@ -100,12 +91,10 @@ Enchaîner des étapes synchrones et asynchrones dans un pipe ou une callback.
 
 Résultats et états contextualisés : représentation, discrimination, traitement exhaustif, propagation des échecs et adaptation des contrats.
 
-
 ### Représentation des résultats avec Either.
 
 Statuts Right et Left, information contextuelle et valeur associée.
  
-
 ```ts
 import * as DEither from "@duplojs/lang/either";
 
@@ -125,27 +114,22 @@ type FindUserResult = DEither.Right<"user-found", { name: "Alice" }> | DEither.L
 
 Choisir une branche par statut ou information, extraire sa valeur et traiter les autres cas.
  
-
 ### [Décisions exhaustives sur les résultats.](ai-docs/src/01-fundamental/03-either/20-exhaustive-handling.ts)
 
 Sélection et traitement de chaque variante pour détecter les évolutions du contrat.
  
-
 ### [Composition avec propagation des échecs.](ai-docs/src/01-fundamental/03-either/30-composition.ts)
 
 Enchaîner ou regrouper des opérations en arrêtant le traitement au premier Left.
  
-
 ### [Adaptation des résultats au contexte.](ai-docs/src/01-fundamental/03-either/40-result-adaptation.ts)
 
 Reclasser les statuts et renommer les informations en conservant les valeurs.
  
-
 ### [Conversion des absences et exceptions en résultats.](ai-docs/src/01-fundamental/03-either/50-external-results.ts)
 
 Intégrer des valeurs optionnelles ou des appels pouvant échouer dans un contrat Either.
  
-
 ### [États contextualisés avec Result.](ai-docs/src/01-fundamental/03-either/60-contextual-state.ts)
 
 Décrire et discriminer des états sans leur attribuer un sens de succès ou d’échec.
@@ -154,12 +138,10 @@ Décrire et discriminer des états sans leur attribuer un sens de succès ou d�
 
 Contrats de données partagés entre TypeScript et runtime : composition, validation, contraintes, représentations, récursivité et erreurs.
 
-
 ### Contrats de données avec DataStructure.
 
 Décrire les données attendues et obtenir des valeurs typées après validation.
  
-
 ```ts
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
@@ -184,27 +166,22 @@ if (DEither.isRight(result)) {
 
 Construire et réutiliser des structures pour décrire des données simples ou composées.
  
-
 ### [Contraintes de validation dans les structures.](ai-docs/src/01-fundamental/04-data-structure/20-constraint.ts)
 
 Ajouter et cumuler des contraintes compatibles, fournies ou personnalisées.
  
-
 ### [Validation des données entrantes.](ai-docs/src/01-fundamental/04-data-structure/30-validation.ts)
 
 Vérification, conversion et narrowing aux frontières du logiciel, en synchrone ou asynchrone.
  
-
 ### [Changement de représentation avec des codecs.](ai-docs/src/01-fundamental/04-data-structure/40-codecs.ts)
 
 Encoder et décoder les données avec un même contrat, selon leur type fondamental.
  
-
 ### [Contrats de données récursifs.](ai-docs/src/01-fundamental/04-data-structure/50-recursive.ts)
 
 Références différées et cohérence entre un type déclaré et sa structure runtime.
  
-
 ### [Interprétation des erreurs de validation et de conversion.](ai-docs/src/01-fundamental/04-data-structure/60-interpret-error.ts)
 
 Localiser les données invalides et adapter les messages au contexte ou à la langue.
@@ -213,12 +190,10 @@ Localiser les données invalides et adapter les messages au contexte ou à la la
 
 Représentation des instants et durées : création, calculs, comparaison, sérialisation et fuseaux horaires.
 
-
 ### Représentation des instants et des durées.
 
 TheDate et TheTime pour modéliser le temps avec des valeurs immuables.
  
-
 ```ts
 import * as DChrono from "@duplojs/lang/chrono";
 
@@ -235,17 +210,14 @@ const later = DChrono.addTime(instant, duration);
 
 Valeurs connues statiquement ou reçues au runtime, et gestion des entrées invalides.
  
-
 ### [Calculs et comparaisons temporels.](ai-docs/src/01-fundamental/05-chrono/20-manipulation.ts)
 
 Transformer, comparer et décomposer des instants ou durées avec les fonctions Chrono.
  
-
 ### [Transport et reconstruction des valeurs temporelles.](ai-docs/src/01-fundamental/05-chrono/30-serialized.ts)
 
 Sérialiser, reconnaître et reconstruire les instants et durées en conservant leur valeur.
  
-
 ### [Interprétation et affichage dans un fuseau horaire.](ai-docs/src/01-fundamental/05-chrono/40-timezone.ts)
 
 Interpréter une heure locale et lire ou présenter un instant dans le fuseau demandé.
@@ -254,32 +226,26 @@ Interpréter une heure locale et lire ou présenter un instant dans le fuseau de
 
 Identités métier, modèles de données, états et transitions, preuves de passage et identité des opérations dans les contrats.
 
-
 ### [Identité et contraintes des types métier.](ai-docs/src/01-fundamental/06-modeling/10-new-type.ts)
 
 Distinguer des valeurs de même représentation par des NewType propres à leur rôle métier.
  
-
 ### [Entités métier et hydratation.](ai-docs/src/01-fundamental/06-modeling/20-entity.ts)
 
 Déclarer les propriétés métier, hydrater les données externes et mettre à jour les valeurs typées.
  
-
 ### [Objets taggés et unions discriminées.](ai-docs/src/01-fundamental/06-modeling/30-tagged-object.ts)
 
 Identité transportable, distinction des formes d’un objet et hydratation des données brutes.
  
-
 ### [Cycle de vie des entités.](ai-docs/src/01-fundamental/06-modeling/40-entity-lifecycle.ts)
 
 États, préconditions et transitions métier représentés par des Flag et des Fact.
  
-
 ### [Preuves de passage par une opération.](ai-docs/src/01-fundamental/06-modeling/50-evidence.ts)
 
 Exiger dans les types qu’une valeur soit passée par un traitement préalable.
  
-
 ### [Identité des fonctions dans les dépendances.](ai-docs/src/01-fundamental/06-modeling/60-signed-function.ts)
 
 Exiger une fonction identifiée au-delà de sa seule signature TypeScript.
@@ -288,32 +254,26 @@ Exiger une fonction identifiée au-delà de sa seule signature TypeScript.
 
 Sélection et affinement des types dans les unions : identité, valeurs littérales, forme ou prédicats, traitement exhaustif ou partiel.
 
-
 ### [Discrimination des entités par identité.](ai-docs/src/01-fundamental/07-discrimination/10-entity.ts)
 
 Sélection exhaustive ou partielle selon le nom métier, avec typage précis des branches.
  
-
 ### [Discrimination selon le fait courant.](ai-docs/src/01-fundamental/07-discrimination/20-fact.ts)
 
 Choisir une branche selon la Fact portée par une valeur et accéder aux données du fait.
  
-
 ### [Discrimination des objets par tag.](ai-docs/src/01-fundamental/07-discrimination/30-tagged-object.ts)
 
 Identifier la forme d’un objet par son tag et traiter tout ou partie de l’union.
  
-
 ### [Discrimination des valeurs littérales.](ai-docs/src/01-fundamental/07-discrimination/40-literal.ts)
 
 Traitement exhaustif ou partiel d’une union selon la valeur, avec branches typées.
  
-
 ### [Discrimination par la forme des données.](ai-docs/src/01-fundamental/07-discrimination/50-shape.ts)
 
 Sélectionner les variantes sans identité explicite par des patterns, y compris imbriqués.
  
-
 ### [Discrimination par prédicats et élimination.](ai-docs/src/01-fundamental/07-discrimination/60-predicate.ts)
 
 Affiner les branches et réduire les cas restants, avec sélection positive ou inverse.
@@ -324,12 +284,10 @@ Affiner les branches et réduire les cas restants, avec sélection positive ou i
 
 Accès cross-platform au système de fichiers : chemins typés avec `Path`, opérations sur fichiers/dossiers/liens et erreurs représentées par `Either`.
 
-
 ### [Manipuler le système de fichiers](ai-docs/src/02-server/10-file/10-manipulation.ts)
 
 Lecture, écriture et opérations de système de fichiers avec chemins typés et résultats `Either`.
  
-
 ### [Chemins typés](ai-docs/src/02-server/10-file/20-path.ts)
 
 Contraintes `Path`, `Absolute` et `Segment` pour valider, extraire et résoudre des chemins Unix.
@@ -338,27 +296,22 @@ Contraintes `Path`, `Absolute` et `Segment` pour valider, extraire et résoudre 
 
 Interfaces HTTP côté serveur : réception et validation des requêtes, orchestration des traitements et contrats de réponse typés partageables avec les clients.
 
-
 ### [Créer une application HTTP](ai-docs/src/02-server/20-http/10-init.ts)
 
 Configuration d'un `Hub`, plugins et enregistrement des routes d'une application HTTP.
  
-
 ### [Créer une route HTTP](ai-docs/src/02-server/20-http/20-route.ts)
 
 Construction du flux d’une route : entrées validées, contexte de traitement et réponses contextualisées.
  
-
 ### [Faire une routine de vérification](ai-docs/src/02-server/20-http/30-routine.ts)
 
 Vérifications dans les flux HTTP, réutilisation des traitements et adaptation de leurs résultats au contexte.
  
-
 ### [Définir une politique de gestion de tokens](ai-docs/src/02-server/20-http/40-jwt.ts)
 
 Déclaration d'une politique unique pour créer et vérifier une famille de tokens.
  
-
 ### [Comment partager des ressources](ai-docs/src/02-server/20-http/50-codegen.ts)
 
 Génération du typage des routes et des `DataStructure` pour partager un contrat statique.
@@ -367,13 +320,11 @@ Génération du typage des routes et des `DataStructure` pour partager un contra
 
 Exploitation des capacités de l’environnement serveur et adaptation aux API des différentes plateformes d’exécution.
 
-
 ### [Capacités de plateforme](ai-docs/src/02-server/30-environment/10-platform.ts)
 
 Utilisation des abstractions communes et des connecteurs pour garder le code
 applicatif indépendant du runtime.
  
-
 ### [Manipuler les variables d'environnement](ai-docs/src/02-server/30-environment/20-variable.ts)
 
 Chargement de sources d'environnement, validation par `DataStructure` et
@@ -383,12 +334,10 @@ obtention d'une configuration typée.
 
 Création d’interfaces en ligne de commande (CLI) pour les applications serveur.
 
-
 ### [Définir une commande](ai-docs/src/02-server/40-command/10-use.ts)
 
 Définition des entrées et du traitement d’une commande CLI.
  
-
 ### [Créer des sous-commandes](ai-docs/src/02-server/40-command/20-sub-command.ts)
 
 Composition de commandes sous forme d'arbre pour router l'exécution vers
@@ -400,19 +349,16 @@ une branche spécialisée.
 
 Communication typée avec des API HTTP.
 
-
 ### [Initialiser un client HTTP](ai-docs/src/03-client/10-http/10-init.ts)
 
 Création d'un client à partir du contrat statique des routes, configuration
 globale et conservation du typage des requêtes et réponses exposées par le
 serveur.
  
-
 ### [Effectuer une requête HTTP](ai-docs/src/03-client/10-http/20-request.ts)
 
 Envoi de données et traitement des réponses typées d’une API HTTP.
  
-
 ### [Utiliser les hooks du client HTTP](ai-docs/src/03-client/10-http/30-hook.ts)
 
 Comportements transversaux et instrumentation du cycle des échanges HTTP.
@@ -421,22 +367,18 @@ Comportements transversaux et instrumentation du cycle des échanges HTTP.
 
 Création et gestion de formulaires typés pour les interfaces utilisateur.
 
-
 ### [Créer un formulaire](ai-docs/src/03-client/20-form/10-init.ts)
 
 Initialisation et cycle de vie d’un formulaire Vue typé.
  
-
 ### [Inputs de formulaire réutilisables](ai-docs/src/03-client/20-form/20-input.ts)
 
 Création, intégration et validation des champs de saisie d’un formulaire Vue.
  
-
 ### [Composer avec les layouts](ai-docs/src/03-client/20-form/30-layout.ts)
 
 Composition de la structure des données et des comportements d’un formulaire.
  
-
 ### [Personnaliser les templates](ai-docs/src/03-client/20-form/40-template.ts)
 
 Personnalisation globale ou locale du rendu Vue des formulaires et de leurs champs.
@@ -447,7 +389,6 @@ Personnalisation globale ou locale du rendu Vue des formulaires et de leurs cham
 
 Vérification du comportement et du typage des unités de code.
 
-
 ### [Tester un résultat Either](ai-docs/src/04-tests/01-unit/10-either.ts)
 
 Vérification des branches, des valeurs et du typage d’un contrat Either.
@@ -456,18 +397,33 @@ Vérification des branches, des valeurs et du typage d’un contrat Either.
 
 Vérification des parcours utilisateur dans une application web.
 
-
 ### [Initialiser le client E2E](ai-docs/src/04-tests/02-e2e/10-init.ts)
 
 Configuration de l’environnement de test et intégration du site aux fixtures Playwright.
  
-
 ### [Architecturer une suite E2E](ai-docs/src/04-tests/02-e2e/20-architecture.ts)
 
 Organisation d’une suite E2E selon les pages et les composants du site testé.
  
-
 ### [Ecrire un parcours de test](ai-docs/src/04-tests/02-e2e/30-testing.ts)
 
 Scénarios utilisateur, interactions et vérifications avec les objets du site.
  
+# Type Driven Design
+
+## Domaine
+
+Entités métier, invariants, preuves, transitions, agrégats orchestrant les transactions métier et repositories déclarant les opérations techniques nécessaires au métier.
+
+### [Conception des entités en Type-Driven Design](ai-docs/src/05-type-driven-design/01-domains/10-entities.md)
+
+Organisation des données métier et de leur cycle de vie : identité, invariants, qualification des états, préconditions et transitions contrôlées. Règles architecturales assurant la cohérence des entités au fil de leurs modifications.
+
+### [Conception des agrégats en Type-Driven Design](ai-docs/src/05-type-driven-design/01-domains/20-aggregates.md)
+
+Points d'entrée des transactions métier, préconditions et preuves, orchestration et réutilisation des faits.
+
+### [Conception des repositories en Type-Driven Design](ai-docs/src/05-type-driven-design/01-domains/30-repositories.md)
+
+Déclaration dans le domaine, indépendance des implémentations techniques, récupération de données, preuves de préconditions et effets requis par les agrégats.
+

@@ -17,9 +17,9 @@ export const clientRentBookRoute = useRouteBuilder("POST", "/book-rentals")
 	.cut(
 		ResponseContract.conflict("client.noBookRentalSlotsAvailable"),
 		({ client }, { response, output }) => DEither.matchInformation(
-			Client.cantRentBook(client),
+			Client.canRentBook(client),
 			{
-				CantRentBook: (client) => output({ client }),
+				CanRentBook: (client) => output({ client }),
 				NoBookRentalSlotsAvailable: () => response("client.noBookRentalSlotsAvailable"),
 			},
 		),

@@ -52,7 +52,7 @@ export interface EvidenceResult<
  */
 export function evidenceResult<
 	GenericInformation extends string,
-	GenericValue extends object,
+	GenericValue extends unknown,
 >(
 	information: GenericInformation,
 ): (value: GenericValue) => EvidenceResult<
@@ -62,7 +62,7 @@ export function evidenceResult<
 
 export function evidenceResult<
 	GenericInformation extends string,
-	GenericValue extends object,
+	GenericValue extends unknown,
 >(
 	information: GenericInformation,
 	value: GenericValue,
@@ -72,13 +72,13 @@ export function evidenceResult<
 >;
 
 export function evidenceResult(
-	...args: [string, object]
+	...args: [string, unknown]
 		| [string]
 ): any {
 	if (args.length === 1) {
 		const [information] = args;
 
-		return (value: object) => evidenceResult(information, value);
+		return (value: unknown) => evidenceResult(information, value);
 	}
 
 	const [information, value] = args;
@@ -126,9 +126,11 @@ export type FindEvidence<
 export type GetEvidenceResult<
 	GenericFunction extends DCommon.AnyFunction,
 	EvidenceName extends Extract<
-		keyof FindEvidence<
-			ReturnType<GenericFunction>
-		>[DCommon.ConstraintSymbol]["evidence"],
+		keyof DCommon.UnionToIntersection<
+			FindEvidence<
+				ReturnType<GenericFunction>
+			>[DCommon.ConstraintSymbol]["evidence"]
+		>,
 		string
 	>,
 > = Extract<

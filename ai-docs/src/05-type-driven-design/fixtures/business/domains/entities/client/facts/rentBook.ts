@@ -13,11 +13,11 @@ export const ClientRentBookFact = DModeling.createFact<
 	typeof Client.Entity
 >("ClientRentBookFact")(
 	({ applyFact }) => (
-		client: Client.Entity & Client.CantRentBookFlag,
+		client: Client.Entity & Client.CanRentBookFlag,
 		book: Book.Entity & Book.AvailableFlag,
 	) => {
 		const borrowedBooks = DArray.push(
-			Client.CantRentBookFlag.getPayload(client),
+			Client.CanRentBookFlag.getPayload(client),
 			book.id,
 		);
 
