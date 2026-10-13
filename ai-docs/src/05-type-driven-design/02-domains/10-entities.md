@@ -19,7 +19,21 @@ Les règles suivantes sont des **conventions d'architecture du domaine** :
 
 `Flag.append` est réservé aux qualifications et aux faits décrits ci-dessus. Le placement de l'appel et la vérification de sa condition relèvent de ces conventions ; la présence d'un flag dans le type ne dispense pas son producteur d'établir la garantie annoncée.
 
-Une fonction de qualification ou de requalification peut être consommée par l'infrastructure lorsqu'elle doit vérifier l'état d'une entité hydratée avant de la transmettre à l'application. Cette vérification ajoute la preuve correspondant à une condition constatée ; elle ne crée ni ne modifie l'entité métier. Les transitions restent exclusivement réalisées par les `Fact` du domaine.
+### Choisir la primitive de modélisation
+
+Les propriétés d'une entité portent des types métier explicites, généralement des `NewType`, des structures ou des `TaggedObject` adaptés à leur rôle. Utiliser la primitive correspondant à l'intention évite de confondre identité, forme, état et ordre d'exécution.
+
+| Intention | Primitive | Règle |
+| --- | --- | --- |
+| Donner une identité métier à une valeur | `NewType` | Deux valeurs de même représentation mais de sens différent ne sont pas interchangeables. Les contraintes de forme sont vérifiées lors du mapping. |
+| Décrire une forme identifiée | `TaggedObject` | Son tag permet le pattern matching et le transport entre frontières. Il décrit une shape, pas un cycle de vie ; une union de tags modélise les formes possibles d'une propriété. |
+| Certifier une condition sur l'entité actuelle | `Flag` | Une qualification inspecte la valeur puis ajoute le flag correspondant. Le flag peut porter la payload de la vérification ; plusieurs flags peuvent coexister. |
+| Représenter une création ou modification métier | `Fact` | Toute transition est un événement, même si l'état final ressemble à l'état initial. Une fact peut lire plusieurs entités, mais ne modifie que sa cible. |
+| Imposer une provenance ou un ordre d'exécution | `Evidence` | La preuve identifie l'opération qui doit avoir précédé, indépendamment de la forme de la valeur. Ses contrats sont détaillés dans les [agrégats](./20-aggregates.md) et les [repositories](./30-repositories.md). |
+
+Un `Flag` et une `Evidence` peuvent sembler proches, mais leur centre de gravité diffère : le flag certifie une caractéristique ou une qualification de l'état courant d'une entité ; l'évidence certifie un passage requis par le parcours d'exécution, indépendamment de la nature de la valeur. Une condition d'état se modélise donc par un flag ; une dépendance d'ordre ou de provenance se modélise par une evidence.
+
+Une fonction de qualification peut être utilisée après l'hydratation d'une entité, y compris par l'infrastructure. Elle ne modifie pas les propriétés métier et ne réalise aucune transition ; `Flag.append` est utilisé seulement après la vérification de la condition, dans une qualification ou une `Fact`.
 
 ### Distinguer invariant et précondition
 
@@ -41,4 +55,4 @@ La fixture [`BookRentalFact`](../fixtures/business/domains/entities/book/facts/r
 
 Après une transition, poursuivre avec **l'entité retournée**. Les preuves d'une ancienne valeur décrivent la situation antérieure et ne doivent pas être transférées sans vérification. Les valeurs fournies à `update` doivent déjà porter le typage métier attendu : cette opération ne valide pas les nouvelles propriétés au runtime, comme précisé dans [Entity](../../01-fundamental/06-modeling/20-entity.ts).
 
-La fact portée par l'entité représente le fait courant ; conserver un historique persistant des transitions demande un mécanisme dédié.
+La fact portée par l'entité représente le fait courant ; conserver un historique persistant des transitions demande un mécanisme dédié. Les entités, flags et évidences sont immuables : après `update`, poursuivre avec la nouvelle valeur et ne pas transférer automatiquement les preuves de l'ancienne. Une preuve devenue fausse entre la qualification et la persistance révèle une contrainte de concurrence ou de transaction à traiter dans le contrat d'orchestration, pas une raison de rendre les preuves mutables.

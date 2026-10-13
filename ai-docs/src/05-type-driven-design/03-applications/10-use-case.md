@@ -9,9 +9,7 @@ La couche applicative se situe sous le domaine et au-dessus de l'infrastructure.
 
 Les règles et les transitions métier restent dans le [domaine](../02-domains/20-aggregates.md). L'application décide de l'enchaînement des opérations et de la persistance à travers des ports abstraits ; l'infrastructure implémente ces ports avec les outils concrets. Les use cases peuvent être transportés avec le domaine dans une autre application si les implémentations respectent ces contrats.
 
-Les frontières et les opérations autorisées entre les couches sont détaillées dans [l'architecture](../01-architecture/10-boundaries.md). Une infrastructure peut consommer un contrat du domaine ou requalifier une entité déjà hydratée, mais elle ne déclenche jamais directement une `Fact`, n'ajoute jamais de `Flag` et ne modifie pas une entité pour réaliser une transition.
-
-Un agrégat reste une fonction pure : les mêmes entrées produisent le même résultat métier et les mêmes besoins d'effets. Un use case équipé de ports impurs dépend aussi de l'état extérieur ; les mêmes paramètres ne garantissent donc pas le même résultat.
+Un agrégat reste une fonction pure : les mêmes entrées produisent le même résultat métier et les mêmes besoins d'effets. Un use case équipé de ports impurs dépend aussi de l'état extérieur ; les mêmes paramètres ne garantissent donc pas le même résultat. Les frontières et les opérations autorisées entre les couches sont décrites dans [l'architecture](../01-architecture/10-boundaries.md).
 
 ### Composer les résultats avec Either
 
@@ -24,7 +22,7 @@ Les opérations utilisées par les use cases renvoient souvent des monades `Eith
 | Réunir plusieurs résultats nécessaires à une étape | `group` ou `asyncGroup` rassemble les valeurs des `Right` dans un `Success`, ou retourne le premier `Left`. Fournir des getters permet de ne pas exécuter les opérations suivantes après un échec. |
 | Traiter un résultat précis | Les fonctions de discrimination, comme `whenHasInformation` et `matchInformation`, permettent de définir la suite selon l'information du résultat. |
 
-**Un échec prévu par le domaine reste un résultat à gérer par les couches appelantes.** Le use case peut prévoir une relecture ou un autre traitement applicatif pour une branche précise. Sinon, il propage le résultat à son appelant, qui décide de sa prise en charge, par exemple dans une route. Le domaine exprime l'échec métier ; les réactions techniques appartiennent aux couches inférieures.
+Un échec prévu par le domaine reste un résultat à gérer par les couches appelantes. Un `Left` porte une information discriminante et n'est pas automatiquement une erreur technique ; une erreur imprévisible est normalement levée. `unwrapRight` intervient seulement après la discrimination, lorsqu'une seule branche pertinente reste à poursuivre.
 
 Voir les fondamentaux : [composition et propagation des échecs](../../01-fundamental/03-either/30-composition.ts), [adaptation des résultats](../../01-fundamental/03-either/40-result-adaptation.ts), [discrimination](../../01-fundamental/03-either/10-discrimination.ts) et [traitement exhaustif](../../01-fundamental/03-either/20-exhaustive-handling.ts).
 
@@ -42,7 +40,9 @@ Les garanties peuvent aussi être exigées de l'appelant : [`ClientRentBookUseCa
 
 Un **port décrit une capacité nécessaire à l'application**. Il peut reprendre un contrat de repository du domaine et le compléter : [`BookRepositoryPort`](../fixtures/business/applications/ports/book.ts) étend `BookRepository` avec `save`, car la décision de sauvegarder appartient à l'application.
 
-Le port associe une interface TypeScript à une constante créée avec `DInvocation.createPort<Interface>()`. L'interface décrit les signatures ; la constante représente la dépendance au runtime. Dans l'infrastructure, `Port.createImplementation` reçoit une implémentation compatible avec ce contrat.
+`save` n'est pas une obligation générale des repositories. Cette méthode appartient au port applicatif lorsque le domaine ne fixe pas lui-même le moment, le contexte ou les garanties de la sauvegarde. Si le métier exige une sauvegarde particulière, la dépendance doit être exprimée dans le contrat et, si nécessaire, par une `Evidence`.
+
+Le port associe une interface TypeScript à une constante créée avec `DInvocation.createPort<Interface>()`. L'interface décrit les signatures ; la constante représente la dépendance au runtime. Dans l'infrastructure, la constante du port, par exemple `BookRepositoryPort`, expose `createImplementation` et reçoit une implémentation compatible avec ce contrat.
 
 Le use case utilise la monade **Reader** de `@duplojs/lang/invocation`. `DInvocation.createReader` reçoit les ports nécessaires et une fonction qui reçoit leurs implémentations, puis retourne la fonction du cas d'utilisation. Les dépendances sont injectées lors de la résolution du Reader ; les paramètres métier sont fournis ensuite à la fonction obtenue.
 
@@ -50,13 +50,15 @@ Pour un port, Reader met la première lettre de la clé de dépendance en minusc
 
 Dans l'infrastructure, `Reader.run` résout un use case isolé ; `DInvocation.resolveReaders` résout un ensemble avec tous les ports nécessaires. La [fixture de résolution](../fixtures/infrastructure/useCases/index.ts) produit ainsi `useCases.clientRentBookUseCase`, appelable depuis n'importe quel point d'entrée respectant sa signature.
 
+Un use case peut dépendre d'un autre `Reader` ; ses dépendances sont alors incluses dans celles du reader courant. Le même port peut être partagé par plusieurs readers.
+
 ### Résoudre les effets et décider de la persistance
 
 **Reader fournit les dépendances du use case ; Resolver exécute les effets déclarés par l'agrégat.** L'[agrégat `clientRentBook`](../fixtures/business/domains/aggregates/clientRentBook.ts) retourne les nouvelles entités et le besoin `sendInformationalEmail`, sans envoyer lui-même de courriel.
 
 Le [use case de location](../fixtures/business/applications/useCases/clientRentBook.ts) fournit `emailRepository.sendRentInformationalEmail` à `resolver.resolve`, puis sauvegarde le client et le livre. Le [use case de retour](../fixtures/business/applications/useCases/clientGiveBackBook.ts) résout de même `rankBookAvailability` avant de sauvegarder.
 
-L'ordre appartient au use case. Si la sauvegarde doit précéder les effets, `Resolver.runAndResolve` permet d'exécuter et d'attendre une étape préalable sur les valeurs produites avant de les déclencher. Une transaction de base de données peut également être coordonnée à travers un port : l'application en définit le périmètre, l'infrastructure fournit le mécanisme concret. Attendre plusieurs sauvegardes avec `promiseObject`, comme dans les fixtures, ne leur donne pas d'atomicité.
+L'ordre appartient au use case selon le besoin de l'opération. Si la sauvegarde doit précéder les effets, `Resolver.runAndResolve` permet d'attendre cette étape avant de les déclencher. Si un effet doit réussir avant la sauvegarde, arrêter la composition lorsqu'il renvoie un `Left`. Une transaction peut être coordonnée par un port ; l'application en définit le périmètre et l'infrastructure fournit le mécanisme. `promiseObject` exécute plusieurs sauvegardes en parallèle, sans fournir d'atomicité par lui-même.
 
 ### Démarche d'implémentation
 

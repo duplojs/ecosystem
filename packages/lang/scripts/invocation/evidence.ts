@@ -139,3 +139,20 @@ export type GetEvidenceResult<
 		? Evidence<EvidenceName>
 		: never
 >;
+
+export type GetEvidenceParameters<
+	GenericFunction extends DCommon.AnyFunction,
+	EvidenceName extends Extract<
+		keyof DCommon.UnionToIntersection<
+			FindEvidence<
+				Parameters<GenericFunction>[number]
+			>[DCommon.ConstraintSymbol]["evidence"]
+		>,
+		string
+	>,
+> = Extract<
+	FindEvidence<Parameters<GenericFunction>[number]>,
+	EvidenceName extends unknown
+		? Evidence<EvidenceName>
+		: never
+>;

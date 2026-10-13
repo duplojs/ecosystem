@@ -28,7 +28,11 @@ Un repository intervient de deux façons auprès des [agrégats](./20-aggregates
 - **Avant la transaction**, son opération fournit des données ou établit une précondition extérieure que l'agrégat exige en entrée. `createBook` utilise ainsi les garanties de génération d'identifiant et de vérification du titre. Pour une recherche, la couche appelante gère l'absence de l'entité et la qualifie selon les besoins de l'opération.
 - **Pour les effets attendus**, son contrat définit une dépendance du résolveur retourné par l'agrégat. `clientRentBook` utilise ainsi la signature de `EmailRepository.sendRentInformationalEmail`.
 
-L'[application](../03-applications/10-use-case.md) orchestre les appels techniques et la résolution des effets. L'agrégat exploite leurs résultats ou déclare leurs besoins sans exécuter leur implémentation.
+L'application orchestre les appels techniques et la résolution des effets. L'agrégat exploite les résultats préparés ou déclare les effets attendus, sans exécuter l'implémentation du repository.
+
+Lorsqu'une recherche retourne une entité, le repository l'hydrate avant de la transmettre. Une requête peut filtrer sur un état, mais elle ne suffit pas à ajouter le flag : appeler ensuite la qualification du domaine. Si elle révèle un autre état, le repository doit signaler l'incohérence comme une erreur technique.
+
+Une opération de repository peut établir un contexte transactionnel ou une autre garantie d'exécution. Si elle reçoit une callback, son contrat doit préciser que celle-ci est exécutée dans le contexte requis ; l'implémentation ne produit l'évidence associée qu'après avoir réellement établi et exécuté ce contexte. Le domaine peut exiger cette preuve dans une `Fact`, un agrégat ou une étape intermédiaire.
 
 ### Respecter les garanties annoncées
 

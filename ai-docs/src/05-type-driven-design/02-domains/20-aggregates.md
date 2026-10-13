@@ -9,7 +9,9 @@ Dans ce Type-Driven Design, un **agrégat est une fonction pure de transaction m
 
 Les [faits](./10-entities.md) portent les transitions de chaque cible et restent réutilisables dans plusieurs agrégats. Un agrégat peut appeler un seul fait : ses exigences peuvent déjà différer de celles de cette transition.
 
-Pour concevoir l'opération, déterminer ses entrées et leurs preuves, choisir les faits, organiser leur enchaînement selon leurs dépendances, puis restituer les entités produites et les éventuels besoins d'effets. Les couches appelantes fournissent les entrées qualifiées et gèrent les situations où les préconditions ne peuvent pas être établies.
+Pour concevoir l'opération, déterminer ses entrées et leurs preuves, choisir les faits, organiser leur enchaînement selon leurs dépendances, puis restituer les entités produites et les éventuels besoins d'effets. Les couches appelantes fournissent les entrées qualifiées et gèrent les situations où les préconditions ne peuvent pas être établies. La décision de créer un agrégat vient du besoin métier ; elle ne se déduit pas seulement du nombre d'entités dans les paramètres.
+
+Un agrégat n'appelle jamais un repository et n'exécute jamais une dépendance fournie par l'extérieur. Il reste pur : pour les mêmes entrées, il produit le même résultat métier et les mêmes besoins déclarés. L'application appelle les repositories, prépare les entrées puis appelle l'agrégat.
 
 ### Coordonner plusieurs entités
 
@@ -18,6 +20,8 @@ La fixture [`clientRentBook`](../fixtures/business/domains/aggregates/clientRent
 Elle appelle [`ClientRentBookFact`](../fixtures/business/domains/entities/client/facts/rentBook.ts) pour ajouter le livre aux emprunts du client et [`BookRentalFact`](../fixtures/business/domains/entities/book/facts/rental.ts) pour passer le livre à l'état emprunté. Les deux faits reçoivent ici les mêmes entrées qualifiées et produisent chacun la nouvelle valeur de leur cible.
 
 Si plusieurs faits modifient successivement **la même entité**, transmettre à chaque étape la valeur retournée par la précédente, avec les preuves exigées. Réutiliser l'entrée initiale ferait perdre les modifications intermédiaires.
+
+Une `Fact` représente l'événement du cycle de vie d'une seule entité. Lorsque le métier coordonne plusieurs entités dans la même opération, l'agrégat orchestre les faits correspondants. Si cette coordination n'est pas une exigence du métier, les transitions peuvent rester dans des opérations distinctes.
 
 ### Ajouter les exigences propres à la transaction
 
@@ -32,8 +36,14 @@ Ces garanties proviennent du contrat de [`BookRepository`](../fixtures/business/
 
 Un autre agrégat peut réutiliser le même fait avec d'autres préconditions. **Les exigences de la transaction appartiennent à l'agrégat ; la création ou modification de l'entité appartient au fait.**
 
+Le niveau d'exigence dépend de l'orchestration choisie. Une `Fact` peut exiger directement une évidence lorsqu'une transition impose une provenance, tandis que l'agrégat ou une étape intermédiaire peut l'exiger lorsque la contrainte concerne le parcours complet. Ne pas ajouter cette exigence à une transition qui autorise volontairement plusieurs provenances.
+
 ### Déclarer les effets attendus
 
 Lorsqu'une transaction nécessite des effets, retourner un `Resolver` contenant les résultats métier et le contrat des opérations attendues. Sa construction déclare ces besoins sans les exécuter : l'agrégat reste pur.
 
+Le `Resolver` est optionnel. Un agrégat sans effet peut retourner directement sa valeur ou son `Either`; l'utiliser sert à rassembler plusieurs résultats et à déclarer les effets nécessaires, sans les exécuter.
+
 Dans `clientRentBook`, le résolveur rassemble `client` et `book` et exige `sendInformationalEmail`, typé par `EmailRepository["sendRentInformationalEmail"]`. L'[application](../03-applications/10-use-case.md) fournit les implémentations, exécute le résolveur et décide de l'ordre des effets et de la persistance.
+
+Le résolveur décrit les conséquences attendues de l'événement métier ; l'application décide de leur ordre, de leur criticité et de leur stratégie d'exécution. Si un effet doit réussir avant de poursuivre, la composition du use case doit arrêter les étapes suivantes lorsqu'il renvoie un `Left`.

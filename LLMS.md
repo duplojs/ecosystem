@@ -421,7 +421,7 @@ Responsabilités des couches, sens des dépendances, opérations autorisées aux
 
 Déterminer les dépendances autorisées, les opérations utilisables depuis chaque couche et le traitement des données et erreurs aux frontières du système.
 
-## Domains
+## Domaines
 
 Modélisation du métier et contrats de ses opérations : entités, invariants, transitions, agrégats et repositories.
 
@@ -439,7 +439,18 @@ Contrats des opérations nécessaires au métier dont l'implémentation techniqu
 
 ## Applications
 
+Orchestration des agrégats, ports de capacités, injection des dépendances, effets et persistance.
+
 ### [Conception des use cases en Type-Driven Design](ai-docs/src/05-type-driven-design/03-applications/10-use-case.md)
 
 Orchestration applicative des agrégats, sélection et propagation des résultats Either, ports et injection avec Reader, résolution des effets et persistance.
+
+## Infrastructure
+
+Implémentation des ports applicatifs, résolution des use cases et adaptation des capacités métier vers des interfaces comme HTTP.
+
+### [Implémenter les ports applicatifs et exposer les use cases depuis l'infrastructure](ai-docs/src/05-type-driven-design/04-infrastructure/10-implementation.md)
+
+Fournir les dépendances concrètes de l'application et adapter les capacités métier aux points d'entrée du système, notamment HTTP.
+
 

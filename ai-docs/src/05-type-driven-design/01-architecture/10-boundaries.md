@@ -16,44 +16,22 @@ Le domaine ne dépend ni de l'application ni de l'infrastructure. L'application 
 
 Une dépendance vers le domaine depuis l'infrastructure est donc autorisée lorsqu'elle sert à consommer un contrat ou une capacité du logiciel. Elle ne permet pas à l'infrastructure de déplacer une règle métier dans sa propre couche.
 
-### Opérations autorisées depuis l'infrastructure
+### Respecter les responsabilités aux frontières
 
-L'infrastructure ne réalise pas directement les transitions métier :
+Une couche extérieure peut consommer le domaine et l'application, mais ne réalise pas leurs transitions à leur place. L'infrastructure peut :
 
-- appeler une `Fact` depuis une route, un repository ou une autre implémentation infrastructurelle est interdit ;
-- appeler `Flag.append` ou construire directement un flag dans l'infrastructure est interdit ;
-- modifier une entité ou lui ajouter une information métier depuis l'infrastructure est interdit.
+- hydrater une donnée externe avec `map` ou `decodeMap` dans l'implémentation d'un repository ;
+- appeler une fonction pure de qualification pour établir une condition attendue par l'application ;
+- appeler un use case et adapter son résultat au point d'entrée consommé.
 
-L'infrastructure peut en revanche :
+Elle ne doit pas appeler directement une `Fact`, construire un `Flag` avec `Flag.append` ou modifier une entité pour réaliser une transition. Une qualification inspecte une valeur existante et ajoute le flag de la condition constatée ; la création ou la modification métier reste portée par une `Fact` du domaine.
 
-- appeler un repository ou une autre capacité déclarée par le domaine ou l'application ;
-- hydrater une donnée externe dans l'implémentation du repository avec `map` ou `decodeMap` ;
-- appeler une fonction de requalification qui vérifie l'état d'une entité et appose localement le flag correspondant ;
-- transmettre au use case une entité portant les preuves produites par cette requalification.
+### Faire entrer les données dans le modèle
 
-Une fonction de requalification est une vérification préalable. Elle ne modifie pas les propriétés métier et ne réalise aucune transition. La création ou modification métier reste portée par une `Fact` appelée depuis le domaine applicatif.
+L'implémentation qui lit une base, une API ou un fichier hydrate la donnée avant de la retourner avec le contrat prévu. Si un flag d'état ou une évidence de contexte est nécessaire, la couche qui possède la donnée appelle la qualification prévue par le domaine ; elle ne déduit pas la preuve d'un simple filtre technique.
 
-### Hydrater les données externes
+### Adapter les résultats
 
-L'implémentation qui récupère une donnée externe est responsable de son hydratation. Un repository qui lit une base, une API ou un fichier vérifie et hydrate la donnée avant de la retourner à l'application, avec le résultat ou l'erreur prévus par son contrat.
+Un résultat métier attendu reste discriminé par son contrat, souvent avec `Either` et une `information`. La frontière le traduit ensuite vers le besoin du consommateur : réponse HTTP, sortie de commande ou autre protocole. Le code de transport ne remplace pas la règle qui a produit le résultat.
 
-Le repository ne doit pas retourner une donnée brute en laissant à l'application la responsabilité de reconstruire une entité métier déjà attendue par son contrat. Si la donnée est valide mais ne possède pas encore une preuve de contexte ou d'état, la couche qui en a besoin appelle la fonction de requalification prévue par le domaine.
-
-### Utiliser les structures aux frontières HTTP
-
-Une route est un moyen de consommer le cycle de vie du logiciel. Elle peut utiliser directement une `DataStructure` du domaine lorsque la capacité HTTP sert directement ce modèle métier. Elle peut aussi déclarer une structure spécifique lorsque le client attend une forme différente, ou lorsque certaines propriétés ne doivent pas être exposées.
-
-Une route peut retourner une entité complète si le client en a besoin et si son exposition ne révèle pas de donnée inutile ou sensible. Elle doit réduire ou transformer la réponse lorsque le contrat du client ne nécessite pas toute l'entité, notamment pour protéger des informations de sécurité.
-
-Il n'existe donc pas d'obligation générale de créer un DTO séparé. La décision dépend du contrat consommé et des informations qui peuvent être exposées.
-
-### Distinguer les erreurs à traiter
-
-Avant de choisir le traitement d'une erreur, déterminer deux besoins indépendants :
-
-1. faut-il prévenir le client ou l'utilisateur de l'échec ?
-2. faut-il prévenir les développeurs ou la télémétrie ?
-
-Une erreur métier attendue est traitée par le contrat de résultat et peut être transformée en réponse adaptée au consommateur. Une erreur technique qui compromet une opération, une transaction ou une garantie d'exécution doit être signalée à la télémétrie et suivre la politique technique prévue : propagation, reprise, annulation ou réinitialisation.
-
-Selon le point d'entrée, la présentation technique change : une consommation HTTP produit une erreur ou une réponse HTTP ; une commande produit une erreur de commande ou une sortie console. Cette présentation ne déplace pas la règle métier dans l'infrastructure.
+Un `Left` ne représente pas automatiquement une erreur technique. Une situation métier prévue reste un résultat à traiter ; une erreur technique imprévisible est normalement levée et signalée à la télémétrie. Elle ne devient un résultat que si le contrat choisit explicitement de la capturer, par exemple avec `DEither.safeCallback` ou `DEither.asyncSafeCallback`, et la couche qui consomme ce résultat doit encore le traiter.
