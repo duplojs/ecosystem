@@ -411,19 +411,35 @@ Scénarios utilisateur, interactions et vérifications avec les objets du site.
  
 # Type Driven Design
 
-## Domaine
+Architecture en couches, modélisation du domaine et orchestration applicative pour faire vivre les cycles de vie métier.
 
-Entités métier, invariants, preuves, transitions, agrégats orchestrant les transactions métier et repositories déclarant les opérations techniques nécessaires au métier.
+## Architecture
 
-### [Conception des entités en Type-Driven Design](ai-docs/src/05-type-driven-design/01-domains/10-entities.md)
+Responsabilités des couches, sens des dépendances, opérations autorisées aux frontières et exposition des résultats aux consommateurs.
 
-Organisation des données métier et de leur cycle de vie : identité, invariants, qualification des états, préconditions et transitions contrôlées. Règles architecturales assurant la cohérence des entités au fil de leurs modifications.
+### [Frontières entre domaine, application et infrastructure](ai-docs/src/05-type-driven-design/01-architecture/10-boundaries.md)
 
-### [Conception des agrégats en Type-Driven Design](ai-docs/src/05-type-driven-design/01-domains/20-aggregates.md)
+Déterminer les dépendances autorisées, les opérations utilisables depuis chaque couche et le traitement des données et erreurs aux frontières du système.
 
-Points d'entrée des transactions métier, préconditions et preuves, orchestration et réutilisation des faits.
+## Domains
 
-### [Conception des repositories en Type-Driven Design](ai-docs/src/05-type-driven-design/01-domains/30-repositories.md)
+Modélisation du métier et contrats de ses opérations : entités, invariants, transitions, agrégats et repositories.
 
-Déclaration dans le domaine, indépendance des implémentations techniques, récupération de données, preuves de préconditions et effets requis par les agrégats.
+### [Conception des entités en Type-Driven Design](ai-docs/src/05-type-driven-design/02-domains/10-entities.md)
+
+Organisation des modèles métier, de leurs invariants, qualifications et transitions dans le domaine.
+
+### [Conception des agrégats en Type-Driven Design](ai-docs/src/05-type-driven-design/02-domains/20-aggregates.md)
+
+Contrats des transactions métier, préconditions et orchestration de faits réutilisables.
+
+### [Conception des repositories en Type-Driven Design](ai-docs/src/05-type-driven-design/02-domains/30-repositories.md)
+
+Contrats des opérations nécessaires au métier dont l'implémentation technique reste extérieure au domaine.
+
+## Applications
+
+### [Conception des use cases en Type-Driven Design](ai-docs/src/05-type-driven-design/03-applications/10-use-case.md)
+
+Orchestration applicative des agrégats, sélection et propagation des résultats Either, ports et injection avec Reader, résolution des effets et persistance.
 

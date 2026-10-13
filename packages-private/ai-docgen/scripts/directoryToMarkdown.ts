@@ -34,9 +34,15 @@ export const directoryToMarkdown: (
 			),
 			DPattern.when(
 				DSFile.isFileInterface,
-				(file) => file.getExtension() === "md"
-					? DArray.groupOutput("markdowns", file)
-					: DArray.groupOutput("examples", file),
+				(file) => {
+					if (file.getExtension() !== "md") {
+						return DArray.groupOutput("examples", file);
+					}
+
+					return file.getName() === "index.md"
+						? DArray.groupOutput("indexes", file)
+						: DArray.groupOutput("markdowns", file);
+				},
 			),
 			DPattern.otherwise(DArray.groupOutput("other")),
 		),
@@ -45,6 +51,17 @@ export const directoryToMarkdown: (
 		entryGroupe,
 		argument,
 	) => {
+		const indexContent = DCommon.pipe(
+			await DEither.rightAsyncPipe(
+				entryGroupe.indexes,
+				DEither.toMaybe,
+				DArray.first,
+				(file) => DSFile.readTextFile(file.path),
+				DString.concat("\n"),
+			),
+			DEither.unwrapOr(null),
+		);
+
 		const markdownContent = DCommon.pipe(
 			await DEither.rightAsyncPipe(
 				entryGroupe.markdowns,
@@ -54,10 +71,7 @@ export const directoryToMarkdown: (
 						const fileName = file.getName();
 						if (
 							!fileName
-							|| (
-								fileName !== "index.md"
-								&& !DString.test(fileName, /^[0-9]+-/)
-							)
+							|| !DString.test(fileName, /^[0-9]+-/)
 						) {
 							return DEither.fail();
 						}
@@ -208,6 +222,7 @@ export const directoryToMarkdown: (
 		);
 
 		return DArray.concat(
+			indexContent ? [indexContent] : [],
 			markdownContent ?? [],
 			examplesContent ?? [],
 			folderContent ?? [],
