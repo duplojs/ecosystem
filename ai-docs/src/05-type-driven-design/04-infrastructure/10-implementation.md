@@ -1,72 +1,58 @@
-### Implémenter les ports applicatifs et exposer les use cases depuis l'infrastructure
+### Assembler l'application dans l'infrastructure
 
-Fournir les dépendances concrètes de l'application et adapter les capacités métier aux points d'entrée du système, notamment HTTP.
-
+Fournir les dépendances concrètes de l'application et raccorder ses capacités aux points d'entrée du système.
 ---
 
 ### Rôle de l'infrastructure
 
-L'infrastructure est la couche qui relie l'application aux systèmes concrets : base de données, services externes, génération d'identifiants, envoi de messages ou serveur HTTP. Elle dépend des contrats exposés par le domaine et l'application ; le domaine et les use cases ne dépendent pas d'une technologie d'infrastructure.
+L'infrastructure assemble l'application dans un contexte concret : base de données, services externes, génération d'identifiants, envoi de messages ou point d'entrée. Elle dépend des contrats exposés par le domaine et l'application ; le domaine et les use cases ne dépendent pas d'une technologie d'infrastructure.
 
-Les ports sont déclarés du côté de l'application parce qu'ils expriment les capacités dont un use case a besoin. Leur implémentation appartient à l'infrastructure, qui choisit la technologie et adapte ses résultats au contrat attendu. Cette séparation permet de remplacer une base de données, un service d'email ou un point d'entrée sans déplacer les règles métier.
+Le sens des dépendances et les responsabilités aux frontières sont définis dans [les frontières de l'architecture](../01-architecture/10-boundaries.md). Ce chapitre se concentre sur leur mise en œuvre : fournir les ports demandés par l'application, résoudre les use cases et les rendre accessibles aux consommateurs.
 
-Les règles sur le sens des dépendances et les opérations interdites dans cette couche sont détaillées dans [les frontières de l'architecture](../01-architecture/10-boundaries.md). Une implémentation peut hydrater une donnée externe et appeler une qualification du domaine ; elle ne réalise pas une transition métier à la place d'un use case ou du domaine.
+### Implémenter les ports applicatifs
 
-### Implémenter les ports
+Un port applicatif exprime une capacité dont un use case a besoin. Son implémentation appartient à l'infrastructure, qui choisit la technologie concrète tout en préservant le contrat du port : signatures, résultats, preuves et autres garanties annoncées.
 
-Une implémentation est créée avec `BookRepositoryPort.createImplementation` — ou la méthode correspondante du port — à partir du contrat applicatif. Elle doit fournir exactement les opérations et les garanties annoncées par l'interface : une opération qui retourne une entité doit l'hydrater, une opération qui produit une `Evidence` doit réellement exécuter l'étape correspondante et une opération qui renvoie un `Either` doit respecter les informations prévues par son contrat.
+La déclaration des capacités et l'extension d'un contrat de domaine par un port applicatif sont expliquées dans [les repositories](../02-domains/30-repositories.md) et [les use cases](../03-applications/10-use-case.md). L'infrastructure fournit ensuite une implémentation compatible avec ce contrat ; elle ne déduit pas une garantie du seul typage et ne remplace pas une transition métier par un traitement technique.
 
-Les [implémentations des ports de la fixture](../fixtures/infrastructure/ports/index.ts) construisent ainsi `bookRepository`, `clientRepository` et `emailRepository` depuis `BookRepositoryPort`, `ClientRepositoryPort` et `EmailRepositoryPort`. Le même port peut être partagé par plusieurs use cases ; il n'est pas nécessaire de créer une implémentation différente pour chaque scénario applicatif.
+Les [implémentations des ports de la fixture](../fixtures/infrastructure/ports/index.ts) construisent ainsi `bookRepository`, `clientRepository` et `emailRepository` depuis les ports applicatifs. Un même port peut être partagé par plusieurs use cases ; il n'est pas nécessaire de créer une implémentation différente pour chaque scénario.
 
 ### Résoudre les use cases
 
-Les use cases sont des `Reader` : ils décrivent leurs dépendances au moyen des ports, puis reçoivent leurs implémentations au moment de la résolution. L'infrastructure fournit uniquement les ports effectivement demandés par les Readers et obtient des fonctions prêtes à être appelées par les points d'entrée.
+Les use cases décrivent leurs dépendances avec `Reader`, puis reçoivent leurs implémentations au moment de la résolution. Le fonctionnement de l'injection, des ports et des `Reader` est documenté dans [la couche applicative](../03-applications/10-use-case.md) ; l'infrastructure en réalise l'assemblage.
 
-`DInvocation.resolveReaders` résout un ensemble de use cases avec un même jeu d'implémentations. Dans la [fixture de résolution](../fixtures/infrastructure/useCases/index.ts), l'objet des use cases métier est associé aux repositories concrets ; le résultat expose par exemple `useCases.clientRentBookUseCase`. La résolution ne réimplémente pas l'orchestration métier : elle injecte seulement les ports dans les Readers.
+`DInvocation.resolveReaders` associe un ensemble de use cases à un même jeu d'implémentations. Dans la [fixture de résolution](../fixtures/infrastructure/useCases/index.ts), l'infrastructure injecte les repositories concrets et expose notamment `useCases.clientRentBookUseCase`.
 
-Le nom des clés suit la convention de `Reader` : `BookRepositoryPort` devient `bookRepository`, et `ClientRentBookUseCase` devient `clientRentBookUseCase`. Les dépendances d'un Reader injecté sont également résolues à partir du même ensemble de ports. Un point d'entrée appelle le use case résolu avec ses paramètres métier et ne reconstruit pas ses dépendances.
+La résolution ne réimplémente pas l'orchestration métier et ne reconstruit pas les dépendances dans chaque point d'entrée. Elle produit des fonctions prêtes à être consommées avec leurs paramètres métier.
 
-### Adapter une capacité métier avec HTTP
+### Raccorder les points d'entrée
 
-Une route HTTP est un adaptateur d'entrée. Elle reçoit des données sérialisées, les valide et les transforme en valeurs utilisables par le métier, appelle le use case résolu, puis adapte le résultat vers une réponse HTTP. Elle appelle le use case correspondant à la capacité consommée ; elle peut appeler une fonction pure de qualification, mais ne déclenche pas directement un agrégat, une `Fact` ou un effet.
+Un point d'entrée adapte un moyen de consommation aux capacités de l'application. Il transforme les données externes vers les paramètres attendus, appelle un use case résolu et adapte le résultat vers le contrat du consommateur. Il ne réimplémente pas l'orchestration applicative et ne déclenche pas directement une `Fact`, un agrégat ou un effet.
 
-Le module `@duplojs/http` fournit les étapes nécessaires à cette adaptation :
+La nature du protocole ne change pas cette responsabilité. Une route HTTP, une commande ou un autre client peuvent consommer le même use case résolu ; chacun possède sa propre documentation de protocole et son propre contrat de sortie.
 
-- `useRouteBuilder` définit la méthode, le chemin et un flux d'étapes exécutées dans l'ordre ;
-- `extract` valide les paramètres, la query, les headers et le body avec des `DataStructure` et les rend disponibles dans le `floor` de la route ;
-- `check`, `presetCheck` et `cut` permettent de charger une donnée, d'interpréter un résultat et d'interrompre le flux avec une réponse HTTP ;
-- `handler` reçoit uniquement les données préparées et termine le flux en appelant `response`.
+La [fixture HTTP de location](../fixtures/infrastructure/http/routes/clientRentBook.ts) et la [fixture de commande de location](../fixtures/infrastructure/command/clientRentBook.ts) illustrent ce raccordement autour d'un même use case. Elles ne constituent pas de nouveaux modèles d'orchestration : elles montrent uniquement deux consommateurs de la même capacité applicative.
 
-Dans la [route de location](../fixtures/infrastructure/http/routes/clientRentBook.ts), les identifiants HTTP sont extraits, les repositories retrouvent le client et le livre, puis les fonctions pures `Client.canRentBook` et `Book.refineState` requalifient leurs états. Le handler appelle ensuite `useCases.clientRentBookUseCase` avec les entités portant les preuves attendues par le use case. La [route de retour](../fixtures/infrastructure/http/routes/clientGiveBackBook.ts) suit la même séparation.
+Les détails de construction d'une route sont documentés dans [les routes HTTP](../../02-server/20-http/20-route.ts), ceux des vérifications réutilisables dans [les routines HTTP](../../02-server/20-http/30-routine.ts), et ceux des commandes dans [la définition d'une commande](../../02-server/40-command/10-use.ts). La composition des résultats est documentée dans [les fondamentaux `Either`](../../01-fundamental/03-either/30-composition.ts) ; l'adaptation au protocole reste documentée par chaque moyen de consommation.
 
-La route définit aussi un contrat de sortie avec `ResponseContract`. Ce contrat associe un code HTTP, une `information` littérale et, lorsque c'est nécessaire, une `DataStructure` de body. L'information discrimine finement le résultat du flux ; le code conserve sa fonction protocolaire. Les erreurs métier prévues peuvent ainsi devenir des réponses comme `client.notHaveBook` ou `book.unavailable`, sans transformer la règle métier en logique HTTP.
-
-Il n'est pas obligatoire de créer un DTO pour chaque route. Une route peut exposer directement une `DataStructure` du domaine lorsque le contrat le permet ; elle définit une structure spécifique si le client attend une autre forme ou si certaines propriétés ne doivent pas sortir du système. Voir aussi [l'entrée des données dans le modèle](../01-architecture/10-boundaries.md#faire-entrer-les-données-dans-le-modèle).
-
-### Partager les contrats avec un client HTTP
-
-Le contrat de route peut être transformé en type de routes par le `codeGeneratorPlugin` de `@duplojs/http`. Un client construit avec `createHttpClient<Routes>` réutilise alors les méthodes, chemins, paramètres, bodies et réponses déclarés par le serveur. L'appelant HTTP ne manipule pas une réponse anonyme : il sélectionne une `information`, traite un `Either` ou lève une erreur selon le contrat prévu.
-
-La communication suit donc ce parcours :
+L'assemblage suit donc ce parcours :
 
 ```text
 Port applicatif
   ↓ implémentation concrète
 Use case résolu par Reader
-  ↓ appel avec des données métier qualifiées
-Route HTTP
-  ↓ extract / check / cut / handler
-ResponseContract typé
-  ↓ contrat partagé
-Client HTTP typé
+  ↓ consommation par un point d'entrée
+Point d'entrée
+  ↓ adaptation au protocole
+Contrat du consommateur
 ```
 
-Le serveur et le client partagent ainsi les formes d'entrée et de sortie sans partager la responsabilité des règles métier. Le serveur exécute les use cases et expose leurs résultats selon un contrat HTTP ; le client consomme ce contrat et choisit le traitement adapté à chaque réponse. Voir aussi [effectuer une requête HTTP](../../03-client/10-http/20-request.ts).
+Le point d'entrée peut qualifier les données lorsqu'il les fait entrer dans le modèle, conformément aux [frontières de l'architecture](../01-architecture/10-boundaries.md). La qualification, la composition des résultats et l'adaptation propre à chaque protocole doivent être recherchées dans leurs ressources dédiées, plutôt que répliquées ici.
 
 ### Démarche d'implémentation
 
-1. Lire les ports demandés par les use cases et identifier les systèmes concrets capables de les implémenter.
-2. Créer une implémentation par port avec `createImplementation`, en respectant les résultats, les preuves et l'hydratation annoncés.
-3. Résoudre les Readers avec `DInvocation.resolveReaders` et exposer les use cases obtenus aux points d'entrée.
-4. Valider les données externes, qualifier les entités si nécessaire, appeler le use case puis traduire son résultat dans le contrat de l'interface.
-5. Vérifier la cohérence des contrats d'entrée et de sortie avec le client consommateur.
+1. Lire les contrats des [ports applicatifs](../03-applications/10-use-case.md#déclarer-les-ports-et-construire-le-reader) et identifier les systèmes capables de les implémenter.
+2. Fournir une implémentation par port en conservant les signatures et les garanties du contrat.
+3. Résoudre les Readers avec `DInvocation.resolveReaders`.
+4. Raccorder chaque point d'entrée au use case résolu et à son contrat de consommation.
+5. Consulter la documentation du protocole concerné pour implémenter ses mécanismes propres.

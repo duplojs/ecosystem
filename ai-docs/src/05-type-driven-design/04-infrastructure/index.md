@@ -1,3 +1,3 @@
 ## Infrastructure
 
-Implémentation des ports applicatifs, résolution des use cases et adaptation des capacités métier vers des interfaces comme HTTP.
+Assemblage concret de l'application : implémentation des ports, résolution des use cases et raccordement aux points d'entrée.

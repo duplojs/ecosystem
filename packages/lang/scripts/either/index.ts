@@ -6,6 +6,7 @@ export * from "./whenHasInformation";
 export * from "./whenHasInformationOtherwise";
 export * from "./whenIsSelected";
 export * from "./whenIsSelectedOtherwise";
+export * from "./isSelected";
 export * from "./kind";
 export * from "./safeCallback";
 export * from "./asyncSafeCallback";

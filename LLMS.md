@@ -447,10 +447,9 @@ Orchestration applicative des agrégats, sélection et propagation des résultat
 
 ## Infrastructure
 
-Implémentation des ports applicatifs, résolution des use cases et adaptation des capacités métier vers des interfaces comme HTTP.
+Assemblage concret de l'application : implémentation des ports, résolution des use cases et raccordement aux points d'entrée.
 
-### [Implémenter les ports applicatifs et exposer les use cases depuis l'infrastructure](ai-docs/src/05-type-driven-design/04-infrastructure/10-implementation.md)
+### [Assembler l'application dans l'infrastructure](ai-docs/src/05-type-driven-design/04-infrastructure/10-implementation.md)
 
-Fournir les dépendances concrètes de l'application et adapter les capacités métier aux points d'entrée du système, notamment HTTP.
-
+Fournir les dépendances concrètes de l'application et raccorder ses capacités aux points d'entrée du système.
 
