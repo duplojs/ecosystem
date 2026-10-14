@@ -1,4 +1,6 @@
-import { DEither, DPath, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
+import * as DPath from "@scripts/path";
 
 describe("create", () => {
 	it.each([
@@ -9,6 +11,8 @@ describe("create", () => {
 		["foo//bar/", "foo/bar"],
 		["/foo/../../bar", "/bar"],
 		["foo/../../../bar", "../../bar"],
+		["file:///project/src/main.ts", "/project/src/main.ts"],
+		["file:///project/call%20site/%C3%A9%23/main.ts", "/project/call site/é#/main.ts"],
 	] as const)(
 		"creates a normalized path from %j",
 		(value, expected) => {
@@ -28,6 +32,9 @@ describe("create", () => {
 		"foo\0bar",
 		"\0foo",
 		"foo\0",
+		"file:///foo%00bar",
+		"file:///foo%GG",
+		"file://remote-host/foo",
 	] as const)(
 		"returns an error with the original input for invalid path %j",
 		(value) => {
@@ -41,7 +48,7 @@ describe("create", () => {
 		const value = "foo/../bar";
 		const result = DPath.create(value);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Success<string & DPath.Path>
 			| DEither.Error<string>,

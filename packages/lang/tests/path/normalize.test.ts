@@ -1,4 +1,5 @@
-import { DPath, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DPath from "@scripts/path";
 
 describe("normalize", () => {
 	it.each([
@@ -54,6 +55,19 @@ describe("normalize", () => {
 		[".git/config", ".git/config"],
 		["src/index.ts", "src/index.ts"],
 		["..foo/bar", "..foo/bar"],
+
+		["file:///", "/"],
+		["file:///foo/bar", "/foo/bar"],
+		["file:/foo/bar", "/foo/bar"],
+		["FILE:///foo/bar", "/foo/bar"],
+		["file://localhost/foo/bar", "/foo/bar"],
+		["file:///foo//bar/../baz/", "/foo/baz"],
+		["file:///../../foo", "/foo"],
+		["file:///foo%20bar/%C3%A9t%C3%A9/%23%25.ts", "/foo bar/été/#%.ts"],
+		["file:///foo/bar?query=ignored#fragment", "/foo/bar"],
+		["file:///foo/%2e%2e/bar", "/bar"],
+		["file:///foo/%252F.ts", "/foo/%2F.ts"],
+		["foo%20bar/%23.ts", "foo%20bar/%23.ts"],
 	] as const)(
 		"normalizes %j to %j",
 		(path, expected) => {
@@ -64,6 +78,21 @@ describe("normalize", () => {
 			expect(DPath.is(result as string)).toBe(true);
 		},
 	);
+
+	it.each([
+		"file:///foo\0bar",
+		"file:///foo%00bar",
+		"file:///foo%2Fbar",
+		"file:///foo%2fbar",
+		"file:///foo%",
+		"file:///foo%GG",
+		"file:///foo%C3",
+		"file://remote-host/foo/bar",
+		"file://user@localhost/foo",
+		"file://localhost:80/foo",
+	])("returns null for an invalid file URL: %j", (path) => {
+		expect(DPath.normalize(path)).toBeNull();
+	});
 
 	it.each([
 		["foo\0bar"],
@@ -83,7 +112,7 @@ describe("normalize", () => {
 
 		const result = DPath.normalize(path);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			(string & DPath.Path) | null,
 			"strict"

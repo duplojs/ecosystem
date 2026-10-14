@@ -44,6 +44,7 @@ declare let console: Console;
 
 interface URL {
 	hostname: string;
+	pathname: string;
 	protocol: string;
 }
 
