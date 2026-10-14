@@ -9,6 +9,7 @@ import { move, type MoveResult } from "./move";
 import { remove, type RemoveResult } from "./remove";
 import { stat, type StatResult } from "./stat";
 import { relocate, type RelocateResult } from "./relocate";
+import { type EntryPath } from "./unknownEntryInterface";
 
 const fileInterfaceKind = createKind("fileInterface");
 
@@ -16,10 +17,12 @@ type FileInterfaceRenameResult = Exclude<RenameResult, DEither.Right> | DEither.
 type FileInterfaceRelocateResult = Exclude<RelocateResult, DEither.Right> | DEither.Right<"file-system-relocate", FileInterface>;
 type FileInterfaceMoveResult = Exclude<MoveResult, DEither.Right> | DEither.Right<"file-system-move", FileInterface>;
 
-export interface FileInterface extends DKind.Kind<
+export interface FileInterface<
+	GenericPath extends EntryPath = EntryPath,
+> extends DKind.Kind<
 	typeof fileInterfaceKind
-> {
-	path: string & DPath.Path;
+	> {
+	path: GenericPath & DPath.Path;
 	getName(): (string & DPath.Segment) | null;
 	getMimeType(): string | null;
 	getExtension(params?: DPath.GetExtensionNameParams): (string & DPath.Segment) | null;
@@ -33,9 +36,15 @@ export interface FileInterface extends DKind.Kind<
 	isFile(): Promise<boolean>;
 }
 
+export function createFileInterface<
+	GenericPath extends EntryPath = EntryPath,
+>(
+	path: GenericPath,
+): FileInterface<GenericPath>;
+
 export function createFileInterface(
 	path: string & DPath.Path,
-): FileInterface {
+) {
 	function getName() {
 		return DPath.getBaseName(path);
 	}
@@ -134,8 +143,15 @@ export function createFileInterface(
 	} satisfies DKind.Remove<FileInterface> as never;
 }
 
-export function isFileInterface(
-	input: unknown,
-): input is FileInterface {
+export function isFileInterface<
+	GenericInput extends unknown,
+>(
+	input: GenericInput,
+): input is Extract<
+	GenericInput,
+	FileInterface
+> {
 	return fileInterfaceKind.has(input);
 }
+
+export const isFileInterfaceFromUnknown: (input: unknown) => input is FileInterface = isFileInterface;

@@ -10,8 +10,8 @@ import "@duplojs/http/codeGenerator";
 
 import "./routes";
 
-const sourceFile = DSFile.createFileInterface(DCommon.cast("files/fakeFiles/superTextFile.txt"));
-const sourceFolder = DSFile.createFolderInterface(DCommon.cast("files/fakeFiles"));
+const sourceFile = DSFile.createFileInterface(DPath.declarePath("files/fakeFiles/superTextFile.txt"));
+const sourceFolder = DSFile.createFolderInterface(DPath.declarePath("files/fakeFiles"));
 
 DSCommon.setCurrentWorkingDirectoryOrThrow(DPath.resolveRelative([DPath.createAbsoluteOrThrow(import.meta.dirname), DCommon.cast("..")]));
 

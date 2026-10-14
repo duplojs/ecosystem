@@ -8,6 +8,7 @@ import { testHub } from "@test-utils/hub";
 import * as DCommon from "@duplojs/lang/common";
 // oxlint-disable-next-line duplojs-plugin/no-restricted-import
 import { setEnvironment, TESTImplementation } from "@duplojs/server";
+import * as DPath from "@duplojs/lang/path";
 
 describe("makeNodeHook", () => {
 	beforeEach(() => {
@@ -136,7 +137,7 @@ describe("makeNodeHook", () => {
 
 			await hooks.sendResponse({
 				request,
-				currentResponse: { body: DSFile.createFileInterface(DCommon.cast("test.txt")) },
+				currentResponse: { body: DSFile.createFileInterface(DPath.declareSegment("test.txt")) },
 				exit: exitHookFunction,
 			} as any);
 

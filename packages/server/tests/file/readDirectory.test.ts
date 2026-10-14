@@ -8,21 +8,191 @@ import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 describe("readDirectory", () => {
 	afterEach(() => {
 		vi.clearAllMocks();
+		vi.restoreAllMocks();
 	});
 
-	it("reads directory in NODE env", async() => {
+	it("preserves relative paths by default with recursive entries in NODE env", async() => {
+		setEnvironment("NODE");
+		const fs = setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue(["a", "nested/b"]),
+		});
+
+		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), { recursive: true });
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+
+		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path)[], "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("/tmp/mock", {
+			recursive: true,
+		});
+		expect(paths).toStrictEqual(["a", "nested/b"]);
+	});
+
+	it("returns relative paths when params are omitted", async() => {
 		setEnvironment("NODE");
 		const fs = setFsPromisesMock({
 			readdir: vi.fn().mockResolvedValue(["a", "b"]),
 		});
 
-		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), { recursive: true });
+		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"));
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
 
-		expect(DEither.isRight(result)).toBe(true);
+		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path)[], "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("/tmp/mock", {
+			recursive: undefined,
+		});
+		expect(paths).toStrictEqual(["a", "b"]);
+	});
+
+	it("returns names without recursion with default pathMode", async() => {
+		setEnvironment("NODE");
+		const fs = setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue(["a", "b"]),
+		});
+
+		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), {
+			recursive: false,
+			pathMode: "default",
+		});
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+
+		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path)[], "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("/tmp/mock", { recursive: false });
+		expect(paths).toStrictEqual(["a", "b"]);
+	});
+
+	it("normalizes relative paths with recursive default pathMode", async() => {
+		setEnvironment("NODE");
+		const fs = setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue(["a", "nested//b", "nested/deep/c"]),
+		});
+
+		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), {
+			recursive: true,
+			pathMode: "default",
+		});
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+
+		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path)[], "strict">;
+
 		expect(fs.readdir).toHaveBeenCalledWith("/tmp/mock", { recursive: true });
-		if (DEither.isRight(result)) {
-			expect(DEither.unwrapRight(result)).toEqual(["a", "b"]);
-		}
+		expect(paths).toStrictEqual(["a", "nested/b", "nested/deep/c"]);
+	});
+
+	it("returns normalized paths using each parentPath with absolute pathMode", async() => {
+		setEnvironment("NODE");
+		vi.spyOn(process, "cwd").mockReturnValue("/workspace");
+		const fs = setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue([
+				{
+					name: "a",
+					parentPath: "/tmp//mock/",
+				},
+				{
+					name: "b",
+					parentPath: "/tmp//mock/nested/",
+				},
+			]),
+		});
+
+		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), {
+			recursive: true,
+			pathMode: "absolute",
+		});
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+
+		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path & DPath.Absolute)[], "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("/tmp/mock", {
+			recursive: true,
+			withFileTypes: true,
+		});
+		expect(paths).toStrictEqual(["/tmp/mock/a", "/tmp/mock/nested/b"]);
+	});
+
+	it("resolves relative parent paths from the current directory with absolute pathMode", async() => {
+		setEnvironment("NODE");
+		vi.spyOn(process, "cwd").mockReturnValue("/workspace");
+		const fs = setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue([
+				{
+					name: "a",
+					parentPath: "mock",
+				},
+				{
+					name: "b",
+					parentPath: "mock/nested",
+				},
+			]),
+		});
+
+		const result = await DSFile.readDirectory(DCommon.infer("mock"), {
+			recursive: true,
+			pathMode: "absolute",
+		});
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+
+		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path & DPath.Absolute)[], "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("mock", {
+			recursive: true,
+			withFileTypes: true,
+		});
+		expect(paths).toStrictEqual(["/workspace/mock/a", "/workspace/mock/nested/b"]);
+	});
+
+	it("preserves nested paths from an absolute input with recursive assembled pathMode", async() => {
+		setEnvironment("NODE");
+		const fs = setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue(["a", "nested//b", "nested/deep/c"]),
+		});
+
+		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), {
+			recursive: true,
+			pathMode: "assembled",
+		});
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+
+		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path)[], "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("/tmp/mock", {
+			recursive: true,
+		});
+		expect(paths).toStrictEqual(["/tmp/mock/a", "/tmp/mock/nested/b", "/tmp/mock/nested/deep/c"]);
+	});
+
+	it("preserves nested paths from a relative input with recursive assembled pathMode", async() => {
+		setEnvironment("NODE");
+		const fs = setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue(["a", "nested/b", "nested/deep/c"]),
+		});
+
+		const result = await DSFile.readDirectory(DCommon.infer("mock"), {
+			recursive: true,
+			pathMode: "assembled",
+		});
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+
+		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path)[], "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("mock", {
+			recursive: true,
+		});
+		expect(paths).toStrictEqual(["mock/a", "mock/nested/b", "mock/nested/deep/c"]);
+	});
+
+	it("returns an empty array for an empty directory", async() => {
+		setEnvironment("NODE");
+		setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue([]),
+		});
+
+		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"));
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+
+		expect(paths).toStrictEqual([]);
 	});
 
 	it("returns fail when NODE readdir rejects", async() => {

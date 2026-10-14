@@ -23,7 +23,7 @@ export function initDefaultHook(
 					|| body instanceof Error
 				) {
 					currentResponse.setHeader("content-type", "text/plain; charset=utf-8");
-				} else if (DSFile.isFileInterface(body)) {
+				} else if (DSFile.isFileInterfaceFromUnknown(body)) {
 					const filename = body.getName();
 					const filenameHeader = filename
 						? ` filename="${filename}"`

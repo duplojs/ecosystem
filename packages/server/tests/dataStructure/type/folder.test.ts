@@ -1,11 +1,12 @@
-import * as DCommon from "@duplojs/lang/common";
+import * as DPath from "@duplojs/lang/path";
+import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import { DSDataStructure, DSFile } from "@scripts";
 
 describe("FolderType", () => {
 	it("creates a synchronous type for folder interfaces", () => {
 		const type = DSDataStructure.FolderType();
-		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/folder"));
+		const folder = DSFile.createFolderInterface(DPath.declarePath("/tmp/folder"));
 
 		type _CheckValue = DCommon.ExpectType<
 			DDataStructure.TypeValue<typeof type>,
@@ -27,7 +28,7 @@ describe("FolderType", () => {
 
 	it("rejects values that are not folder interfaces", () => {
 		const type = DSDataStructure.FolderType();
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/file.txt"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/file.txt"));
 
 		for (const value of [file, { path: "/tmp/folder" }, "/tmp/folder", null, undefined]) {
 			expect(type.executeCheck(value)).toBe(DDataStructure.ErrorSymbol);

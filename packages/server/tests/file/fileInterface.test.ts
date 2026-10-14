@@ -1,3 +1,4 @@
+import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
@@ -36,16 +37,16 @@ describe("fileInterface", () => {
 	});
 
 	it("detects file interface with predicate", () => {
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/example.json"));
-		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/demo"));
-		const unknown = DSFile.createUnknownEntryInterface(DCommon.infer("/tmp/entry"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/example.json"));
+		const folder = DSFile.createFolderInterface(DPath.declarePath("/tmp/demo"));
+		const unknown = DSFile.createUnknownEntryInterface(DPath.declarePath("/tmp/entry"));
 
-		const unknownValue: unknown = undefined;
+		const input = file as typeof file | typeof folder | typeof unknown;
 
-		if (DSFile.isFileInterface(unknownValue)) {
+		if (DSFile.isFileInterface(input)) {
 			type check = DCommon.ExpectType<
-				typeof unknownValue,
-				DSFile.FileInterface,
+				typeof input,
+				typeof file,
 				"strict"
 			>;
 		}
@@ -56,8 +57,26 @@ describe("fileInterface", () => {
 		expect(DSFile.isFileInterface({})).toBe(false);
 	});
 
+	it("narrows an unknown input with isFileInterfaceFromUnknown", () => {
+		const input: unknown = DSFile.createFileInterface(DPath.declarePath("/tmp/example.json"));
+		const folder = DSFile.createFolderInterface(DPath.declarePath("/tmp/demo"));
+		const unknown = DSFile.createUnknownEntryInterface(DPath.declarePath("/tmp/entry"));
+
+		expect(DSFile.isFileInterfaceFromUnknown(input)).toBe(true);
+		if (DSFile.isFileInterfaceFromUnknown(input)) {
+			type _Check = DCommon.ExpectType<typeof input, DSFile.FileInterface, "strict">;
+
+			expect(input.path).toBe("/tmp/example.json");
+		}
+
+		expect(DSFile.isFileInterfaceFromUnknown(folder)).toBe(false);
+		expect(DSFile.isFileInterfaceFromUnknown(unknown)).toBe(false);
+		expect(DSFile.isFileInterfaceFromUnknown({})).toBe(false);
+		expect(DSFile.isFileInterfaceFromUnknown(null)).toBe(false);
+	});
+
 	it("creates interface with name and mime info", () => {
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/example.json"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/example.json"));
 
 		expect(file.getName()).toBe("example.json");
 		expect(file.getExtension()).toBe("json");
@@ -66,7 +85,7 @@ describe("fileInterface", () => {
 	});
 
 	it("creates interface with unknown extension", () => {
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/unknown file.zzz"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/unknown file.zzz"));
 
 		expect(file.path).toBe("/tmp/unknown file.zzz");
 		expect(file.getExtension()).toBe("zzz");
@@ -74,14 +93,14 @@ describe("fileInterface", () => {
 	});
 
 	it("returns null mime type when no extension exists", () => {
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/file"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/file"));
 
 		expect(file.getExtension()).toBe(null);
 		expect(file.getMimeType()).toBe(null);
 	});
 
 	it("returns current directory as parent path when no separator is present", () => {
-		const file = DSFile.createFileInterface(DCommon.infer("file"));
+		const file = DSFile.createFileInterface(DPath.declarePath("file"));
 
 		expect(file.getName()).toBe("file");
 		expect(file.getParentPath()).toBe(".");
@@ -92,7 +111,7 @@ describe("fileInterface", () => {
 		const fs = setFsPromisesMock({
 			rename: vi.fn().mockResolvedValue(undefined),
 		});
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/example.json"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/example.json"));
 
 		const result = await file.rename(DCommon.infer("next.json"));
 
@@ -108,7 +127,7 @@ describe("fileInterface", () => {
 		const fs = setFsPromisesMock({
 			access: vi.fn().mockResolvedValue(undefined),
 		});
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/example.json"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/example.json"));
 
 		const result = await file.exists();
 
@@ -121,7 +140,7 @@ describe("fileInterface", () => {
 		const fs = setFsPromisesMock({
 			rm: vi.fn().mockResolvedValue(undefined),
 		});
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/example.json"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/example.json"));
 
 		const result = await file.remove();
 
@@ -137,7 +156,7 @@ describe("fileInterface", () => {
 		const fs = setFsPromisesMock({
 			stat: vi.fn().mockResolvedValue(createNodeStatsMock()),
 		});
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/example.json"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/example.json"));
 
 		const result = await file.stat();
 
@@ -153,7 +172,7 @@ describe("fileInterface", () => {
 		const fs = setFsPromisesMock({
 			rename: vi.fn().mockResolvedValue(undefined),
 		});
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/example.json"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/example.json"));
 
 		const result = await file.relocate(DCommon.infer("/new/parent"));
 
@@ -169,7 +188,7 @@ describe("fileInterface", () => {
 		const fs = setFsPromisesMock({
 			rename: vi.fn().mockResolvedValue(undefined),
 		});
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/example.json"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/example.json"));
 
 		const result = await file.move(DCommon.infer("/new/path/example.json"));
 
@@ -181,7 +200,7 @@ describe("fileInterface", () => {
 	});
 
 	it("getExtension name with dot", () => {
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/file.txt"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/file.txt"));
 
 		expect(file.getExtension()).toBe("txt");
 		expect(file.getExtension({ withDot: true })).toBe(".txt");
@@ -195,7 +214,7 @@ describe("fileInterface", () => {
 				isFile: () => expected,
 			}),
 		});
-		const entry = DSFile.createFileInterface(DCommon.infer("/tmp/entry"));
+		const entry = DSFile.createFileInterface(DPath.declarePath("/tmp/entry"));
 		const result = entry.isFile();
 
 		type _Check = DCommon.ExpectType<typeof result, Promise<boolean>, "strict">;
@@ -210,6 +229,6 @@ describe("fileInterface", () => {
 			stat: vi.fn().mockRejectedValue(new Error("stat failed")),
 		});
 
-		expect(await DSFile.createFileInterface(DCommon.infer("/tmp/entry")).isFile()).toBe(false);
+		expect(await DSFile.createFileInterface(DPath.declarePath("/tmp/entry")).isFile()).toBe(false);
 	});
 });

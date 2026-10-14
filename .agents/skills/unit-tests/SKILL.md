@@ -37,6 +37,24 @@ Appliquer les [règles de composition des pipes](../../curried-functions.md#comp
 
 Voir l'[exemple de préparation des arguments et d'assertion du résultat](references/test-patterns.md#pipe-et-assertions).
 
+## Tests paramétrés
+
+Dans `it.each`, chaque ligne associe explicitement les arguments à leur résultat attendu. Si l'attendu dépend du cas, le renseigner dans une propriété de la ligne, puis utiliser directement cette propriété dans l'assertion. Ne pas le sélectionner ou le calculer dans le corps du test avec un ternaire, un `if`, un `switch` ou tout autre branchement selon le cas courant. Si la préparation ou l'appel nécessite une logique différente, écrire des tests séparés.
+
+```ts
+import { DNumber } from "@scripts";
+
+describe("max", () => {
+	it.each([
+		{ input: 1, limit: 3, expected: 3 },
+		{ input: 5, limit: 3, expected: 5 },
+	])("max($input, $limit) returns $expected", ({ input, limit, expected }) => {
+		const result = DNumber.max([input, limit]);
+		expect(result).toBe(expected);
+	});
+});
+```
+
 ## Workflow
 
 1. Identifier le package et le module concernés.

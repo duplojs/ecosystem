@@ -11,6 +11,7 @@ import { readDirectory, type ReadDirectoryResult } from "./readDirectory";
 import { stat, type StatResult } from "./stat";
 import { walkDirectory, type WalkDirectoryParams, type WalkDirectoryResult } from "./walkDirectory";
 import { relocate, type RelocateResult } from "./relocate";
+import { type EntryPath } from "./unknownEntryInterface";
 
 const folderInterfaceKind = createKind("folderInterface");
 
@@ -18,10 +19,12 @@ type FolderInterfaceRenameResult = Exclude<RenameResult, DEither.Right> | DEithe
 type FolderInterfaceRelocateResult = Exclude<RelocateResult, DEither.Right> | DEither.Right<"file-system-relocate", FolderInterface>;
 type FolderInterfaceMoveResult = Exclude<MoveResult, DEither.Right> | DEither.Right<"file-system-move", FolderInterface>;
 
-export interface FolderInterface extends DKind.Kind<
+export interface FolderInterface<
+	GenericPath extends EntryPath = EntryPath,
+> extends DKind.Kind<
 	typeof folderInterfaceKind
-> {
-	path: string & DPath.Path;
+	> {
+	path: GenericPath & DPath.Path;
 	getName(): (string & DPath.Segment) | null;
 	getParentPath(): (string & DPath.Path) | null;
 	rename(newName: (string & DPath.Segment)): Promise<FolderInterfaceRenameResult>;
@@ -35,7 +38,15 @@ export interface FolderInterface extends DKind.Kind<
 	isFolder(): Promise<boolean>;
 }
 
-export function createFolderInterface(path: string & DPath.Path): FolderInterface {
+export function createFolderInterface<
+	GenericPath extends EntryPath = EntryPath,
+>(
+	path: GenericPath,
+): FolderInterface<GenericPath>;
+
+export function createFolderInterface(
+	path: string & DPath.Path,
+): FolderInterface {
 	function getName() {
 		return DPath.getBaseName(path);
 	}
@@ -128,8 +139,15 @@ export function createFolderInterface(path: string & DPath.Path): FolderInterfac
 	} satisfies DKind.Remove<FolderInterface> as never;
 }
 
-export function isFolderInterface(
-	input: unknown,
-): input is FolderInterface {
+export function isFolderInterface<
+	GenericInput extends unknown,
+>(
+	input: GenericInput,
+): input is Extract<
+	GenericInput,
+	FolderInterface
+> {
 	return folderInterfaceKind.has(input);
 }
+
+export const isFolderInterfaceFromUnknown: (input: unknown) => input is FolderInterface = isFolderInterface;

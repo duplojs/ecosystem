@@ -6,17 +6,36 @@ import { exists, type ExistsResult } from "./exists";
 
 const unknownInterfaceKind = createKind("unknownInterface");
 
-export interface UnknownEntryInterface extends DKind.Kind<
+export type EntryPath = (
+	& string
+	& (
+		| DPath.Path
+		| DPath.Absolute
+		| DPath.Segment
+	)
+);
+
+export interface UnknownEntryInterface<
+	GenericPath extends EntryPath = EntryPath,
+> extends DKind.Kind<
 	typeof unknownInterfaceKind
-> {
-	path: string & DPath.Path;
+	> {
+	path: GenericPath & DPath.Path;
 	getName(): (string & DPath.Segment) | null;
 	getParentPath(): (string & DPath.Path) | null;
 	stat(): Promise<StatResult>;
 	exist(): Promise<ExistsResult>;
 }
 
-export function createUnknownEntryInterface(path: string & DPath.Path): UnknownEntryInterface {
+export function createUnknownEntryInterface<
+	GenericPath extends EntryPath = EntryPath,
+>(
+	path: GenericPath,
+): UnknownEntryInterface<GenericPath>;
+
+export function createUnknownEntryInterface(
+	path: string & DPath.Path,
+): UnknownEntryInterface {
 	function getName() {
 		return DPath.getBaseName(path);
 	}
@@ -43,8 +62,17 @@ export function createUnknownEntryInterface(path: string & DPath.Path): UnknownE
 	} satisfies DKind.Remove<UnknownEntryInterface> as never;
 }
 
-export function isUnknownEntryInterface(
-	input: unknown,
-): input is UnknownEntryInterface {
+export function isUnknownEntryInterface<
+	GenericInput extends unknown,
+>(
+	input: GenericInput,
+): input is Extract<
+	GenericInput,
+	UnknownEntryInterface
+> {
 	return unknownInterfaceKind.has(input);
 }
+
+export const isUnknownEntryInterfaceFromUnknown: (
+	input: unknown,
+) => input is UnknownEntryInterface = isUnknownEntryInterface;

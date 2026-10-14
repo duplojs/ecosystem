@@ -1,4 +1,5 @@
-import * as DCommon from "@duplojs/lang/common";
+import * as DPath from "@duplojs/lang/path";
+import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import { DSDataStructure, DSFile } from "@scripts";
@@ -36,7 +37,7 @@ describe.each([
 
 	it("encodes interfaces as strings", async() => {
 		const codec = codecs.definition.file;
-		const entry = DSFile.createFileInterface(DCommon.infer("/tmp/example"));
+		const entry = DSFile.createFileInterface(DPath.declarePath("/tmp/example"));
 
 		expect(codec.fundamentalType).toBe(DSDataStructure.TheFile);
 		expect(await codec.encode(entry)).toBe("/tmp/example");

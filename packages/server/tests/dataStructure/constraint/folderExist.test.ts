@@ -1,11 +1,12 @@
-import * as DCommon from "@duplojs/lang/common";
+import * as DPath from "@duplojs/lang/path";
+import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import { DSDataStructure, DSFile } from "@scripts";
 
 describe("FolderExistConstraint", () => {
 	it("accepts existing directories asynchronously", async() => {
-		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/folder"));
+		const folder = DSFile.createFolderInterface(DPath.declarePath("/tmp/folder"));
 		folder.stat = vi.fn().mockResolvedValue(DEither.success({ isDirectory: true }));
 		const constraint = DSDataStructure.FolderExistConstraint();
 
@@ -22,7 +23,7 @@ describe("FolderExistConstraint", () => {
 	});
 
 	it("rejects entries that are not directories", async() => {
-		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/file.txt"));
+		const folder = DSFile.createFolderInterface(DPath.declarePath("/tmp/file.txt"));
 		folder.stat = vi.fn().mockResolvedValue(DEither.success({
 			isDirectory: false,
 			isFile: true,
@@ -32,7 +33,7 @@ describe("FolderExistConstraint", () => {
 	});
 
 	it("rejects folders whose stat fails", async() => {
-		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/missing"));
+		const folder = DSFile.createFolderInterface(DPath.declarePath("/tmp/missing"));
 		folder.stat = vi.fn().mockResolvedValue(DEither.left("file-system-stat", new Error("missing")));
 
 		expect(await DSDataStructure.FolderExistConstraint().executeCheck(folder)).toBe(DDataStructure.ErrorSymbol);

@@ -1,4 +1,5 @@
-import * as DCommon from "@duplojs/lang/common";
+import * as DPath from "@duplojs/lang/path";
+import type * as DCommon from "@duplojs/lang/common";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import { DSDataStructure, DSFile } from "@scripts";
@@ -22,7 +23,7 @@ describe("folderExist", () => {
 
 	it("validates folder existence through a folder structure", async() => {
 		const structure = DSDataStructure.folder([DSDataStructure.folderExist()]);
-		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/folder"));
+		const folder = DSFile.createFolderInterface(DPath.declarePath("/tmp/folder"));
 		folder.stat = vi.fn()
 			.mockResolvedValueOnce(DEither.success({ isDirectory: true }))
 			.mockResolvedValueOnce(DEither.success({ isDirectory: false }))

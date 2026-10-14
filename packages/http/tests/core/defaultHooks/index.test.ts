@@ -1,5 +1,6 @@
 import { createHub, HookResponse, type HttpServerParams, initDefaultHook, PredictedResponse, Response, ServerSentEventsPredictedResponse, StreamPredictedResponse, StreamTextPredictedResponse } from "@core";
 import * as DCommon from "@duplojs/lang/common";
+import * as DPath from "@duplojs/lang/path";
 import * as DSFile from "@duplojs/server/file";
 
 describe("defaultHook", () => {
@@ -57,7 +58,7 @@ describe("defaultHook", () => {
 	});
 
 	it("beforeSendResponse send html file", () => {
-		const response = new PredictedResponse("100", "superInfo", DSFile.createFileInterface(DCommon.cast("test.html")));
+		const response = new PredictedResponse("100", "superInfo", DSFile.createFileInterface(DPath.declareSegment("test.html")));
 
 		defaultHook.beforeSendResponse({
 			currentResponse: response,
@@ -75,7 +76,7 @@ describe("defaultHook", () => {
 	});
 
 	it("beforeSendResponse send unknown file", () => {
-		const response = new PredictedResponse("100", "superInfo", DSFile.createFileInterface(DCommon.cast("test")));
+		const response = new PredictedResponse("100", "superInfo", DSFile.createFileInterface(DPath.declareSegment("test")));
 
 		defaultHook.beforeSendResponse({
 			currentResponse: response,
@@ -93,7 +94,7 @@ describe("defaultHook", () => {
 	});
 
 	it("beforeSendResponse send file with unknown name", () => {
-		const response = new PredictedResponse("100", "superInfo", DSFile.createFileInterface(DCommon.cast("/")));
+		const response = new PredictedResponse("100", "superInfo", DSFile.createFileInterface(DPath.declarePath("/")));
 
 		defaultHook.beforeSendResponse({
 			currentResponse: response,

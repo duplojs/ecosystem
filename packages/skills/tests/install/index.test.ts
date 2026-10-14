@@ -56,7 +56,7 @@ describe("installCommand", () => {
 		[["--type", "codex"], ".codex"],
 	] as const)("installs all supported skills for arguments %j", async(args, folder) => {
 		const entries = ["fundamental", "README.md", "http", "unknown"].map((entry) => DPath.createOrThrow(entry));
-		const readDirectory = vi.fn(() => Promise.resolve(DEither.right("file-system-read-directory", entries)));
+		const readDirectory = vi.fn(() => Promise.resolve(DEither.right("file-system-read-directory", entries as never)));
 		const copy = vi.fn(() => Promise.resolve(DEither.right("file-system-copy")));
 		TESTImplementation.set("readDirectory", readDirectory);
 		TESTImplementation.set("copy", copy);
@@ -73,7 +73,7 @@ describe("installCommand", () => {
 
 	it("does not copy unsupported directory entries", async() => {
 		const entries = ["README.md", "unknown"].map((entry) => DPath.createOrThrow(entry));
-		const readDirectory = vi.fn(() => Promise.resolve(DEither.right("file-system-read-directory", entries)));
+		const readDirectory = vi.fn(() => Promise.resolve(DEither.right("file-system-read-directory", entries as never)));
 		const copy = vi.fn();
 		TESTImplementation.set("readDirectory", readDirectory);
 		TESTImplementation.set("copy", copy);

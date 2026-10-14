@@ -1,7 +1,8 @@
+import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DChrono from "@duplojs/lang/chrono";
-import * as DCommon from "@duplojs/lang/common";
+import type * as DCommon from "@duplojs/lang/common";
 import { DSDataStructure, DSFile } from "@scripts";
 
 function createStatInfo(params?: Partial<DSFile.StatInfo>): DSFile.StatInfo {
@@ -70,7 +71,7 @@ describe("dataStructure file", () => {
 
 	it("encodes file interfaces with string and json codecs", async() => {
 		const structure = DSDataStructure.file();
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/config.json"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/config.json"));
 
 		const stringResult = await structure.asyncEncode(
 			DSDataStructure.codecsString,
@@ -112,7 +113,7 @@ describe("dataStructure file", () => {
 
 	it("checks file interfaces through the server fundamental type and file type", async() => {
 		const structure = DSDataStructure.file();
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/avatar.png"));
 		const fileType = DSDataStructure.FileType();
 
 		const success = await structure.asyncCheck(file);
@@ -125,7 +126,7 @@ describe("dataStructure file", () => {
 	});
 
 	it("checks server file constraints without retesting lang structure composition", async() => {
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/avatar.png"));
 		const stat = vi.fn().mockResolvedValue(DEither.success(createStatInfo()));
 		file.stat = stat;
 
@@ -146,21 +147,21 @@ describe("dataStructure file", () => {
 	});
 
 	it("rejects when server file constraints fail", async() => {
-		const missing = DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
+		const missing = DSFile.createFileInterface(DPath.declarePath("/tmp/avatar.png"));
 		missing.stat = vi.fn().mockResolvedValue(DEither.left("file-system-stat", new Error("missing")));
 
-		const directory = DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
+		const directory = DSFile.createFileInterface(DPath.declarePath("/tmp/avatar.png"));
 		directory.stat = vi.fn().mockResolvedValue(DEither.success(createStatInfo({
 			isFile: false,
 			isDirectory: true,
 		})));
 
-		const tooSmall = DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
+		const tooSmall = DSFile.createFileInterface(DPath.declarePath("/tmp/avatar.png"));
 		tooSmall.stat = vi.fn().mockResolvedValue(DEither.success(createStatInfo({
 			sizeBytes: 10,
 		})));
 
-		const tooLarge = DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png"));
+		const tooLarge = DSFile.createFileInterface(DPath.declarePath("/tmp/avatar.png"));
 		tooLarge.stat = vi.fn().mockResolvedValue(DEither.success(createStatInfo({
 			sizeBytes: 3000,
 		})));
@@ -178,10 +179,10 @@ describe("dataStructure file", () => {
 		const sizeResult = await sizeStructure.asyncCheck(tooSmall);
 		const maxSizeResult = await maxSizeStructure.asyncCheck(tooLarge);
 		const mimeTypeResult = await mimeTypeStructure.asyncCheck(
-			DSFile.createFileInterface(DCommon.infer("/tmp/avatar.png")),
+			DSFile.createFileInterface(DPath.declarePath("/tmp/avatar.png")),
 		);
 		const nullableMimeTypeResult = await nullableMimeTypeStructure.asyncCheck(
-			DSFile.createFileInterface(DCommon.infer("/tmp/README")),
+			DSFile.createFileInterface(DPath.declarePath("/tmp/README")),
 		);
 
 		expect(DEither.isLeft(existResult)).toBe(true);

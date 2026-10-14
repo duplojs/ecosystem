@@ -7,6 +7,8 @@ import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import { type FileInterface, createFileInterface } from "./fileInterface";
 import { type FolderInterface, createFolderInterface } from "./folderInterface";
 import { createUnknownEntryInterface, type UnknownEntryInterface } from "./unknownEntryInterface";
+import * as DObject from "@duplojs/lang/object";
+import { getCurrentWorkDirectoryOrThrow } from "@scripts/common";
 
 export interface WalkDirectoryParams {
 	recursive?: boolean;
@@ -29,7 +31,14 @@ export type WalkDirectoryErrors = (
 );
 
 export type WalkDirectoryResult = (
-	| DEither.Right<"file-system-walk-directory", Generator<FileInterface | FolderInterface | UnknownEntryInterface>>
+	| DEither.Right<
+		"file-system-walk-directory",
+		Generator<
+			| FileInterface<string & DPath.Absolute>
+			| FolderInterface<string & DPath.Absolute>
+			| UnknownEntryInterface<string & DPath.Absolute>
+		>
+	>
 	| DEither.Left<"file-system-walk-directory-error", WalkDirectoryErrors>
 );
 
@@ -83,39 +92,42 @@ export const walkDirectory = implementFunction(
 			},
 		)
 			.then(
-				DCommon.innerPipe(
-					DGenerator.map(
-						DCommon.innerPipe(
-							DPattern.when(
-								(dirent) => dirent.isFile(),
-								({ parentPath, name }) => createFileInterface(
-									DCommon.forwardAsserts(
-										DPath.normalize(`${parentPath}/${name}`),
-										(result) => DCommon.isType(result, "string") && DPath.is(result),
+				(result) => {
+					const currentWorkDirectory = getCurrentWorkDirectoryOrThrow();
+
+					return DCommon.pipe(
+						result,
+						DGenerator.map(
+							DCommon.innerPipe(
+								(dirent) => ({
+									dirent,
+									path: DPath.resolveFrom(
+										currentWorkDirectory,
+										[DPath.normalize(`${dirent.parentPath}/${dirent.name}`)!],
+									),
+								}),
+								DPattern.when(
+									({ dirent }) => dirent.isFile(),
+									({ path }) => createFileInterface(
+										path,
 									),
 								),
-							),
-							DPattern.when(
-								(dirent) => dirent.isDirectory(),
-								({ parentPath, name }) => createFolderInterface(
-									DCommon.forwardAsserts(
-										DPath.normalize(`${parentPath}/${name}`),
-										(result) => DCommon.isType(result, "string") && DPath.is(result),
+								DPattern.when(
+									({ dirent }) => dirent.isDirectory(),
+									({ path }) => createFolderInterface(
+										path,
 									),
 								),
-							),
-							DPattern.otherwise(
-								({ parentPath, name }) => createUnknownEntryInterface(
-									DCommon.forwardAsserts(
-										DPath.normalize(`${parentPath}/${name}`),
-										(result) => DCommon.isType(result, "string") && DPath.is(result),
+								DPattern.otherwise(
+									({ path }) => createUnknownEntryInterface(
+										path,
 									),
 								),
 							),
 						),
-					),
-					(value) => DEither.right("file-system-walk-directory", value),
-				),
+						(value) => DEither.right("file-system-walk-directory", value),
+					);
+				},
 			)
 			.catch(handleNodeWalkDirectoryError),
 	},

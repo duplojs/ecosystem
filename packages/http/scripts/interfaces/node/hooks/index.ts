@@ -87,7 +87,7 @@ export function initNodeHook(
 				rawResponse.write(
 					body.toString(),
 				);
-			} else if (DSFile.isFileInterface(body)) {
+			} else if (DSFile.isFileInterfaceFromUnknown(body)) {
 				await new Promise<void>((resolve, reject) => {
 					createReadStream(body.path)
 						.pipe(

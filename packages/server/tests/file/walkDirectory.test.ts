@@ -2,17 +2,26 @@ import * as DEither from "@duplojs/lang/either";
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
-import type * as DPath from "@duplojs/lang/path";
+import * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { expectFileSystemError } from "@tests/_utils/fileSystemError";
+
+type AbsolutePath = string & DPath.Absolute & DPath.Path;
+type AbsoluteEntry = (
+	| DSFile.FileInterface<string & DPath.Absolute>
+	| DSFile.FolderInterface<string & DPath.Absolute>
+	| DSFile.UnknownEntryInterface<string & DPath.Absolute>
+);
 
 describe("walkDirectory", () => {
 	afterEach(() => {
 		vi.clearAllMocks();
+		vi.restoreAllMocks();
 	});
 
 	it("walks directory and maps entries", async() => {
 		setEnvironment("NODE");
+		vi.spyOn(process, "cwd").mockReturnValue("/workspace");
 		const fs = setFsPromisesMock({
 			readdir: vi.fn().mockResolvedValue([
 				{
@@ -37,19 +46,20 @@ describe("walkDirectory", () => {
 		});
 
 		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/demo"));
+		const entries = DEither.unwrapByInformationOrThrow(result, "file-system-walk-directory");
+		const items = DArray.from(entries);
 
-		expect(DEither.isRight(result)).toBe(true);
+		type _Check = DCommon.ExpectType<typeof entries, Generator<AbsoluteEntry>, "strict">;
+
 		expect(fs.readdir).toHaveBeenCalledWith("/tmp/demo", {
 			recursive: false,
 			withFileTypes: true,
 		});
-		if (DEither.isRight(result)) {
-			const items = DArray.from(DEither.unwrapRight(result));
-			expect(items[0]?.getName()).toBe("file.json");
-			expect((items[0] as DSFile.FileInterface).getMimeType()).toBe("application/json");
-			expect(items[1]?.getName()).toBe("sub");
-			expect(items[2]?.getName()).toBe("other.zzz");
-		}
+		expect(items[0]?.getName()).toBe("file.json");
+		expect((items[0] as DSFile.FileInterface<AbsolutePath>).getMimeType()).toBe("application/json");
+		expect(items[1]?.getName()).toBe("sub");
+		expect(items[2]?.getName()).toBe("other.zzz");
+		expect(DArray.map(items, (entry) => entry.path)).toStrictEqual(["/tmp/demo/file.json", "/tmp/demo/sub", "/tmp/demo/other.zzz"]);
 	});
 
 	it("returns fail when NODE readdir rejects", async() => {
@@ -194,7 +204,7 @@ describe("walkDirectory", () => {
 		expectFileSystemError(result, "file-system-walk-directory-error", error);
 	});
 
-	it("normalizes paths for every entry kind and preserves their types", async() => {
+	it("normalizes absolute paths for every entry kind and preserves their types", async() => {
 		setEnvironment("NODE");
 		setFsPromisesMock({
 			readdir: vi.fn().mockResolvedValue([
@@ -221,12 +231,141 @@ describe("walkDirectory", () => {
 		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/demo"));
 		const entries = DEither.unwrapByInformationOrThrow(result, "file-system-walk-directory");
 
-		type _Check = DCommon.ExpectType<typeof entries, Generator<DSFile.FileInterface | DSFile.FolderInterface | DSFile.UnknownEntryInterface>, "strict">;
+		type _Check = DCommon.ExpectType<typeof entries, Generator<AbsoluteEntry>, "strict">;
 
-		const items = Array.from(entries);
-		expect(items.map((entry) => entry.path)).toEqual(["/tmp/demo/file.txt", "/tmp/demo/folder", "/tmp/demo/socket"]);
+		const items = DArray.from(entries);
+		const paths = DArray.map(items, (entry) => entry.path);
+
+		type _CheckPaths = DCommon.ExpectType<typeof paths, readonly AbsolutePath[], "strict">;
+
+		expect(paths).toStrictEqual(["/tmp/demo/file.txt", "/tmp/demo/folder", "/tmp/demo/socket"]);
+		expect(DArray.map(paths, DPath.isAbsolute)).toStrictEqual([true, true, true]);
 		expect(DSFile.isFileInterface(items[0])).toBe(true);
 		expect(DSFile.isFolderInterface(items[1])).toBe(true);
 		expect(DSFile.isUnknownEntryInterface(items[2])).toBe(true);
+	});
+
+	it("emits absolute paths for nested entries when recursive is enabled", async() => {
+		setEnvironment("NODE");
+		const fs = setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue([
+				{
+					parentPath: "/tmp/demo/nested",
+					name: "file.txt",
+					isFile: () => true,
+					isDirectory: () => false,
+				},
+				{
+					parentPath: "/tmp/demo/nested/deep",
+					name: "folder",
+					isFile: () => false,
+					isDirectory: () => true,
+				},
+				{
+					parentPath: "/tmp/demo/nested/deep",
+					name: "socket",
+					isFile: () => false,
+					isDirectory: () => false,
+				},
+			]),
+		});
+
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/demo"), { recursive: true });
+		const entries = DEither.unwrapByInformationOrThrow(result, "file-system-walk-directory");
+		const items = DArray.from(entries);
+		const paths = DArray.map(items, (entry) => entry.path);
+
+		type _CheckEntries = DCommon.ExpectType<typeof entries, Generator<AbsoluteEntry>, "strict">;
+		type _CheckPaths = DCommon.ExpectType<typeof paths, readonly AbsolutePath[], "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("/tmp/demo", {
+			recursive: true,
+			withFileTypes: true,
+		});
+		expect(paths).toStrictEqual(["/tmp/demo/nested/file.txt", "/tmp/demo/nested/deep/folder", "/tmp/demo/nested/deep/socket"]);
+		expect(DArray.map(paths, DPath.isAbsolute)).toStrictEqual([true, true, true]);
+	});
+
+	it("emits absolute paths for every entry kind from a relative input", async() => {
+		setEnvironment("NODE");
+		vi.spyOn(process, "cwd").mockReturnValue("/workspace");
+		const fs = setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue([
+				{
+					parentPath: "demo",
+					name: "file.txt",
+					isFile: () => true,
+					isDirectory: () => false,
+				},
+				{
+					parentPath: "demo",
+					name: "folder",
+					isFile: () => false,
+					isDirectory: () => true,
+				},
+				{
+					parentPath: "demo",
+					name: "socket",
+					isFile: () => false,
+					isDirectory: () => false,
+				},
+			]),
+		});
+
+		const result = await DSFile.walkDirectory(DCommon.infer("demo"));
+		const entries = DEither.unwrapByInformationOrThrow(result, "file-system-walk-directory");
+		const paths = DArray.map(DArray.from(entries), (entry) => entry.path);
+
+		type _CheckPaths = DCommon.ExpectType<typeof paths, readonly AbsolutePath[], "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("demo", {
+			recursive: false,
+			withFileTypes: true,
+		});
+		expect(paths).toStrictEqual(["/workspace/demo/file.txt", "/workspace/demo/folder", "/workspace/demo/socket"]);
+		expect(DArray.map(paths, DPath.isAbsolute)).toStrictEqual([true, true, true]);
+	});
+
+	it("returns an empty generator when the directory is empty", async() => {
+		setEnvironment("NODE");
+		const fs = setFsPromisesMock({ readdir: vi.fn().mockResolvedValue([]) });
+
+		const result = await DSFile.walkDirectory(DCommon.infer("/tmp/demo"), { recursive: false });
+		const entries = DEither.unwrapByInformationOrThrow(result, "file-system-walk-directory");
+
+		type _Check = DCommon.ExpectType<typeof entries, Generator<AbsoluteEntry>, "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("/tmp/demo", {
+			recursive: false,
+			withFileTypes: true,
+		});
+		expect(DArray.from(entries)).toStrictEqual([]);
+	});
+
+	it("supports inherited dirent methods when resolving absolute paths", async() => {
+		class FileDirent {
+			public readonly name = "file.txt";
+
+			public readonly parentPath = "demo";
+
+			public isFile() {
+				return true;
+			}
+
+			public isDirectory() {
+				return false;
+			}
+		}
+
+		setEnvironment("NODE");
+		vi.spyOn(process, "cwd").mockReturnValue("/workspace");
+		setFsPromisesMock({ readdir: vi.fn().mockResolvedValue([new FileDirent()]) });
+
+		const result = await DSFile.walkDirectory(DCommon.infer("demo"));
+		const entries = DEither.unwrapByInformationOrThrow(result, "file-system-walk-directory");
+		const items = DArray.from(entries);
+
+		expect(DArray.map(items, (entry) => entry.path)).toStrictEqual(["/workspace/demo/file.txt"]);
+		expect(DSFile.isFileInterface(items[0])).toBe(true);
 	});
 });

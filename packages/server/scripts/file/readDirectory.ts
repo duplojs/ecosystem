@@ -1,11 +1,11 @@
-import type * as DPath from "@duplojs/lang/path";
+import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
-
-interface ReadDirectoryParams {
-	recursive?: boolean;
-}
+import * as DArray from "@duplojs/lang/array";
+import * as DPattern from "@duplojs/lang/pattern";
+import { resolve } from "path";
+import { getCurrentWorkDirectoryOrThrow } from "@scripts/common";
 
 class ReadDirectoryErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-directory-not-found", Error) {}
 class ReadDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-directory-permission-denied", Error) {}
@@ -21,11 +21,6 @@ export type ReadDirectoryErrors = (
 	| ReadDirectoryErrorTooManyOpenFiles
 	| ReadDirectoryErrorBusy
 	| ReadDirectoryError
-);
-
-export type ReadDirectoryResult = (
-	| DEither.Right<"file-system-read-directory", (string & DPath.Path)[]>
-	| DEither.Left<"file-system-read-directory-error", ReadDirectoryErrors>
 );
 
 function handleNodeReadDirectoryError(error: Error) {
@@ -58,20 +53,99 @@ function handleNodeReadDirectoryError(error: Error) {
 	return DEither.left("file-system-read-directory-error", readDirectoryError);
 }
 
+type PathMode = "absolute" | "default" | "assembled";
+
+interface ReadDirectoryParams<
+	GenericPathMode extends PathMode = PathMode,
+> {
+	recursive?: boolean;
+	pathMode?: GenericPathMode;
+}
+
+export type ReadDirectoryResult<
+	GenericPathMode extends PathMode = PathMode,
+> = (
+	| DEither.Right<
+		"file-system-read-directory",
+		readonly (
+			& string
+			& DPath.Path
+			& (
+				GenericPathMode extends "absolute"
+					? DPath.Absolute
+					: unknown
+			)
+		)[]
+	>
+	| DEither.Left<"file-system-read-directory-error", ReadDirectoryErrors>
+);
+
 declare module "@scripts/implementor" {
 	interface ServerFunction {
-		readDirectory(
+		readDirectory<
+			GenericPathMode extends PathMode = "default",
+		>(
 			path: string & DPath.Path,
-			params?: ReadDirectoryParams,
-		): Promise<ReadDirectoryResult>;
+			params?: ReadDirectoryParams<GenericPathMode>,
+		): Promise<
+			ReadDirectoryResult<GenericPathMode>
+		>;
 	}
 }
 
 export const readDirectory = implementFunction(
 	"readDirectory",
 	{
-		NODE: async(path, params) => nodeFileSystem.value.readdir(path, { recursive: params?.recursive })
-			.then((value) => DEither.right("file-system-read-directory", value as (string & DPath.Path)[]))
-			.catch(handleNodeReadDirectoryError),
+		NODE: (path, params) => {
+			const result = DPattern.matchWithString(
+				DCommon.forward<PathMode>(params?.pathMode ?? "default"),
+				{
+					absolute: () => nodeFileSystem.value.readdir(
+						path,
+						{
+							recursive: params?.recursive,
+							withFileTypes: true,
+						},
+					).then(
+						(value) => DEither.right(
+							"file-system-read-directory",
+							DArray.map(
+								value,
+								({ name, parentPath }) => DPath.resolveFrom(
+									getCurrentWorkDirectoryOrThrow(),
+									[DPath.normalize(`${parentPath}/${name}`)!],
+								),
+							),
+						),
+					),
+					assembled: () => nodeFileSystem.value.readdir(
+						path,
+						{ recursive: params?.recursive },
+					).then(
+						(value) => DEither.right(
+							"file-system-read-directory",
+							DArray.map(
+								value,
+								(subPath) => (DPath.normalize(`${path}/${subPath}`)!),
+							),
+						),
+					),
+					default: () => nodeFileSystem.value.readdir(
+						path,
+						{ recursive: params?.recursive },
+					).then(
+						(value) => DEither.right(
+							"file-system-read-directory",
+							DArray.map(
+								value,
+								(subPath) => DPath.normalize(subPath)!,
+							),
+						),
+					),
+				},
+			).catch(handleNodeReadDirectoryError);
+
+			return result as never;
+		},
 	},
 );

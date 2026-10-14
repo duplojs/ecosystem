@@ -1,10 +1,11 @@
-import * as DCommon from "@duplojs/lang/common";
+import * as DPath from "@duplojs/lang/path";
+import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import { DSDataStructure, DSFile } from "@scripts";
 
 describe("TheFolder", () => {
 	it("accepts folder interfaces", () => {
-		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/folder"));
+		const folder = DSFile.createFolderInterface(DPath.declarePath("/tmp/folder"));
 		const stat = vi.spyOn(folder, "stat");
 		const result = DSDataStructure.TheFolder.executeCheck(folder);
 
@@ -26,7 +27,7 @@ describe("TheFolder", () => {
 	});
 
 	it("rejects values that are not folder interfaces", () => {
-		const file = DSFile.createFileInterface(DCommon.infer("/tmp/file.txt"));
+		const file = DSFile.createFileInterface(DPath.declarePath("/tmp/file.txt"));
 
 		for (const value of [file, { path: "/tmp/folder" }, "/tmp/folder", null, undefined]) {
 			expect(DSDataStructure.TheFolder.executeCheck(value)).toBe(DDataStructure.ErrorSymbol);

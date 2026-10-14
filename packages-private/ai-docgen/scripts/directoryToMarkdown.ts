@@ -86,10 +86,6 @@ export const directoryToMarkdown: (
 								if (DString.includes(content, "---")) {
 									const filePath = file.path;
 
-									if (!DPath.isAbsolute(filePath)) {
-										return DEither.fail();
-									}
-
 									return DCommon.pipe(
 										content,
 										DString.split("---"),
@@ -123,10 +119,8 @@ export const directoryToMarkdown: (
 					DGenerator.reduceFrom<readonly string[]>([]),
 					async({ lastValue, item, next }) => {
 						const fileName = item.getName();
-						const filePath = item.path;
 						if (
 							!fileName
-							|| !DPath.isAbsolute(filePath)
 							|| !DString.test(fileName, /^[0-9]+-/)
 						) {
 							return next(lastValue);
@@ -188,7 +182,7 @@ export const directoryToMarkdown: (
 									DString.replace(
 										header,
 										/@title *(?<title>[^\n]*)/g,
-										({ namedGroups }) => `### [${namedGroups.title}](${DPath.computeRelative(argument.outputPathFolderFile, filePath)})`,
+										({ namedGroups }) => `### [${namedGroups.title}](${DPath.computeRelative(argument.outputPathFolderFile, item.path)})`,
 									),
 								),
 								next,
@@ -205,8 +199,7 @@ export const directoryToMarkdown: (
 				entryGroupe.folders,
 				DEither.toMaybe,
 				DArray.select(
-					({ element, skip, select }) => DPath.isAbsolute(element.path)
-						&& DString.test(element.getName() ?? "", /^[0-9]+-/)
+					({ element, skip, select }) => DString.test(element.getName() ?? "", /^[0-9]+-/)
 						? select(element.path)
 						: skip(),
 				),

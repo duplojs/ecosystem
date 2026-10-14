@@ -1,4 +1,5 @@
-import * as DCommon from "@duplojs/lang/common";
+import * as DPath from "@duplojs/lang/path";
+import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import { DSDataStructure, DSFile } from "@scripts";
@@ -6,7 +7,7 @@ import { DSDataStructure, DSFile } from "@scripts";
 describe("folder", () => {
 	it("creates a structure accepting folder interfaces", () => {
 		const structure = DSDataStructure.folder();
-		const folder = DSFile.createFolderInterface(DCommon.infer("/tmp/folder"));
+		const folder = DSFile.createFolderInterface(DPath.declarePath("/tmp/folder"));
 		const result = structure.check(folder);
 
 		type _CheckValue = DCommon.ExpectType<
@@ -18,7 +19,7 @@ describe("folder", () => {
 		expect(DEither.unwrapRight(result)).toBe(folder);
 		expect(DEither.isLeft(structure.check({ path: "/tmp/folder" }))).toBe(true);
 		expect(DEither.isLeft(structure.check(
-			DSFile.createFileInterface(DCommon.infer("/tmp/file.txt")),
+			DSFile.createFileInterface(DPath.declarePath("/tmp/file.txt")),
 		))).toBe(true);
 	});
 
@@ -35,10 +36,10 @@ describe("folder", () => {
 		>;
 
 		expect(DEither.isRight(structure.check(
-			DSFile.createFolderInterface(DCommon.infer("/tmp/allowed")),
+			DSFile.createFolderInterface(DPath.declarePath("/tmp/allowed")),
 		))).toBe(true);
 		expect(DEither.isLeft(structure.check(
-			DSFile.createFolderInterface(DCommon.infer("/tmp/rejected")),
+			DSFile.createFolderInterface(DPath.declarePath("/tmp/rejected")),
 		))).toBe(true);
 
 		// @ts-expect-error File existence constraints require a FileInterface.

@@ -3,6 +3,7 @@ import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { expectFileSystemError } from "@tests/_utils/fileSystemError";
+import type * as DPath from "@duplojs/lang/path";
 
 function createNodeStatsMock() {
 	const now = new Date("2020-01-01T00:00:00Z");
@@ -47,7 +48,7 @@ describe("createEntryInterface", () => {
 		const result = await DSFile.createEntryInterface(DCommon.infer("/tmp/file.json"));
 		const entry = DEither.unwrapByInformationOrThrow(result, "file-interface");
 
-		type _Check = DCommon.ExpectType<typeof entry, DSFile.FileInterface, "strict">;
+		type _Check = DCommon.ExpectType<typeof entry, DSFile.FileInterface<string & DPath.Path>, "strict">;
 
 		expect(DSFile.isFileInterface(entry)).toBe(true);
 		expect(entry.path).toBe("/tmp/file.json");
@@ -65,7 +66,7 @@ describe("createEntryInterface", () => {
 		const result = await DSFile.createEntryInterface(DCommon.infer("/tmp/folder"));
 		const entry = DEither.unwrapByInformationOrThrow(result, "folder-interface");
 
-		type _Check = DCommon.ExpectType<typeof entry, DSFile.FolderInterface, "strict">;
+		type _Check = DCommon.ExpectType<typeof entry, DSFile.FolderInterface<string & DPath.Path>, "strict">;
 
 		expect(DSFile.isFolderInterface(entry)).toBe(true);
 		expect(entry.path).toBe("/tmp/folder");
@@ -77,7 +78,7 @@ describe("createEntryInterface", () => {
 		const result = await DSFile.createEntryInterface(DCommon.infer("/tmp/entry"));
 		const entry = DEither.unwrapByInformationOrThrow(result, "unknown-entry-interface");
 
-		type _Check = DCommon.ExpectType<typeof entry, DSFile.UnknownEntryInterface, "strict">;
+		type _Check = DCommon.ExpectType<typeof entry, DSFile.UnknownEntryInterface<string & DPath.Path>, "strict">;
 
 		expect(DSFile.isUnknownEntryInterface(entry)).toBe(true);
 		expect(entry.path).toBe("/tmp/entry");
