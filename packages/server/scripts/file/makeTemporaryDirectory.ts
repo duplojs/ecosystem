@@ -86,12 +86,9 @@ declare module "@scripts/implementor" {
 export const makeTemporaryDirectory = implementFunction(
 	"makeTemporaryDirectory",
 	{
-		NODE: async(prefix) => {
-			const fs = await nodeFileSystem.value;
-			return fs.mkdtemp(prefix)
-				.then((value) => DEither.right("file-system-make-temporary-directory", value))
-				.catch(handleNodeMakeTemporaryDirectoryError);
-		},
+		NODE: async(prefix) => nodeFileSystem.value.mkdtemp(prefix)
+			.then((value) => DEither.right("file-system-make-temporary-directory", value))
+			.catch(handleNodeMakeTemporaryDirectoryError),
 		DENO: (prefix) => Deno.makeTempDir({ prefix })
 			.then((value) => DEither.right("file-system-make-temporary-directory", value))
 			.catch(handleDenoMakeTemporaryDirectoryError),

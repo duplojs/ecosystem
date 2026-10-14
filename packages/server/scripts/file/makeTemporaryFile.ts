@@ -98,18 +98,14 @@ export const makeTemporaryFile = implementFunction(
 	"makeTemporaryFile",
 	{
 		NODE: async(prefix, suffix) => {
-			const fs = await nodeFileSystem.value;
-			const os = await nodeOs.value;
-			const crypto = await nodeCrypto.value;
-
-			const tempPath = DCommon.forwardAsserts(os.tmpdir(), DPath.is);
-			const fileName = DCommon.forwardAsserts(`${prefix}${crypto.randomUUID()}${suffix ?? ""}`, DPath.isSegment);
+			const tempPath = DCommon.forwardAsserts(nodeOs.value.tmpdir(), DPath.is);
+			const fileName = DCommon.forwardAsserts(`${prefix}${nodeCrypto.value.randomUUID()}${suffix ?? ""}`, DPath.isSegment);
 
 			const fileTemporaryPath = DPath.resolveRelative([
 				tempPath,
 				fileName,
 			]);
-			return fs.open(fileTemporaryPath, "wx")
+			return nodeFileSystem.value.open(fileTemporaryPath, "wx")
 				.then((fh) => fh.close())
 				.then(() => DEither.right("file-system-make-temporary-file", fileTemporaryPath))
 				.catch(handleNodeMakeTemporaryFileError);

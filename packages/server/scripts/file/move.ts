@@ -112,15 +112,12 @@ declare module "@scripts/implementor" {
 const moveImplementation = implementFunction(
 	"move",
 	{
-		NODE: async(fromPath, toPath) => {
-			const fs = await nodeFileSystem.value;
-			return fs.rename(
-				fromPath,
-				toPath,
-			)
-				.then(() => DEither.right("file-system-move"))
-				.catch(handleNodeMoveError);
-		},
+		NODE: async(fromPath, toPath) => nodeFileSystem.value.rename(
+			fromPath,
+			toPath,
+		)
+			.then(() => DEither.right("file-system-move"))
+			.catch(handleNodeMoveError),
 		DENO: (fromPath, toPath) => Deno.rename(
 			fromPath,
 			toPath,

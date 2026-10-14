@@ -161,17 +161,14 @@ declare module "@scripts/implementor" {
 export const linkStat = implementFunction(
 	"linkStat",
 	{
-		NODE: async(path) => {
-			const fs = await nodeFileSystem.value;
-			return fs.lstat(path)
-				.then(
-					DCommon.innerPipe(
-						createStatInfoWithFsSource,
-						(value) => DEither.right("file-system-link-stat", value),
-					),
-				)
-				.catch(handleNodeLinkStatError);
-		},
+		NODE: async(path) => nodeFileSystem.value.lstat(path)
+			.then(
+				DCommon.innerPipe(
+					createStatInfoWithFsSource,
+					(value) => DEither.right("file-system-link-stat", value),
+				),
+			)
+			.catch(handleNodeLinkStatError),
 		DENO: (path) => Deno
 			.lstat(path)
 			.then(

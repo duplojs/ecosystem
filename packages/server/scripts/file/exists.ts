@@ -80,12 +80,9 @@ declare module "@scripts/implementor" {
 export const exists = implementFunction(
 	"exists",
 	{
-		NODE: async(path) => {
-			const fs = await nodeFileSystem.value;
-			return fs.access(path)
-				.then(() => DEither.right("file-system-exists"))
-				.catch(handleNodeExistsError);
-		},
+		NODE: async(path) => nodeFileSystem.value.access(path)
+			.then(() => DEither.right("file-system-exists"))
+			.catch(handleNodeExistsError),
 		DENO: (path) => Deno
 			.stat(path)
 			.then(() => DEither.right("file-system-exists"))

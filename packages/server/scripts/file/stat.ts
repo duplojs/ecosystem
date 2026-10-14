@@ -200,17 +200,14 @@ function createStatInfoWithDeno(source: Deno.FileInfo): StatInfo {
 export const stat = implementFunction(
 	"stat",
 	{
-		NODE: async(path) => {
-			const fs = await nodeFileSystem.value;
-			return fs.stat(path)
-				.then(
-					DCommon.innerPipe(
-						createStatInfoWithFsSource,
-						(value) => DEither.right("file-system-stat", value),
-					),
-				)
-				.catch(handleNodeStatError);
-		},
+		NODE: async(path) => nodeFileSystem.value.stat(path)
+			.then(
+				DCommon.innerPipe(
+					createStatInfoWithFsSource,
+					(value) => DEither.right("file-system-stat", value),
+				),
+			)
+			.catch(handleNodeStatError),
 		DENO: (path) => Deno
 			.stat(path)
 			.then(

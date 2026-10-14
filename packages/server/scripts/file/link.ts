@@ -113,15 +113,12 @@ declare module "@scripts/implementor" {
 const linkImplementation = implementFunction(
 	"link",
 	{
-		NODE: async(existingPath, newPath) => {
-			const fs = await nodeFileSystem.value;
-			return fs.link(
-				existingPath,
-				newPath,
-			)
-				.then(() => DEither.right("file-system-link"))
-				.catch(handleNodeLinkError);
-		},
+		NODE: async(existingPath, newPath) => nodeFileSystem.value.link(
+			existingPath,
+			newPath,
+		)
+			.then(() => DEither.right("file-system-link"))
+			.catch(handleNodeLinkError),
 		DENO: (existingPath, newPath) => Deno
 			.link(
 				existingPath,

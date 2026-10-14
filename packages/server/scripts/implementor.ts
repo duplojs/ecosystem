@@ -1,5 +1,5 @@
-/* oxlint-disable @typescript-eslint/consistent-type-imports */
 import * as DCommon from "@duplojs/lang/common";
+import * as DPattern from "@duplojs/lang/pattern";
 
 export interface ServerFunction {}
 
@@ -17,7 +17,7 @@ declare module "@duplojs/lang" {
 
 const environmentStoreHandler = DCommon.createGlobalStore(
 	SymbolEnvironmentStore,
-	(() => {
+	DCommon.justExec(() => {
 		if (typeof Deno !== "undefined") {
 			return "DENO";
 		}
@@ -29,7 +29,7 @@ const environmentStoreHandler = DCommon.createGlobalStore(
 		}
 
 		return "NODE";
-	})(),
+	}),
 );
 
 export function setEnvironment(environment: SupportedEnvironment) {
@@ -94,6 +94,24 @@ export function implementFunction<
 	return (...args: unknown[]) => environmentFunctions[environmentStoreHandler.value](...args);
 }
 
-export const nodeFileSystem = DCommon.memoPromise(() => import("node:fs/promises") as Promise<typeof import("node:fs/promises")>);
-export const nodeCrypto = DCommon.memoPromise(() => import("node:crypto") as Promise<typeof import("node:crypto")>);
-export const nodeOs = DCommon.memoPromise(() => import("node:os") as Promise<typeof import("node:os")>);
+const requireModule = DCommon.memo<typeof process.getBuiltinModule>(
+	() => DPattern.matchWithStringOtherwise(
+		environmentStoreHandler.value,
+		{
+			BUN: () => require,
+		},
+		() => process.getBuiltinModule,
+	),
+);
+
+export const nodeFileSystem = DCommon.memo(
+	() => requireModule.value("node:fs/promises"),
+);
+
+export const nodeCrypto = DCommon.memo(
+	() => requireModule.value("node:crypto"),
+);
+
+export const nodeOs = DCommon.memo(
+	() => requireModule.value("node:os"),
+);

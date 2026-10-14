@@ -116,16 +116,13 @@ declare module "@scripts/implementor" {
 const symlinkImplementation = implementFunction(
 	"symlink",
 	{
-		NODE: async(oldPath, newPath, params) => {
-			const fs = await nodeFileSystem.value;
-			return fs.symlink(
-				oldPath,
-				newPath,
-				params?.type,
-			)
-				.then(() => DEither.right("file-system-symlink"))
-				.catch(handleNodeSymlinkError);
-		},
+		NODE: async(oldPath, newPath, params) => nodeFileSystem.value.symlink(
+			oldPath,
+			newPath,
+			params?.type,
+		)
+			.then(() => DEither.right("file-system-symlink"))
+			.catch(handleNodeSymlinkError),
 		DENO: (oldPath, newPath, params) => Deno
 			.symlink(
 				oldPath,

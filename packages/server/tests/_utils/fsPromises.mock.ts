@@ -1,3 +1,5 @@
+import { nodeFileSystem } from "@scripts/implementor";
+
 const fsPromisesMock = {
 	readFile: vi.fn(),
 	writeFile: vi.fn(),
@@ -22,8 +24,6 @@ const fsPromisesMock = {
 	open: vi.fn(),
 };
 
-vi.mock("node:fs/promises", () => fsPromisesMock);
-
 export function getFsPromisesMock() {
 	return fsPromisesMock;
 }
@@ -31,6 +31,7 @@ export function getFsPromisesMock() {
 export function setFsPromisesMock(
 	overrides: Partial<typeof fsPromisesMock>,
 ) {
+	vi.spyOn(nodeFileSystem, "value", "get").mockReturnValue(fsPromisesMock as unknown as typeof nodeFileSystem.value);
 	for (const key of Object.keys(overrides) as (keyof typeof fsPromisesMock)[]) {
 		const value = overrides[key];
 		if (value) {

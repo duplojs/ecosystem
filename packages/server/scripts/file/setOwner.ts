@@ -91,12 +91,9 @@ declare module "@scripts/implementor" {
 const setOwnerImplementation = implementFunction(
 	"setOwner",
 	{
-		NODE: async(path, { userId, groupId }) => {
-			const fs = await nodeFileSystem.value;
-			return fs.chown(path, userId, groupId)
-				.then(() => DEither.right("file-system-set-owner"))
-				.catch(handleNodeSetOwnerError);
-		},
+		NODE: async(path, { userId, groupId }) => nodeFileSystem.value.chown(path, userId, groupId)
+			.then(() => DEither.right("file-system-set-owner"))
+			.catch(handleNodeSetOwnerError),
 		DENO: (path, { userId, groupId }) => Deno
 			.chown(path, userId, groupId)
 			.then(() => DEither.right("file-system-set-owner"))

@@ -109,12 +109,9 @@ declare module "@scripts/implementor" {
 export const truncate = implementFunction(
 	"truncate",
 	{
-		NODE: async(path, size) => {
-			const fs = await nodeFileSystem.value;
-			return fs.truncate(path, size)
-				.then(() => DEither.right("file-system-truncate"))
-				.catch(handleNodeTruncateError);
-		},
+		NODE: async(path, size) => nodeFileSystem.value.truncate(path, size)
+			.then(() => DEither.right("file-system-truncate"))
+			.catch(handleNodeTruncateError),
 		DENO: (path, size) => DCommon.pipe(
 			path,
 			DCommon.when(

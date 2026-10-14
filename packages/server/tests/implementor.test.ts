@@ -1,3 +1,7 @@
+import type * as DCommon from "@duplojs/lang/common";
+import type * as NodeFileSystem from "node:fs/promises";
+import type * as NodeCrypto from "node:crypto";
+import type * as NodeOs from "node:os";
 import { TESTImplementation, implementFunction, nodeCrypto, nodeFileSystem, nodeOs, setEnvironment, SupportedEnvironment } from "@scripts/implementor";
 
 describe("implementor", () => {
@@ -5,6 +9,7 @@ describe("implementor", () => {
 		setEnvironment("NODE");
 		TESTImplementation.clear();
 		vi.clearAllMocks();
+		vi.restoreAllMocks();
 		vi.unstubAllGlobals();
 	});
 
@@ -113,10 +118,41 @@ describe("implementor", () => {
 		expect(denoImplementation).toHaveBeenCalledTimes(1);
 	});
 
-	it("loads memoized node modules", async() => {
-		await expect(nodeFileSystem.value).resolves.toHaveProperty("readFile");
-		await expect(nodeCrypto.value).resolves.toHaveProperty("randomUUID");
-		await expect(nodeOs.value).resolves.toHaveProperty("tmpdir");
+	it("loads memoized node modules synchronously", () => {
+		expect(nodeFileSystem.value).toHaveProperty("readFile");
+		expect(nodeCrypto.value).toHaveProperty("randomUUID");
+		expect(nodeOs.value).toHaveProperty("tmpdir");
+
+		type _CheckFileSystem = DCommon.ExpectType<typeof nodeFileSystem.value, typeof NodeFileSystem, "strict">;
+		type _CheckCrypto = DCommon.ExpectType<typeof nodeCrypto.value, typeof NodeCrypto, "strict">;
+		type _CheckOs = DCommon.ExpectType<typeof nodeOs.value, typeof NodeOs, "strict">;
+	});
+
+	it.each(["NODE", "DENO", "TEST", "BUN"] as const)("loads node modules synchronously and lazily once in %s", async(environment) => {
+		vi.resetModules();
+		const getBuiltinModule = vi.spyOn(process, "getBuiltinModule");
+		const isolatedImplementor = await import("@scripts/implementor");
+
+		isolatedImplementor.setEnvironment(environment);
+		expect(getBuiltinModule).not.toHaveBeenCalled();
+
+		const fs = isolatedImplementor.nodeFileSystem.value;
+		const crypto = isolatedImplementor.nodeCrypto.value;
+		const os = isolatedImplementor.nodeOs.value;
+
+		expect(fs).toHaveProperty("readFile");
+		expect(crypto).toHaveProperty("randomUUID");
+		expect(os).toHaveProperty("tmpdir");
+		isolatedImplementor.setEnvironment(environment === "BUN" ? "NODE" : "BUN");
+		expect(isolatedImplementor.nodeFileSystem.value).toBe(fs);
+		expect(isolatedImplementor.nodeCrypto.value).toBe(crypto);
+		expect(isolatedImplementor.nodeOs.value).toBe(os);
+		expect(getBuiltinModule).toHaveBeenCalledTimes(environment === "BUN" ? 0 : 3);
+		if (environment !== "BUN") {
+			expect(getBuiltinModule).toHaveBeenNthCalledWith(1, "node:fs/promises");
+			expect(getBuiltinModule).toHaveBeenNthCalledWith(2, "node:crypto");
+			expect(getBuiltinModule).toHaveBeenNthCalledWith(3, "node:os");
+		}
 	});
 
 	it("falls back to NODE implementation for BUN and DENO when missing", () => {

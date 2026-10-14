@@ -92,13 +92,10 @@ declare module "@scripts/implementor" {
 export const readJsonFile = implementFunction(
 	"readJsonFile",
 	{
-		NODE: async(path) => {
-			const fs = await nodeFileSystem.value;
-			return fs.readFile(path, { encoding: "utf-8" })
-				.then(JSON.parse)
-				.then((value) => DEither.right("file-system-read-json-file", value))
-				.catch(handleNodeReadJsonFileError);
-		},
+		NODE: async(path) => nodeFileSystem.value.readFile(path, { encoding: "utf-8" })
+			.then(JSON.parse)
+			.then((value) => DEither.right("file-system-read-json-file", value))
+			.catch(handleNodeReadJsonFileError),
 
 		DENO: (path) => Deno.readTextFile(path)
 			.then(JSON.parse)

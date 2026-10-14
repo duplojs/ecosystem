@@ -113,15 +113,12 @@ declare module "@scripts/implementor" {
 const appendTextFileImplementation = implementFunction(
 	"appendTextFile",
 	{
-		NODE: async(path, data) => {
-			const fs = await nodeFileSystem.value;
-			return fs.appendFile(
-				path,
-				data,
-			)
-				.then(() => DEither.right("file-system-append-text-file"))
-				.catch(handleNodeAppendTextFileError);
-		},
+		NODE: async(path, data) => nodeFileSystem.value.appendFile(
+			path,
+			data,
+		)
+			.then(() => DEither.right("file-system-append-text-file"))
+			.catch(handleNodeAppendTextFileError),
 		DENO: (path, data) => Deno.writeTextFile(
 			path,
 			data,

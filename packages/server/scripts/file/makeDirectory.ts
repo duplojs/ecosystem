@@ -113,17 +113,14 @@ declare module "@scripts/implementor" {
 export const makeDirectory = implementFunction(
 	"makeDirectory",
 	{
-		NODE: async(path, params) => {
-			const fs = await nodeFileSystem.value;
-			return fs.mkdir(
-				path,
-				{
-					recursive: params?.recursive,
-				},
-			)
-				.then(() => DEither.right("file-system-make-directory"))
-				.catch(handleNodeMakeDirectoryError);
-		},
+		NODE: async(path, params) => nodeFileSystem.value.mkdir(
+			path,
+			{
+				recursive: params?.recursive,
+			},
+		)
+			.then(() => DEither.right("file-system-make-directory"))
+			.catch(handleNodeMakeDirectoryError),
 		DENO: (path, params) => Deno.mkdir(
 			path,
 			{

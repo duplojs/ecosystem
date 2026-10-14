@@ -82,16 +82,13 @@ declare module "@scripts/implementor" {
 const copyImplementation = implementFunction(
 	"copy",
 	{
-		NODE: async(fromPath, toPath) => {
-			const fs = await nodeFileSystem.value;
-			return fs.cp(
-				fromPath,
-				toPath,
-				{ recursive: true },
-			)
-				.then(() => DEither.right("file-system-copy"))
-				.catch(handleNodeCopyError);
-		},
+		NODE: async(fromPath, toPath) => nodeFileSystem.value.cp(
+			fromPath,
+			toPath,
+			{ recursive: true },
+		)
+			.then(() => DEither.right("file-system-copy"))
+			.catch(handleNodeCopyError),
 	},
 );
 

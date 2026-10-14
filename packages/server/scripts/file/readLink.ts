@@ -86,15 +86,12 @@ declare module "@scripts/implementor" {
 export const readLink = implementFunction(
 	"readLink",
 	{
-		NODE: async(path) => {
-			const fs = await nodeFileSystem.value;
-			return fs.readlink(
-				path,
-				{ encoding: "utf-8" },
-			)
-				.then((value) => DEither.right("file-system-read-link", value))
-				.catch(handleNodeReadLinkError);
-		},
+		NODE: async(path) => nodeFileSystem.value.readlink(
+			path,
+			{ encoding: "utf-8" },
+		)
+			.then((value) => DEither.right("file-system-read-link", value))
+			.catch(handleNodeReadLinkError),
 		DENO: (path) => Deno
 			.readLink(path)
 			.then((value) => DEither.right("file-system-read-link", value))

@@ -94,17 +94,14 @@ declare module "@scripts/implementor" {
 export const ensureDirectory = implementFunction(
 	"ensureDirectory",
 	{
-		NODE: async(path) => {
-			const fs = await nodeFileSystem.value;
-			return fs.mkdir(
-				path,
-				{
-					recursive: true,
-				},
-			)
-				.then(() => DEither.right("file-system-ensure-directory"))
-				.catch(handleNodeEnsureDirectoryError);
-		},
+		NODE: async(path) => nodeFileSystem.value.mkdir(
+			path,
+			{
+				recursive: true,
+			},
+		)
+			.then(() => DEither.right("file-system-ensure-directory"))
+			.catch(handleNodeEnsureDirectoryError),
 		DENO: (path) => Deno.mkdir(
 			path,
 			{

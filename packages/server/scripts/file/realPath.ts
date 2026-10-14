@@ -82,12 +82,9 @@ declare module "@scripts/implementor" {
 export const realPath = implementFunction(
 	"realPath",
 	{
-		NODE: async(path) => {
-			const fs = await nodeFileSystem.value;
-			return fs.realpath(path)
-				.then((value) => DEither.right("file-system-real-path", value))
-				.catch(handleNodeRealPathError);
-		},
+		NODE: async(path) => nodeFileSystem.value.realpath(path)
+			.then((value) => DEither.right("file-system-real-path", value))
+			.catch(handleNodeRealPathError),
 		DENO: (path) => Deno
 			.realPath(path)
 			.then((value) => DEither.right("file-system-real-path", value))

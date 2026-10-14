@@ -109,16 +109,13 @@ declare module "@scripts/implementor" {
 const writeTextFileImplementation = implementFunction(
 	"writeTextFile",
 	{
-		NODE: async(path, data) => {
-			const fs = await nodeFileSystem.value;
-			return fs.writeFile(
-				path,
-				data,
-				{ encoding: "utf-8" },
-			)
-				.then(() => DEither.right("file-system-write-text-file"))
-				.catch(handleNodeWriteTextFileError);
-		},
+		NODE: async(path, data) => nodeFileSystem.value.writeFile(
+			path,
+			data,
+			{ encoding: "utf-8" },
+		)
+			.then(() => DEither.right("file-system-write-text-file"))
+			.catch(handleNodeWriteTextFileError),
 		DENO: (path, data) => Deno
 			.writeTextFile(
 				path,

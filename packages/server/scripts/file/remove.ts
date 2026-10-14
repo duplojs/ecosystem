@@ -106,18 +106,15 @@ declare module "@scripts/implementor" {
 export const remove = implementFunction(
 	"remove",
 	{
-		NODE: async(path, params) => {
-			const fs = await nodeFileSystem.value;
-			return fs.rm(
-				path,
-				{
-					recursive: params?.recursive ?? false,
-					force: true,
-				},
-			)
-				.then(() => DEither.right("file-system-remove"))
-				.catch(handleNodeRemoveError);
-		},
+		NODE: async(path, params) => nodeFileSystem.value.rm(
+			path,
+			{
+				recursive: params?.recursive ?? false,
+				force: true,
+			},
+		)
+			.then(() => DEither.right("file-system-remove"))
+			.catch(handleNodeRemoveError),
 		DENO: (path, params) => Deno.remove(
 			path,
 			{

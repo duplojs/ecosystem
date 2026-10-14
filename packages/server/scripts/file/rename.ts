@@ -113,8 +113,6 @@ const renameImplementation = implementFunction(
 	"rename",
 	{
 		NODE: async(path, newName) => {
-			const fs = await nodeFileSystem.value;
-
 			const parentPath = DPath.getParentFolderPath(path);
 
 			if (!parentPath) {
@@ -126,7 +124,7 @@ const renameImplementation = implementFunction(
 
 			const newPath = DPath.resolveRelative([parentPath, newName]);
 
-			return fs.rename(
+			return nodeFileSystem.value.rename(
 				path,
 				newPath,
 			)

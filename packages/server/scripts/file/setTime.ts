@@ -92,16 +92,13 @@ declare module "@scripts/implementor" {
 const setTimeImplementation = implementFunction(
 	"setTime",
 	{
-		NODE: async(path, { accessTime, modifiedTime }) => {
-			const fs = await nodeFileSystem.value;
-			return fs.utimes(
-				path,
-				DChrono.toTimestamp(accessTime),
-				DChrono.toTimestamp(modifiedTime),
-			)
-				.then(() => DEither.right("file-system-set-time"))
-				.catch(handleNodeSetTimeError);
-		},
+		NODE: async(path, { accessTime, modifiedTime }) => nodeFileSystem.value.utimes(
+			path,
+			DChrono.toTimestamp(accessTime),
+			DChrono.toTimestamp(modifiedTime),
+		)
+			.then(() => DEither.right("file-system-set-time"))
+			.catch(handleNodeSetTimeError),
 		DENO: (path, { accessTime, modifiedTime }) => Deno
 			.utime(
 				path,

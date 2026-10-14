@@ -92,12 +92,9 @@ declare module "@scripts/implementor" {
 export const readFile = implementFunction(
 	"readFile",
 	{
-		NODE: async(path) => {
-			const fs = await nodeFileSystem.value;
-			return fs.readFile(path)
-				.then((value) => DEither.right("file-system-read-file", value))
-				.catch(handleNodeReadFileError);
-		},
+		NODE: async(path) => nodeFileSystem.value.readFile(path)
+			.then((value) => DEither.right("file-system-read-file", value))
+			.catch(handleNodeReadFileError),
 		DENO: (path) => Deno
 			.readFile(path)
 			.then((value) => DEither.right("file-system-read-file", value))

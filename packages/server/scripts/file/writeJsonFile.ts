@@ -114,32 +114,29 @@ declare module "@scripts/implementor" {
 const writeJsonFileImplementation = implementFunction(
 	"writeJsonFile",
 	{
-		NODE: async(path, data, params) => {
-			const fs = await nodeFileSystem.value;
-			return DCommon.pipe(
-				DEither.safeCallback(
-					() => JSON.stringify(
-						data,
-						null,
-						params?.space,
-					),
+		NODE: async(path, data, params) => DCommon.pipe(
+			DEither.safeCallback(
+				() => JSON.stringify(
+					data,
+					null,
+					params?.space,
 				),
-				DEither.matchInformation({
-					"safe-callback-error": (value) => DEither.left(
-						"file-system-write-json-file-error",
-						new WriteJsonFileError(value as never),
-					),
-					"safe-callback-success": (value) => fs
-						.writeFile(
-							path,
-							value,
-							{ encoding: "utf-8" },
-						)
-						.then(() => DEither.right("file-system-write-json-file"))
-						.catch(handleNodeWriteJsonFileError),
-				}),
-			);
-		},
+			),
+			DEither.matchInformation({
+				"safe-callback-error": (value) => DEither.left(
+					"file-system-write-json-file-error",
+					new WriteJsonFileError(value as never),
+				),
+				"safe-callback-success": (value) => nodeFileSystem.value
+					.writeFile(
+						path,
+						value,
+						{ encoding: "utf-8" },
+					)
+					.then(() => DEither.right("file-system-write-json-file"))
+					.catch(handleNodeWriteJsonFileError),
+			}),
+		),
 		DENO: async(path, data, params) => DCommon.pipe(
 			DEither.safeCallback(
 				() => JSON.stringify(

@@ -130,12 +130,9 @@ declare module "@scripts/implementor" {
 const setModeImplementation = implementFunction(
 	"setMode",
 	{
-		NODE: async(path, mode) => {
-			const fs = await nodeFileSystem.value;
-			return fs.chmod(path, toMode(mode))
-				.then(() => DEither.right("file-system-set-mode"))
-				.catch(handleNodeSetModeError);
-		},
+		NODE: async(path, mode) => nodeFileSystem.value.chmod(path, toMode(mode))
+			.then(() => DEither.right("file-system-set-mode"))
+			.catch(handleNodeSetModeError),
 		DENO: (path, mode) => Deno
 			.chmod(path, toMode(mode))
 			.then(() => DEither.right("file-system-set-mode"))

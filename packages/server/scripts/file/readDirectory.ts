@@ -70,12 +70,8 @@ declare module "@scripts/implementor" {
 export const readDirectory = implementFunction(
 	"readDirectory",
 	{
-		NODE: async(path, params) => {
-			const fs = await nodeFileSystem.value;
-
-			return fs.readdir(path, { recursive: params?.recursive })
-				.then((value) => DEither.right("file-system-read-directory", value as (string & DPath.Path)[]))
-				.catch(handleNodeReadDirectoryError);
-		},
+		NODE: async(path, params) => nodeFileSystem.value.readdir(path, { recursive: params?.recursive })
+			.then((value) => DEither.right("file-system-read-directory", value as (string & DPath.Path)[]))
+			.catch(handleNodeReadDirectoryError),
 	},
 );

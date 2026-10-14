@@ -99,14 +99,10 @@ declare module "@scripts/implementor" {
 export const ensureFile = implementFunction(
 	"ensureFile",
 	{
-		NODE: async(path) => {
-			const fs = await nodeFileSystem.value;
-
-			return fs.open(path, "a")
-				.then((fh) => fh.close())
-				.then(() => DEither.right("file-system-ensure-file"))
-				.catch(handleNodeEnsureFileError);
-		},
+		NODE: async(path) => nodeFileSystem.value.open(path, "a")
+			.then((fh) => fh.close())
+			.then(() => DEither.right("file-system-ensure-file"))
+			.catch(handleNodeEnsureFileError),
 		DENO: (path) => Deno.open(path, {
 			write: true,
 			create: true,
