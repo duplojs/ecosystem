@@ -136,6 +136,15 @@ void describe("common feature on node", () => {
 		assert.equal(DEither.unwrapRight(getResult), rootPath);
 	});
 
+	void it("reads the current module directory without an either", () => {
+		const expectedDirectory = DPath.createAbsoluteOrThrow(`${initialWorkingDirectory}/node`);
+		const result = DSCommon.getCurrentDirectoryNameOrThrow(import.meta);
+
+		type _CheckResult = DCommon.ExpectType<typeof result, string & DPath.Absolute, "strict">;
+
+		assert.equal(result, expectedDirectory);
+	});
+
 	void it("reads process arguments", () => {
 		const result = DSCommon.getProcessArguments();
 
