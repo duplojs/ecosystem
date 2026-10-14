@@ -40,6 +40,14 @@ Cet usage peut exister lorsque le contexte le justifie, mais il reste secondaire
 
 Dans la majorité des cas, une forme curifiée doit être comprise comme une adaptation d'une opération pour son utilisation dans `pipe`.
 
+## Composition des pipes
+
+Un pipe enchaîne les étapes d'une même opération pour produire un résultat cohérent. Le choisir lorsqu'il rend cet enchaînement plus lisible ; un appel simple peut rester direct.
+
+Une opération unaire peut recevoir directement la donnée construite par les étapes précédentes. Lorsqu'une fonction nécessite plusieurs arguments construits indépendamment, préparer ces arguments avant son appel. Le résultat de cet appel peut ensuite devenir l'entrée d'un pipe. Les paramètres fixes d'une forme curifiée restent naturellement fournis à l'étape concernée.
+
+`DCommon.asyncPipe` attend automatiquement le résultat de chaque étape avant de passer à la suivante. Utiliser un seul `await` sur son résultat pour récupérer la valeur finale.
+
 ## Conception
 
 Lorsqu'une fonction possède une forme curifiée :

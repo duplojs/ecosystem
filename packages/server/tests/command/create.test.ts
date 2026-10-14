@@ -116,7 +116,7 @@ describe("create", () => {
 					"strict"
 				>;
 
-				type _CheckArgs = DCommon.ExpectType<
+				type _CheckArguments = DCommon.ExpectType<
 					typeof args,
 					{
 						readonly id: number;
@@ -146,6 +146,33 @@ describe("create", () => {
 				tag: "release",
 			},
 		});
+	});
+
+	it("executes when its optional argument is omitted", async() => {
+		setEnvironment("TEST");
+		const executeSpy = vi.fn();
+		const error = DSCommand.createError("root");
+		const command = DSCommand.create(
+			"root",
+			{
+				subjects: [DSCommand.createArgument("tag", DDataStructure.string(), { optional: true })],
+			},
+			({ args }) => {
+				type _CheckArguments = DCommon.ExpectType<
+					typeof args,
+					{ readonly tag: string | undefined },
+					"strict"
+				>;
+
+				executeSpy(args);
+			},
+		);
+
+		const result = await command.execute([], error);
+
+		expect(error.issues).toEqual([]);
+		expect(result).toBeUndefined();
+		expect(executeSpy).toHaveBeenCalledExactlyOnceWith({ tag: undefined });
 	});
 
 	it("executes with empty params and exposes no typed execute params", async() => {
@@ -383,7 +410,26 @@ describe("create", () => {
 		expect(executeSpy).not.toHaveBeenCalled();
 	});
 
-	it("returns a command error when the argument count mismatches", async() => {
+	it.each([
+		{
+			scenario: "a required argument is missing",
+			args: ["only-one"],
+			issue: {
+				argumentName: "second",
+				data: undefined,
+				path: "root",
+			},
+		},
+		{
+			scenario: "too many arguments are provided",
+			args: ["first", "second", "extra"],
+			issue: {
+				expect: 2,
+				receive: 3,
+				path: "root",
+			},
+		},
+	])("returns a command error when $scenario", async({ args, issue }) => {
 		setEnvironment("TEST");
 		const executeSpy = vi.fn();
 		const error = DSCommand.createError("root");
@@ -398,15 +444,10 @@ describe("create", () => {
 			executeSpy,
 		);
 
-		await expect(command.execute(["only-one"], error)).resolves.toBe(DSCommand.SymbolCommandError);
+		await expect(command.execute(args, error)).resolves.toBe(DSCommand.SymbolCommandError);
 
 		expect(executeSpy).not.toHaveBeenCalled();
-		expect(error.issues).toEqual([
-			expect.objectContaining({
-				expect: 2,
-				receive: 1,
-			}),
-		]);
+		expect(error.issues).toEqual([expect.objectContaining(issue)]);
 	});
 
 	it("returns a command error when an argument fails", async() => {

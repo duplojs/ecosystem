@@ -1,0 +1,26 @@
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+	test: {
+		globals: true,
+		include: [
+			"tests/**/*.test.ts",
+			"integrations/**/*.test.ts",
+		],
+		benchmark: {
+			include: [
+				"tests/**/*.bench.ts",
+				"integrations/**/*.bench.ts",
+			],
+		},
+		typecheck: {
+			enabled: true,
+			tsconfig: "./tsconfig.test.json",
+			include: ["tests/**/*.test-d.ts"],
+			ignoreSourceErrors: true,
+		},
+	},
+	resolve: {
+		tsconfigPaths: true,
+	},
+});

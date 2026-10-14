@@ -1,0 +1,9 @@
+{
+	"private": true,
+	"type": "module",
+	"dependencies": {
+		"@duplojs/lang": "workspace:*",
+		"@duplojs/server": "workspace:*",
+		"@duplojs/skills": "workspace:*"
+	}
+}

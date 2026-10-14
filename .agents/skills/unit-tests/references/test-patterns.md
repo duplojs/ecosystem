@@ -4,6 +4,22 @@ Chaque déclaration publique d'une fonction doit être testée selon la forme d'
 
 L'objectif n'est pas uniquement de vérifier son résultat à l'exécution, mais également de vérifier que l'inférence TypeScript fonctionne dans son contexte réel d'utilisation.
 
+## Pipe et assertions
+
+Préparer les arguments indépendants de l'opération, enchaîner le traitement de son résultat dans le pipe, puis utiliser la valeur obtenue dans une assertion séparée.
+
+```ts
+const sourcePath = DPath.resolveRelative([integrationsDirectory, DPath.declarePath("node_modules")]);
+const targetPath = DPath.resolveRelative([workspace, DPath.declarePath("node_modules")]);
+
+const result = await DCommon.asyncPipe(
+	DSFile.symlink(sourcePath, targetPath, { type: "dir" }),
+	DEither.unwrapByInformationOrThrow("file-system-symlink"),
+);
+
+expect(result).toBeUndefined();
+```
+
 ## Fonction directe
 
 Une déclaration directe ne nécessite aucun contexte particulier.
@@ -228,6 +244,51 @@ La sélection doit obliger le test à prendre explicitement position sur chaque 
 Ainsi, lorsqu'une nouvelle variante de résultat apparaît, le test doit conduire à reconsidérer intentionnellement son traitement plutôt que de l'accepter implicitement.
 
 Utiliser ce pattern lorsqu'une évolution des résultats possibles doit nécessiter une décision explicite dans les tests.
+
+## Environnement et implémentations de test du serveur
+
+Lorsqu'un test utilise une fonction de `@duplojs/server` exposée via `implementFunction`, privilégier le mécanisme de remplacement fourni par le package plutôt que les mocks de modules ou d'imports (`vi.mock`) ou un `vi.spyOn` sur ses exports.
+
+* `setEnvironment("TEST")` sélectionne l'environnement de test utilisé par les fonctions serveur.
+* `TESTImplementation.set("nomDeLaFonction", implementation)` enregistre une implémentation de remplacement avec la signature attendue par cette fonction.
+* `TESTImplementation.clear()` supprime les implémentations enregistrées.
+
+En environnement `TEST`, chaque fonction passant par `implementFunction` et effectivement appelée doit avoir une implémentation enregistrée, y compris les appels indirects. Une implémentation absente provoque une erreur ; il n'y a pas de repli automatique sur l'implémentation Node, Bun ou Deno.
+
+Utiliser `vi.fn()` comme implémentation de remplacement lorsque le test doit observer les appels : les assertions Vitest restent applicables au spy enregistré dans `TESTImplementation`.
+
+Exemple dans les tests unitaires du package serveur :
+
+```ts
+import * as DEither from "@duplojs/lang/either";
+import { DSCommand, TESTImplementation, setEnvironment } from "@scripts";
+
+describe("exec", () => {
+	afterEach(() => {
+		TESTImplementation.clear();
+		setEnvironment("NODE");
+	});
+
+	it("executes with controlled process arguments", async() => {
+		setEnvironment("TEST");
+		const getProcessArgumentsSpy = vi.fn((): string[] => []);
+		TESTImplementation.set("getProcessArguments", getProcessArgumentsSpy);
+		const executeSpy = vi.fn();
+
+		const result = await DSCommand.exec(executeSpy);
+
+		DEither.unwrapByInformationOrThrow(result, "ok");
+		expect(getProcessArgumentsSpy).toHaveBeenCalledTimes(1);
+		expect(executeSpy).toHaveBeenCalledWith({ options: {} });
+	});
+});
+```
+
+L'environnement et le registre sont partagés : nettoyer les implémentations et rétablir l'environnement attendu par la suite dans `afterEach`, même en cas d'échec du test. L'exemple revient à `NODE` pour une suite Vitest exécutée sous Node ; adapter ce choix au contexte de la suite. Ne pas exécuter concurremment des tests qui modifient cet état partagé.
+
+Pour un test consommant le serveur depuis un autre package ou en intégration, `setEnvironment` et `TESTImplementation` sont des exports directs de `@duplojs/server`. Les domaines restent importés depuis leurs sous-exports avec leur namespace long, conformément aux règles d'importation.
+
+Consulter [les tests d'intégration des commandes sur Bun](../../../../packages/server/integrations/bun/command.test.ts) pour un exemple avec `mock` de `bun:test`, et [le mécanisme d'implémentation du serveur](../../../../packages/server/scripts/implementor.ts) pour les signatures et le comportement du registre. Réserver les mocks de modules ou les spies sur les exports aux dépendances qui ne proposent pas ce mécanisme ou aux cas où il ne permet pas d'isoler le comportement testé.
 
 ## Observation des appels
 

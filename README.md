@@ -15,3 +15,10 @@ DuploJS is an ecosystem of TypeScript libraries built on functional programming 
 | `@duplojs/tools` | Development tools and utilities for DuploJS. | [npm](https://www.npmjs.com/package/@duplojs/tools) |
 | `@duplojs/code-config` | Shared configurations for TypeScript, Oxlint, Commitlint, and code quality tools. | [npm](https://www.npmjs.com/package/@duplojs/code-config) |
 | `@duplojs/eslint` | Shared ESLint configurations and rules. | [npm](https://www.npmjs.com/package/@duplojs/eslint) |
+
+## Tests
+
+The [AI documentation](LLMS.md#tests) includes examples for testing behavior and types:
+
+- [Testing Either results](ai-docs/src/04-tests/01-unit/10-either.ts).
+- [Replacing server implementations in tests](ai-docs/src/04-tests/01-unit/20-server-mocking.ts) with `setEnvironment("TEST")` and `TESTImplementation`, including controlled process arguments.

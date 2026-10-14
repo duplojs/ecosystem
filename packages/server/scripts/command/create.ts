@@ -226,14 +226,14 @@ export function create(
 			}
 
 			if (self.subject?.type === "argument") {
-				if (self.subject.args.length !== commandOptions.restArgs.length) {
+				if (self.subject.args.length < commandOptions.restArgs.length) {
 					return error.addTooMuchCommandArgumentIssue(
 						self.subject.args.length,
 						commandOptions.restArgs.length,
 					);
 				}
 
-				const commandArguments = await DGenerator.asyncReduce(
+				const commandArgs = await DGenerator.asyncReduce(
 					self.subject.args,
 					DGenerator.reduceFrom<{
 						args: Record<string, unknown>;
@@ -261,13 +261,13 @@ export function create(
 					},
 				);
 
-				if (commandArguments === SymbolCommandError) {
+				if (commandArgs === SymbolCommandError) {
 					return SymbolCommandError;
 				}
 
 				await execute({
 					options: commandOptions.options,
-					args: commandArguments.args,
+					args: commandArgs.args,
 				});
 			} else {
 				if (commandOptions.restArgs.length > 0) {

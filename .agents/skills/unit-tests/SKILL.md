@@ -25,6 +25,18 @@ L'objectif minimal est d'obtenir **100 % de couverture**.
 
 La couverture d'exécution ne suffit cependant pas. Les garanties apportées par le typage doivent également être testées, y compris lorsque certains tests semblent redondants du point de vue du runtime.
 
+## Fonctions de l'écosystème
+
+Dans tout le code des tests, utiliser obligatoirement les fonctions de l'écosystème dès qu'un équivalent existe. Avant de recourir à une méthode prototype, une API native ou une réimplémentation locale, vérifier l'existence de cet équivalent. Cette obligation s'applique à toutes les opérations, y compris la préparation des données et des valeurs attendues, dans les pipes comme en dehors.
+
+En cas de besoin pour retrouver une fonction ou comprendre sa composition, [LLMS.md](../../../LLMS.md), notamment la rubrique [Currification](../../../LLMS.md#currification), peut servir de point d'entrée. Consulter uniquement les pages pertinentes vers lesquelles il redirige.
+
+## Pipes et assertions
+
+Appliquer les [règles de composition des pipes](../../curried-functions.md#composition-des-pipes). Dans les tests, récupérer le résultat du pipe dans une variable, puis écrire l'assertion séparément avec `expect(result)`.
+
+Voir l'[exemple de préparation des arguments et d'assertion du résultat](references/test-patterns.md#pipe-et-assertions).
+
 ## Workflow
 
 1. Identifier le package et le module concernés.

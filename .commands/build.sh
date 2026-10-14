@@ -23,6 +23,9 @@ pnpm --filter @duplojs/server build
 printf "\n${GREEN}@duplojs/tools${RESET}\n"
 pnpm --filter @duplojs/tools build
 
+printf "\n${GREEN}@duplojs/skills${RESET}\n"
+pnpm --filter @duplojs/skills build
+
 printf "\n${GREEN}@duplojs/json-web-token${RESET}\n"
 pnpm --filter @duplojs/json-web-token build
 
@@ -34,6 +37,3 @@ pnpm --filter @duplojs/form build
 
 printf "\n${GREEN}@duplojs/http${RESET}\n"
 pnpm --filter @duplojs/http build
-
-printf "\n${GREEN}docs${RESET}\n"
-pnpm --filter docs build

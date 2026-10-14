@@ -9,9 +9,13 @@ Une implémentation doit s'intégrer à l'architecture existante plutôt que cr�
 
 Avant d'ajouter du code, rechercher si le comportement ou l'utilitaire existe déjà dans le package courant ou dans un autre package de l'écosystème.
 
+Pour toute opération, utiliser obligatoirement les fonctions de l'écosystème dès qu'un équivalent existe. Avant de recourir à une méthode prototype, une API native ou une réimplémentation locale, vérifier l'existence de cet équivalent. [LLMS.md](../../../LLMS.md) peut orienter au besoin vers les fonctions et leurs règles de composition.
+
 Une fonction générique de manipulation de données, indépendante du contexte métier ou technique du package courant, doit notamment être recherchée dans `@duplojs/lang` avant d'être réimplémentée localement.
 
 Lorsqu'une nouvelle primitive est générique, réutilisable et ne dépend d'aucun contexte particulier, considérer son implémentation dans `@duplojs/lang` plutôt que dans un package spécialisé.
+
+Pour composer des opérations avec `DCommon.pipe` ou `DCommon.asyncPipe`, appliquer les [règles de composition des pipes](../../curried-functions.md#composition-des-pipes).
 
 ## Workflow
 

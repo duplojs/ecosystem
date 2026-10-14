@@ -24,6 +24,7 @@ Les `AGENTS.md` locaux complètent les règles générales de l'écosystème ave
 
 ## Ressources du projet
 
+* Référence détaillée pour comprendre le fonctionnement de l'écosystème et les pratiques déjà documentées : [`LLMS.md`](./LLMS.md). La consulter pour approfondir une question et retrouver les explications ou les bons emplacements avant de chercher ailleurs dans le projet.
 * Architecture et relations entre les packages : `.agents/architecture.md`
 * Configuration TypeScript des différents packages : `.agents/typescript-config.md`
 * Différentes commandes du projet : `.agents/commands.md`

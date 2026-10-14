@@ -58,7 +58,12 @@ export type Enum<
 		[Prop in GenericValues[number]]: Prop
 	} & {
 		toTuple(): GenericValues;
-		has(value: string): value is GenericValues[number];
+		has<
+			GenericValue extends string,
+		>(value: GenericValue): value is (
+			& GenericValue
+			& GenericValues[number]
+		);
 		contract<
 			GenericContractValue extends string = GenericValues[number],
 		>(

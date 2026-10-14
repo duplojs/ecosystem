@@ -45,20 +45,23 @@ describe("exec", () => {
 				options: [DSCommand.createBooleanOption("verbose")],
 				subjects: [DSCommand.createArgument("name", DDataStructure.string())],
 			},
-			(params) => {
+			({ options, args }) => {
 				type _CheckOptions = DCommon.ExpectType<
-					typeof params.options,
+					typeof options,
 					{ readonly verbose: boolean },
 					"strict"
 				>;
 
-				type _CheckArgs = DCommon.ExpectType<
-					typeof params.args,
+				type _CheckArguments = DCommon.ExpectType<
+					typeof args,
 					{ readonly name: string },
 					"strict"
 				>;
 
-				executeSpy(params);
+				executeSpy({
+					options,
+					args,
+				});
 			},
 		);
 

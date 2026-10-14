@@ -393,6 +393,10 @@ Vérification du comportement et du typage des unités de code.
 
 Vérification des branches, des valeurs et du typage d’un contrat Either.
  
+### [Remplacer les implémentations serveur en test](ai-docs/src/04-tests/01-unit/20-server-mocking.ts)
+
+Contrôle de l'environnement et des fonctions serveur pour isoler les tests.
+
 ## Tests E2E
 
 Vérification des parcours utilisateur dans une application web.
