@@ -1,14 +1,10 @@
 import * as DPath from "@duplojs/lang/path";
-import type * as DEither from "@duplojs/lang/either";
-import { implementFunction } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
+import { implementFunction } from "@scripts/implementor";
 
 declare module "@scripts/implementor" {
 	interface ServerFunction {
-		getCurrentDirectoryName(importMeta: ImportMeta): (
-			| DEither.Error<string>
-			| DEither.Success<string & DPath.Absolute>
-		);
+		getCurrentDirectoryName(importMeta: ImportMeta): string & DPath.Absolute;
 	}
 }
 
@@ -17,7 +13,7 @@ export const getCurrentDirectoryName = implementFunction(
 	{
 		NODE: (importMeta) => DCommon.pipe(
 			importMeta.dirname,
-			DPath.createAbsolute,
+			DPath.createAbsoluteOrThrow,
 		),
 	},
 );

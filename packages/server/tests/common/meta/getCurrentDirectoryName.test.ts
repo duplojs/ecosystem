@@ -1,6 +1,5 @@
 import type * as DCommon from "@duplojs/lang/common";
-import * as DEither from "@duplojs/lang/either";
-import type * as DPath from "@duplojs/lang/path";
+import * as DPath from "@duplojs/lang/path";
 import { DSCommon, setEnvironment } from "@scripts";
 
 describe("getCurrentDirectoryName", () => {
@@ -15,19 +14,11 @@ describe("getCurrentDirectoryName", () => {
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			DEither.Error<string> | DEither.Success<string & DPath.Absolute>,
-			"strict"
-		>;
-
-		const directoryName = DEither.unwrapByInformationOrThrow(result, "success");
-
-		type _CheckDirectoryName = DCommon.ExpectType<
-			typeof directoryName,
 			string & DPath.Absolute,
 			"strict"
 		>;
 
-		expect(directoryName).toBe(import.meta.dirname);
+		expect(result).toBe(import.meta.dirname);
 	});
 
 	it("normalizes the directory before applying the absolute path constraint", () => {
@@ -38,9 +29,8 @@ describe("getCurrentDirectoryName", () => {
 		};
 
 		const result = DSCommon.getCurrentDirectoryName(importMeta);
-		const directoryName = DEither.unwrapByInformationOrThrow(result, "success");
 
-		expect(directoryName).toBe("/tmp/work");
+		expect(result).toBe("/tmp/work");
 	});
 
 	it.each(["relative/path", ""])("rejects a directory that is not absolute: %j", (dirname) => {
@@ -50,11 +40,9 @@ describe("getCurrentDirectoryName", () => {
 			dirname,
 		};
 
-		const result = DSCommon.getCurrentDirectoryName(importMeta);
-		const error = DEither.unwrapByInformationOrThrow(result, "error");
-
-		type _CheckError = DCommon.ExpectType<typeof error, string, "strict">;
-
-		expect(error).toBe(dirname);
+		expect(() => DSCommon.getCurrentDirectoryName(importMeta))
+			.toThrowError(DPath.CreateAbsolutePathError);
+		expect(() => DSCommon.getCurrentDirectoryName(importMeta))
+			.toThrowError(expect.objectContaining({ value: dirname }));
 	});
 });

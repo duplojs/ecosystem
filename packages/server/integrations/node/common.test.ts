@@ -138,7 +138,7 @@ void describe("common feature on node", () => {
 
 	void it("reads the current module directory without an either", () => {
 		const expectedDirectory = DPath.createAbsoluteOrThrow(`${initialWorkingDirectory}/node`);
-		const result = DSCommon.getCurrentDirectoryNameOrThrow(import.meta);
+		const result = DSCommon.getCurrentDirectoryName(import.meta);
 
 		type _CheckResult = DCommon.ExpectType<typeof result, string & DPath.Absolute, "strict">;
 

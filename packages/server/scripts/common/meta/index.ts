@@ -8,4 +8,3 @@ declare global {
 }
 
 export * from "./getCurrentDirectoryName";
-export * from "./getCurrentDirectoryNameOrThrow";
