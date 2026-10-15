@@ -12,7 +12,7 @@ export function getExtensionName<
 >(
 	path: GenericPath,
 	params?: GetExtensionNameParams,
-): (string & Segment) | null;
+): (string & Segment & Path) | null;
 
 export function getExtensionName(
 	path: string,

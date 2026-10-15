@@ -1,7 +1,8 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
+import * as DArray from "@duplojs/lang/array";
 import { DSFile, setEnvironment } from "@scripts";
-import type * as DPath from "@duplojs/lang/path";
+import * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { expectFileSystemError } from "@tests/_utils/fileSystemError";
 
@@ -79,6 +80,116 @@ describe("readDirectory", () => {
 
 		expect(fs.readdir).toHaveBeenCalledWith("/tmp/mock", { recursive: true });
 		expect(paths).toStrictEqual(["a", "nested/b", "nested/deep/c"]);
+	});
+
+	it.each([
+		{
+			pattern: ["**/*.ts", "!**/*.test.ts"],
+			expected: ["index.ts", "nested/keep.ts"],
+		},
+		{
+			pattern: "**",
+			expected: ["index.ts", "nested/keep.ts", "nested/skip.test.ts", "README.md"],
+		},
+		{
+			pattern: "*.json",
+			expected: [],
+		},
+	])("filters normalized relative paths with matcher $pattern", async({ pattern, expected }) => {
+		setEnvironment("NODE");
+		const fs = setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue(["index.ts", "nested//keep.ts", "nested/skip.test.ts", "README.md"]),
+		});
+		const matcher = vi.fn(DPath.createPattern(pattern));
+
+		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), {
+			recursive: true,
+			matcher,
+		});
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+
+		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path)[], "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("/tmp/mock", { recursive: true });
+		expect(DArray.map(matcher.mock.calls, ([path]) => path)).toStrictEqual([
+			"index.ts",
+			"nested/keep.ts",
+			"nested/skip.test.ts",
+			"README.md",
+		]);
+		expect(paths).toStrictEqual(expected);
+	});
+
+	it("filters normalized absolute paths resolved from relative parent paths", async() => {
+		setEnvironment("NODE");
+		vi.spyOn(process, "cwd").mockReturnValue("/workspace");
+		const fs = setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue([
+				{
+					name: "index.ts",
+					parentPath: "mock//src/",
+				},
+				{
+					name: "README.md",
+					parentPath: "mock/src",
+				},
+				{
+					name: "index.ts",
+					parentPath: "mock/other",
+				},
+			]),
+		});
+		const matcher = vi.fn(DPath.createPattern("/workspace/mock/src/*.ts"));
+
+		const result = await DSFile.readDirectory(DCommon.infer("mock"), {
+			recursive: true,
+			absolute: true,
+			matcher,
+		});
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+
+		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path & DPath.Absolute)[], "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("mock", {
+			recursive: true,
+			withFileTypes: true,
+		});
+		expect(DArray.map(matcher.mock.calls, ([path]) => path)).toStrictEqual([
+			"/workspace/mock/src/index.ts",
+			"/workspace/mock/src/README.md",
+			"/workspace/mock/other/index.ts",
+		]);
+		expect(paths).toStrictEqual(["/workspace/mock/src/index.ts"]);
+	});
+
+	it("does not call the matcher for an empty directory", async() => {
+		setEnvironment("NODE");
+		setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue([]),
+		});
+		const matcher = vi.fn(DPath.createPattern("**"));
+
+		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), { matcher });
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+
+		expect(paths).toStrictEqual([]);
+		expect(matcher).not.toHaveBeenCalled();
+	});
+
+	it("returns a read-directory error when the matcher throws", async() => {
+		setEnvironment("NODE");
+		setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue(["index.ts"]),
+		});
+		const error = new Error("matcher failed");
+		const matcher = vi.fn(() => {
+			throw error;
+		});
+
+		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), { matcher });
+
+		expect(matcher).toHaveBeenCalledTimes(1);
+		expectFileSystemError(result, "file-system-read-directory-error", error);
 	});
 
 	it("returns normalized paths using each parentPath with absolute enabled", async() => {

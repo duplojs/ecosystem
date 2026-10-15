@@ -13,7 +13,7 @@ describe("createSegmentOrThrow", () => {
 		expect(result).toBe(expected);
 		expect(DPath.isSegment(result)).toBe(true);
 
-		type _CheckResult = DCommon.ExpectType<typeof result, string & DPath.Segment, "strict">;
+		type _CheckResult = DCommon.ExpectType<typeof result, string & DPath.Segment & DPath.Path, "strict">;
 	});
 
 	it.each([

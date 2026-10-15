@@ -25,7 +25,7 @@ export interface FolderInterface<
 	typeof folderInterfaceKind
 	> {
 	path: GenericPath & DPath.Path;
-	getName(): (string & DPath.Segment) | null;
+	getName(): (string & DPath.Segment & DPath.Path) | null;
 	getParentPath(): (string & DPath.Path) | null;
 	rename(newName: (string & DPath.Segment)): Promise<FolderInterfaceRenameResult>;
 	exists(): Promise<ExistsResult>;

@@ -21,7 +21,7 @@ export interface UnknownEntryInterface<
 	typeof unknownInterfaceKind
 	> {
 	path: GenericPath & DPath.Path;
-	getName(): (string & DPath.Segment) | null;
+	getName(): (string & DPath.Segment & DPath.Path) | null;
 	getParentPath(): (string & DPath.Path) | null;
 	stat(): Promise<StatResult>;
 	exist(): Promise<ExistsResult>;

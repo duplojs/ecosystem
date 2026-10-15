@@ -1,4 +1,5 @@
-import { DCommon, DPath, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPath from "@scripts/path";
 
 describe("getExtensionName", () => {
 	it("returns the extension of file names", () => {
@@ -14,9 +15,9 @@ describe("getExtensionName", () => {
 		expect(result).toBe("gz");
 		expect(DPath.isSegment(result as string)).toBe(true);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			(string & DPath.Segment) | null,
+			(string & DPath.Segment & DPath.Path) | null,
 			"strict"
 		>;
 	});
@@ -32,9 +33,9 @@ describe("getExtensionName", () => {
 		expect(result).toBe(".gz");
 		expect(DPath.isSegment(result as string)).toBe(true);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			(string & DPath.Segment) | null,
+			(string & DPath.Segment & DPath.Path) | null,
 			"strict"
 		>;
 	});
@@ -62,9 +63,9 @@ describe("getExtensionName", () => {
 
 		expect(result).toBe("gz");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			(string & DPath.Segment) | null,
+			(string & DPath.Segment & DPath.Path) | null,
 			"strict"
 		>;
 	});
@@ -86,16 +87,16 @@ describe("getExtensionName", () => {
 	it("can be used directly in a pipe", () => {
 		const path: string & DPath.Path = DCommon.infer("file.txt");
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			path,
 			DPath.getExtensionName,
 		);
 
 		expect(result).toBe("txt");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			(string & DPath.Segment) | null,
+			(string & DPath.Segment & DPath.Path) | null,
 			"strict"
 		>;
 	});

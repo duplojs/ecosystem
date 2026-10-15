@@ -1,6 +1,6 @@
 import * as DCommon from "@scripts/common";
 import * as DEither from "@scripts/either";
-import type { Absolute } from "./constraints";
+import type { Absolute, Path } from "./constraints";
 import { createAbsolute } from "./createAbsolute";
 
 export class CreateAbsolutePathError extends DCommon.DuploJSError.parentClass("path-create-absolute-path-error") {
@@ -13,7 +13,7 @@ export class CreateAbsolutePathError extends DCommon.DuploJSError.parentClass("p
 
 export function createAbsoluteOrThrow(
 	value: string,
-): string & Absolute;
+): string & Absolute & Path;
 
 export function createAbsoluteOrThrow(
 	value: string,

@@ -17,10 +17,10 @@ describe("createSegment", () => {
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			DEither.Success<string & DPath.Segment> | DEither.Error<string>,
+			DEither.Success<string & DPath.Segment & DPath.Path> | DEither.Error<string>,
 			"strict"
 		>;
-		type _CheckValue = DCommon.ExpectType<typeof value, string & DPath.Segment, "strict">;
+		type _CheckValue = DCommon.ExpectType<typeof value, string & DPath.Segment & DPath.Path, "strict">;
 	});
 
 	it.each([

@@ -9,11 +9,6 @@ import { type FolderInterface, createFolderInterface } from "./folderInterface";
 import { createUnknownEntryInterface, type UnknownEntryInterface } from "./unknownEntryInterface";
 import * as DSCommon from "@scripts/common";
 
-export interface WalkDirectoryParams {
-	recursive?: boolean;
-	matcher?: DPath.PathMatcher;
-}
-
 class WalkDirectoryErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-walk-directory-not-found", Error) {}
 class WalkDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-walk-directory-permission-denied", Error) {}
 class WalkDirectoryErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-walk-directory-not-directory", Error) {}
@@ -28,18 +23,6 @@ export type WalkDirectoryErrors = (
 	| WalkDirectoryErrorTooManyOpenFiles
 	| WalkDirectoryErrorBusy
 	| WalkDirectoryError
-);
-
-export type WalkDirectoryResult = (
-	| DEither.Right<
-		"file-system-walk-directory",
-		Generator<
-			| FileInterface<string & DPath.Absolute>
-			| FolderInterface<string & DPath.Absolute>
-			| UnknownEntryInterface<string & DPath.Absolute>
-		>
-	>
-	| DEither.Left<"file-system-walk-directory-error", WalkDirectoryErrors>
 );
 
 function handleNodeWalkDirectoryError(error: Error) {
@@ -71,6 +54,23 @@ function handleNodeWalkDirectoryError(error: Error) {
 
 	return DEither.left("file-system-walk-directory-error", walkDirectoryError);
 }
+
+export interface WalkDirectoryParams {
+	recursive?: boolean;
+	matcher?: DPath.PathMatcher;
+}
+
+export type WalkDirectoryResult = (
+	| DEither.Right<
+		"file-system-walk-directory",
+		Generator<
+			| FileInterface<string & DPath.Absolute>
+			| FolderInterface<string & DPath.Absolute>
+			| UnknownEntryInterface<string & DPath.Absolute>
+		>
+	>
+	| DEither.Left<"file-system-walk-directory-error", WalkDirectoryErrors>
+);
 
 declare module "@scripts/implementor" {
 	interface ServerFunction {
@@ -108,7 +108,7 @@ export const walkDirectory = implementFunction(
 						),
 						DGenerator.filter(
 							(value) => params?.matcher
-								? params?.matcher(DCommon.cast(value.path))
+								? params?.matcher(value.path)
 								: true,
 						),
 						DGenerator.map(

@@ -14,7 +14,7 @@ export function resolveFrom<
 	origin: string & Absolute,
 	segments: GenericSegments & RequireSegments<GenericSegments>,
 	params?: GenericParams,
-): (string & Absolute) | (
+): (string & Path & Absolute) | (
 	DCommon.BreakGenericLink<
 		DCommon.Or<[
 			DCommon.IsEqual<

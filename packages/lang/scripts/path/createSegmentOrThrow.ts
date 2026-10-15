@@ -1,6 +1,6 @@
 import * as DCommon from "@scripts/common";
 import * as DEither from "@scripts/either";
-import type { Segment } from "./constraints";
+import type { Path, Segment } from "./constraints";
 import { createSegment } from "./createSegment";
 
 export class CreateSegmentPathError extends DCommon.DuploJSError.parentClass("path-create-segment-path-error") {
@@ -13,7 +13,7 @@ export class CreateSegmentPathError extends DCommon.DuploJSError.parentClass("pa
 
 export function createSegmentOrThrow(
 	value: string,
-): string & Segment;
+): string & Segment & Path;
 
 export function createSegmentOrThrow(
 	value: string,

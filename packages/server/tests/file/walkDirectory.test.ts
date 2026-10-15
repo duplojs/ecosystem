@@ -62,6 +62,72 @@ describe("walkDirectory", () => {
 		expect(DArray.map(items, (entry) => entry.path)).toStrictEqual(["/tmp/demo/file.json", "/tmp/demo/sub", "/tmp/demo/other.zzz"]);
 	});
 
+	it.each([
+		{
+			pattern: "*.ts",
+			expected: ["/workspace/demo/nested/index.ts"],
+		},
+		{
+			pattern: "**",
+			expected: ["/workspace/demo/nested/index.ts", "/workspace/demo/nested/folder", "/workspace/demo/nested/socket"],
+		},
+		{
+			pattern: "*.json",
+			expected: [],
+		},
+	])("filters normalized absolute entry paths with matcher $pattern", async({ pattern, expected }) => {
+		setEnvironment("NODE");
+		vi.spyOn(process, "cwd").mockReturnValue("/workspace");
+		const fs = setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue([
+				{
+					parentPath: "demo//nested/",
+					name: "index.ts",
+					isFile: () => true,
+					isDirectory: () => false,
+				},
+				{
+					parentPath: "demo//nested/",
+					name: "folder",
+					isFile: () => false,
+					isDirectory: () => true,
+				},
+				{
+					parentPath: "demo//nested/",
+					name: "socket",
+					isFile: () => false,
+					isDirectory: () => false,
+				},
+			]),
+		});
+		const matcher = vi.fn(DPath.createPattern(pattern));
+
+		const result = await DSFile.walkDirectory(DCommon.infer("demo"), {
+			recursive: true,
+			matcher,
+		});
+		const entries = DEither.unwrapByInformationOrThrow(result, "file-system-walk-directory");
+
+		type _CheckEntries = DCommon.ExpectType<typeof entries, Generator<AbsoluteEntry>, "strict">;
+
+		expect(matcher).not.toHaveBeenCalled();
+
+		const paths = DArray.map(DArray.from(entries), (entry) => entry.path);
+
+		type _CheckPaths = DCommon.ExpectType<typeof paths, readonly AbsolutePath[], "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("demo", {
+			recursive: true,
+			withFileTypes: true,
+		});
+		expect(DArray.map(matcher.mock.calls, ([path]) => path)).toStrictEqual([
+			"/workspace/demo/nested/index.ts",
+			"/workspace/demo/nested/folder",
+			"/workspace/demo/nested/socket",
+		]);
+		expect(paths).toStrictEqual(expected);
+	});
+
 	it("returns fail when NODE readdir rejects", async() => {
 		setEnvironment("NODE");
 		setFsPromisesMock({

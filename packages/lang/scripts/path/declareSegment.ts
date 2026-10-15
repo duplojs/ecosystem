@@ -1,4 +1,4 @@
-import { type Segment } from "./constraints";
+import { type Path, type Segment } from "./constraints";
 import { type RequireLiteralSegmentPath } from "./types";
 
 export function declareSegment<
@@ -9,5 +9,5 @@ export function declareSegment<
 		& RequireLiteralSegmentPath<GenericValue>
 	),
 ) {
-	return value as unknown as GenericValue & Segment;
+	return value as unknown as GenericValue & Segment & Path;
 }

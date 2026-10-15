@@ -1,4 +1,4 @@
-import { type Absolute } from "./constraints";
+import { type Path, type Absolute } from "./constraints";
 import { type RequireLiteralAbsolutePath } from "./types";
 
 export function declareAbsolutePath<
@@ -9,5 +9,5 @@ export function declareAbsolutePath<
 		& RequireLiteralAbsolutePath<GenericValue>
 	),
 ) {
-	return value as unknown as GenericValue & Absolute;
+	return value as unknown as GenericValue & Absolute & Path;
 }

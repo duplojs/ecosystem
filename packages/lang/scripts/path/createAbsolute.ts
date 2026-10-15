@@ -1,12 +1,12 @@
 import * as DEither from "@scripts/either";
-import type { Absolute } from "./constraints";
+import type { Absolute, Path } from "./constraints";
 import { normalize } from "./normalize";
 import { isAbsolute } from "./isAbsolute";
 
 export function createAbsolute(
 	value: string,
 ): (
-	| DEither.Success<string & Absolute>
+	| DEither.Success<string & Absolute & Path>
 	| DEither.Error<string>
 );
 

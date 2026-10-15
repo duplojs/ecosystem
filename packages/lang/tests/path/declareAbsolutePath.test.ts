@@ -1,4 +1,5 @@
-import { DPath, type ExpectType } from "@scripts";
+import * as DPath from "@scripts/path";
+import type * as DCommon from "@scripts/common";
 
 describe("declareAbsolutePath", () => {
 	it("returns the declared absolute path with its constraint and literal type", () => {
@@ -6,9 +7,9 @@ describe("declareAbsolutePath", () => {
 
 		expect(path).toBe("/folder/file.txt");
 
-		type _CheckPath = ExpectType<
+		type _CheckPath = DCommon.ExpectType<
 			typeof path,
-			"/folder/file.txt" & DPath.Absolute,
+			"/folder/file.txt" & DPath.Absolute & DPath.Path,
 			"strict"
 		>;
 	});

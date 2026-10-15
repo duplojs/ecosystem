@@ -1,7 +1,8 @@
-import { type AnyTuple, DCommon, DPath, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPath from "@scripts/path";
 
 describe("resolveFrom", () => {
-	it.each<[string & DPath.Absolute, AnyTuple<string & DPath.Path>, string & DPath.Path]>([
+	it.each<[string & DPath.Absolute, DCommon.AnyTuple<string & DPath.Path>, string & DPath.Path]>([
 		[DCommon.infer("/"), [DCommon.infer(".")], DCommon.infer("/")],
 		[DCommon.infer("/"), [DCommon.infer("foo")], DCommon.infer("/foo")],
 		[DCommon.infer("/"), [DCommon.infer("foo"), DCommon.infer("bar")], DCommon.infer("/foo/bar")],
@@ -44,7 +45,7 @@ describe("resolveFrom", () => {
 	);
 
 	describe("stayInOrigin", () => {
-		it.each<[AnyTuple<string & DPath.Path>, string & DPath.Path]>([
+		it.each<[DCommon.AnyTuple<string & DPath.Path>, string & DPath.Path]>([
 			[[DCommon.infer(".")], DCommon.infer("/origin")],
 			[[DCommon.infer("foo")], DCommon.infer("/origin/foo")],
 			[[DCommon.infer("foo/bar")], DCommon.infer("/origin/foo/bar")],
@@ -67,7 +68,7 @@ describe("resolveFrom", () => {
 			},
 		);
 
-		it.each<[AnyTuple<string & DPath.Path>]>([
+		it.each<[DCommon.AnyTuple<string & DPath.Path>]>([
 			[[DCommon.infer("..")]],
 			[[DCommon.infer("../foo")]],
 			[[DCommon.infer("../..")]],
@@ -104,9 +105,9 @@ describe("resolveFrom", () => {
 
 			expect(result).toBe("/origin/bar");
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
-				(string & DPath.Absolute) | null,
+				(string & DPath.Absolute & DPath.Path) | null,
 				"strict"
 			>;
 		});
@@ -120,9 +121,9 @@ describe("resolveFrom", () => {
 			DCommon.infer("gamma"),
 		]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			(string & DPath.Absolute),
+			(string & DPath.Absolute & DPath.Path),
 			"strict"
 		>;
 	});
@@ -134,9 +135,9 @@ describe("resolveFrom", () => {
 			{},
 		);
 
-		type _CheckResult1 = ExpectType<
+		type _CheckResult1 = DCommon.ExpectType<
 			typeof result1,
-			string & DPath.Absolute,
+			string & DPath.Absolute & DPath.Path,
 			"strict"
 		>;
 
@@ -146,9 +147,9 @@ describe("resolveFrom", () => {
 			{ stayInOrigin: false },
 		);
 
-		type _CheckResult2 = ExpectType<
+		type _CheckResult2 = DCommon.ExpectType<
 			typeof result2,
-			string & DPath.Absolute,
+			string & DPath.Absolute & DPath.Path,
 			"strict"
 		>;
 	});

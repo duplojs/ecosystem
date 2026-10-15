@@ -54,6 +54,7 @@ function handleNodeReadDirectoryError(error: Error) {
 interface ReadDirectoryParams {
 	recursive?: boolean;
 	absolute?: boolean;
+	matcher?: DPath.PathMatcher;
 }
 
 export type ReadDirectoryResult<
@@ -100,14 +101,11 @@ export const readDirectory = implementFunction(
 							withFileTypes: true,
 						},
 					).then(
-						(value) => DEither.right(
-							"file-system-read-directory",
-							DArray.map(
-								value,
-								({ name, parentPath }) => DPath.resolveFrom(
-									getCurrentWorkDirectoryOrThrow(),
-									[DPath.normalize(`${parentPath}/${name}`)!],
-								),
+						(value) => DArray.map(
+							value,
+							({ name, parentPath }) => DPath.resolveFrom(
+								getCurrentWorkDirectoryOrThrow(),
+								[DPath.normalize(`${parentPath}/${name}`)!],
 							),
 						),
 					)
@@ -115,15 +113,27 @@ export const readDirectory = implementFunction(
 						path,
 						{ recursive: params?.recursive },
 					).then(
-						(value) => DEither.right(
-							"file-system-read-directory",
-							DArray.map(
-								value,
-								(subPath) => DPath.normalize(subPath)!,
-							),
+						(value) => DArray.map(
+							value,
+							(subPath) => DPath.normalize(subPath)!,
 						),
 					)
-			).catch(handleNodeReadDirectoryError);
+			)
+				.then(
+					DCommon.innerPipe(
+						(paths) => params?.matcher
+							? DArray.filter(
+								paths,
+								params.matcher,
+							)
+							: paths,
+						(value) => DEither.right(
+							"file-system-read-directory",
+							value,
+						),
+					),
+				)
+				.catch(handleNodeReadDirectoryError);
 
 			return result as never;
 		},

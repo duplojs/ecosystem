@@ -16,10 +16,10 @@ describe("createAbsolute", () => {
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			DEither.Success<string & DPath.Absolute> | DEither.Error<string>,
+			DEither.Success<string & DPath.Absolute & DPath.Path> | DEither.Error<string>,
 			"strict"
 		>;
-		type _CheckValue = DCommon.ExpectType<typeof value, string & DPath.Absolute, "strict">;
+		type _CheckValue = DCommon.ExpectType<typeof value, string & DPath.Absolute & DPath.Path, "strict">;
 	});
 
 	it.each([

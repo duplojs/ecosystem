@@ -1,4 +1,5 @@
-import { DCommon, DPath, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPath from "@scripts/path";
 
 describe("getBaseName", () => {
 	it("returns the base name of paths", () => {
@@ -60,9 +61,9 @@ describe("getBaseName", () => {
 		expect(result).toBe("file.txt");
 		expect(DPath.isSegment(result as string)).toBe(true);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			(string & DPath.Segment) | null,
+			(string & DPath.Segment & DPath.Path) | null,
 			"strict"
 		>;
 	});
@@ -74,9 +75,9 @@ describe("getBaseName", () => {
 
 		expect(result).toBe("file.txt");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			(string & DPath.Segment) | null,
+			(string & DPath.Segment & DPath.Path) | null,
 			"strict"
 		>;
 	});
@@ -88,9 +89,9 @@ describe("getBaseName", () => {
 
 		expect(result).toBe(".env");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			(string & DPath.Segment) | null,
+			(string & DPath.Segment & DPath.Path) | null,
 			"strict"
 		>;
 	});
@@ -105,16 +106,16 @@ describe("getBaseName", () => {
 	it("can be used directly in a pipe", () => {
 		const path: string & DPath.Path = DCommon.infer("/alpha/beta/file.txt");
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			path,
 			DPath.getBaseName,
 		);
 
 		expect(result).toBe("file.txt");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			(string & DPath.Segment) | null,
+			(string & DPath.Segment & DPath.Path) | null,
 			"strict"
 		>;
 	});

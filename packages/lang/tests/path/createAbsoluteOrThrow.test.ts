@@ -12,7 +12,7 @@ describe("createAbsoluteOrThrow", () => {
 		expect(result).toBe(expected);
 		expect(DPath.isAbsolute(result)).toBe(true);
 
-		type _CheckResult = DCommon.ExpectType<typeof result, string & DPath.Absolute, "strict">;
+		type _CheckResult = DCommon.ExpectType<typeof result, string & DPath.Absolute & DPath.Path, "strict">;
 	});
 
 	it.each([

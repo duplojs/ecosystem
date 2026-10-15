@@ -13,7 +13,7 @@ export function getBaseName<
 >(
 	path: GenericPath,
 	params?: GetBaseNameParams,
-): (string & Segment) | null;
+): (string & Segment & Path) | null;
 
 export function getBaseName(
 	path: string,

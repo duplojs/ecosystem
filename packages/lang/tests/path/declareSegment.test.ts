@@ -1,4 +1,5 @@
-import { DPath, type ExpectType } from "@scripts";
+import * as DPath from "@scripts/path";
+import type * as DCommon from "@scripts/common";
 
 describe("declareSegment", () => {
 	it("returns the declared segment with its constraint and literal type", () => {
@@ -6,9 +7,9 @@ describe("declareSegment", () => {
 
 		expect(segment).toBe("folder.txt");
 
-		type _CheckSegment = ExpectType<
+		type _CheckSegment = DCommon.ExpectType<
 			typeof segment,
-			"folder.txt" & DPath.Segment,
+			"folder.txt" & DPath.Segment & DPath.Path,
 			"strict"
 		>;
 	});
