@@ -22,8 +22,8 @@ pnpm --filter @duplojs/server test:lint
 printf "\n${GREEN}@duplojs/tools${RESET}\n"
 pnpm --filter @duplojs/tools test:lint
 
-printf "\n${GREEN}@duplojs/skills${RESET}\n"
-pnpm --filter @duplojs/skills test:lint
+printf "\n${GREEN}@duplojs/agents-kit${RESET}\n"
+pnpm --filter @duplojs/agents-kit test:lint
 
 printf "\n${GREEN}@duplojs/json-web-token${RESET}\n"
 pnpm --filter @duplojs/json-web-token test:lint

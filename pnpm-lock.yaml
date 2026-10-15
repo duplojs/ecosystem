@@ -266,6 +266,52 @@ importers:
         specifier: workspace:*
         version: link:..
 
+  packages/agents-kit:
+    dependencies:
+      '@duplojs/eslint':
+        specifier: workspace:*
+        version: link:../eslint
+      '@duplojs/form':
+        specifier: workspace:*
+        version: link:../form
+      '@duplojs/http':
+        specifier: workspace:*
+        version: link:../http
+      '@duplojs/json-web-token':
+        specifier: workspace:*
+        version: link:../json-web-token
+      '@duplojs/lang':
+        specifier: workspace:*
+        version: link:../lang
+      '@duplojs/playwright':
+        specifier: workspace:*
+        version: link:../playwright
+      '@duplojs/server':
+        specifier: workspace:*
+        version: link:../server
+      '@duplojs/tools':
+        specifier: workspace:*
+        version: link:../tools
+    devDependencies:
+      '@duplojs/code-config':
+        specifier: workspace:*
+        version: link:../code-config
+      '@types/node':
+        specifier: 24.13.3
+        version: 24.13.3
+
+  packages/agents-kit/integrations:
+    dependencies:
+      '@duplojs/agents-kit':
+        specifier: workspace:*
+        version: link:..
+      '@duplojs/lang':
+        specifier: workspace:*
+        version: link:../../lang
+      '@duplojs/server':
+        specifier: workspace:*
+        version: link:../../server
+
   packages/code-config:
     dependencies:
       '@commitlint/cli':
@@ -522,34 +568,6 @@ importers:
   packages/server/integrations:
     dependencies:
       '@duplojs/server':
-        specifier: workspace:*
-        version: link:..
-
-  packages/skills:
-    dependencies:
-      '@duplojs/lang':
-        specifier: workspace:*
-        version: link:../lang
-      '@duplojs/server':
-        specifier: workspace:*
-        version: link:../server
-    devDependencies:
-      '@duplojs/code-config':
-        specifier: workspace:*
-        version: link:../code-config
-      '@types/node':
-        specifier: 24.13.3
-        version: 24.13.3
-
-  packages/skills/integrations:
-    dependencies:
-      '@duplojs/lang':
-        specifier: workspace:*
-        version: link:../../lang
-      '@duplojs/server':
-        specifier: workspace:*
-        version: link:../../server
-      '@duplojs/skills':
         specifier: workspace:*
         version: link:..
 

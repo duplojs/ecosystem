@@ -26,7 +26,7 @@
   "sideEffects": false,
   "types": "./dist/index.d.ts",
   "bin": {
-    "duplojs-eslint": "./bin/eslint.js"
+    "duplojs-eslint": "./dist/bin/eslint.mjs"
   },
   "exports": {
     ".": {

@@ -5,8 +5,9 @@ import type * as DSFile from "@duplojs/server/file";
 describe("bin", () => {
 	beforeEach(async() => {
 		vi.resetModules();
-		const { setEnvironment } = await import("@duplojs/server");
+		const { TESTImplementation, setEnvironment } = await import("@duplojs/server");
 		setEnvironment("TEST");
+		TESTImplementation.set("remove", () => Promise.resolve(DEither.right("file-system-remove")));
 	});
 
 	afterEach(async() => {
@@ -33,31 +34,32 @@ describe("bin", () => {
 
 	it("routes to install and waits for its completion", async() => {
 		const { TESTImplementation } = await import("@duplojs/server");
-		const pending = Promise.withResolvers<DSFile.CopyResult>();
-		const copy = vi.fn(() => pending.promise);
+		const pending = Promise.withResolvers<DSFile.SymlinkResult>();
+		const symlink = vi.fn(() => pending.promise);
 		const getProcessArguments = vi.fn(() => ["install", "http", "--type", "codex"]);
 		TESTImplementation.set("getProcessArguments", getProcessArguments);
 		TESTImplementation.set("getCurrentWorkDirectory", () => DPath.createAbsolute("/project"));
-		TESTImplementation.set("copy", copy);
+		TESTImplementation.set("symlink", symlink);
+		TESTImplementation.set("ensureDirectory", () => Promise.resolve(DEither.right("file-system-ensure-directory")));
 		const loaded = vi.fn();
 
 		const loading = import("@scripts/bin").then(loaded);
 
-		await vi.waitFor(() => expect(copy).toHaveBeenCalledTimes(1));
+		await vi.waitFor(() => expect(symlink).toHaveBeenCalledTimes(1));
 		expect(loaded).not.toHaveBeenCalled();
-		pending.resolve(DEither.right("file-system-copy"));
+		pending.resolve(DEither.right("file-system-symlink"));
 		await loading;
 		const { skillsPath } = await import("@scripts");
 
 		expect(getProcessArguments).toHaveBeenCalledTimes(1);
-		expect(copy).toHaveBeenCalledExactlyOnceWith(`${skillsPath}/http`, "/project/.codex/skills/duplojs-http");
+		expect(symlink).toHaveBeenCalledExactlyOnceWith(`${skillsPath}/http`, "/project/.codex/skills/duplojs-http", { type: "dir" });
 		expect(loaded).toHaveBeenCalledTimes(1);
 	});
 
 	it("propagates an install failure", async() => {
 		const { TESTImplementation } = await import("@duplojs/server");
 		const failure = new Error("Copy failed");
-		TESTImplementation.set("getProcessArguments", () => ["install", "http"]);
+		TESTImplementation.set("getProcessArguments", () => ["install", "http", "--copy"]);
 		TESTImplementation.set("getCurrentWorkDirectory", () => DPath.createAbsolute("/project"));
 		TESTImplementation.set("copy", vi.fn().mockRejectedValue(failure));
 

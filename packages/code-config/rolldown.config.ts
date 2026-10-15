@@ -44,4 +44,22 @@ export default defineConfig([
 			}),
 		],
 	},
+	{
+		external: [/^node:/],
+		input: ["scripts/bin/commitlint.ts", "scripts/bin/oxlint.ts"],
+		platform: "neutral",
+		tsconfig: "tsconfig.build.json",
+		output: [
+			{
+				dir: "dist",
+				format: "esm",
+				preserveModules: true,
+				preserveModulesRoot: "scripts",
+				entryFileNames: "[name].mjs",
+			},
+		],
+		treeshake: {
+			moduleSideEffects: false,
+		},
+	},
 ]);

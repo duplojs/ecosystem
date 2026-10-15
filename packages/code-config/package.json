@@ -26,8 +26,8 @@
   "sideEffects": false,
   "types": "./dist/index.d.ts",
   "bin": {
-    "duplojs-commitlint": "./bin/commitlint.js",
-    "duplojs-oxlint": "./bin/oxlint.js"
+    "duplojs-commitlint": "./dist/bin/commitlint.mjs",
+    "duplojs-oxlint": "./dist/bin/oxlint.mjs"
   },
   "exports": {
     ".": {

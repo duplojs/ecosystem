@@ -4,6 +4,6 @@
 	"dependencies": {
 		"@duplojs/lang": "workspace:*",
 		"@duplojs/server": "workspace:*",
-		"@duplojs/skills": "workspace:*"
+		"@duplojs/agents-kit": "workspace:*"
 	}
 }

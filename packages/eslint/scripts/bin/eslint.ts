@@ -8,7 +8,6 @@ const require = createRequire(import.meta.url);
 
 const packageJsonPath = require.resolve("eslint/package.json");
 const packageRoot = dirname(packageJsonPath);
+const cliPath = resolve(packageRoot, "bin/eslint.js");
 
-await import(
-	pathToFileURL(resolve(packageRoot, "bin/eslint.js")).href,
-);
+await import(pathToFileURL(cliPath).href);

@@ -37,8 +37,8 @@
 			"path": "../packages/code-config"
 		},
 		{
-			"name": "@duplojs/skills",
-			"path": "../packages/skills"
+			"name": "@duplojs/agents-kit",
+			"path": "../packages/agents-kit"
 		},
 		{
 			"name": "ai-docs",

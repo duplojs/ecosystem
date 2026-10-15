@@ -11,7 +11,7 @@ const scopes = [
     "server",
     "tools",
 	"ecosystem",
-	"skills",
+	"agents-kit",
 	"ai-docs",
 	"ai-docgen",
 	"jsdoc-include",

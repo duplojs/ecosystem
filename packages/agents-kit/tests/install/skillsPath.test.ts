@@ -1,8 +1,9 @@
+import "@scripts";
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DPath from "@duplojs/lang/path";
 import { findPackageJSON } from "node:module";
 
-vi.mock("node:module", () => ({ findPackageJSON: vi.fn() }));
+vi.mock("node:module", () => ({ findPackageJSON: vi.fn(() => "/packages/agents-kit/package.json") }));
 
 describe("skillsPath", () => {
 	beforeEach(() => {
@@ -14,13 +15,13 @@ describe("skillsPath", () => {
 	});
 
 	it("resolves the skills directory beside the package manifest", async() => {
-		vi.mocked(findPackageJSON).mockReturnValue("/packages/skills/package.json");
+		vi.mocked(findPackageJSON).mockReturnValue("/packages/agents-kit/package.json");
 
 		const { skillsPath } = await import("@scripts");
 
 		type _CheckPath = DCommon.ExpectType<typeof skillsPath, string & DPath.Path, "strict">;
 
-		expect(skillsPath).toBe("/packages/skills/skills");
+		expect(skillsPath).toBe("/packages/agents-kit/skills");
 		expect(findPackageJSON).toHaveBeenCalledExactlyOnceWith(".", expect.stringContaining("/scripts/install/skillsPath.ts"));
 	});
 
@@ -32,7 +33,7 @@ describe("skillsPath", () => {
 		vi.mocked(findPackageJSON).mockReturnValue(packagePath);
 
 		await expect(import("@scripts")).rejects.toMatchObject({
-			message: "@duplojs/skill path was not found.",
+			message: "@duplojs/agents-kit path was not found.",
 			cause,
 		});
 	});

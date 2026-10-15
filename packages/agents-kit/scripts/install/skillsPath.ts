@@ -13,7 +13,7 @@ export const skillsPath = DCommon.pipe(
 		(path) => DPath.resolveRelative([path, DCommon.cast("skills")]),
 	),
 	DEither.whenIsLeft((cause) => {
-		throw new Error("@duplojs/skill path was not found.", { cause });
+		throw new Error("@duplojs/agents-kit path was not found.", { cause });
 	}),
 	DEither.unwrapRight,
 );

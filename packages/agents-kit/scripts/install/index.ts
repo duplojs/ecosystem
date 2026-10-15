@@ -1,6 +1,6 @@
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DSCommand from "@duplojs/server/command";
-import { AgentTypeEnum, copySkill, SkillEnum } from "./copySkill";
+import { AgentTypeEnum, copySkill, SkillEnum, symlinkSkill } from "./skill";
 import * as DEither from "@duplojs/lang/either";
 import * as DSFile from "@duplojs/server/file";
 import { skillsPath } from "./skillsPath";
@@ -11,6 +11,9 @@ export const installCommand = DSCommand.create(
 	"install",
 	{
 		options: [
+			DSCommand.createBooleanOption("copy", {
+				description: "Copy skills instead of creating symbolic links",
+			}),
 			DSCommand.createOption(
 				"type",
 				DDataStructure.literal(AgentTypeEnum.toTuple()),
@@ -26,9 +29,10 @@ export const installCommand = DSCommand.create(
 	},
 	async({ args, options }) => {
 		const agentType = options.type ?? "default";
+		const installSkill = options.copy ? copySkill : symlinkSkill;
 
 		if (args.skill) {
-			await copySkill(
+			await installSkill(
 				agentType,
 				args.skill,
 			);
@@ -39,7 +43,7 @@ export const installCommand = DSCommand.create(
 		await DEither.rightAsyncPipe(
 			DSFile.readDirectory(skillsPath),
 			DArray.filter(SkillEnum.has),
-			DArray.map((value) => copySkill(
+			DArray.map((value) => installSkill(
 				agentType,
 				value,
 			)),

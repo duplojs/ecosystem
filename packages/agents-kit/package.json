@@ -1,5 +1,5 @@
 {
-	"name": "@duplojs/skills",
+	"name": "@duplojs/agents-kit",
 	"version": "0.0.0",
 	"license": "MIT",
 	"author": {
@@ -10,13 +10,13 @@
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/duplojs/ecosystem.git",
-		"directory": "packages/skills"
+		"directory": "packages/agents-kit"
 	},
 	"bugs": {
 		"url": "https://github.com/duplojs/ecosystem/issues"
 	},
   "bin": {
-    "duplojs-skills": "./dist/bin.mjs"
+    "duplojs-agents-kit": "./dist/bin.mjs"
   },
 	"type": "module",
 	"scripts": {
@@ -35,9 +35,43 @@
 			"types": "./dist/index.d.ts"
 		}
 	},
-	"peerDependencies": {
+	"dependencies": {
 		"@duplojs/lang": "workspace:*",
 		"@duplojs/server": "workspace:*"
+	},
+	"peerDependencies": {
+		"@duplojs/code-config": "workspace:*",
+		"@duplojs/eslint": "workspace:*",
+		"@duplojs/form": "workspace:*",
+		"@duplojs/http": "workspace:*",
+		"@duplojs/json-web-token": "workspace:*",
+		"@duplojs/lang": "workspace:*",
+		"@duplojs/playwright": "workspace:*",
+		"@duplojs/server": "workspace:*",
+		"@duplojs/tools": "workspace:*"
+	},
+	"peerDependenciesMeta": {
+		"@duplojs/code-config": {
+			"optional": true
+		},
+		"@duplojs/eslint": {
+			"optional": true
+		},
+		"@duplojs/form": {
+			"optional": true
+		},
+		"@duplojs/http": {
+			"optional": true
+		},
+		"@duplojs/json-web-token": {
+			"optional": true
+		},
+		"@duplojs/playwright": {
+			"optional": true
+		},
+		"@duplojs/tools": {
+			"optional": true
+		}
 	},
 	"devDependencies": {
 		"@duplojs/code-config": "workspace:*",

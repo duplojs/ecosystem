@@ -44,4 +44,22 @@ export default defineConfig([
 			}),
 		],
 	},
+	{
+		external: [/^node:/],
+		input: ["scripts/bin/eslint.ts"],
+		platform: "neutral",
+		tsconfig: "tsconfig.build.json",
+		output: [
+			{
+				dir: "dist",
+				format: "esm",
+				preserveModules: true,
+				preserveModulesRoot: "scripts",
+				entryFileNames: "[name].mjs",
+			},
+		],
+		treeshake: {
+			moduleSideEffects: false,
+		},
+	},
 ]);
