@@ -1,20 +1,20 @@
 # @duplojs/agents-kit
 
-Skills et documentation conceptuelle de l'écosystème DuploJS pour les agents.
+Skills and conceptual documentation for agents working with the DuploJS ecosystem.
 
-Les sources documentaires, exemples TypeScript et fixtures sont conservés dans [`docs/concepts`](docs/concepts). Le build génère `docs/concepts.llms.md`, un routeur vers les concepts fondamentaux, le serveur, les clients, les tests et le Type-Driven Design. Les documents et le routeur sont inclus dans le package publié.
+Documentation sources, TypeScript examples, and fixtures are stored in [`docs/concepts`](docs/concepts). The build generates `docs/concepts.llms.md`, a documentation router covering core concepts, the server, clients, testing, and Type-Driven Design. The documentation and router are included in the published package.
 
-Depuis un projet consommateur, retrouver le routeur installé avec :
+From a consuming project, locate the installed router with:
 
 ```sh
 node --input-type=module -e 'import { fileURLToPath } from "node:url"; console.log(fileURLToPath(import.meta.resolve("@duplojs/agents-kit/docs/concepts.llms.md")))'
 ```
 
-Lire les pages pertinentes en résolvant leurs liens relativement au routeur. Avant le premier build du monorepo, consulter les `index.md` des domaines dans `docs/concepts`.
+Read the relevant pages by resolving their links relative to the router. Before the first monorepo build, consult each domain's `index.md` in `docs/concepts`.
 
-La commande `install` crée par défaut des liens symboliques vers les skills du package.
-L’option booléenne `--copy` copie les skills à la place.
-À chaque installation, la destination du skill est supprimée puis remplacée par la copie ou le lien demandé. La cible d’un ancien lien symbolique est conservée.
+The `install` command creates symbolic links to the package's skills by default.
+The boolean `--copy` option copies the skills instead.
+Each installation removes the skill's destination and replaces it with the requested copy or link. The target of any existing symbolic link is preserved.
 
 ```sh
 pnpm exec duplojs-agents-kit install
@@ -22,12 +22,12 @@ pnpm exec duplojs-agents-kit install http --type codex
 pnpm exec duplojs-agents-kit install http --copy
 ```
 
-La sous-commande `generate-llms` génère un routeur Markdown à partir d’un dossier de documentation IA. Elle conserve les contenus introductifs et crée les liens vers les pages et exemples détaillés.
+For AgentKit development, the local `bin/generateLlms/index.ts` script generates a Markdown router from an AI documentation directory. It preserves introductory content and links to detailed pages and examples. It is not included in the published package. From the package root:
 
 ```sh
-pnpm exec duplojs-agents-kit generate-llms --input docs/concepts --output docs/concepts.llms.md
+pnpm run generate-llms --input docs/concepts --output docs/concepts.llms.md
 ```
 
-Dans le monorepo, `pnpm --filter @duplojs/agents-kit build` construit la commande puis régénère ce routeur. `pnpm --filter @duplojs/agents-kit test:types` vérifie aussi les exemples et fixtures via `tsconfig.doc.json`, et `pnpm --filter @duplojs/agents-kit test:lint` les inclut dans le lint du package.
+In the monorepo, `pnpm --filter @duplojs/agents-kit build` builds the package, then regenerates this router using the local script. `pnpm --filter @duplojs/agents-kit test:types` also checks examples and fixtures through `tsconfig.doc.json`, and `pnpm --filter @duplojs/agents-kit test:lint` includes them in the package's lint checks.
 
-Ce package suit la configuration des packages DuploJS orientés serveur et peut être exécuté dans Node.js, Bun et Deno.
+This package follows the configuration of server-oriented DuploJS packages and can run on Node.js, Bun, and Deno.

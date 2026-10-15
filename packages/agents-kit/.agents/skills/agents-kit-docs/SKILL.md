@@ -1,24 +1,29 @@
 ---
 name: agents-kit-docs
-description: "Créer, organiser ou corriger la documentation conceptuelle DuploJS dans `packages/agents-kit/docs/concepts` : documentation concise pour les agents, routage conceptuel et exposition au routeur d'AgentKit."
+description: "Créer, organiser ou corriger la documentation DuploJS dans le package AgentKit : documentation concise pour les agents, routage et exposition dans les fichiers générés `*.llms.md`."
 ---
 
-# Documentation conceptuelle AgentKit
+# Documentation AgentKit
 
-La documentation conceptuelle d'AgentKit fournit aux agents les connaissances nécessaires pour utiliser et implémenter les concepts de l'écosystème DuploJS. Sa source de vérité est `packages/agents-kit/docs/concepts/` ; le routeur `packages/agents-kit/docs/concepts.llms.md` est généré depuis cette arborescence. Modifier les sources documentaires.
+Le package `@duplojs/agents-kit` regroupe les skills et la documentation destinés aux agents. Ce skill guide la rédaction et l'organisation de sa documentation.
+
+Les chemins indiqués ci-dessous sont relatifs à la racine du package, accessible par [`../../..`](../../..) depuis le dossier de ce skill. La racine du monorepo se trouve deux niveaux au-dessus du package.
+
+La documentation d'AgentKit fournit aux agents les connaissances nécessaires pour utiliser et implémenter les concepts de l'écosystème DuploJS. Toutes ses sources documentaires doivent être pensées pour alimenter des fichiers `*.llms.md`. Chacun de ces fichiers sert de routeur vers les ressources de son périmètre et suit les mêmes règles de rédaction, d'organisation et d'exposition. Par exemple, `docs/concepts/` alimente `docs/concepts.llms.md` ; d'autres ensembles documentaires peuvent alimenter leurs propres routeurs. Les sources documentaires font autorité : les modifier, puis régénérer les routeurs concernés.
 
 Le **routage** permet de trouver la connaissance pertinente. Le **contenu documentaire** permet d'agir correctement une fois la ressource consultée. Organiser les deux pour limiter le contexte chargé et les répétitions.
 
 ## Préparer l'intervention
 
 - Définir la connaissance que la ressource doit transmettre et les décisions qu'elle doit permettre à l'agent de prendre. Respecter le périmètre demandé.
+- Identifier le dossier source et les routeurs `*.llms.md` concernés à partir des commandes de génération du package. Appliquer les mêmes règles à chaque ensemble documentaire.
 - Consulter les documents voisins et les ressources déjà consacrées aux notions mobilisées. Réutiliser leur terminologie et identifier ce qui peut être référencé.
 - Vérifier les exports publics et les signatures TypeScript utiles ; lire les implémentations et les tests lorsque le comportement ou les garanties nécessitent confirmation.
-- Avant de créer ou modifier un exemple TypeScript, lire `.agents/importations.md` à la racine de l'écosystème.
+- Avant de créer ou modifier un exemple TypeScript, lire les [règles d'importation du monorepo](../../../../../.agents/importations.md), situées dans `../../.agents/importations.md` depuis la racine du package.
 
 ## Organisation et exposition
 
-Le parcours de génération commence dans `packages/agents-kit/docs/concepts/` et descend récursivement dans les dossiers à préfixe numérique. Il reconnaît les fichiers documentaires numérotés et les `index.md`. L'ordre est lexical.
+Pour chaque routeur, le parcours de génération commence dans le dossier source passé à `generate-llms --input` et descend récursivement dans les dossiers à préfixe numérique. Il reconnaît les fichiers documentaires numérotés et les `index.md`. L'ordre est lexical. Ces conventions s'appliquent à tous les dossiers sources, dont `docs/concepts/`.
 
 | Ressource | Convention |
 | --- | --- |
@@ -29,7 +34,7 @@ Le parcours de génération commence dans `packages/agents-kit/docs/concepts/` e
 
 Choisir le niveau d'exposition avant de numéroter un nouveau fichier :
 
-| Format | Préfixes disponibles | Contenu intégré au routeur `docs/concepts.llms.md` |
+| Format | Préfixes disponibles | Contenu intégré à chaque routeur `*.llms.md` concerné |
 | --- | --- | --- |
 | TypeScript fondamental | `01` à `09` | Header et contenu documentaire. |
 | TypeScript consulté à la demande | `10, 20, 30, 40, 50, 60, 70, 80, 90` | Header uniquement. |
@@ -74,11 +79,18 @@ Le Markdown porte les explications et contextualise les liens vers les exemples 
 
 Pour une création, placer la ressource dans le domaine approprié selon les conventions d'organisation et d'exposition. Pour une révision, conserver les connaissances utiles, corriger leur placement et retirer les répétitions. Adapter l'index si le périmètre du domaine évolue.
 
-Le build `pnpm --filter @duplojs/agents-kit build` régénère le routeur. Les commandes `test:types` (via `tsconfig.doc.json`) et `test:lint` du package vérifient aussi les exemples et les fixtures. Le champ `files` du package doit inclure `docs` afin de publier ensemble le routeur et ses cibles.
+Le build `pnpm --filter @duplojs/agents-kit build` régénère les routeurs déclarés dans `.commands/build.sh` ; actuellement, il génère `docs/concepts.llms.md` depuis `docs/concepts/`. Pour chaque autre routeur concerné, utiliser sa commande de génération avec le dossier source et la sortie correspondants, depuis la racine du package :
+
+```sh
+pnpm run generate-llms --input <dossier-source> --output <nom>.llms.md
+```
+
+Les commandes `test:types` (via `tsconfig.doc.json`) et `test:lint` du package vérifient aussi les exemples et les fixtures. Vérifier que les nouveaux dossiers documentaires sont couverts par ces configurations. Le champ `files` du package doit inclure `docs` afin de publier ensemble les routeurs et leurs cibles ; adapter les fichiers publiés si les sources ou les routeurs sont placés ailleurs.
 
 Avant de terminer :
 
 - Vérifier la position, l'ordre, la numérotation et l'exposition selon les tableaux ci-dessus.
 - Relire le routage indépendamment des exemples : il doit permettre de retrouver le sujet sans charger son explication.
+- Vérifier chaque routeur concerné après génération : exposition attendue, pertinence du routage dans son périmètre et liens résolus relativement au fichier `*.llms.md` qui les contient.
 - Relire le contenu du point de vue d'une future implémentation : retirer les passages sans apport à une décision ou à une garantie, et remplacer les réexplications par les références pertinentes.
 - Vérifier les liens, l'exactitude des API et, pour les exemples TypeScript créés ou modifiés, la conformité des imports et le typage.

@@ -8,9 +8,9 @@ import * as DSCommon from "@duplojs/server/common";
 import * as DCommon from "@duplojs/lang/common";
 import * as DSDataStructure from "@duplojs/server/dataStructure";
 
-export const generateLlmsCommand = DSCommand.create(
-	"generate-llms",
+await DSCommand.exec(
 	{
+		displayName: "generate-llms",
 		options: [
 			DSCommand.createOption(
 				"input",

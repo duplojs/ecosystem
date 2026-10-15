@@ -7,5 +7,5 @@
 			"@scripts/*": ["./scripts/*"]
 		}
 	},
-	"include": ["./scripts/**/*.ts"]
+	"include": ["./scripts/**/*.ts", "./bin/**/*.ts"]
 }

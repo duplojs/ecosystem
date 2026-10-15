@@ -1,3 +1,4 @@
 {
-	"extends": ["./tsconfig.app.json", "@duplojs/code-config/tsconfig/build.json"]
+	"extends": ["./tsconfig.app.json", "@duplojs/code-config/tsconfig/build.json"],
+	"include": ["./scripts/**/*.ts"]
 }

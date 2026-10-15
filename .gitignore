@@ -6,7 +6,6 @@ cache
 .DS_Store
 .temp
 .vitest
-*.llms.md
 *.generate.*
 *.generate
 !docs/libs/**/dist

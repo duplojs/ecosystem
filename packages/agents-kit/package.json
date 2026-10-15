@@ -21,6 +21,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "./.commands/build.sh",
+		"generate:llms": "tsx bin/generateLlms/index.ts",
 		"test:types": "./.commands/test-types.sh",
 		"test:types:target": "./.commands/test-types-target.sh",
 		"test:lint": "./.commands/test-lint.sh",
