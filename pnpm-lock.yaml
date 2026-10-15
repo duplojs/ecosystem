@@ -266,6 +266,18 @@ importers:
         specifier: workspace:*
         version: link:..
 
+  packages-private/snapshot-dist:
+    dependencies:
+      '@duplojs/code-config':
+        specifier: workspace:*
+        version: link:../../packages/code-config
+      '@duplojs/lang':
+        specifier: workspace:*
+        version: link:../../packages/lang
+      '@duplojs/server':
+        specifier: workspace:*
+        version: link:../../packages/server
+
   packages/agents-kit:
     dependencies:
       '@duplojs/eslint':

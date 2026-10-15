@@ -48,3 +48,6 @@ pnpm --filter @duplojs/jsdoc-include test:types
 
 printf "\n${GREEN}docs${RESET}\n"
 pnpm --filter docs test:types
+
+printf "\n${GREEN}@duplojs/snapshot-dist${RESET}\n"
+pnpm --filter @duplojs/snapshot-dist test:types
