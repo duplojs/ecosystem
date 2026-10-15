@@ -1,0 +1,59 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`setupCommand > creates AGENTS.md for arguments [ '--type', 'default' ] 1`] = `
+"<!-- duplojs-agents-kit:coding-conventions:start -->
+Read node_modules/@duplojs/agents-kit/docs.
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+"
+`;
+
+exports[`setupCommand > creates AGENTS.md for arguments [] 1`] = `
+"<!-- duplojs-agents-kit:coding-conventions:start -->
+Read node_modules/@duplojs/agents-kit/docs.
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+"
+`;
+
+exports[`setupCommand > creates CLAUDE.md for arguments [ '--type', 'claude' ] 1`] = `
+"<!-- duplojs-agents-kit:coding-conventions:start -->
+Read node_modules/@duplojs/agents-kit/docs.
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+"
+`;
+
+exports[`setupCommand > inserts a package path relative to AGENTS.md in /other project with spaces 1`] = `
+"<!-- duplojs-agents-kit:coding-conventions:start -->
+Read ../project with spaces/node_modules/@duplojs/agents-kit/docs.
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+"
+`;
+
+exports[`setupCommand > inserts a package path relative to AGENTS.md in /project with spaces/apps/api 1`] = `
+"<!-- duplojs-agents-kit:coding-conventions:start -->
+Read ../../node_modules/@duplojs/agents-kit/docs.
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+"
+`;
+
+exports[`setupCommand > inserts a package path relative to AGENTS.md in /project with spaces/node_modules/@dupl… 1`] = `
+"<!-- duplojs-agents-kit:coding-conventions:start -->
+Read ./docs.
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+"
+`;
+
+exports[`setupCommand > updates the existing AGENTS.md block and preserves project instructions 1`] = `
+"Before
+<!-- duplojs-agents-kit:coding-conventions:start -->
+Updated
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+After"
+`;
+
+exports[`setupCommand > updates the existing CLAUDE.md block and preserves project instructions 1`] = `
+"Before
+<!-- duplojs-agents-kit:coding-conventions:start -->
+Updated
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+After"
+`;

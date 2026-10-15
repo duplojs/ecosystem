@@ -3,7 +3,8 @@ import * as DSCommand from "@duplojs/server/command";
 import { AgentTypeEnum, copySkill, SkillEnum, symlinkSkill } from "./skill";
 import * as DEither from "@duplojs/lang/either";
 import * as DSFile from "@duplojs/server/file";
-import { skillsPath } from "./skillsPath";
+import { getPackagePath } from "../packagePath";
+import * as DPath from "@duplojs/lang/path";
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 
@@ -39,6 +40,8 @@ export const installCommand = DSCommand.create(
 
 			return;
 		}
+
+		const skillsPath = DPath.resolveRelative([getPackagePath(), DPath.declarePath("skills")]);
 
 		await DEither.rightAsyncPipe(
 			DSFile.readDirectory(skillsPath),

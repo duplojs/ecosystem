@@ -84,6 +84,7 @@
 		"dist",
     "docs",
     "skills",
+    "instructions",
 		"README.md"
 	],
 	"keywords": [

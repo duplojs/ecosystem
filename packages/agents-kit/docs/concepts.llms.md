@@ -266,15 +266,19 @@ Choisir une branche selon la Fact portée par une valeur et accéder aux donnée
 
 Identifier la forme d’un objet par son tag et traiter tout ou partie de l’union.
  
-### [Discrimination des valeurs littérales.](concepts/01-fundamental/07-discrimination/40-literal.ts)
+### [Discrimination des erreurs par identifiant.](concepts/01-fundamental/07-discrimination/40-error.ts)
+
+Sélection exhaustive ou partielle des erreurs DuploJS, avec typage précis des branches et des cas restants.
+ 
+### [Discrimination des valeurs littérales.](concepts/01-fundamental/07-discrimination/50-literal.ts)
 
 Traitement exhaustif ou partiel d’une union selon la valeur, avec branches typées.
  
-### [Discrimination par la forme des données.](concepts/01-fundamental/07-discrimination/50-shape.ts)
+### [Discrimination par la forme des données.](concepts/01-fundamental/07-discrimination/60-shape.ts)
 
 Sélectionner les variantes sans identité explicite par des patterns, y compris imbriqués.
  
-### [Discrimination par prédicats et élimination.](concepts/01-fundamental/07-discrimination/60-predicate.ts)
+### [Discrimination par prédicats et élimination.](concepts/01-fundamental/07-discrimination/70-predicate.ts)
 
 Affiner les branches et réduire les cas restants, avec sélection positive ou inverse.
  

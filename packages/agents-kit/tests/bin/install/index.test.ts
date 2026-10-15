@@ -1,5 +1,5 @@
 import { installCommand } from "@scripts/bin/install";
-import { skillsPath } from "@scripts/bin/install/skillsPath";
+import { getPackagePath } from "@scripts/bin/packagePath";
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
@@ -7,6 +7,8 @@ import * as DPath from "@duplojs/lang/path";
 import { TESTImplementation, setEnvironment } from "@duplojs/server";
 import * as DSCommand from "@duplojs/server/command";
 import type * as DSFile from "@duplojs/server/file";
+
+const skillsPath = DPath.resolveRelative([getPackagePath(), DPath.declarePath("skills")]);
 
 describe("installCommand", () => {
 	beforeEach(() => {

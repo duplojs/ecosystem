@@ -12,7 +12,7 @@ class EnsureDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentCl
 class EnsureDirectoryErrorBusy extends DCommon.DuploJSError.parentClass("file-system-ensure-directory-busy", Error) {}
 class EnsureDirectoryError extends DCommon.DuploJSError.parentClass("file-system-ensure-directory-error", Error) {}
 
-type EnsureDirectoryErrors = (
+export type EnsureDirectoryErrors = (
 	| EnsureDirectoryErrorPermissionDenied
 	| EnsureDirectoryErrorNotDirectory
 	| EnsureDirectoryErrorNoSpace

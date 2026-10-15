@@ -22,6 +22,16 @@ pnpm exec duplojs-agents-kit install http --type codex
 pnpm exec duplojs-agents-kit install http --copy
 ```
 
+The `setup` command creates `AGENTS.md` by default, or `CLAUDE.md` with `--type claude`, in the current project if needed and synchronizes a marked coding conventions block while preserving the surrounding content:
+
+```sh
+pnpm exec duplojs-agents-kit setup
+pnpm exec duplojs-agents-kit setup --type default
+pnpm exec duplojs-agents-kit setup --type claude
+```
+
+The block comes from `instructions/coding-conventions.md`, included in the published package. Every `{{packagePath}}` placeholder is replaced with the path to the installed AgentKit package relative to the directory containing the selected instructions file (the current working directory). Running `setup` again replaces the block between `<!-- duplojs-agents-kit:coding-conventions:start -->` and `<!-- duplojs-agents-kit:coding-conventions:stop -->`. Incomplete or duplicate markers cause an error before writing. The supported setup types are `default` and `claude`.
+
 For AgentKit development, the local `bin/generateLlms/index.ts` script generates a Markdown router from an AI documentation directory. It preserves introductory content and links to detailed pages and examples. It is not included in the published package. From the package root:
 
 ```sh

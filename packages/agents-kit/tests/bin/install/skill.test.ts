@@ -1,13 +1,14 @@
 import { AgentTypeEnum, copySkill, SkillEnum, symlinkSkill } from "@scripts/bin/install/skill";
-import { skillsPath } from "@scripts/bin/install/skillsPath";
+import { getPackagePath } from "@scripts/bin/packagePath";
 import * as DArray from "@duplojs/lang/array";
 import * as DGenerator from "@duplojs/lang/generator";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
 import { TESTImplementation, setEnvironment } from "@duplojs/server";
-import * as DSCommon from "@duplojs/server/common";
 import * as DSFile from "@duplojs/server/file";
+
+const skillsPath = DPath.resolveRelative([getPackagePath(), DPath.declarePath("skills")]);
 
 describe("SkillEnum", () => {
 	it("matches SkillEnum exactly to the directories in skillsPath", async() => {
@@ -48,7 +49,7 @@ describe("copySkill", () => {
 
 		const result = await copySkill(agent, skill);
 
-		type _CheckResult = DCommon.ExpectType<typeof result, DSFile.CopyResult | Extract<DSFile.RemoveResult, DEither.Left>, "strict">;
+		type _CheckResult = DCommon.ExpectType<typeof result, DSFile.CopyResult | Extract<DSFile.RemoveResult, DEither.Left> | DEither.Error<unknown>, "strict">;
 
 		expect(DEither.unwrapByInformationOrThrow(result, "file-system-copy")).toBeUndefined();
 		expect(copy).toHaveBeenCalledExactlyOnceWith(`${skillsPath}/${skill}`, `/project/${folder}/skills/duplojs-${skill}`);
@@ -64,12 +65,15 @@ describe("copySkill", () => {
 		expect(DEither.unwrapByInformationOrThrow(result, "file-system-copy-error")).toBe(failure);
 	});
 
-	it("does not copy when the working directory is unavailable", () => {
+	it("does not copy when the working directory is unavailable", async() => {
 		const copy = vi.fn();
 		TESTImplementation.set("copy", copy);
-		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.error(new Error("Unavailable")));
+		const failure = DEither.error(new Error("Unavailable"));
+		TESTImplementation.set("getCurrentWorkDirectory", () => failure);
 
-		expect(() => copySkill("codex", "http")).toThrow(DSCommon.GetCurrentWorkDirectoryError);
+		const result = await copySkill("codex", "http");
+
+		expect(result).toBe(failure);
 		expect(copy).not.toHaveBeenCalled();
 	});
 });
@@ -99,12 +103,12 @@ describe("symlinkSkill", () => {
 
 		const execution = symlinkSkill(agent, skill);
 
-		expect(ensureDirectory).toHaveBeenCalledExactlyOnceWith(`/project/${folder}/skills`);
+		await vi.waitFor(() => expect(ensureDirectory).toHaveBeenCalledExactlyOnceWith(`/project/${folder}/skills`));
 		expect(symlink).not.toHaveBeenCalled();
 		pending.resolve(DEither.right("file-system-ensure-directory"));
 		const result = await execution;
 
-		type _CheckResult = DCommon.ExpectType<typeof result, DSFile.SymlinkResult | Extract<DSFile.EnsureDirectoryResult | DSFile.RemoveResult, DEither.Left>, "strict">;
+		type _CheckResult = DCommon.ExpectType<typeof result, DSFile.SymlinkResult | Extract<DSFile.EnsureDirectoryResult | DSFile.RemoveResult, DEither.Left> | DEither.Error<unknown>, "strict">;
 
 		expect(DEither.unwrapByInformationOrThrow(result, "file-system-symlink")).toBeUndefined();
 		expect(symlink).toHaveBeenCalledExactlyOnceWith(`${skillsPath}/${skill}`, `/project/${folder}/skills/duplojs-${skill}`, { type: "dir" });

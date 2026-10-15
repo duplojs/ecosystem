@@ -3,7 +3,7 @@ import * as DPath from "@duplojs/lang/path";
 import * as DSCommon from "@duplojs/server/common";
 import * as DSFile from "@duplojs/server/file";
 import * as DEither from "@duplojs/lang/either";
-import { skillsPath } from "./skillsPath";
+import { getPackagePath } from "../packagePath";
 import * as DPattern from "@duplojs/lang/pattern";
 
 export const AgentTypeEnum = DCommon.createEnum([
@@ -29,20 +29,25 @@ function getSkillPaths(
 	agentType: AgentTypeEnum,
 	skill: SkillEnum,
 ) {
-	const selectedSkillPath = DPath.resolveRelative([skillsPath, DCommon.cast(skill)]);
+	const selectedSkillPath = DPath.resolveRelative([getPackagePath(), DPath.declarePath("skills"), DCommon.cast(skill)]);
 
-	const skillsFolder = DPath.resolveRelative([
-		DSCommon.getCurrentWorkDirectoryOrThrow(),
-		DCommon.cast(agentTypeFolderMapper[agentType]),
-		DCommon.cast("skills"),
-	]);
-	const currentSkillFolder = DPath.resolveRelative([skillsFolder, DCommon.cast(`duplojs-${skill}`)]);
+	return DEither.rightPipe(
+		DSCommon.getCurrentWorkDirectory(),
+		(directory) => {
+			const skillsFolder = DPath.resolveRelative([
+				directory,
+				DCommon.cast(agentTypeFolderMapper[agentType]),
+				DCommon.cast("skills"),
+			]);
+			const currentSkillFolder = DPath.resolveRelative([skillsFolder, DCommon.cast(`duplojs-${skill}`)]);
 
-	return {
-		selectedSkillPath,
-		skillsFolder,
-		currentSkillFolder,
-	};
+			return {
+				selectedSkillPath,
+				skillsFolder,
+				currentSkillFolder,
+			};
+		},
+	);
 }
 
 function removeSkill(path: string & DPath.Path) {
@@ -53,7 +58,7 @@ function removeSkill(path: string & DPath.Path) {
 				{
 					"file-system-remove-not-found": () => DEither.ok(),
 				},
-				(error): DSFile.RemoveResult => DEither.left("file-system-remove-error", error),
+				(error: DSFile.RemoveErrors) => DEither.left("file-system-remove-error", error),
 			),
 		),
 	);
@@ -63,23 +68,25 @@ export function copySkill(
 	agentType: AgentTypeEnum,
 	skill: SkillEnum,
 ) {
-	const { selectedSkillPath, currentSkillFolder } = getSkillPaths(agentType, skill);
-
 	return DEither.rightAsyncPipe(
-		removeSkill(currentSkillFolder),
-		() => DSFile.copy(selectedSkillPath, currentSkillFolder),
+		getSkillPaths(agentType, skill),
+		({ selectedSkillPath, currentSkillFolder }) => DEither.rightAsyncPipe(
+			removeSkill(currentSkillFolder),
+			() => DSFile.copy(selectedSkillPath, currentSkillFolder),
+		),
 	);
 }
 
 export function symlinkSkill(
 	agentType: AgentTypeEnum,
 	skill: SkillEnum,
-): Promise<DSFile.SymlinkResult | Extract<DSFile.EnsureDirectoryResult | DSFile.RemoveResult, DEither.Left>> {
-	const { selectedSkillPath, skillsFolder, currentSkillFolder } = getSkillPaths(agentType, skill);
-
+) {
 	return DEither.rightAsyncPipe(
-		DSFile.ensureDirectory(skillsFolder),
-		() => removeSkill(currentSkillFolder),
-		() => DSFile.symlink(selectedSkillPath, currentSkillFolder, { type: "dir" }),
+		getSkillPaths(agentType, skill),
+		({ selectedSkillPath, skillsFolder, currentSkillFolder }) => DEither.rightAsyncPipe(
+			DSFile.ensureDirectory(skillsFolder),
+			() => removeSkill(currentSkillFolder),
+			() => DSFile.symlink(selectedSkillPath, currentSkillFolder, { type: "dir" }),
+		),
 	);
 }

@@ -1,0 +1,72 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`synchronizeInstructions > keeps repeated setups identical 1`] = `
+"# Project
+
+<!-- duplojs-agents-kit:coding-conventions:start -->
+Conventions
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+"
+`;
+
+exports[`synchronizeInstructions > replaces every package path placeholder 1`] = `
+"<!-- duplojs-agents-kit:coding-conventions:start -->
+Read ../AgentKit $& with spaces/docs and ../AgentKit $& with spaces/skills.
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+"
+`;
+
+exports[`synchronizeInstructions > supports the initially empty instructions template 1`] = `
+"<!-- duplojs-agents-kit:coding-conventions:start -->
+
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+"
+`;
+
+exports[`synchronizeInstructions > synchronizes an empty file 1`] = `
+"<!-- duplojs-agents-kit:coding-conventions:start -->
+Conventions
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+"
+`;
+
+exports[`synchronizeInstructions > synchronizes an obsolete block 1`] = `
+"<!-- duplojs-agents-kit:coding-conventions:start -->
+Conventions
+<!-- duplojs-agents-kit:coding-conventions:stop -->"
+`;
+
+exports[`synchronizeInstructions > synchronizes an obsolete block surrounded by project… 1`] = `
+"Before
+<!-- duplojs-agents-kit:coding-conventions:start -->
+Conventions
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+After"
+`;
+
+exports[`synchronizeInstructions > synchronizes project instructions with a blank line 1`] = `
+"# Project
+
+<!-- duplojs-agents-kit:coding-conventions:start -->
+Conventions
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+"
+`;
+
+exports[`synchronizeInstructions > synchronizes project instructions with a final newli… 1`] = `
+"# Project
+
+<!-- duplojs-agents-kit:coding-conventions:start -->
+Conventions
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+"
+`;
+
+exports[`synchronizeInstructions > synchronizes project instructions without a final ne… 1`] = `
+"# Project
+
+<!-- duplojs-agents-kit:coding-conventions:start -->
+Conventions
+<!-- duplojs-agents-kit:coding-conventions:stop -->
+"
+`;
