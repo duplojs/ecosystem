@@ -17,9 +17,10 @@ describe("plugin/index", () => {
 		expect(Object.keys(plugin.rules).sort()).toEqual([
 			"camelcase",
 			"dot-notation",
-			"no-restricted-import",
 			"no-unreachable-loop",
 			"prefer-destructuring",
+			"prefer-import-path",
+			"prefer-namespace-from-barrel",
 			"prefer-namespace-import",
 		]);
 	});

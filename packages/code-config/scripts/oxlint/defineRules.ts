@@ -15,13 +15,13 @@ type RemoveIndexSignature<
 	)]: GenericObject[GenericKey];
 };
 
-type StrictRuleMap = RemoveIndexSignature<DummyRuleMap>;
+export type OxlintRules = RemoveIndexSignature<DummyRuleMap>;
 
 export function defineRules<
-	const GenericRules extends StrictRuleMap,
+	const GenericRules extends OxlintRules,
 >(
 	rules: GenericRules & Record<
-		Exclude<keyof GenericRules, keyof StrictRuleMap>,
+		Exclude<keyof GenericRules, keyof OxlintRules>,
 		never
 	>,
 ): GenericRules {

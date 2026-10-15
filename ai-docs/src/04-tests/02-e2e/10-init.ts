@@ -5,11 +5,11 @@
  */
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import * as DServerCommon from "@duplojs/server/common";
+import * as DSCommon from "@duplojs/server/common";
 import { createWebsite, type Website } from "@duplojs/playwright";
 import test, { defineConfig, devices } from "playwright/test";
 
-const envs = await DServerCommon.environmentVariableOrThrow(
+const envs = await DSCommon.environmentVariableOrThrow(
 	{
 		BASE_URL: DDataStructure.string([DDataStructure.url()]),
 		CI: DDataStructure.boolean(),

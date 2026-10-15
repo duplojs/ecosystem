@@ -1,19 +1,20 @@
-import { defineConfig } from "oxlint";
-import { openConfig, testPreset } from "@duplojs/code-config/oxlint";
+import { engineConfig, createOxlintOverride, oxlint } from "@duplojs/code-config/oxlint";
 
-export default defineConfig({
-	extends: [openConfig],
+export default oxlint.defineConfig({
+	extends: [engineConfig],
 	overrides: [
-		{
+		createOxlintOverride({
+			files: ["**/*"],
+			ruleset: { open: true },
+		}),
+		createOxlintOverride({
 			files: [
 				"**/*.test.ts",
 				"**/*.bench.ts",
 				"integrations/**/*.ts",
 			],
-			rules: {
-				...testPreset.rules,
-			},
-		},
+			ruleset: { test: true },
+		}),
 	],
 	ignorePatterns: ["dist/**"],
 });

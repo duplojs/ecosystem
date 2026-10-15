@@ -1,4 +1,3 @@
-// oxlint-disable-next-line duplojs-plugin/no-restricted-import
 import { TESTImplementation, setEnvironment } from "@duplojs/server";
 import type * as DSFile from "@duplojs/server/file";
 import * as DEither from "@duplojs/lang/either";

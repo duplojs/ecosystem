@@ -5,7 +5,7 @@
  */
 import { ResponseContract, useRouteBuilder, controlBodyAsFormData } from "@duplojs/http";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import * as DServerDataStructure from "@duplojs/server/dataStructure";
+import * as DSDataStructure from "@duplojs/server/dataStructure";
 
 const userStructure = DDataStructure.object({
 	id: DDataStructure.string([DDataStructure.uuid()]),
@@ -157,7 +157,7 @@ useRouteBuilder(
 			title: DDataStructure.string(),
 			userId: DDataStructure.number(),
 			files: DDataStructure.array(
-				DServerDataStructure.file(),
+				DSDataStructure.file(),
 				[DDataStructure.maxElements(3)],
 			),
 		},

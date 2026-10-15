@@ -1,7 +1,6 @@
 import { ResponseContract, useRouteBuilder, Request, PredictedResponse } from "@core";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DPath from "@duplojs/lang/path";
-// oxlint-disable-next-line duplojs-plugin/no-restricted-import
 import { setEnvironment, TESTImplementation } from "@duplojs/server";
 import * as DSDataStructure from "@duplojs/server/dataStructure";
 import * as DSFile from "@duplojs/server/file";

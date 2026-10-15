@@ -1,19 +1,23 @@
-import { openConfig, testPreset, oxlint } from "@duplojs/code-config/oxlint";
+import { engineConfig, createOxlintOverride, oxlint } from "@duplojs/code-config/oxlint";
 
 export default oxlint.defineConfig({
-	extends: [openConfig],
+	extends: [engineConfig],
 	overrides: [
-		{
+		createOxlintOverride({
+			files: ["**/*"],
+			ruleset: { open: true },
+		}),
+		createOxlintOverride({
 			files: [
 				"**/*.test.ts",
 				"integrations/**/*.ts",
 			],
 			excludeFiles: ["**/*.d.ts"],
-			rules: {
-				...testPreset.rules,
+			ruleset: { test: true },
+			customRules: {
 				"typescript/no-confusing-void-expression": "off",
 			},
-		},
+		}),
 	],
 	ignorePatterns: ["dist/**", "integrations/dist/**"],
 });

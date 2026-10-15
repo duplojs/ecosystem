@@ -6,8 +6,8 @@
  */
 import * as DCommon from "@duplojs/lang/common";
 import type * as DPath from "@duplojs/lang/path";
-import * as DServerCommon from "@duplojs/server/common";
-import * as DServerFile from "@duplojs/server/file";
+import * as DSCommon from "@duplojs/server/common";
+import * as DSFile from "@duplojs/server/file";
 import { createHub } from "@duplojs/http";
 import { createHttpServer } from "@duplojs/http/node";
 
@@ -15,13 +15,13 @@ import { createHttpServer } from "@duplojs/http/node";
 const resourcePath: string & DPath.Path = DCommon.cast("/resources/config.json");
 
 // DEither.Right<file-system-write-json-file, void> | DEither.Left<...> | ...
-const writeJsonResult = await DServerFile.writeJsonFile(resourcePath, { version: 1.0 });
+const writeJsonResult = await DSFile.writeJsonFile(resourcePath, { version: 1.0 });
 
 // DEither.Error<unknown> | DEither.Success<string & DPath.Path>
-const currentWorkingDirectoryResult = DServerCommon.getCurrentWorkDirectory();
+const currentWorkingDirectoryResult = DSCommon.getCurrentWorkDirectory();
 
 // string[]
-const processArguments = DServerCommon.getProcessArguments();
+const processArguments = DSCommon.getProcessArguments();
 
 const hub = createHub({
 	environment: "DEV",

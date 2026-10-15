@@ -1,5 +1,4 @@
 import { createHub, launchHookServer, ResponseContract, useRouteBuilder } from "@core";
-// oxlint-disable-next-line duplojs-plugin/no-restricted-import
 import { setEnvironment, TESTImplementation } from "@duplojs/server";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";

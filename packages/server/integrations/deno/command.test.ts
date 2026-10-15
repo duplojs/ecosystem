@@ -1,7 +1,6 @@
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
-// oxlint-disable-next-line duplojs-plugin/no-restricted-import
 import { TESTImplementation, setEnvironment } from "@duplojs/server";
 import * as DSCommand from "@duplojs/server/command";
 import assert from "node:assert/strict";

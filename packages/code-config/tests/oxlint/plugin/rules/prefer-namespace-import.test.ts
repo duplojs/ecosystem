@@ -1,3 +1,4 @@
+
 import { RuleTester } from "oxlint/plugins-dev";
 import { DOxlint } from "@scripts";
 
@@ -7,26 +8,30 @@ RuleTester.it = it;
 const options = [
 	{
 		paths: {
-			"@duplojs/lang/array": "DArray",
-			"@duplojs/lang/either": "DEither",
+			"path/to": "NomChoisi",
+			"path/other": "Other",
 		},
 	},
 ];
 
-const ambiguousOptions = [
-	{
-		paths: {
-			"@duplojs/lang/either": "DEither",
-			"@duplojs/lang/other-either": "DEither",
-		},
-	},
-];
+const invalid = (
+	name: string,
+	code: string,
+	output: string | null,
+	errorCount = 1,
+) => ({
+	name,
+	code,
+	output,
+	options,
+	errors: Array.from({ length: errorCount }, () => ({
+		messageId: "preferNamespaceImport",
+	})),
+});
 
 const ruleTester = new RuleTester({
 	languageOptions: {
-		parserOptions: {
-			lang: "ts",
-		},
+		parserOptions: { lang: "ts" },
 	},
 });
 
@@ -36,778 +41,413 @@ ruleTester.run(
 	{
 		valid: [
 			{
-				name: "ignores when no path is configured",
-				code: `
-					import { MinElement } from "@duplojs/lang/array";
-					type TT = MinElement;
-				`,
+				name: "ignores imports without configuration",
+				code: `import { test } from "path/to";
+test();`,
 			},
 			{
-				name: "ignores unconfigured paths",
-				code: `
-					import { MinElement } from "@duplojs/lang/object";
-					type TT = MinElement;
-				`,
+				name: "ignores paths not configured",
+				code: `import { test } from "path/else";
+test();`,
 				options,
 			},
 			{
-				name: "accepts namespace import",
-				code: `
-					import * as DArray from "@duplojs/lang/array";
-					type TT = DArray.MinElement;
-				`,
+				name: "matches exact paths, not prefixes",
+				code: `import { test } from "path/to/child";
+test();`,
 				options,
 			},
 			{
-				name: "accepts default import",
-				code: `
-					import array from "@duplojs/lang/array";
-					array();
-				`,
+				name: "ignores parent barrel imports",
+				code: `import { NomChoisi } from "path";
+NomChoisi.test();`,
 				options,
 			},
 			{
-				name: "accepts side effect import",
-				code: `
-					import "@duplojs/lang/array";
-				`,
+				name: "accepts a correct namespace import",
+				code: `import * as NomChoisi from "path/to";
+NomChoisi.test();`,
 				options,
 			},
 			{
-				name: "ignores regular imports from parent barrel",
-				code: `
-					import { pipe } from "@duplojs/lang";
-					pipe(value);
-				`,
+				name: "accepts a correct type-only namespace import",
+				code: `import type * as NomChoisi from "path/to";
+type T = NomChoisi.EE;`,
 				options,
 			},
 			{
-				name: "ignores string exports from parent barrel",
-				code: `
-					import { "DEither" as Either } from "@duplojs/lang";
-					Either;
-				`,
+				name: "accepts default-only imports",
+				code: `import value from "path/to";
+value();`,
 				options,
 			},
 			{
-				name: "ignores ambiguous barrel namespaces",
-				code: `
-					import { DEither } from "@duplojs/lang";
-					DEither.left("value");
-				`,
-				options: ambiguousOptions,
+				name: "accepts side-effect imports",
+				code: "import \"path/to\";",
+				options,
+			},
+			{
+				name: "ignores direct re-exports",
+				code: "export { test } from \"path/to\";",
+				options,
+			},
+			{
+				name: "ignores namespace re-exports",
+				code: "export * as Alias from \"path/to\";",
+				options,
+			},
+			{
+				name: "ignores dynamic imports",
+				code: "const module = import(\"path/to\");",
+				options,
 			},
 		],
-
 		invalid: [
-			{
-				name: "converts named imports and their references",
-				code: `
-					import { MinElement, chunk as chunkArray } from "@duplojs/lang/array";
+			invalid(
+				"fixes safe imports alongside an unfixable collision",
+				`import { test } from "path/to";
+import { other } from "path/other";
+const Other = {};
+test(other());`,
+				`import * as NomChoisi from "path/to";
+import { other } from "path/other";
+const Other = {};
+NomChoisi.test(other());`,
+				2,
+			),
+			invalid(
+				"converts named value and type imports",
+				`import { test, type EE } from "path/to";
+test();
+type TT = EE;`,
+				`import * as NomChoisi from "path/to";
+NomChoisi.test();
+type TT = NomChoisi.EE;`,
+			),
+			invalid(
+				"converts multiple named value imports",
+				`import { first, second } from "path/to";
+first(second());`,
+				`import * as NomChoisi from "path/to";
+NomChoisi.first(NomChoisi.second());`,
+			),
+			invalid(
+				"uses the imported name rather than its local alias",
+				`import { test as renamed, type EE as Alias } from "path/to";
+renamed();
+type T = Alias;`,
+				`import * as NomChoisi from "path/to";
+NomChoisi.test();
+type T = NomChoisi.EE;`,
+			),
+			invalid(
+				"preserves type-only declarations",
+				`import type { EE } from "path/to";
+type T = EE;`,
+				`import type * as NomChoisi from "path/to";
+type T = NomChoisi.EE;`,
+			),
+			invalid(
+				"converts a single inline type import",
+				`import { type EE } from "path/to";
+type T = EE;`,
+				`import type * as NomChoisi from "path/to";
+type T = NomChoisi.EE;`,
+			),
+			invalid(
+				"converts multiple inline type imports",
+				`import { type EE, type FF } from "path/to";
+type T = [EE, FF];`,
+				`import type * as NomChoisi from "path/to";
+type T = [NomChoisi.EE, NomChoisi.FF];`,
+			),
+			invalid(
+				"preserves a default import alongside named imports",
+				`import value, { test } from "path/to";
+value(test());`,
+				`import value, * as NomChoisi from "path/to";
+value(NomChoisi.test());`,
+			),
+			invalid(
+				"converts string-literal exported names",
+				`import { "foo-bar" as fooBar } from "path/to";
+fooBar();`,
+				`import * as NomChoisi from "path/to";
+NomChoisi["foo-bar"]();`,
+			),
+			invalid(
+				"converts named default exports",
+				`import { default as run } from "path/to";
+run();`,
+				`import * as NomChoisi from "path/to";
+NomChoisi.default();`,
+			),
+			invalid(
+				"updates every reference of the imported binding",
+				`import { test } from "path/to";
+test();
+const f = test;
+export default test;`,
+				`import * as NomChoisi from "path/to";
+NomChoisi.test();
+const f = NomChoisi.test;
+export default NomChoisi.test;`,
+			),
+			invalid(
+				"preserves object shorthand keys",
+				`import { test } from "path/to";
+const object = { test };`,
+				`import * as NomChoisi from "path/to";
+const object = { test: NomChoisi.test };`,
+			),
+			invalid(
+				"does not rewrite shadowed references",
+				`import { test } from "path/to";
+test();
+function run(test: string) {
+	return test;
+}`,
+				`import * as NomChoisi from "path/to";
+NomChoisi.test();
+function run(test: string) {
+	return test;
+}`,
+			),
+			invalid(
+				"renames an existing namespace import",
+				`import * as Alias from "path/to";
+Alias.test();
+const object = { Alias };`,
+				`import * as NomChoisi from "path/to";
+NomChoisi.test();
+const object = { Alias: NomChoisi };`,
+			),
+			invalid(
+				"renames a type-only namespace import",
+				`import type * as Alias from "path/to";
+type T = Alias.EE;`,
+				`import type * as NomChoisi from "path/to";
+type T = NomChoisi.EE;`,
+			),
+			invalid(
+				"preserves source quote style",
+				`import { test } from 'path/to';
+test();`,
+				`import * as NomChoisi from 'path/to';
+NomChoisi.test();`,
+			),
+			invalid(
+				"uses the namespace configured for another path",
+				`import { test } from "path/other";
+test();`,
+				`import * as Other from "path/other";
+Other.test();`,
+			),
+			invalid(
+				"converts multiple distinct configured paths",
+				`import { test } from "path/to";
+import { other } from "path/other";
+test(other());`,
+				`import * as NomChoisi from "path/to";
+import * as Other from "path/other";
+NomChoisi.test(Other.other());`,
+				2,
+			),
+			invalid(
+				"reuses an existing value namespace import",
+				`import * as NomChoisi from "path/to";
+import { test } from "path/to";
+test();`,
+				`import * as NomChoisi from "path/to";
 
-					type TT = MinElement;
-					const result = chunkArray(values);
-					const object = { chunkArray };
+NomChoisi.test();`,
+			),
+			invalid(
+				"reuses an existing type namespace import for types",
+				`import type * as NomChoisi from "path/to";
+import type { EE } from "path/to";
+type T = EE;`,
+				`import type * as NomChoisi from "path/to";
 
-					function test(MinElement: string) {
-						return MinElement;
-					}
-				`,
-				output: `
-					import * as DArray from "@duplojs/lang/array";
+type T = NomChoisi.EE;`,
+			),
+			invalid(
+				"reuses value namespace imports for type references",
+				`import * as NomChoisi from "path/to";
+import { type EE } from "path/to";
+type T = EE;`,
+				`import * as NomChoisi from "path/to";
 
-					type TT = DArray.MinElement;
-					const result = DArray.chunk(values);
-					const object = { chunkArray: DArray.chunk };
-
-					function test(MinElement: string) {
-						return MinElement;
-					}
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "uses imported name instead of local alias",
-				code: `
-					import { MinElement as Min } from "@duplojs/lang/array";
-					type TT = Min;
-				`,
-				output: `
-					import * as DArray from "@duplojs/lang/array";
-					type TT = DArray.MinElement;
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "supports string named exports",
-				code: `
-					import { "foo-bar" as fooBar } from "@duplojs/lang/array";
-					fooBar();
-				`,
-				output: `
-					import * as DArray from "@duplojs/lang/array";
-					DArray["foo-bar"]();
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "preserves type-only declaration",
-				code: `
-					import type { MinElement } from "@duplojs/lang/array";
-					type TT = MinElement;
-				`,
-				output: `
-					import type * as DArray from "@duplojs/lang/array";
-					type TT = DArray.MinElement;
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "converts type-only specifier",
-				code: `
-					import { type MinElement } from "@duplojs/lang/array";
-					type TT = MinElement;
-				`,
-				output: `
-					import type * as DArray from "@duplojs/lang/array";
-					type TT = DArray.MinElement;
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "converts mixed type and value imports",
-				code: `
-					import { type MinElement, chunk } from "@duplojs/lang/array";
-
-					type TT = MinElement;
-					const result = chunk(values);
-				`,
-				output: `
-					import * as DArray from "@duplojs/lang/array";
-
-					type TT = DArray.MinElement;
-					const result = DArray.chunk(values);
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "preserves default import",
-				code: `
-					import array, { MinElement } from "@duplojs/lang/array";
-
-					array();
-					type TT = MinElement;
-				`,
-				output: `
-					import array, * as DArray from "@duplojs/lang/array";
-
-					array();
-					type TT = DArray.MinElement;
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "does not fix namespace collision",
-				code: `
-					import { MinElement } from "@duplojs/lang/array";
-
-					const DArray = {};
-					type TT = MinElement;
-				`,
-				output: null,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "does not fix multiple imports from the same path",
-				code: `
-					import { MinElement } from "@duplojs/lang/array";
-					import { chunk } from "@duplojs/lang/array";
-
-					type TT = MinElement;
-					chunk(values);
-				`,
-				output: null,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "does not fix re-exported bindings",
-				code: `
-					import { MinElement } from "@duplojs/lang/array";
-					export { MinElement };
-				`,
-				output: null,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-
-			{
-				name: "converts namespace exported from parent barrel",
-				code: `
-					import { DEither } from "@duplojs/lang";
-
-					const result = DEither.left("value");
-				`,
-				output: `
-					import * as DEither from "@duplojs/lang/either";
-
-					const result = DEither.left("value");
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "converts multiple namespaces exported from parent barrel",
-				code: `
-					import { DEither, DArray } from "@duplojs/lang";
-
-					DEither.left("value");
-					DArray.first([]);
-				`,
-				output: `
-					import * as DEither from "@duplojs/lang/either";
-					import * as DArray from "@duplojs/lang/array";
-
-					DEither.left("value");
-					DArray.first([]);
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "preserves named imports from parent barrel",
-				code: `
-					import { pipe, DEither } from "@duplojs/lang";
-
-					pipe(DEither.left("value"));
-				`,
-				output: `
-					import { pipe } from "@duplojs/lang";
-					import * as DEither from "@duplojs/lang/either";
-
-					pipe(DEither.left("value"));
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "preserves default and named imports from parent barrel",
-				code: `
-					import lang, { pipe, DEither } from "@duplojs/lang";
-
-					lang();
-					pipe(DEither.left("value"));
-				`,
-				output: `
-					import lang, { pipe } from "@duplojs/lang";
-					import * as DEither from "@duplojs/lang/either";
-
-					lang();
-					pipe(DEither.left("value"));
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "rewrites aliased barrel namespace",
-				code: `
-					import { DEither as Either } from "@duplojs/lang";
-
-					const result = Either.left("value");
-				`,
-				output: `
-					import * as DEither from "@duplojs/lang/either";
-
-					const result = DEither.left("value");
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "rewrites aliased barrel namespace shorthand",
-				code: `
-					import { DEither as Either } from "@duplojs/lang";
-
-					const object = { Either };
-				`,
-				output: `
-					import * as DEither from "@duplojs/lang/either";
-
-					const object = { Either: DEither };
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "preserves barrel namespace references when name already matches",
-				code: `
-					import { DEither } from "@duplojs/lang";
-
-					export { DEither };
-				`,
-				output: `
-					import * as DEither from "@duplojs/lang/either";
-
-					export { DEither };
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "does not fix aliased re-exported barrel namespace",
-				code: `
-					import { DEither as Either } from "@duplojs/lang";
-
-					export { Either };
-				`,
-				output: null,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "does not fix barrel namespace collision",
-				code: `
-					import { DEither as Either } from "@duplojs/lang";
-
-					const DEither = {};
-					Either.left("value");
-				`,
-				output: null,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "converts type-only namespace from parent barrel",
-				code: `
-					import type { DEither } from "@duplojs/lang";
-
-					type TT = DEither.Left<string>;
-				`,
-				output: `
-					import type * as DEither from "@duplojs/lang/either";
-
-					type TT = DEither.Left<string>;
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "converts type-only namespace specifier from parent barrel",
-				code: `
-					import { type DEither, pipe } from "@duplojs/lang";
-
-					type TT = DEither.Left<string>;
-					pipe(value);
-				`,
-				output: `
-					import { pipe } from "@duplojs/lang";
-					import type * as DEither from "@duplojs/lang/either";
-
-					type TT = DEither.Left<string>;
-					pipe(value);
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "does not match similarly prefixed packages",
-				code: `
-					import { DEither } from "@duplojs/lang";
-
-					DEither.left("value");
-				`,
-				output: `
-					import * as DEither from "@duplojs/lang/either";
-
-					DEither.left("value");
-				`,
-				options: [
-					{
-						paths: {
-							"@duplojs/lang-extra/either": "DEither",
-							"@duplojs/lang/either": "DEither",
-						},
-					},
-				],
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "preserves only default import from parent barrel",
-				code: `
-					import lang, { DEither } from "@duplojs/lang";
-
-					lang();
-					DEither.left("value");
-				`,
-				output: `
-					import lang from "@duplojs/lang";
-					import * as DEither from "@duplojs/lang/either";
-
-					lang();
-					DEither.left("value");
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "reuses existing namespace import",
-				code: `
-					import * as DArray from "@duplojs/lang/array";
-					import { MinElement, chunk as chunkArray } from "@duplojs/lang/array";
-
-					type TT = MinElement;
-					const result = chunkArray(values);
-				`,
-				output: `
-					import * as DArray from "@duplojs/lang/array";
-
-					type TT = DArray.MinElement;
-					const result = DArray.chunk(values);
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "preserves default import when reusing existing namespace import",
-				code: `
-					import * as DArray from "@duplojs/lang/array";
-					import array, { MinElement } from "@duplojs/lang/array";
-
-					array();
-					type TT = MinElement;
-				`,
-				output: `
-					import * as DArray from "@duplojs/lang/array";
-					import array from "@duplojs/lang/array";
-
-					array();
-					type TT = DArray.MinElement;
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "reuses existing namespace import from parent barrel",
-				code: `
-					import * as DEither from "@duplojs/lang/either";
-					import { DEither as Either } from "@duplojs/lang";
-
-					const result = Either.left("value");
-				`,
-				output: `
-					import * as DEither from "@duplojs/lang/either";
-					
-
-					const result = DEither.left("value");
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "reuses existing type namespace import",
-				code: `
-					import type * as DArray from "@duplojs/lang/array";
-					import type { MinElement } from "@duplojs/lang/array";
-
-					type TT = MinElement;
-				`,
-				output: `
-					import type * as DArray from "@duplojs/lang/array";
-
-					type TT = DArray.MinElement;
-				`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "does not reuse type namespace import for value import",
-				code: `
-					import type * as DArray from "@duplojs/lang/array";
-					import { chunk } from "@duplojs/lang/array";
-
-					const result = chunk(values);
-				`,
-				output: null,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
-			{
-				name: "removes reused import at end of file",
-				code: `
-					import * as DArray from "@duplojs/lang/array";
-					import { MinElement } from "@duplojs/lang/array";`,
-				output: `
-					import * as DArray from "@duplojs/lang/array";
-`,
-				options,
-				errors: [
-					{
-						messageId: "preferNamespaceImport",
-					},
-				],
-			},
+type T = NomChoisi.EE;`,
+			),
+			invalid(
+				"reuses a namespace and preserves the default import",
+				`import * as NomChoisi from "path/to";
+import value, { test } from "path/to";
+value(test());`,
+				`import * as NomChoisi from "path/to";
+import value from "path/to";
+value(NomChoisi.test());`,
+			),
+			invalid(
+				"does not fix a top-level namespace collision",
+				`import { test } from "path/to";
+const NomChoisi = {};
+test();`,
+				null,
+			),
+			invalid(
+				"does not fix a namespace collision within a function",
+				`import { test } from "path/to";
+function run(NomChoisi: unknown) {
+	test();
+}`,
+				null,
+			),
+			invalid(
+				"does not fix multiple named imports from the same path",
+				`import { first } from "path/to";
+import { second } from "path/to";
+first(second());`,
+				null,
+				2,
+			),
+			invalid(
+				"does not reuse a type namespace import for values",
+				`import type * as NomChoisi from "path/to";
+import { test } from "path/to";
+test();`,
+				null,
+			),
+			invalid(
+				"does not fix imported bindings re-exported locally",
+				`import { test } from "path/to";
+export { test };`,
+				null,
+			),
+			invalid(
+				"does not fix namespace aliases re-exported locally",
+				`import * as Alias from "path/to";
+export { Alias };`,
+				null,
+			),
+			invalid(
+				"does not discard comments inside import specifiers",
+				`import { /* keep */ test } from "path/to";
+test();`,
+				null,
+			),
 		],
 	},
 );
 
 describe("prefer-namespace-import defensive branches", () => {
-	it("does not produce a fix when import tokens are invalid", () => {
-		const invalidTokens = [
-			[null, null],
-			[
-				{
-					value: "{",
-					range: [0, 1],
-				},
-				null,
-			],
-			[
-				{
-					value: "(",
-					range: [0, 1],
-				},
-				{
-					value: "}",
-					range: [2, 3],
-				},
-			],
-			[
-				{
-					value: "{",
-					range: [0, 1],
-				},
-				{
-					value: ")",
-					range: [2, 3],
-				},
-			],
-		];
-
-		for (const [openingBrace, closingBrace] of invalidTokens) {
-			let reportDescriptor = undefined as
-				| {
-					fix(fixer: unknown): unknown;
-				}
-				| undefined;
-
-			const sourceCode = {
+	it("reports without fixing when binding metadata is missing", () => {
+		const report = vi.fn();
+		const listeners = DOxlint.preferNamespaceImport.create({
+			options,
+			report,
+			sourceCode: {
 				getDeclaredVariables: () => [],
-				getTokenBefore: () => openingBrace,
-				getTokenAfter: () => closingBrace,
-			};
+				getScope: () => ({
+					set: new Map(),
+					upper: null,
+				}),
+				getTokenBefore: () => ({ value: "{" }),
+				getTokenAfter: () => ({ value: "}" }),
+				getCommentsInside: () => [],
+			},
+		} as never);
 
-			const context = {
-				options,
-				sourceCode,
-				report(descriptor: unknown) {
-					reportDescriptor = descriptor as typeof reportDescriptor;
-				},
-			};
-
-			const importNode = {
-				type: "ImportDeclaration",
-				source: {
-					value: "@duplojs/lang/array",
-				},
-				specifiers: [
-					{
-						type: "ImportSpecifier",
-						imported: {
-							type: "Identifier",
-							name: "MinElement",
-						},
-						local: {
-							type: "Identifier",
-							name: "MinElement",
-						},
-					},
-				],
-			};
-
-			const listeners = DOxlint.preferNamespaceImport.create(
-				context as never,
-			);
-
-			listeners.Program?.(
+		listeners.ImportDeclaration?.({
+			type: "ImportDeclaration",
+			source: { value: "path/to" },
+			specifiers: [
 				{
-					type: "Program",
-					body: [importNode],
-				} as never,
-			);
+					type: "ImportSpecifier",
+					imported: {
+						type: "Identifier",
+						name: "test",
+					},
+					local: {
+						type: "Identifier",
+						name: "test",
+					},
+				},
+			],
+		} as never);
+		listeners["Program:exit"]?.({} as never);
 
-			listeners.ImportDeclaration?.(
-				importNode as never,
-			);
-
-			expect(reportDescriptor).toBeDefined();
-
-			expect(
-				reportDescriptor?.fix?.({}),
-			).toBeNull();
-		}
+		expect(report).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({
+			messageId: "preferNamespaceImport",
+			fix: undefined,
+		}));
 	});
 
-	it("ignores namespace import without declared variable", () => {
-		const sourceCode = {
-			getDeclaredVariables: () => [],
-		};
-
-		const context = {
-			options,
-			sourceCode,
-			report: () => undefined,
-		};
-
-		const importNode = {
+	it("does not remove a default import when its separator token is invalid", () => {
+		const report = vi.fn();
+		const binding = { references: [] };
+		const namespaceImport = {
 			type: "ImportDeclaration",
-			source: {
-				value: "@duplojs/lang/array",
-			},
+			source: { value: "path/to" },
 			specifiers: [
 				{
 					type: "ImportNamespaceSpecifier",
+					local: { name: "NomChoisi" },
+				},
+			],
+		};
+		const importNode = {
+			type: "ImportDeclaration",
+			source: { value: "path/to" },
+			specifiers: [
+				{
+					type: "ImportDefaultSpecifier",
+					local: { name: "value" },
+				},
+				{
+					type: "ImportSpecifier",
+					imported: {
+						type: "Identifier",
+						name: "test",
+					},
 					local: {
 						type: "Identifier",
-						name: "DArray",
+						name: "test",
 					},
 				},
 			],
 		};
+		const getTokenBefore = vi.fn()
+			.mockReturnValueOnce({
+				value: "{",
+				range: [10, 11],
+			})
+			.mockReturnValueOnce({ value: ";" });
+		const listeners = DOxlint.preferNamespaceImport.create({
+			options,
+			report,
+			sourceCode: {
+				getDeclaredVariables: () => [binding],
+				getScope: () => ({
+					set: new Map(),
+					upper: null,
+				}),
+				getTokenBefore,
+				getTokenAfter: () => ({
+					value: "}",
+					range: [20, 21],
+				}),
+				getCommentsInside: () => [],
+			},
+		} as never);
 
-		const listeners = DOxlint.preferNamespaceImport.create(
-			context as never,
-		);
+		listeners.Program?.({ body: [namespaceImport, importNode] } as never);
+		listeners.ImportDeclaration?.(importNode as never);
+		listeners["Program:exit"]?.({} as never);
+		const [{ fix }] = report.mock.calls[0]!;
+		const result = fix({});
 
-		expect(() => {
-			listeners.Program?.(
-				{
-					type: "Program",
-					body: [importNode],
-				} as never,
-			);
-		}).not.toThrow();
+		expect(result).toEqual([]);
 	});
 });

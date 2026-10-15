@@ -5,14 +5,14 @@
  */
 import type * as DPath from "@duplojs/lang/path";
 import * as DCommon from "@duplojs/lang/common";
-import * as DServerFile from "@duplojs/server/file";
+import * as DSFile from "@duplojs/server/file";
 import * as DEither from "@duplojs/lang/either";
 
 const textResourcePath: string & DPath.Path = DCommon.cast("/path/to/text/resource");
 
 // Les fonctions de `@duplojs/server/file` prennent des chemins contraints
 // et retournent un `Either` discriminable.
-const readTextResourceResult = await DServerFile.readTextFile(textResourcePath);
+const readTextResourceResult = await DSFile.readTextFile(textResourcePath);
 
 if (DEither.isRight(readTextResourceResult)) {
 	// DEither.Right<"file-system-read-text-file", string>

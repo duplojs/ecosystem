@@ -5,7 +5,6 @@
  */
 import * as DEither from "@duplojs/lang/either";
 // Ces deux outils sont des exports directs du package, sans sous-export dédié.
-// oxlint-disable-next-line duplojs-plugin/no-restricted-import
 import { TESTImplementation, setEnvironment } from "@duplojs/server";
 import * as DSCommand from "@duplojs/server/command";
 import { afterEach, describe, expect, it, vi } from "vitest";

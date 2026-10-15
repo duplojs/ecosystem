@@ -6,7 +6,6 @@ import * as DSFile from "@duplojs/server/file";
 import { EventEmitter } from "stream";
 import { testHub } from "@test-utils/hub";
 import * as DCommon from "@duplojs/lang/common";
-// oxlint-disable-next-line duplojs-plugin/no-restricted-import
 import { setEnvironment, TESTImplementation } from "@duplojs/server";
 import * as DPath from "@duplojs/lang/path";
 

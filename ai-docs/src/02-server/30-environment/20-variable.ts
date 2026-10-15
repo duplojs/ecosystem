@@ -4,13 +4,13 @@
  * Chargement de sources d'environnement, validation par `DataStructure` et
  * obtention d'une configuration typée.
  */
-import * as DServerCommon from "@duplojs/server/common";
+import * as DSCommon from "@duplojs/server/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DCommon from "@duplojs/lang/common";
 
 // `environmentVariableOrThrow` est adaptée au démarrage d'une application :
 // une configuration invalide interrompt directement l'initialisation.
-const envs = await DServerCommon.environmentVariableOrThrow(
+const envs = await DSCommon.environmentVariableOrThrow(
 	{
 		host: DDataStructure.literal(["0.0.0.0", "127.0.0.1", "localhost"]),
 		port: DDataStructure.number([DDataStructure.positive()]),

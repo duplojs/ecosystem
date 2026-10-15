@@ -1,4 +1,3 @@
-// oxlint-disable-next-line duplojs-plugin/no-restricted-import
 import { setEnvironment, TESTImplementation } from "@duplojs/server";
 import * as DSFile from "@duplojs/server/file";
 import { createHub, launchHookServer } from "@core";

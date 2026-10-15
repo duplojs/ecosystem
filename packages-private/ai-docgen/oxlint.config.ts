@@ -1,6 +1,11 @@
-import { defineConfig } from "oxlint";
-import { openConfig } from "@duplojs/code-config/oxlint";
+import { engineConfig, createOxlintOverride, oxlint } from "@duplojs/code-config/oxlint";
 
-export default defineConfig({
-	extends: [openConfig],
+export default oxlint.defineConfig({
+	extends: [engineConfig],
+	overrides: [
+		createOxlintOverride({
+			files: ["**/*"],
+			ruleset: { open: true },
+		}),
+	],
 });
