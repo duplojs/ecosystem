@@ -45,7 +45,7 @@ describe("readDirectory", () => {
 		expect(paths).toStrictEqual(["a", "b"]);
 	});
 
-	it("returns names without recursion with default pathMode", async() => {
+	it("returns names without recursion with absolute disabled", async() => {
 		setEnvironment("NODE");
 		const fs = setFsPromisesMock({
 			readdir: vi.fn().mockResolvedValue(["a", "b"]),
@@ -53,7 +53,7 @@ describe("readDirectory", () => {
 
 		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), {
 			recursive: false,
-			pathMode: "default",
+			absolute: false,
 		});
 		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
 
@@ -63,7 +63,7 @@ describe("readDirectory", () => {
 		expect(paths).toStrictEqual(["a", "b"]);
 	});
 
-	it("normalizes relative paths with recursive default pathMode", async() => {
+	it("normalizes relative paths with recursion and absolute disabled", async() => {
 		setEnvironment("NODE");
 		const fs = setFsPromisesMock({
 			readdir: vi.fn().mockResolvedValue(["a", "nested//b", "nested/deep/c"]),
@@ -71,7 +71,7 @@ describe("readDirectory", () => {
 
 		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), {
 			recursive: true,
-			pathMode: "default",
+			absolute: false,
 		});
 		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
 
@@ -81,7 +81,7 @@ describe("readDirectory", () => {
 		expect(paths).toStrictEqual(["a", "nested/b", "nested/deep/c"]);
 	});
 
-	it("returns normalized paths using each parentPath with absolute pathMode", async() => {
+	it("returns normalized paths using each parentPath with absolute enabled", async() => {
 		setEnvironment("NODE");
 		vi.spyOn(process, "cwd").mockReturnValue("/workspace");
 		const fs = setFsPromisesMock({
@@ -99,7 +99,7 @@ describe("readDirectory", () => {
 
 		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), {
 			recursive: true,
-			pathMode: "absolute",
+			absolute: true,
 		});
 		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
 
@@ -112,7 +112,7 @@ describe("readDirectory", () => {
 		expect(paths).toStrictEqual(["/tmp/mock/a", "/tmp/mock/nested/b"]);
 	});
 
-	it("resolves relative parent paths from the current directory with absolute pathMode", async() => {
+	it("resolves relative parent paths from the current directory with absolute enabled", async() => {
 		setEnvironment("NODE");
 		vi.spyOn(process, "cwd").mockReturnValue("/workspace");
 		const fs = setFsPromisesMock({
@@ -130,7 +130,7 @@ describe("readDirectory", () => {
 
 		const result = await DSFile.readDirectory(DCommon.infer("mock"), {
 			recursive: true,
-			pathMode: "absolute",
+			absolute: true,
 		});
 		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
 
@@ -143,44 +143,81 @@ describe("readDirectory", () => {
 		expect(paths).toStrictEqual(["/workspace/mock/a", "/workspace/mock/nested/b"]);
 	});
 
-	it("preserves nested paths from an absolute input with recursive assembled pathMode", async() => {
+	it("infers absolute paths from a separately declared literal params object", async() => {
 		setEnvironment("NODE");
+		vi.spyOn(process, "cwd").mockReturnValue("/workspace");
 		const fs = setFsPromisesMock({
-			readdir: vi.fn().mockResolvedValue(["a", "nested//b", "nested/deep/c"]),
+			readdir: vi.fn().mockResolvedValue([
+				{
+					name: "a",
+					parentPath: "mock",
+				},
+			]),
 		});
+		const params = { absolute: true } as const;
 
-		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), {
-			recursive: true,
-			pathMode: "assembled",
-		});
+		const result = await DSFile.readDirectory(DCommon.infer("mock"), params);
 		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
 
-		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path)[], "strict">;
-
-		expect(fs.readdir).toHaveBeenCalledWith("/tmp/mock", {
-			recursive: true,
-		});
-		expect(paths).toStrictEqual(["/tmp/mock/a", "/tmp/mock/nested/b", "/tmp/mock/nested/deep/c"]);
-	});
-
-	it("preserves nested paths from a relative input with recursive assembled pathMode", async() => {
-		setEnvironment("NODE");
-		const fs = setFsPromisesMock({
-			readdir: vi.fn().mockResolvedValue(["a", "nested/b", "nested/deep/c"]),
-		});
-
-		const result = await DSFile.readDirectory(DCommon.infer("mock"), {
-			recursive: true,
-			pathMode: "assembled",
-		});
-		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
-
-		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path)[], "strict">;
+		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path & DPath.Absolute)[], "strict">;
 
 		expect(fs.readdir).toHaveBeenCalledWith("mock", {
-			recursive: true,
+			recursive: undefined,
+			withFileTypes: true,
 		});
-		expect(paths).toStrictEqual(["mock/a", "mock/nested/b", "mock/nested/deep/c"]);
+		expect(paths).toStrictEqual(["/workspace/mock/a"]);
+	});
+
+	it.each([
+		{
+			absolute: true,
+			entries: [
+				{
+					name: "a",
+					parentPath: "mock",
+				},
+			],
+			expected: ["/workspace/mock/a"],
+			expectedOptions: {
+				recursive: undefined,
+				withFileTypes: true,
+			},
+		},
+		{
+			absolute: false,
+			entries: ["a"],
+			expected: ["a"],
+			expectedOptions: { recursive: undefined },
+		},
+	])("does not guarantee absolute paths for a boolean option ($absolute)", async({ absolute, entries, expected, expectedOptions }) => {
+		setEnvironment("NODE");
+		vi.spyOn(process, "cwd").mockReturnValue("/workspace");
+		const fs = setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue(entries),
+		});
+
+		const result = await DSFile.readDirectory(DCommon.infer("mock"), { absolute });
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+
+		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path)[], "strict">;
+
+		expect(fs.readdir).toHaveBeenCalledWith("mock", expectedOptions);
+		expect(paths).toStrictEqual(expected);
+	});
+
+	it("does not guarantee absolute paths for an optional true option", async() => {
+		setEnvironment("NODE");
+		setFsPromisesMock({
+			readdir: vi.fn().mockResolvedValue(["a"]),
+		});
+		const params: { absolute?: true } = {};
+
+		const result = await DSFile.readDirectory(DCommon.infer("mock"), params);
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+
+		type _Check = DCommon.ExpectType<typeof paths, readonly (string & DPath.Path)[], "strict">;
+
+		expect(paths).toStrictEqual(["a"]);
 	});
 
 	it("returns an empty array for an empty directory", async() => {
