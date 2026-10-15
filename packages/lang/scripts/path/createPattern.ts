@@ -73,15 +73,17 @@ export function createPattern(
 		}
 
 		const directorySyntax = pattern.endsWith("/");
+		const absolute = pattern.startsWith("/");
+		const relative = pattern.startsWith("./");
 
 		if (directorySyntax) {
 			pattern = pattern.slice(0, -1);
 		}
 
-		const anchored = pattern.startsWith("/");
-
-		if (anchored) {
+		if (absolute) {
 			pattern = pattern.slice(1);
+		} else if (relative) {
+			pattern = pattern.slice(2) || ".";
 		}
 
 		if (directorySyntax && pattern.endsWith("/**")) {
@@ -92,10 +94,15 @@ export function createPattern(
 			continue;
 		}
 
-		const rootRelative = anchored || pattern.includes("/");
-		let source = rootRelative
-			? "^/?"
-			: "(?:^|/)";
+		let source = "(?:^|/)";
+
+		if (absolute) {
+			source = "^/";
+		} else if (relative) {
+			source = "^(?!/)";
+		} else if (pattern.includes("/")) {
+			source = "^/?";
+		}
 
 		for (let index = 0; index < pattern.length; index++) {
 			const character = pattern.charAt(index);

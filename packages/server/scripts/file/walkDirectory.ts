@@ -7,11 +7,11 @@ import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import { type FileInterface, createFileInterface } from "./fileInterface";
 import { type FolderInterface, createFolderInterface } from "./folderInterface";
 import { createUnknownEntryInterface, type UnknownEntryInterface } from "./unknownEntryInterface";
-import * as DObject from "@duplojs/lang/object";
-import { getCurrentWorkDirectoryOrThrow } from "@scripts/common";
+import * as DSCommon from "@scripts/common";
 
 export interface WalkDirectoryParams {
 	recursive?: boolean;
+	matcher?: DPath.PathMatcher;
 }
 
 class WalkDirectoryErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-walk-directory-not-found", Error) {}
@@ -93,19 +93,26 @@ export const walkDirectory = implementFunction(
 		)
 			.then(
 				(result) => {
-					const currentWorkDirectory = getCurrentWorkDirectoryOrThrow();
+					const currentWorkDirectory = DSCommon.getCurrentWorkDirectoryOrThrow();
 
 					return DCommon.pipe(
 						result,
 						DGenerator.map(
+							(dirent) => ({
+								dirent,
+								path: DPath.resolveFrom(
+									currentWorkDirectory,
+									[DPath.normalize(`${dirent.parentPath}/${dirent.name}`)!],
+								),
+							}),
+						),
+						DGenerator.filter(
+							(value) => params?.matcher
+								? params?.matcher(DCommon.cast(value.path))
+								: true,
+						),
+						DGenerator.map(
 							DCommon.innerPipe(
-								(dirent) => ({
-									dirent,
-									path: DPath.resolveFrom(
-										currentWorkDirectory,
-										[DPath.normalize(`${dirent.parentPath}/${dirent.name}`)!],
-									),
-								}),
 								DPattern.when(
 									({ dirent }) => dirent.isFile(),
 									({ path }) => createFileInterface(

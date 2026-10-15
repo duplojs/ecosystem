@@ -1,4 +1,5 @@
-import { DPath, type ExpectType } from "@scripts";
+import type { ExpectType } from "@scripts/common";
+import * as DPath from "@scripts/path";
 
 describe("createPattern", () => {
 	it("returns a path matcher constrained by Path", () => {
@@ -16,145 +17,360 @@ describe("createPattern", () => {
 		matcher("index.ts");
 	});
 
-	it("keeps patterns as plain strings", () => {
-		const literalPattern = "*.ts" as const;
-		const broadPattern = "*.json" as string;
+	it.each([
+		{
+			pattern: "",
+			path: "index.ts",
+			expected: false,
+		},
+		{
+			pattern: "# comment",
+			path: "# comment",
+			expected: false,
+		},
+		{
+			pattern: ["**", "!"],
+			path: "index.ts",
+			expected: true,
+		},
+		{
+			pattern: "/",
+			path: "/",
+			expected: false,
+		},
+		{
+			pattern: "unfinished\\",
+			path: "unfinished",
+			expected: false,
+		},
+	])("ignores the pattern $pattern for $path", ({ pattern, path, expected }) => {
+		const matcher = DPath.createPattern(pattern);
 
-		expect(DPath.createPattern(literalPattern)(DPath.createOrThrow("index.ts"))).toBe(true);
-		expect(DPath.createPattern(broadPattern)(DPath.createOrThrow("package.json"))).toBe(true);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("ignores empty patterns and comments", () => {
-		const matcher = DPath.createPattern([
-			"",
-			"# comment",
-			"!",
-			"/",
-			"unfinished\\",
-			"*.ts",
-		]);
-
-		expect(matcher(DPath.createOrThrow("index.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("# comment"))).toBe(false);
-	});
-
-	it("treats a string as a single pattern", () => {
+	it.each([
+		{
+			path: "index.ts\npackage.json",
+			expected: true,
+		},
+		{
+			path: "index.ts",
+			expected: false,
+		},
+	])("treats a string as one pattern for $path", ({ path, expected }) => {
 		const matcher = DPath.createPattern("*.ts\n*.json");
 
-		expect(matcher(DPath.createOrThrow("index.ts\npackage.json"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("index.ts"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("style.css"))).toBe(false);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("matches literal paths and path components", () => {
+	it.each([
+		{
+			path: "README.md",
+			expected: true,
+		},
+		{
+			path: "docs/README.md",
+			expected: true,
+		},
+		{
+			path: "src/index.ts",
+			expected: true,
+		},
+		{
+			path: "/src/index.ts",
+			expected: true,
+		},
+		{
+			path: "app/src/index.ts",
+			expected: false,
+		},
+		{
+			path: "src/index.tsx",
+			expected: false,
+		},
+	])("matches literal paths and components for $path", ({ path, expected }) => {
 		const matcher = DPath.createPattern([
 			"README.md",
 			"src/index.ts",
 		]);
 
-		expect(matcher(DPath.createOrThrow("README.md"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("docs/README.md"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("src/index.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("app/src/index.ts"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("src/index.tsx"))).toBe(false);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("supports wildcards inside path segments", () => {
+	it.each([
+		{
+			path: "index.unit",
+			expected: true,
+		},
+		{
+			path: "nested/index.unit",
+			expected: true,
+		},
+		{
+			path: "/nested/index.unit",
+			expected: true,
+		},
+		{
+			path: "file1.json",
+			expected: true,
+		},
+		{
+			path: "file10.json",
+			expected: false,
+		},
+		{
+			path: "src/user.spec.ts",
+			expected: true,
+		},
+		{
+			path: "src/unit/user.spec.ts",
+			expected: false,
+		},
+	])("supports wildcards inside path segments for $path", ({ path, expected }) => {
 		const matcher = DPath.createPattern([
 			"*.unit",
 			"file?.json",
 			"src/*.spec.ts",
 		]);
 
-		expect(matcher(DPath.createOrThrow("index.unit"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("nested/index.unit"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("file1.json"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("file10.json"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("src/user.spec.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("src/unit/user.spec.ts"))).toBe(false);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("supports globstars at different positions", () => {
-		const matcher = DPath.createPattern([
-			"**/",
-			"/**",
-			"!/private/**",
-			"src/**/file.ts",
-			"src/**",
-			"!src/**/draft.ts",
-			"assets/**/",
-		]);
+	it.each([
+		{
+			pattern: "**/",
+			path: ".",
+			expected: true,
+		},
+		{
+			pattern: "**/",
+			path: "index.ts",
+			expected: true,
+		},
+		{
+			pattern: "**/",
+			path: "packages/lang/index.ts",
+			expected: true,
+		},
+		{
+			pattern: "/**",
+			path: "/index.ts",
+			expected: true,
+		},
+		{
+			pattern: "src/**/file.ts",
+			path: "src/file.ts",
+			expected: true,
+		},
+		{
+			pattern: "src/**/file.ts",
+			path: "src/deep/nested/file.ts",
+			expected: true,
+		},
+		{
+			pattern: "src/**",
+			path: "src",
+			expected: false,
+		},
+		{
+			pattern: "src/**",
+			path: "src/index.ts",
+			expected: true,
+		},
+		{
+			pattern: "src/**",
+			path: "src/deep/index.ts",
+			expected: true,
+		},
+		{
+			pattern: "assets/**/",
+			path: "assets",
+			expected: true,
+		},
+		{
+			pattern: "assets/**/",
+			path: "assets/logo.svg",
+			expected: true,
+		},
+		{
+			pattern: "assets/**/",
+			path: "assets/deep/logo.svg",
+			expected: true,
+		},
+	])("supports globstars in $pattern against $path", ({ pattern, path, expected }) => {
+		const matcher = DPath.createPattern(pattern);
 
-		expect(matcher(DPath.createOrThrow("."))).toBe(true);
-		expect(matcher(DPath.createOrThrow("index.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("packages/lang/index.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("/index.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("/private/token.txt"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("src/file.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("src/deep/nested/file.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("src"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("src/index.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("src/deep/index.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("src/draft.ts"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("src/deep/draft.ts"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("assets"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("assets/logo.svg"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("assets/deep/logo.svg"))).toBe(true);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("lets globstar negatives reinclude descendants according to the last rule", () => {
+	it.each([
+		{
+			path: "ignored/file.ts",
+			expected: true,
+		},
+		{
+			path: "ignored/public/file.ts",
+			expected: false,
+		},
+	])("applies the last matching globstar rule for $path", ({ path, expected }) => {
 		const matcher = DPath.createPattern([
 			"ignored/**",
 			"!ignored/public/**",
 		]);
 
-		expect(matcher(DPath.createOrThrow("ignored/file.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("ignored/public/file.ts"))).toBe(false);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("treats only segment-level double stars as globstars", () => {
-		const segmentMatcher = DPath.createPattern([
-			"***",
-			"a***b",
-		]);
-		const pathMatcher = DPath.createPattern("a/***/b");
+	it.each([
+		{
+			pattern: "***",
+			path: "name",
+			expected: true,
+		},
+		{
+			pattern: "***",
+			path: "nested/name",
+			expected: true,
+		},
+		{
+			pattern: "a***b",
+			path: "aXYZb",
+			expected: true,
+		},
+		{
+			pattern: "a***b",
+			path: "XYZb",
+			expected: false,
+		},
+		{
+			pattern: "a***b",
+			path: "aXYZ",
+			expected: false,
+		},
+	])("treats triple stars as ordinary wildcards in $pattern against $path", ({ pattern, path, expected }) => {
+		const matcher = DPath.createPattern(pattern);
 
-		expect(segmentMatcher(DPath.createOrThrow("name"))).toBe(true);
-		expect(segmentMatcher(DPath.createOrThrow("nested/name"))).toBe(true);
-		expect(segmentMatcher(DPath.createOrThrow("aXYZb"))).toBe(true);
-		expect(pathMatcher(DPath.createOrThrow("a/b"))).toBe(false);
-		expect(pathMatcher(DPath.createOrThrow("a/deep/b"))).toBe(true);
-		expect(pathMatcher(DPath.createOrThrow("a/deep/nested/b"))).toBe(false);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("supports character classes and POSIX classes without crossing separators", () => {
+	it.each([
+		{
+			path: "a/b",
+			expected: false,
+		},
+		{
+			path: "a/deep/b",
+			expected: true,
+		},
+		{
+			path: "a/deep/nested/b",
+			expected: false,
+		},
+	])("treats only segment-level double stars as globstars for $path", ({ path, expected }) => {
+		const matcher = DPath.createPattern("a/***/b");
+
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
+	});
+
+	it.each([
+		{
+			path: "file4.txt",
+			expected: true,
+		},
+		{
+			path: "filex.txt",
+			expected: false,
+		},
+		{
+			path: "letterA.txt",
+			expected: true,
+		},
+		{
+			path: "letter1.txt",
+			expected: false,
+		},
+		{
+			path: "not-c.txt",
+			expected: true,
+		},
+		{
+			path: "not-a.txt",
+			expected: false,
+		},
+		{
+			path: "literal-].txt",
+			expected: true,
+		},
+		{
+			path: "escaped].txt",
+			expected: true,
+		},
+		{
+			path: "punct!.txt",
+			expected: true,
+		},
+		{
+			path: "punct/.txt",
+			expected: false,
+		},
+		{
+			path: "range..txt",
+			expected: true,
+		},
+		{
+			path: "range/.txt",
+			expected: false,
+		},
+	])("supports character classes and POSIX classes for $path", ({ path, expected }) => {
 		const matcher = DPath.createPattern([
 			"file[0-9].txt",
 			"letter[[:alpha:]].txt",
 			"not-[!ab].txt",
 			"literal-[]].txt",
-			"closing[]]bracket.txt",
 			"escaped[\\]].txt",
 			"punct[[:punct:]].txt",
 			"range[.-0].txt",
 		]);
 
-		expect(matcher(DPath.createOrThrow("file4.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("filex.txt"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("letterA.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("letter1.txt"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("not-c.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("not-a.txt"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("literal-].txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("closing]bracket.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("escaped].txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("punct!.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("punct/.txt"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("range..txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("range/.txt"))).toBe(false);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("treats malformed character classes as literal opening brackets", () => {
+	it.each([
+		{
+			path: "bad[abc",
+			expected: true,
+		},
+		{
+			path: "range[z-a].txt",
+			expected: true,
+		},
+		{
+			path: "rangez.txt",
+			expected: false,
+		},
+		{
+			path: "unknown[].txt",
+			expected: true,
+		},
+		{
+			path: "missing[.txt",
+			expected: true,
+		},
+		{
+			path: "literal-class[].txt",
+			expected: true,
+		},
+	])("treats malformed character classes as literal brackets for $path", ({ path, expected }) => {
 		const matcher = DPath.createPattern([
 			"bad[abc",
 			"range[z-a].txt",
@@ -163,15 +379,40 @@ describe("createPattern", () => {
 			"literal-class[a[]].txt",
 		]);
 
-		expect(matcher(DPath.createOrThrow("bad[abc"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("range[z-a].txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("rangez.txt"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("unknown[].txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("missing[.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("literal-class[].txt"))).toBe(true);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("supports escaped special characters", () => {
+	it.each([
+		{
+			path: "#hash.txt",
+			expected: true,
+		},
+		{
+			path: "!important.txt",
+			expected: true,
+		},
+		{
+			path: "literal*.txt",
+			expected: true,
+		},
+		{
+			path: "literal-file.txt",
+			expected: false,
+		},
+		{
+			path: "space ",
+			expected: true,
+		},
+		{
+			path: "space",
+			expected: false,
+		},
+		{
+			path: "trimmed",
+			expected: true,
+		},
+	])("supports escaped special characters for $path", ({ path, expected }) => {
 		const matcher = DPath.createPattern([
 			"\\#hash.txt",
 			"\\!important.txt",
@@ -180,63 +421,151 @@ describe("createPattern", () => {
 			"trimmed ",
 		]);
 
-		expect(matcher(DPath.createOrThrow("#hash.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("!important.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("literal*.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("literal-file.txt"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("space "))).toBe(true);
-		expect(matcher(DPath.createOrThrow("space"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("trimmed"))).toBe(true);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("supports anchored and unanchored patterns", () => {
+	it.each([
+		{
+			path: "root.txt",
+			expected: false,
+		},
+		{
+			path: "/root.txt",
+			expected: true,
+		},
+		{
+			path: "src/root.txt",
+			expected: false,
+		},
+		{
+			path: "nested/file.txt",
+			expected: true,
+		},
+		{
+			path: "/nested/file.txt",
+			expected: true,
+		},
+		{
+			path: "src/nested/file.txt",
+			expected: false,
+		},
+		{
+			path: "src/component.txt",
+			expected: true,
+		},
+		{
+			path: "/src/component.txt",
+			expected: true,
+		},
+	])("supports anchored and unanchored patterns for $path", ({ path, expected }) => {
 		const matcher = DPath.createPattern([
 			"/root.txt",
 			"nested/file.txt",
 			"component.txt",
 		]);
 
-		expect(matcher(DPath.createOrThrow("root.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("/root.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("src/root.txt"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("nested/file.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("/nested/file.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("src/nested/file.txt"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("src/component.txt"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("/src/component.txt"))).toBe(true);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("matches directory syntax without requiring directory inputs", () => {
+	it.each([
+		{
+			path: "build",
+			expected: true,
+		},
+		{
+			path: "build/index.js",
+			expected: true,
+		},
+		{
+			path: "src/build/index.js",
+			expected: true,
+		},
+		{
+			path: "cache",
+			expected: false,
+		},
+		{
+			path: "cache/file",
+			expected: false,
+		},
+		{
+			path: "/cache",
+			expected: true,
+		},
+		{
+			path: "/cache/file",
+			expected: true,
+		},
+		{
+			path: "src/cache/file",
+			expected: false,
+		},
+	])("matches directory patterns without requiring a directory input for $path", ({ path, expected }) => {
 		const matcher = DPath.createPattern([
 			"build/",
-			"root-only/",
 			"/cache/",
 		]);
 
-		expect(matcher(DPath.createOrThrow("build"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("build/index.js"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("src/build/index.js"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("cache"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("cache/file"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("/cache"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("/cache/file"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("src/cache/file"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("root-only"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("root-only/file"))).toBe(true);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("applies the last matching rule", () => {
+	it.each([
+		{
+			path: "index.ts",
+			expected: true,
+		},
+		{
+			path: "other.ts",
+			expected: true,
+		},
+	])("applies the last matching rule for $path", ({ path, expected }) => {
 		const matcher = DPath.createPattern([
 			"*.ts",
 			"!index.ts",
 			"index.ts",
 		]);
 
-		expect(matcher(DPath.createOrThrow("index.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("other.ts"))).toBe(true);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("supports negative rules and reinclusions", () => {
+	it.each([
+		{
+			path: "dist",
+			expected: true,
+		},
+		{
+			path: "dist/app.js",
+			expected: true,
+		},
+		{
+			path: "dist/index.js",
+			expected: false,
+		},
+		{
+			path: "dist/index.js/map",
+			expected: false,
+		},
+		{
+			path: "dist/public",
+			expected: false,
+		},
+		{
+			path: "dist/public/logo.svg",
+			expected: false,
+		},
+		{
+			path: "dist/public/private",
+			expected: true,
+		},
+		{
+			path: "dist/public/private/key.txt",
+			expected: true,
+		},
+	])("supports negative rules and reinclusions for $path", ({ path, expected }) => {
 		const matcher = DPath.createPattern([
 			"dist/",
 			"!dist/index.js",
@@ -244,59 +573,292 @@ describe("createPattern", () => {
 			"dist/public/private/",
 		]);
 
-		expect(matcher(DPath.createOrThrow("dist"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("dist/app.js"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("dist/index.js"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("dist/index.js/map"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("dist/public"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("dist/public/logo.svg"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("dist/public/private"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("dist/public/private/key.txt"))).toBe(true);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("trusts canonical Path values supplied to the matcher", () => {
-		const matcher = DPath.createPattern([
-			".",
-			"..",
-			"../*.ts",
-			"/root.txt",
-		]);
+	it.each([
+		{
+			pattern: ".",
+			path: ".",
+			expected: true,
+		},
+		{
+			pattern: "..",
+			path: "..",
+			expected: true,
+		},
+		{
+			pattern: "..",
+			path: "../../index.ts",
+			expected: true,
+		},
+		{
+			pattern: "../*.ts",
+			path: "../index.ts",
+			expected: true,
+		},
+		{
+			pattern: "../*.ts",
+			path: "../../index.ts",
+			expected: false,
+		},
+	])("matches canonical Path values with $pattern against $path", ({ pattern, path, expected }) => {
+		const matcher = DPath.createPattern(pattern);
 
-		expect(matcher(DPath.createOrThrow("."))).toBe(true);
-		expect(matcher(DPath.createOrThrow(".."))).toBe(true);
-		expect(matcher(DPath.createOrThrow("../index.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("../../index.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("/root.txt"))).toBe(true);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("matches paths containing regex special characters literally", () => {
+	it.each([
+		{
+			path: "file+(1).ts",
+			expected: true,
+		},
+		{
+			path: "fileA1.ts",
+			expected: false,
+		},
+		{
+			path: "folder/{name}/item$",
+			expected: true,
+		},
+	])("matches regex special characters literally for $path", ({ path, expected }) => {
 		const matcher = DPath.createPattern([
 			"file+(1).ts",
 			"folder/{name}/item$",
 		]);
 
-		expect(matcher(DPath.createOrThrow("file+(1).ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("fileA1.ts"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("folder/{name}/item$"))).toBe(true);
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 
-	it("keeps regex results stable across matcher calls", () => {
+	it.each([
+		{
+			path: "other.ts",
+			expected: true,
+		},
+		{
+			path: "index.ts",
+			expected: false,
+		},
+	])("keeps regex results stable across matcher calls for $path", ({ path, expected }) => {
 		const matcher = DPath.createPattern([
 			"*.ts",
 			"!index.ts",
 		]);
 
-		expect(matcher(DPath.createOrThrow("other.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("index.ts"))).toBe(false);
-		expect(matcher(DPath.createOrThrow("other.ts"))).toBe(true);
-		expect(matcher(DPath.createOrThrow("index.ts"))).toBe(false);
+		const firstResult = matcher(DPath.createOrThrow(path));
+		const secondResult = matcher(DPath.createOrThrow(path));
+
+		expect(firstResult).toBe(expected);
+		expect(secondResult).toBe(expected);
 	});
 
-	it("matches long paths without excessive backtracking", () => {
-		const matcher = DPath.createPattern("src/**/target-*.ts");
-		const longPath = `${Array.from({ length: 80 }, (_value, index) => `segment-${index}`).join("/")}/target-file.ts`;
+	const longPath = `${Array.from({ length: 80 }, (_value, index) => `segment-${index}`).join("/")}/target-file.ts`;
 
-		expect(matcher(DPath.createOrThrow(`src/${longPath}`))).toBe(true);
-		expect(matcher(DPath.createOrThrow(`app/${longPath}`))).toBe(false);
+	it.each([
+		{
+			path: `src/${longPath}`,
+			expected: true,
+		},
+		{
+			path: `app/${longPath}`,
+			expected: false,
+		},
+	])("matches long paths ($expected)", ({ path, expected }) => {
+		const matcher = DPath.createPattern("src/**/target-*.ts");
+
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
+	});
+
+	it.each([
+		{
+			pattern: "./foo",
+			path: "./foo",
+			expected: true,
+		},
+		{
+			pattern: "./src/foo.ts",
+			path: "src/foo.ts",
+			expected: true,
+		},
+		{
+			pattern: "./foo/",
+			path: "foo/bar",
+			expected: true,
+		},
+		{
+			pattern: "./",
+			path: ".",
+			expected: true,
+		},
+		{
+			pattern: "./foo",
+			path: "nested/foo",
+			expected: false,
+		},
+		{
+			pattern: "./foo",
+			path: "../foo",
+			expected: false,
+		},
+		{
+			pattern: "./foo",
+			path: "/foo",
+			expected: false,
+		},
+		{
+			pattern: "./src",
+			path: "/bin/theme/src",
+			expected: false,
+		},
+		{
+			pattern: "./",
+			path: "/",
+			expected: false,
+		},
+		{
+			pattern: "./",
+			path: "foo",
+			expected: false,
+		},
+		{
+			pattern: "./*",
+			path: "/foo",
+			expected: false,
+		},
+		{
+			pattern: "./**",
+			path: ".",
+			expected: true,
+		},
+		{
+			pattern: "./**",
+			path: "/foo",
+			expected: false,
+		},
+		{
+			pattern: "./src/**/file?.ts",
+			path: "src/deep/file1.ts",
+			expected: true,
+		},
+		{
+			pattern: "./src/**/",
+			path: "src",
+			expected: true,
+		},
+		{
+			pattern: "./src/**/",
+			path: "/src",
+			expected: false,
+		},
+		{
+			pattern: "./../*.ts",
+			path: "../index.ts",
+			expected: true,
+		},
+		{
+			pattern: "./../*.ts",
+			path: "../../index.ts",
+			expected: false,
+		},
+	])("matches a pattern prefixed with ./ ($pattern against $path)", ({ pattern, path, expected }) => {
+		const matcher = DPath.createPattern(pattern);
+
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
+	});
+
+	it.each([
+		{
+			pattern: "/**",
+			path: ".",
+			expected: false,
+		},
+		{
+			pattern: "/**",
+			path: "index.ts",
+			expected: false,
+		},
+		{
+			pattern: "/**",
+			path: "/",
+			expected: true,
+		},
+		{
+			pattern: "/*.ts",
+			path: "/index.ts",
+			expected: true,
+		},
+		{
+			pattern: "/*.ts",
+			path: "index.ts",
+			expected: false,
+		},
+		{
+			pattern: "/src/**/",
+			path: "/src",
+			expected: true,
+		},
+		{
+			pattern: "/src/**/",
+			path: "src",
+			expected: false,
+		},
+		{
+			pattern: "/src/**/file?.ts",
+			path: "/src/deep/file1.ts",
+			expected: true,
+		},
+		{
+			pattern: "/src/**/file?.ts",
+			path: "/nested/src/file1.ts",
+			expected: false,
+		},
+	])("requires an absolute path for $pattern against $path", ({ pattern, path, expected }) => {
+		const matcher = DPath.createPattern(pattern);
+
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
+	});
+
+	it.each([
+		{
+			path: "src/draft.ts",
+			expected: false,
+		},
+		{
+			path: "/src/draft.ts",
+			expected: true,
+		},
+		{
+			path: "src/public/index.ts",
+			expected: true,
+		},
+		{
+			path: "/src/private/key.ts",
+			expected: false,
+		},
+		{
+			path: "/src/private/public/index.ts",
+			expected: true,
+		},
+		{
+			path: "src/private/public/index.ts",
+			expected: false,
+		},
+	])("preserves path references in exclusions and reinclusions for $path", ({ path, expected }) => {
+		const matcher = DPath.createPattern([
+			"**",
+			"!./src/**",
+			"!/src/private/**",
+			"./src/public/**",
+			"/src/private/public/**",
+		]);
+
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
 	});
 });
