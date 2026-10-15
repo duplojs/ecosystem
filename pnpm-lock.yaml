@@ -299,6 +299,9 @@ importers:
       '@types/node':
         specifier: 24.13.3
         version: 24.13.3
+      '@types/web':
+        specifier: 0.0.358
+        version: 0.0.358
 
   packages/agents-kit/integrations:
     dependencies:
@@ -399,8 +402,8 @@ importers:
         specifier: workspace:*
         version: link:../eslint
       '@types/web':
-        specifier: 0.0.356
-        version: 0.0.356
+        specifier: 0.0.358
+        version: 0.0.358
       '@vitejs/plugin-vue':
         specifier: 6.0.8
         version: 6.0.8(vite@8.3.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.6.1)(less@4.9.1(supports-color@8.1.1))(sass-embedded@1.104.1)(sass@1.104.1)(tsx@4.23.15))(vue@3.5.43(typescript@6.0.3))
@@ -457,8 +460,8 @@ importers:
         specifier: 24.13.3
         version: 24.13.3
       '@types/web':
-        specifier: 0.0.356
-        version: 0.0.356
+        specifier: 0.0.358
+        version: 0.0.358
       eventsource:
         specifier: 5.1.1
         version: 5.1.1
@@ -488,8 +491,8 @@ importers:
         specifier: 24.13.3
         version: 24.13.3
       '@types/web':
-        specifier: 0.0.356
-        version: 0.0.356
+        specifier: 0.0.358
+        version: 0.0.358
 
   packages/json-web-token/integrations:
     dependencies:
@@ -1677,9 +1680,6 @@ packages:
 
   '@types/web-bluetooth@0.0.21':
     resolution: {integrity: sha512-oIQLCGWtcFZy2JW77j9k8nHzAOpqMHLQejDA48XXMWH6tjCQHz5RCFz1bzsmROyL6PUm+LLnUiI4BCn221inxA==}
-
-  '@types/web@0.0.356':
-    resolution: {integrity: sha512-FjE7SeW2G2It3cSeEuzxRLDZbBhiy6cmHI4506Q7hGVivabw+xz5aQBW2zoHoCWGoIrNMJAhfB7lV1SU3JZrDA==}
 
   '@types/web@0.0.358':
     resolution: {integrity: sha512-mNaTgu3PxD0NY0QTpMSFcs+BurApADI/h0oK/sKzkzobGw9F/GpAM4x3Vreul/EAsgm5I8uKzMnuSazZ1qHjgw==}
@@ -4958,8 +4958,6 @@ snapshots:
   '@types/unist@3.0.3': {}
 
   '@types/web-bluetooth@0.0.21': {}
-
-  '@types/web@0.0.356': {}
 
   '@types/web@0.0.358': {}
 

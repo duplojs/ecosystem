@@ -2,11 +2,11 @@
 
 import * as DSCommand from "@duplojs/server/command";
 import { installCommand } from "./install";
-import { createDocRouterCommand } from "./createDocRouter";
+import { generateLlmsCommand } from "./generateLlms";
 
 await DSCommand.exec(
 	{
-		subjects: [installCommand, createDocRouterCommand],
+		subjects: [installCommand, generateLlmsCommand],
 	},
 	() => {},
 );

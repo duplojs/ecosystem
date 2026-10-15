@@ -17,6 +17,7 @@ export default defineConfig([
 				preserveModules: true,
 				preserveModulesRoot: "scripts",
 				entryFileNames: "[name].mjs",
+				cleanDir: true,
 			},
 			{
 				dir: "dist",

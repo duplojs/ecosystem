@@ -33,7 +33,8 @@
 			"import": "./dist/index.mjs",
 			"require": "./dist/index.cjs",
 			"types": "./dist/index.d.ts"
-		}
+		},
+    "./docs/concepts.llms.md": "./docs/concepts.llms.md"
 	},
 	"dependencies": {
 		"@duplojs/lang": "workspace:*",
@@ -75,7 +76,8 @@
 	},
 	"devDependencies": {
 		"@duplojs/code-config": "workspace:*",
-    "@types/node": "24.13.3"
+    "@types/node": "24.13.3",
+    "@types/web": "0.0.358"
 	},
 	"files": [
 		"dist",

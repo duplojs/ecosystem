@@ -39,7 +39,7 @@
   "devDependencies": {
     "@duplojs/code-config": "workspace:*",
     "@types/node": "24.13.3",
-    "@types/web": "0.0.356"
+    "@types/web": "0.0.358"
   },
     "files": [
     "dist",

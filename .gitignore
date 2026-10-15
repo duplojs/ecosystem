@@ -6,8 +6,9 @@ cache
 .DS_Store
 .temp
 .vitest
-**/*.generate.*
-**/*.generate
+*.llms.md
+*.generate.*
+*.generate
 packages/**/**/ai-docs
 !docs/libs/**/dist
 !docs/.vitepress/cache/
