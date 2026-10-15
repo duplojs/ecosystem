@@ -1,4 +1,5 @@
-import { installCommand, skillsPath } from "@scripts";
+import { installCommand } from "@scripts/bin/install";
+import { skillsPath } from "@scripts/bin/install/skillsPath";
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";

@@ -16,7 +16,7 @@
 		"url": "https://github.com/duplojs/ecosystem/issues"
 	},
   "bin": {
-    "duplojs-agents-kit": "./dist/bin.mjs"
+    "duplojs-agents-kit": "./dist/bin/index.mjs"
   },
 	"type": "module",
 	"scripts": {

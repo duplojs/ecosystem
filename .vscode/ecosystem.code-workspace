@@ -49,10 +49,6 @@
 			"path": "../docs"
 		},
 		{
-			"name": "@duplojs/ai-docgen",
-			"path": "../packages-private/ai-docgen"
-		},
-		{
 			"name": "@duplojs/jsdoc-include",
 			"path": "../packages-private/jsdoc-include"
 		},

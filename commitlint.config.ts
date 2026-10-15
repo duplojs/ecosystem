@@ -13,7 +13,6 @@ const scopes = [
 	"ecosystem",
 	"agents-kit",
 	"ai-docs",
-	"ai-docgen",
 	"jsdoc-include",
 	"ci-cd",
 	"docs",

@@ -1,4 +1,5 @@
-import { AgentTypeEnum, copySkill, SkillEnum, skillsPath, symlinkSkill } from "@scripts";
+import { AgentTypeEnum, copySkill, SkillEnum, symlinkSkill } from "@scripts/bin/install/skill";
+import { skillsPath } from "@scripts/bin/install/skillsPath";
 import * as DArray from "@duplojs/lang/array";
 import * as DGenerator from "@duplojs/lang/generator";
 import * as DCommon from "@duplojs/lang/common";

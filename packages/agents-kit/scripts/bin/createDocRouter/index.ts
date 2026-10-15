@@ -1,4 +1,3 @@
-#!/usr/bin/env -S tsx
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DSCommand from "@duplojs/server/command";
 import { directoryToMarkdown } from "./directoryToMarkdown";
@@ -9,10 +8,9 @@ import * as DSCommon from "@duplojs/server/common";
 import * as DCommon from "@duplojs/lang/common";
 import * as DSDataStructure from "@duplojs/server/dataStructure";
 
-await DSCommand.exec(
+export const createDocRouterCommand = DSCommand.create(
+	"create-doc-router",
 	{
-		displayName: "DuploJS AI DocGen CLI",
-		description: "Generate LLMS with structured documentation",
 		options: [
 			DSCommand.createOption(
 				"input",

@@ -14,15 +14,14 @@ export const directoryToMarkdown: (
 		outputPathFolderFile: string & DPath.Absolute;
 	},
 ) => Promise<
-	| DEither.Left<"read-folder-error">
+	| DEither.Left<"file-system-walk-directory-error", DSFile.WalkDirectoryErrors>
 	| DEither.Right<"render-success", string>
 > = DInvocation.flow(
 	({ inputPathFolder }) => DSFile.walkDirectory(DCommon.cast(inputPathFolder)),
 	DInvocation.filter(
-		DEither.whenHasInformationOtherwise(
+		DEither.whenHasInformation(
 			"file-system-walk-directory",
 			DCommon.forward,
-			(value) => DEither.left("read-folder-error", value),
 		),
 	),
 	DArray.from,

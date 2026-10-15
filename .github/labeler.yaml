@@ -46,9 +46,9 @@ tools:
   - changed-files:
       - any-glob-to-any-file: "packages/tools/**/*"
 
-ai-docgen:
+agents-kit:
   - changed-files:
-      - any-glob-to-any-file: "packages-private/ai-docgen/**/*"
+      - any-glob-to-any-file: "packages/agents-kit/**/*"
 
 jsdoc-include:
   - changed-files:

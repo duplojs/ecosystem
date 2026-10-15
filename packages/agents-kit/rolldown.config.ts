@@ -37,7 +37,7 @@ export default defineConfig([
 		],
 	},
 	{
-		input: "scripts/bin.ts",
+		input: "scripts/bin/index.ts",
 		external: [
 			/^@duplojs\//,
 			/^node:/,

@@ -40,9 +40,6 @@ pnpm --filter @duplojs/http test:types
 printf "\n${GREEN}ai-docs${RESET}\n"
 pnpm --filter ai-docs test:types
 
-printf "\n${GREEN}@duplojs/ai-docgen${RESET}\n"
-pnpm --filter @duplojs/ai-docgen test:types
-
 printf "\n${GREEN}@duplojs/jsdoc-include${RESET}\n"
 pnpm --filter @duplojs/jsdoc-include test:types
 
