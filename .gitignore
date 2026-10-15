@@ -9,7 +9,6 @@ cache
 *.llms.md
 *.generate.*
 *.generate
-packages/**/**/ai-docs
 !docs/libs/**/dist
 !docs/.vitepress/cache/
 docs/.vitepress/cache/*

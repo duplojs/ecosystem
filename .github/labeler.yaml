@@ -2,10 +2,6 @@ github:
   - changed-files:
       - any-glob-to-any-file: ".github/**/*"
 
-ai-docs:
-  - changed-files:
-      - any-glob-to-any-file: "ai-docs/**/*"
-
 wip:
   - changed-files:
       - any-glob-to-any-file: "**/*"

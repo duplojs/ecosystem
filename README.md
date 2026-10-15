@@ -18,7 +18,7 @@ DuploJS is an ecosystem of TypeScript libraries built on functional programming 
 
 ## Tests
 
-The [AI documentation](LLMS.md#tests) includes examples for testing behavior and types:
+The [AgentKit documentation](packages/agents-kit/docs/concepts/04-tests/index.md) includes examples for testing behavior and types:
 
-- [Testing Either results](ai-docs/src/04-tests/01-unit/10-either.ts).
-- [Replacing server implementations in tests](ai-docs/src/04-tests/01-unit/20-server-mocking.ts) with `setEnvironment("TEST")` and `TESTImplementation`, including controlled process arguments.
+- [Testing Either results](packages/agents-kit/docs/concepts/04-tests/01-unit/10-either.ts).
+- [Replacing server implementations in tests](packages/agents-kit/docs/concepts/04-tests/01-unit/20-server-mocking.ts) with `setEnvironment("TEST")` and `TESTImplementation`, including controlled process arguments.

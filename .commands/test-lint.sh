@@ -37,9 +37,6 @@ pnpm --filter @duplojs/form test:lint
 printf "\n${GREEN}@duplojs/http${RESET}\n"
 pnpm --filter @duplojs/http test:lint
 
-printf "\n${GREEN}ai-docs${RESET}\n"
-pnpm --filter ai-docs test:lint
-
 printf "\n${GREEN}@duplojs/jsdoc-include${RESET}\n"
 pnpm --filter @duplojs/jsdoc-include test:lint
 

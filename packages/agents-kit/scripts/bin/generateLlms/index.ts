@@ -17,7 +17,7 @@ export const generateLlmsCommand = DSCommand.create(
 				DSDataStructure.folder([DSDataStructure.folderExist()]),
 				{
 					required: true,
-					description: "folder path ai-docs",
+					description: "documentation folder path",
 				},
 			),
 			DSCommand.createOption(

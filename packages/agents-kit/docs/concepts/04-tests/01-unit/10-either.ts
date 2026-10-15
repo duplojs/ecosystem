@@ -7,7 +7,7 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 
 // Dans les tests du monorepo, Vitest expose ces globals directement.
-// Ces déclarations rendent uniquement l'exemple typable dans `ai-docs`.
+// Ces déclarations rendent uniquement l'exemple typable dans la documentation d'AgentKit.
 declare const describe: (title: string, body: () => void) => void;
 declare const it: (title: string, body: () => void | Promise<void>) => void;
 declare const expect: (value: unknown) => {

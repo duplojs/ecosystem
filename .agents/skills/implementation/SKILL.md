@@ -9,7 +9,7 @@ Une implémentation doit s'intégrer à l'architecture existante plutôt que cr�
 
 Avant d'ajouter du code, rechercher si le comportement ou l'utilitaire existe déjà dans le package courant ou dans un autre package de l'écosystème.
 
-Pour toute opération, utiliser obligatoirement les fonctions de l'écosystème dès qu'un équivalent existe. Avant de recourir à une méthode prototype, une API native ou une réimplémentation locale, vérifier l'existence de cet équivalent. [LLMS.md](../../../LLMS.md) peut orienter au besoin vers les fonctions et leurs règles de composition.
+Pour toute opération, utiliser obligatoirement les fonctions de l'écosystème dès qu'un équivalent existe. Avant de recourir à une méthode prototype, une API native ou une réimplémentation locale, vérifier l'existence de cet équivalent. La [documentation conceptuelle d'AgentKit](../../../packages/agents-kit/docs/concepts) et son routeur `packages/agents-kit/docs/concepts.llms.md`, généré au build, peuvent orienter au besoin vers les fonctions et leurs règles de composition.
 
 Une fonction générique de manipulation de données, indépendante du contexte métier ou technique du package courant, doit notamment être recherchée dans `@duplojs/lang` avant d'être réimplémentée localement.
 

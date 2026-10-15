@@ -41,10 +41,6 @@
 			"path": "../packages/agents-kit"
 		},
 		{
-			"name": "ai-docs",
-			"path": "../ai-docs"
-		},
-		{
 			"name": "docs",
 			"path": "../docs"
 		},

@@ -29,10 +29,10 @@ describe("generateLlmsCommand", () => {
 		const error = DSCommand.createError("generate-llms");
 		const finished = vi.fn();
 
-		const execution = generateLlmsCommand.execute(["--input", "ai-docs/src", "--output", "docs/LLMS.md"], error).then(finished);
+		const execution = generateLlmsCommand.execute(["--input", "docs/concepts", "--output", "docs/LLMS.md"], error).then(finished);
 
 		await vi.waitFor(() => expect(writeTextFile).toHaveBeenCalledTimes(1));
-		expect(walkDirectory).toHaveBeenCalledExactlyOnceWith("/project/ai-docs/src");
+		expect(walkDirectory).toHaveBeenCalledExactlyOnceWith("/project/docs/concepts");
 		expect(writeTextFile).toHaveBeenCalledExactlyOnceWith("docs/LLMS.md", "");
 		expect(finished).not.toHaveBeenCalled();
 		pending.resolve(DEither.right("file-system-write-text-file"));
@@ -45,9 +45,9 @@ describe("generateLlmsCommand", () => {
 
 	it.each([
 		[],
-		["--input", "ai-docs/src"],
+		["--input", "docs/concepts"],
 		["--output", "LLMS.md"],
-		["--input", "ai-docs/src", "--output", ""],
+		["--input", "docs/concepts", "--output", ""],
 	])("rejects missing or invalid options %j", async(...args) => {
 		const writeTextFile = vi.fn();
 		TESTImplementation.set("writeTextFile", writeTextFile);

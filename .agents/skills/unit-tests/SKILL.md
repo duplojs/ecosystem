@@ -29,7 +29,7 @@ La couverture d'exécution ne suffit cependant pas. Les garanties apportées par
 
 Dans tout le code des tests, utiliser obligatoirement les fonctions de l'écosystème dès qu'un équivalent existe. Avant de recourir à une méthode prototype, une API native ou une réimplémentation locale, vérifier l'existence de cet équivalent. Cette obligation s'applique à toutes les opérations, y compris la préparation des données et des valeurs attendues, dans les pipes comme en dehors.
 
-En cas de besoin pour retrouver une fonction ou comprendre sa composition, [LLMS.md](../../../LLMS.md), notamment la rubrique [Currification](../../../LLMS.md#currification), peut servir de point d'entrée. Consulter uniquement les pages pertinentes vers lesquelles il redirige.
+En cas de besoin pour retrouver une fonction ou comprendre sa composition, la [documentation conceptuelle d'AgentKit](../../../packages/agents-kit/docs/concepts), notamment la rubrique [Currification](../../../packages/agents-kit/docs/concepts/01-fundamental/02-currying/index.md), peut servir de point d'entrée. Le routeur `packages/agents-kit/docs/concepts.llms.md` est généré au build. Consulter uniquement les pages pertinentes.
 
 ## Pipes et assertions
 

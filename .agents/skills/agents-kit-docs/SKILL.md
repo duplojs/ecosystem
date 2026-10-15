@@ -1,11 +1,11 @@
 ---
-name: ai-docs
-description: "Créer, organiser ou corriger l'AI Doc DuploJS dans `ai-docs/src` : documentation concise pour les agents, routage conceptuel et exposition au `LLMS.md`."
+name: agents-kit-docs
+description: "Créer, organiser ou corriger la documentation conceptuelle DuploJS dans `packages/agents-kit/docs/concepts` : documentation concise pour les agents, routage conceptuel et exposition au routeur d'AgentKit."
 ---
 
-# AI Docs
+# Documentation conceptuelle AgentKit
 
-L'AI Doc fournit aux agents les connaissances nécessaires pour utiliser et implémenter les concepts de l'écosystème DuploJS. Sa source de vérité est `ai-docs/src/` ; le `LLMS.md` est généré depuis cette arborescence. Modifier les sources documentaires.
+La documentation conceptuelle d'AgentKit fournit aux agents les connaissances nécessaires pour utiliser et implémenter les concepts de l'écosystème DuploJS. Sa source de vérité est `packages/agents-kit/docs/concepts/` ; le routeur `packages/agents-kit/docs/concepts.llms.md` est généré depuis cette arborescence. Modifier les sources documentaires.
 
 Le **routage** permet de trouver la connaissance pertinente. Le **contenu documentaire** permet d'agir correctement une fois la ressource consultée. Organiser les deux pour limiter le contexte chargé et les répétitions.
 
@@ -18,7 +18,7 @@ Le **routage** permet de trouver la connaissance pertinente. Le **contenu docume
 
 ## Organisation et exposition
 
-Le parcours de génération commence dans `ai-docs/src/` et descend récursivement dans les dossiers à préfixe numérique. Il reconnaît les fichiers documentaires numérotés et les `index.md`. L'ordre est lexical.
+Le parcours de génération commence dans `packages/agents-kit/docs/concepts/` et descend récursivement dans les dossiers à préfixe numérique. Il reconnaît les fichiers documentaires numérotés et les `index.md`. L'ordre est lexical.
 
 | Ressource | Convention |
 | --- | --- |
@@ -29,7 +29,7 @@ Le parcours de génération commence dans `ai-docs/src/` et descend récursiveme
 
 Choisir le niveau d'exposition avant de numéroter un nouveau fichier :
 
-| Format | Préfixes disponibles | Contenu intégré au `LLMS.md` |
+| Format | Préfixes disponibles | Contenu intégré au routeur `docs/concepts.llms.md` |
 | --- | --- | --- |
 | TypeScript fondamental | `01` à `09` | Header et contenu documentaire. |
 | TypeScript consulté à la demande | `10, 20, 30, 40, 50, 60, 70, 80, 90` | Header uniquement. |
@@ -61,7 +61,7 @@ Pour vérifier le périmètre du routage : **si l'exemple change mais transmet l
 
 ## Rédiger le contenu documentaire
 
-Écrire pour un agent qui peut consulter le reste de l'AI Doc. Donner les règles et les informations nécessaires pour utiliser ou implémenter le sujet correctement. Adapter la longueur et la structure à sa complexité ; un concept simple appelle une explication courte.
+Écrire pour un agent qui peut consulter le reste de la documentation d'AgentKit. Donner les règles et les informations nécessaires pour utiliser ou implémenter le sujet correctement. Adapter la longueur et la structure à sa complexité ; un concept simple appelle une explication courte.
 
 - **Sélectionner les détails utiles.** Ajouter une précision lorsqu'elle change une décision d'implémentation ou évite une erreur probable : contrat d'entrée ou de sortie, comportement runtime, garantie de typage, précondition ou limite pertinente. Ne pas transformer les possibilités d'explication en liste de sujets à couvrir systématiquement.
 - **Donner une place unique à chaque connaissance.** Énoncer une règle une fois, dans la ressource responsable du concept. Référencer les fondamentaux et documents complémentaires plutôt que réexpliquer leurs mécanismes. Dans une révision, fusionner ou remplacer les passages concernés au lieu d'accumuler des blocs correctifs.
@@ -73,6 +73,8 @@ Le Markdown porte les explications et contextualise les liens vers les exemples 
 ## Intégrer et vérifier
 
 Pour une création, placer la ressource dans le domaine approprié selon les conventions d'organisation et d'exposition. Pour une révision, conserver les connaissances utiles, corriger leur placement et retirer les répétitions. Adapter l'index si le périmètre du domaine évolue.
+
+Le build `pnpm --filter @duplojs/agents-kit build` régénère le routeur. Les commandes `test:types` (via `tsconfig.doc.json`) et `test:lint` du package vérifient aussi les exemples et les fixtures. Le champ `files` du package doit inclure `docs` afin de publier ensemble le routeur et ses cibles.
 
 Avant de terminer :
 

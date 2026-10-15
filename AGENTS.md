@@ -12,6 +12,7 @@ L'écosystème vise à rendre le développement TypeScript plus robuste en s'app
 * `packages/playwright`: ajoute une fine couche d'organisation au-dessus de Playwright pour structurer les tests sous forme de hiérarchies Site web/Page/Composant, avec des actions nommées et lisibles.
 * `packages/tools`: regroupe des outils de génération et de transformation de code utilisés pendant le développement d'un projet DuploJS, mais pas au runtime.
 * `packages/code-config`: regroupe les configurations et règles partagées liées notamment au linting, au formatage et aux autres outils de qualité de code.
+* `packages/agents-kit`: fournit les skills et la documentation conceptuelle destinés aux agents, ainsi que les commandes d'installation des skills et de génération du routeur documentaire.
 
 ## Contexte local
 
@@ -24,7 +25,7 @@ Les `AGENTS.md` locaux complètent les règles générales de l'écosystème ave
 
 ## Ressources du projet
 
-* Référence détaillée pour comprendre le fonctionnement de l'écosystème et les pratiques déjà documentées : [`LLMS.md`](./LLMS.md). La consulter pour approfondir une question et retrouver les explications ou les bons emplacements avant de chercher ailleurs dans le projet.
+* Documentation conceptuelle de l'écosystème : [`packages/agents-kit/docs/concepts`](./packages/agents-kit/docs/concepts). Le build d'AgentKit génère le routeur `packages/agents-kit/docs/concepts.llms.md`. Le consulter pour retrouver les pages et exemples pertinents ; avant le build, parcourir les `index.md` des domaines dans les sources.
 * Architecture et relations entre les packages : `.agents/architecture.md`
 * Configuration TypeScript des différents packages : `.agents/typescript-config.md`
 * Différentes commandes du projet : `.agents/commands.md`
