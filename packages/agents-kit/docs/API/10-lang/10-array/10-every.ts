@@ -5,11 +5,12 @@
  */
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
+import * as DNumber from "@duplojs/lang/number";
 
 const numbers = [2, 4, 6];
 
-// Appel classique : le prédicat reçoit l’élément et son index.
-const result = DArray.every(numbers, (value, { index }) => value > index);
+// Appel classique : tous les éléments sont pairs.
+const result = DArray.every(numbers, DNumber.isEven);
 
 // La valeur obtenue est true.
 type _CheckResult = DCommon.ExpectType<typeof result, boolean, "strict">;
@@ -17,7 +18,7 @@ type _CheckResult = DCommon.ExpectType<typeof result, boolean, "strict">;
 // Appel curifié : le prédicat est configuré dans l’étape du pipe.
 const piped = DCommon.pipe(
 	numbers,
-	DArray.every((value) => value % 2 === 0),
+	DArray.every(DNumber.isEven),
 );
 
 // La valeur obtenue est true.

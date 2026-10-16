@@ -5,20 +5,29 @@
  */
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
+import * as DNumber from "@duplojs/lang/number";
 
 const numbers = [1, 2, 3];
 
 // Appel classique : le premier élément supérieur à 1 est retourné.
-const result = DArray.find(numbers, (value) => value > 1);
+const result = DArray.find(numbers, DNumber.greaterThan(1));
 
 // La valeur obtenue est 2 ; l’absence d’élément reste représentée par undefined dans le type.
-type _CheckResult = DCommon.ExpectType<typeof result, number | undefined, "strict">;
+type _CheckResult = DCommon.ExpectType<
+	typeof result,
+	(number & DNumber.GreaterThan<1>) | undefined,
+	"strict"
+>;
 
 // Appel curifié : le prédicat est configuré dans l’étape du pipe.
 const piped = DCommon.pipe(
 	numbers,
-	DArray.find((value) => value > 2),
+	DArray.find(DNumber.greaterThan(2)),
 );
 
 // La valeur obtenue est 3, ou undefined si aucun élément ne satisfait le prédicat.
-type _CheckPiped = DCommon.ExpectType<typeof piped, number | undefined, "strict">;
+type _CheckPiped = DCommon.ExpectType<
+	typeof piped,
+	(number & DNumber.GreaterThan<2>) | undefined,
+	"strict"
+>;
