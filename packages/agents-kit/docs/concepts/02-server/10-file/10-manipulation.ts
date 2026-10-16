@@ -7,6 +7,7 @@ import type * as DPath from "@duplojs/lang/path";
 import * as DCommon from "@duplojs/lang/common";
 import * as DSFile from "@duplojs/server/file";
 import * as DEither from "@duplojs/lang/either";
+import * as DPattern from "@duplojs/lang/pattern";
 
 const textResourcePath: string & DPath.Path = DCommon.cast("/path/to/text/resource");
 
@@ -21,11 +22,19 @@ if (DEither.isRight(readTextResourceResult)) {
 	// string
 	const textResource = DEither.unwrapRight(readTextResourceResult);
 } else {
-	// Les erreurs attendues restent discriminées individuellement :
-	// | DEither.Left<"file-system-read-text-file-not-found", unknown>
-	// | DEither.Left<"file-system-read-text-file-permission-denied", unknown>
-	// | DEither.Left<"file-system-read-text-file-is-directory", unknown>
-	// | DEither.Left<"file-system-read-text-file-not-directory", unknown>
-	// | ...
-	void readTextResourceResult;
+	// Le Left porte l'échec de l'opération ; sa valeur porte l'erreur précise.
+	// DEither.Left<"file-system-read-text-file-error", DSFile.ReadTextFileErrors>
+	const error = DEither.unwrapLeft(readTextResourceResult);
+
+	type _CheckError = DCommon.ExpectType<typeof error, DSFile.ReadTextFileErrors, "strict">;
+
+	const diagnosis = DPattern.matchWithErrorOtherwise(
+		error,
+		{
+			"file-system-read-text-file-not-found": () => "missing-resource",
+			"file-system-read-text-file-permission-denied": () => "access-denied",
+		},
+		// Conserver les autres erreurs, au lieu de toutes les traiter comme une absence.
+		(otherError) => otherError,
+	);
 }

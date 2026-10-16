@@ -29,7 +29,7 @@ export const MimeTypeConstraint = DDataStructure.createConstraint(
 		},
 		{
 			executeCheck: (self, data) => {
-				if (self.definition.regex.test(data.getMimeType() ?? "")) {
+				if (!self.definition.regex.test(data.getMimeType() ?? "")) {
 					return DDataStructure.ErrorSymbol;
 				}
 

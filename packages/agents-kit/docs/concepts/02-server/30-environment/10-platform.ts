@@ -17,7 +17,7 @@ const resourcePath: string & DPath.Path = DCommon.cast("/resources/config.json")
 // DEither.Right<file-system-write-json-file, void> | DEither.Left<...> | ...
 const writeJsonResult = await DSFile.writeJsonFile(resourcePath, { version: 1.0 });
 
-// DEither.Error<unknown> | DEither.Success<string & DPath.Path>
+// DEither.Error<unknown> | DEither.Success<string & DPath.Absolute>
 const currentWorkingDirectoryResult = DSCommon.getCurrentWorkDirectory();
 
 // string[]

@@ -15,7 +15,12 @@ type AgentTypeEnum = DCommon.GetEnumValue<typeof AgentTypeEnum>;
 
 export const SkillEnum = DCommon.createEnum([
 	"fundamental",
-	"http",
+	"http-server",
+	"http-client",
+	"command",
+	"server",
+	"modeling",
+	"test",
 ]);
 type SkillEnum = DCommon.GetEnumValue<typeof SkillEnum>;
 

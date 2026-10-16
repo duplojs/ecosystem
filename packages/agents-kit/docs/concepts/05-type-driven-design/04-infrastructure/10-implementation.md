@@ -27,11 +27,11 @@ La résolution ne réimplémente pas l'orchestration métier et ne reconstruit p
 
 ### Raccorder les points d'entrée
 
-Un point d'entrée adapte un moyen de consommation aux capacités de l'application. Il transforme les données externes vers les paramètres attendus, appelle un use case résolu et adapte le résultat vers le contrat du consommateur. Il ne réimplémente pas l'orchestration applicative et ne déclenche pas directement une `Fact`, un agrégat ou un effet.
+Un point d'entrée adapte un moyen de consommation aux capacités de l'application : valider les données externes avec les structures du domaine, préparer les paramètres exigés par le use case résolu, l'appeler puis traduire son résultat pour le consommateur. Les opérations autorisées pour cette préparation sont définies dans [les frontières de l'architecture](../01-architecture/10-boundaries.md#respecter-les-responsabilités-aux-frontières).
 
 La nature du protocole ne change pas cette responsabilité. Une route HTTP, une commande ou un autre client peuvent consommer le même use case résolu ; chacun possède sa propre documentation de protocole et son propre contrat de sortie.
 
-La [fixture HTTP de location](../fixtures/infrastructure/http/routes/clientRentBook.ts) et la [fixture de commande de location](../fixtures/infrastructure/command/clientRentBook.ts) illustrent ce raccordement autour d'un même use case. Elles ne constituent pas de nouveaux modèles d'orchestration : elles montrent uniquement deux consommateurs de la même capacité applicative.
+La [fixture HTTP de location](../fixtures/infrastructure/http/routes/clientRentBook.ts) et la [fixture de commande de location](../fixtures/infrastructure/command/clientRentBook.ts) utilisent ainsi `Client.Id` et `Book.Id` pour valider les entrées, récupèrent les entités puis les qualifient pour satisfaire la signature du même use case. Le [checker de livre](../fixtures/infrastructure/http/checkers/bookExist.ts) illustre l'étape de lecture et le traitement de l'absence du livre.
 
 Les détails de construction d'une route sont documentés dans [les routes HTTP](../../02-server/20-http/20-route.ts), ceux des vérifications réutilisables dans [les routines HTTP](../../02-server/20-http/30-routine.ts), et ceux des commandes dans [la définition d'une commande](../../02-server/40-command/10-use.ts). La composition des résultats est documentée dans [les fondamentaux `Either`](../../01-fundamental/03-either/30-composition.ts) ; l'adaptation au protocole reste documentée par chaque moyen de consommation.
 
@@ -46,8 +46,6 @@ Point d'entrée
   ↓ adaptation au protocole
 Contrat du consommateur
 ```
-
-Le point d'entrée peut qualifier les données lorsqu'il les fait entrer dans le modèle, conformément aux [frontières de l'architecture](../01-architecture/10-boundaries.md). La qualification, la composition des résultats et l'adaptation propre à chaque protocole doivent être recherchées dans leurs ressources dédiées, plutôt que répliquées ici.
 
 ### Démarche d'implémentation
 

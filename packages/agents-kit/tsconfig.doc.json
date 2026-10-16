@@ -3,5 +3,8 @@
 	"compilerOptions": {
 		"types": ["web"],
 	},
-	"include": ["./docs/**/*.ts"]
+	"include": [
+		"./docs/**/*.ts",
+		"./skills/**/*.ts"
+	]
 }

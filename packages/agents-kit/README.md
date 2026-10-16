@@ -18,9 +18,26 @@ Each installation removes the skill's destination and replaces it with the reque
 
 ```sh
 pnpm exec duplojs-agents-kit install
-pnpm exec duplojs-agents-kit install http --type codex
-pnpm exec duplojs-agents-kit install http --copy
+pnpm exec duplojs-agents-kit install http-server --type codex
+pnpm exec duplojs-agents-kit install http-client --copy
+pnpm exec duplojs-agents-kit install command --type codex
+pnpm exec duplojs-agents-kit install server --type codex
+pnpm exec duplojs-agents-kit install modeling --type codex
+pnpm exec duplojs-agents-kit install test --type codex
 ```
+
+The former `http` skill is split into two independently installable skills:
+
+- `http-server` (`duplojs-http-server`) guides server setup, routes, reusable flows, and contract and schema generation.
+- `http-client` (`duplojs-http-client`) guides typed calls to DuploJS or external APIs, response expectations, hooks, Predicted mode, SSE, and streams. It accepts generated or handwritten route types.
+
+The `server` skill (`duplojs-server`) guides filesystem operations, typed I/O errors, file and folder structures, environment configuration, and process capabilities through `@duplojs/server`. It prioritizes the package's runtime abstractions and distinguishes the process working directory from the module directory.
+
+The `modeling` skill (`duplojs-modeling`) guides business system modeling and implementation with Type-Driven Design: understanding the existing domain, entity lifecycles, flags, facts, evidence, aggregates, repositories, use cases, and infrastructure boundaries. It requires reading the relevant concepts and domain contracts before implementation, including when only the application or infrastructure changes.
+
+The `test` skill (`duplojs-test`) guides testing DuploJS results and type contracts, selecting expected Either information, monitoring new result variants with exhaustive selectors, and isolating server dependencies through `TESTImplementation`. It also points to the concepts for organizing E2E tests with `@duplojs/playwright`.
+
+The `command` skill guides the creation of typed CLI commands with `@duplojs/server/command`, including arguments, options, subcommands, help, and executable entry points. Running `install` without a skill installs all supported skills. References and checked TypeScript examples are included in both copied and linked installations.
 
 The `setup` command creates `AGENTS.md` by default, or `CLAUDE.md` with `--type claude`, in the current project if needed and synchronizes a marked coding conventions block while preserving the surrounding content:
 
@@ -38,6 +55,6 @@ For AgentKit development, the local `bin/generateLlms/index.ts` script generates
 pnpm run generate-llms --input docs/concepts --output docs/concepts.llms.md
 ```
 
-In the monorepo, `pnpm --filter @duplojs/agents-kit build` builds the package, then regenerates this router using the local script. `pnpm --filter @duplojs/agents-kit test:types` also checks examples and fixtures through `tsconfig.doc.json`, and `pnpm --filter @duplojs/agents-kit test:lint` includes them in the package's lint checks.
+In the monorepo, `pnpm --filter @duplojs/agents-kit build` builds the package, then regenerates this router using the local script. `pnpm --filter @duplojs/agents-kit test:types` also checks examples and fixtures under `docs/` and `skills/` through `tsconfig.doc.json`, and `pnpm --filter @duplojs/agents-kit test:lint` includes them in the package's lint checks. Skill references link directly to their TypeScript examples under `references/examples/`; these files are included when the skill is copied or linked during installation.
 
 This package follows the configuration of server-oriented DuploJS packages and can run on Node.js, Bun, and Deno.

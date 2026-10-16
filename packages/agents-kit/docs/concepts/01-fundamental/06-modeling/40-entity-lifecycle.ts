@@ -43,10 +43,9 @@ export namespace User {
 	);
 	export type Name = DDataStructure.StructureValue<typeof Name>;
 
-	// Les états du cycle de vie sont représentés par des `TaggedObject`.
-	//
-	// Leur fonctionnement est détaillé séparément. Ici, leur tag permet surtout
-	// d'identifier et de discriminer précisément chaque état possible.
+	// Les `TaggedObject` décrivent les propriétés propres à chaque état.
+	// Leur tag permet de discriminer ces formes ; leur fonctionnement est détaillé
+	// dans le concept consacré aux objets taggés.
 	export const AwaitingValidationState = DModeling.createTaggedObject(
 		"AwaitingValidationState",
 		{
@@ -67,14 +66,9 @@ export namespace User {
 	);
 	export type ValidateState = DDataStructure.StructureValue<typeof ValidateState>;
 
-	// La shape de l'entité reste fixe pendant tout son cycle de vie.
-	//
-	// Les propriétés dont la valeur peut évoluer entre plusieurs formes
-	// sont modélisées avec une union.
-	//
-	// `state` indique donc ici que le `User` possède exactement deux états
-	// possibles dans son cycle de vie :
-	// `AwaitingValidationState` ou `ValidateState`.
+	// La shape de l'entité reste fixe pendant son cycle de vie.
+	// Les propriétés dont la forme varie sont modélisées par des unions : ici,
+	// `state` contient soit `AwaitingValidationState`, soit `ValidateState`.
 	export const Entity = namespace.createEntity(
 		() => ({
 			id: Id,
@@ -88,14 +82,11 @@ export namespace User {
 	);
 	export type Entity = DDataStructure.StructureValue<typeof Entity>;
 
-	// Un `Flag` représente dans le typage une information avérée sur l'entité.
-	//
-	// Le flag porte aussi sa payload au runtime. Ici, elle est liée au State correspondant.
-	// Ajouter ce flag nécessite donc de posséder un `AwaitingValidationState`.
-	//
-	// Une fonction peut ensuite demander :
-	// `User.Entity & User.AwaitingValidationFlag`
-	// pour garantir au niveau du typage que l'utilisateur est dans cet état.
+	// Un `Flag` certifie une condition sur l'entité actuelle : état, capacité ou relation.
+	// Plusieurs flags compatibles peuvent coexister, indépendamment des variantes de `state`.
+	// Ici, chacun porte au runtime la payload de l'état qu'il certifie.
+	// Une fonction exigeant `User.Entity & User.AwaitingValidationFlag` reçoit ainsi
+	// une entité dont l'état d'attente est prouvé, avec son `AwaitingValidationState`.
 	export type AwaitingValidationFlag = DModeling.Flag<
 		"AwaitingValidation",
 		AwaitingValidationState
@@ -114,15 +105,10 @@ export namespace User {
 		typeof Entity
 	>("Validate");
 
-	// Une entité hydratée possède bien son `state`, mais celui-ci reste typé
-	// comme l'union de tous les états possibles.
-	//
-	// `refineState` transforme cette information runtime en information de typage.
-	// Chaque branche du pattern matching associe le `Flag` correspondant au state.
-	//
-	// Chaque branche retourne un Result : elle constate un état sans décider d’un succès ou d’un échec.
-	// Le résultat permet ensuite de travailler avec une entité dont l’état
-	// courant est explicitement prouvé par le type.
+	// Après hydratation, `state` reste typé comme l'union des états possibles.
+	// `refineState` inspecte sa valeur et ajoute le flag correspondant sans modifier
+	// les propriétés métier. Chaque branche retourne un Result : elle constate l'état,
+	// sans décider si celui-ci autorise l'opération envisagée par l'appelant.
 	export function refineState<
 		GenericEntity extends Entity,
 	>(entity: GenericEntity) {
@@ -142,13 +128,10 @@ export namespace User {
 	}
 }
 
-// Une `Fact` représente un événement avéré dans le cycle de vie d'une entité.
-//
-// Sa payload contient les informations propres à cet événement et est associée
-// à l'entité lorsque la fact est appliquée.
-//
-// Ici, créer un utilisateur implique également son état initial :
-// un nouvel utilisateur est toujours en attente de validation.
+// Une `Fact` représente une création ou une modification métier de l'entité,
+// y compris un changement de propriété qui conserve le même état nommé.
+// Sa payload décrit l'événement et reste portée par l'entité après application du fait.
+// Ici, la création place toujours l'utilisateur en attente de validation.
 export type UserCreateFact = DModeling.Fact<
 	"UserCreated",
 	{

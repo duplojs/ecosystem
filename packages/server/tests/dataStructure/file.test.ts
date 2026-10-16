@@ -136,7 +136,7 @@ describe("dataStructure file", () => {
 				min: "1kb",
 				max: "2kb",
 			}),
-			DSDataStructure.mimeType(/^text\//),
+			DSDataStructure.mimeType(/^image\//),
 		]).asyncCheck(file);
 
 		expect(DEither.isRight(success)).toBe(true);
@@ -179,7 +179,7 @@ describe("dataStructure file", () => {
 		const sizeResult = await sizeStructure.asyncCheck(tooSmall);
 		const maxSizeResult = await maxSizeStructure.asyncCheck(tooLarge);
 		const mimeTypeResult = await mimeTypeStructure.asyncCheck(
-			DSFile.createFileInterface(DPath.declarePath("/tmp/avatar.png")),
+			DSFile.createFileInterface(DPath.declarePath("/tmp/notes.txt")),
 		);
 		const nullableMimeTypeResult = await nullableMimeTypeStructure.asyncCheck(
 			DSFile.createFileInterface(DPath.declarePath("/tmp/README")),
@@ -191,6 +191,6 @@ describe("dataStructure file", () => {
 		expect(DEither.isLeft(sizeResult)).toBe(true);
 		expect(DEither.isLeft(maxSizeResult)).toBe(true);
 		expect(DEither.isLeft(mimeTypeResult)).toBe(true);
-		expect(DEither.isRight(nullableMimeTypeResult)).toBe(true);
+		expect(DEither.isLeft(nullableMimeTypeResult)).toBe(true);
 	});
 });

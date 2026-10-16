@@ -24,14 +24,14 @@ describe("installCommand", () => {
 
 	it.each([
 		{
-			args: ["http"],
+			args: ["http-server"],
 			folder: ".agents",
-			skills: ["http"],
+			skills: ["http-server"],
 		},
 		{
-			args: ["http", "--type", "claude"],
+			args: ["http-server", "--type", "claude"],
 			folder: ".claude",
-			skills: ["http"],
+			skills: ["http-server"],
 		},
 		{
 			args: ["fundamental", "--type", "codex"],
@@ -41,15 +41,15 @@ describe("installCommand", () => {
 		{
 			args: [],
 			folder: ".agents",
-			skills: ["fundamental", "http"],
+			skills: ["fundamental", "http-server"],
 		},
 		{
 			args: ["--type", "codex"],
 			folder: ".codex",
-			skills: ["fundamental", "http"],
+			skills: ["fundamental", "http-server"],
 		},
 	])("links skills by default for $args", async({ args, folder, skills }) => {
-		const entries = DArray.map(["fundamental", "README.md", "http", "unknown"], DPath.createOrThrow);
+		const entries = DArray.map(["fundamental", "README.md", "http-server", "unknown"], DPath.createOrThrow);
 		const copy = vi.fn();
 		const symlink = vi.fn(() => Promise.resolve(DEither.right("file-system-symlink")));
 		TESTImplementation.set("readDirectory", () => Promise.resolve(DEither.right("file-system-read-directory", entries as never)));
@@ -69,7 +69,7 @@ describe("installCommand", () => {
 		}
 	});
 
-	it.each(["fundamental", "http"])("installs the selected %s skill", async(skill) => {
+	it.each(["fundamental", "http-server"])("installs the selected %s skill", async(skill) => {
 		const copy = vi.fn(() => Promise.resolve(DEither.right("file-system-copy")));
 		const readDirectory = vi.fn();
 		TESTImplementation.set("copy", copy);
@@ -96,17 +96,17 @@ describe("installCommand", () => {
 		TESTImplementation.set("copy", copy);
 		const error = DSCommand.createError("install");
 
-		await expect(installCommand.execute(["http", "--type", agent, "--copy"], error)).resolves.toBeUndefined();
+		await expect(installCommand.execute(["http-server", "--type", agent, "--copy"], error)).resolves.toBeUndefined();
 
 		expect(error.issues).toEqual([]);
-		expect(copy).toHaveBeenCalledExactlyOnceWith(`${skillsPath}/http`, `/project/${folder}/skills/duplojs-http`);
+		expect(copy).toHaveBeenCalledExactlyOnceWith(`${skillsPath}/http-server`, `/project/${folder}/skills/duplojs-http-server`);
 	});
 
 	it.each([
 		[[], ".agents"],
 		[["--type", "codex"], ".codex"],
 	] as const)("installs all supported skills for arguments %j", async(args, folder) => {
-		const entries = DArray.map(["fundamental", "README.md", "http", "unknown"], DPath.createOrThrow);
+		const entries = DArray.map(["fundamental", "README.md", "http-server", "unknown"], DPath.createOrThrow);
 		const readDirectory = vi.fn(() => Promise.resolve(DEither.right("file-system-read-directory", entries as never)));
 		const copy = vi.fn(() => Promise.resolve(DEither.right("file-system-copy")));
 		TESTImplementation.set("readDirectory", readDirectory);
@@ -119,7 +119,7 @@ describe("installCommand", () => {
 		expect(readDirectory).toHaveBeenCalledExactlyOnceWith(skillsPath);
 		expect(copy).toHaveBeenCalledTimes(2);
 		expect(copy).toHaveBeenNthCalledWith(1, `${skillsPath}/fundamental`, `/project/${folder}/skills/duplojs-fundamental`);
-		expect(copy).toHaveBeenNthCalledWith(2, `${skillsPath}/http`, `/project/${folder}/skills/duplojs-http`);
+		expect(copy).toHaveBeenNthCalledWith(2, `${skillsPath}/http-server`, `/project/${folder}/skills/duplojs-http-server`);
 	});
 
 	it("does not copy unsupported directory entries", async() => {
@@ -154,7 +154,7 @@ describe("installCommand", () => {
 
 	it.each([
 		["unknown"],
-		["http", "--type", "unknown"],
+		["http-server", "--type", "unknown"],
 	])("rejects invalid arguments %j", async(...args) => {
 		const copy = vi.fn();
 		const readDirectory = vi.fn();
@@ -176,7 +176,7 @@ describe("installCommand", () => {
 		const error = DSCommand.createError("install");
 		const finished = vi.fn();
 
-		const execution = installCommand.execute(["http", "--copy"], error).then(finished);
+		const execution = installCommand.execute(["http-server", "--copy"], error).then(finished);
 
 		await vi.waitFor(() => expect(copy).toHaveBeenCalledTimes(1));
 		expect(finished).not.toHaveBeenCalled();
@@ -191,6 +191,6 @@ describe("installCommand", () => {
 		const failure = new Error("Copy failed");
 		TESTImplementation.set("copy", vi.fn().mockRejectedValue(failure));
 
-		await expect(installCommand.execute(["http", "--copy"], DSCommand.createError("install"))).rejects.toThrow(failure);
+		await expect(installCommand.execute(["http-server", "--copy"], DSCommand.createError("install"))).rejects.toThrow(failure);
 	});
 });

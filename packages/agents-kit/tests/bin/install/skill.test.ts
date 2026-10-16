@@ -41,7 +41,7 @@ describe("copySkill", () => {
 
 	it.each([
 		["default", "fundamental", ".agents"],
-		["claude", "http", ".claude"],
+		["claude", "http-server", ".claude"],
 		["codex", "fundamental", ".codex"],
 	] as const)("copies %s/%s into the working directory", async(agent, skill, folder) => {
 		const copy = vi.fn(() => Promise.resolve(DEither.right("file-system-copy")));
@@ -60,7 +60,7 @@ describe("copySkill", () => {
 		const failure = new CopyError(new Error("Copy denied"));
 		TESTImplementation.set("copy", () => Promise.resolve(DEither.left("file-system-copy-error", failure)));
 
-		const result = await copySkill("default", "http");
+		const result = await copySkill("default", "http-server");
 
 		expect(DEither.unwrapByInformationOrThrow(result, "file-system-copy-error")).toBe(failure);
 	});
@@ -71,7 +71,7 @@ describe("copySkill", () => {
 		const failure = DEither.error(new Error("Unavailable"));
 		TESTImplementation.set("getCurrentWorkDirectory", () => failure);
 
-		const result = await copySkill("codex", "http");
+		const result = await copySkill("codex", "http-server");
 
 		expect(result).toBe(failure);
 		expect(copy).not.toHaveBeenCalled();
@@ -92,7 +92,7 @@ describe("symlinkSkill", () => {
 
 	it.each([
 		["default", "fundamental", ".agents"],
-		["claude", "http", ".claude"],
+		["claude", "http-server", ".claude"],
 		["codex", "fundamental", ".codex"],
 	] as const)("links %s/%s after creating its parent directory", async(agent, skill, folder) => {
 		const pending = Promise.withResolvers<DSFile.EnsureDirectoryResult>();
@@ -121,7 +121,7 @@ describe("symlinkSkill", () => {
 		TESTImplementation.set("ensureDirectory", () => Promise.resolve(DEither.left("file-system-ensure-directory-error", failure)));
 		TESTImplementation.set("symlink", symlink);
 
-		const result = await symlinkSkill("default", "http");
+		const result = await symlinkSkill("default", "http-server");
 
 		expect(DEither.unwrapByInformationOrThrow(result, "file-system-ensure-directory-error")).toBe(failure);
 		expect(symlink).not.toHaveBeenCalled();
@@ -133,7 +133,7 @@ describe("symlinkSkill", () => {
 		TESTImplementation.set("ensureDirectory", () => Promise.resolve(DEither.right("file-system-ensure-directory")));
 		TESTImplementation.set("symlink", () => Promise.resolve(DEither.left("file-system-symlink-error", failure)));
 
-		const result = await symlinkSkill("default", "http");
+		const result = await symlinkSkill("default", "http-server");
 
 		expect(DEither.unwrapByInformationOrThrow(result, "file-system-symlink-error")).toBe(failure);
 	});
@@ -171,9 +171,9 @@ describe.each([
 		TESTImplementation.set("copy", copy);
 		TESTImplementation.set("symlink", symlink);
 
-		const execution = install("codex", "http");
+		const execution = install("codex", "http-server");
 
-		await vi.waitFor(() => expect(remove).toHaveBeenCalledExactlyOnceWith("/project/.codex/skills/duplojs-http", { recursive: true }));
+		await vi.waitFor(() => expect(remove).toHaveBeenCalledExactlyOnceWith("/project/.codex/skills/duplojs-http-server", { recursive: true }));
 		expect(copy).not.toHaveBeenCalled();
 		expect(symlink).not.toHaveBeenCalled();
 		pending.resolve(DEither.right("file-system-remove"));
@@ -191,7 +191,7 @@ describe.each([
 		TESTImplementation.set("copy", copy);
 		TESTImplementation.set("symlink", symlink);
 
-		const result = await install("default", "http");
+		const result = await install("default", "http-server");
 
 		expect(DEither.unwrapByInformationOrThrow(result, "file-system-remove-error")).toBe(failure);
 		expect(copy).not.toHaveBeenCalled();
@@ -204,7 +204,7 @@ describe.each([
 		TESTImplementation.set("copy", () => Promise.resolve(DEither.right("file-system-copy")));
 		TESTImplementation.set("symlink", () => Promise.resolve(DEither.right("file-system-symlink")));
 
-		const result = await install("default", "http");
+		const result = await install("default", "http-server");
 
 		expect(DEither.unwrapByInformationOrThrow(result, information)).toBeUndefined();
 	});

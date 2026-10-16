@@ -20,15 +20,19 @@ Une dépendance vers le domaine depuis l'infrastructure est donc autorisée lors
 
 Une couche extérieure peut consommer le domaine et l'application, mais ne réalise pas leurs transitions à leur place. L'infrastructure peut :
 
-- hydrater une donnée externe avec `map` ou `decodeMap` dans l'implémentation d'un repository ;
+- lire des données à travers un repository, dont l'implémentation les hydrate avec `map` ou `decodeMap` ;
 - appeler une fonction pure de qualification pour établir une condition attendue par l'application ;
 - appeler un use case et adapter son résultat au point d'entrée consommé.
 
-Elle ne doit pas appeler directement une `Fact`, construire un `Flag` avec `Flag.append` ou modifier une entité pour réaliser une transition. Une qualification inspecte une valeur existante et ajoute le flag de la condition constatée ; la création ou la modification métier reste portée par une `Fact` du domaine.
+Les lectures seules, comme `findById` ou `findMany`, peuvent servir une consultation ou préparer les entrées d'un use case sans imposer un use case de relais. Lorsqu'une opération comporte des règles métier, le domaine les exprime et l'application orchestre leur exécution, les effets et la persistance.
+
+L'infrastructure passe alors par le use case : elle n'appelle directement ni `Fact` ni agrégat et ne modifie pas une entité pour réaliser une transition. Elle n'utilise pas non plus `Flag.append` ; la qualification du domaine établit le flag après avoir constaté la condition.
 
 ### Faire entrer les données dans le modèle
 
-L'implémentation qui lit une base, une API ou un fichier hydrate la donnée avant de la retourner avec le contrat prévu. Si un flag d'état ou une évidence de contexte est nécessaire, la couche qui possède la donnée appelle la qualification prévue par le domaine ; elle ne déduit pas la preuve d'un simple filtre technique.
+L'implémentation qui lit une base, une API ou un fichier hydrate la donnée avant de la retourner avec le contrat prévu. Les structures du domaine servent aussi à valider les entrées externes, afin de transmettre les types métier jusqu'aux use cases.
+
+La couche qui possède la donnée établit les préconditions demandées : qualification du domaine pour un flag, opération prévue par le contrat pour une évidence de contexte. Un simple filtre technique ne suffit pas à produire ces preuves.
 
 ### Adapter les résultats
 
