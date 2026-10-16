@@ -4,7 +4,7 @@
 
 `DSCommon.environmentVariable` reçoit une shape de data structures et retourne un résultat asynchrone : `decode-success` avec les valeurs typées, `decode-error` pour une configuration non conforme, ou une erreur de lecture d'un fichier d'environnement. Les strings du runtime sont décodées selon les structures ; ne pas les convertir avec des casts dans le code consommateur.
 
-`environmentVariableOrThrow` fournit directement les valeurs validées et lève `EnvironmentVariableError` si le chargement ou le décodage échoue. Charger la configuration obligatoire au démarrage avec un `await` au niveau du module, comme dans l'exemple : les traitements suivants disposent des valeurs validées et un échec interrompt l'initialisation. Dans une fonction qui doit transmettre son échec, conserver plutôt le résultat d'`environmentVariable`.
+`environmentVariableOrThrow` appelle la version sûre, puis fournit les valeurs validées ou lève `EnvironmentVariableError` si le chargement ou le décodage échoue. Au démarrage, cet usage exprime la décision du point d'entrée d'interrompre une initialisation invalide, comme dans l'exemple ; il ne requalifie pas un refus de validation en défaillance imprévue. Dans une fonction qui doit transmettre son échec, conserver le résultat d'`environmentVariable`.
 
 Choisir les options qui déterminent les effets du chargement :
 

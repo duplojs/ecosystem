@@ -6,6 +6,8 @@ Le `Hub` décrit l'application HTTP sans dépendre de son serveur natif. Il rass
 
 Le connecteur fournit l'exécution propre au runtime et lance le cycle de vie du Hub. Choisir celui adapté à l'environnement et vérifier son export public dans la documentation. L'[exemple d'initialisation sur Node](examples/initialize.ts) utilise `createHttpServer` depuis `@duplojs/http/node`.
 
+Il charge uniquement une [route autonome](examples/minimal-route.ts) : `GET /hello?name=Alice` valide le nom et le renvoie dans la réponse. Après configuration de l'environnement, cet exemple peut s'exécuter sans capacité applicative à implémenter. Ajouter ensuite les modules du projet selon le besoin.
+
 Conserver cette initialisation au point d'entrée. Les modules de routes déclarent les flux et les traitements ; ils ne démarrent pas chacun un serveur.
 
 ## Charger la configuration d'environnement

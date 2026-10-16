@@ -10,9 +10,9 @@ Les types permettent de construire un client déjà informé des méthodes, chem
 
 ## Identifier les structures à partager
 
-Donner un identifiant stable aux structures exportables avec `.setIdentifier(...)`, comme dans [les contrats de l'exemple](examples/contracts.ts). Cette méthode est ajoutée par l'extension `@duplojs/tools/toTypescript` : charger cette extension avant la déclaration des structures, sans dépendre de l'ordre d'import du plugin dans le point d'entrée. Le générateur découvre les structures identifiées utilisées dans les contrats et leurs sous-structures. Ne pas supposer qu'un schéma anonyme produira un export nommé.
+Donner un identifiant stable aux structures exportables avec `.addIdentifier(...)`, qui retourne une copie nommée. Cette méthode est ajoutée par l'extension `@duplojs/tools/toTypescript` : importer explicitement cette extension dans le module qui appelle la méthode. Les [contrats ordinaires](examples/contracts.ts) restent utilisables sans cette extension ; le [point d'entrée de génération](examples/generate-sdk.ts) crée leurs copies nommées pour le SDK.
 
-Pour compléter la sélection, fournir `generateStructure.structures`. Pour ne générer les structures que depuis cette sélection explicite, utiliser `generateStructure.disabledFromRoute`. Vérifier les capacités de génération des structures et contraintes personnalisées dans la documentation des outils.
+L'exemple fournit ces copies avec `generateStructure.structures` et active `generateStructure.disabledFromRoute` pour limiter la génération à cette sélection. Pour une découverte depuis les routes, conserver cette option désactivée et employer les structures identifiées dans les contrats des routes ; le générateur parcourt aussi leurs sous-structures. Ne pas supposer qu'un schéma anonyme produira un export nommé. Vérifier les capacités de génération des structures et contraintes personnalisées dans la documentation des outils.
 
 Réserver le dossier de sortie aux fichiers générés : le plugin remplace ce dossier pendant la génération. Garder les sources écrites à la main ailleurs.
 
@@ -21,6 +21,8 @@ Réserver le dossier de sortie aux fichiers générés : le plugin remplace ce d
 Importer les modules de routes, enregistrer les routes et brancher le plugin avant de démarrer le cycle avec le connecteur. Le plugin travaille sur le hook `beforeStartServer`, dans les environnements `DEV` et `BUILD` ; créer le Hub et le plugin sans appeler le connecteur ne suffit pas.
 
 Pour un script de génération, utiliser `BUILD`. L'[exemple Node](examples/generate-sdk.ts) appelle `createHttpServer` dans ce mode : le cycle et la génération s'exécutent sans ouvrir l'écoute HTTP. Le Hub doit contenir des routes pour que le plugin produise les fichiers attendus.
+
+Les routes de cet exemple déclarent certaines capacités avec `declare function` : elles démontrent leurs contrats sans fournir d'implémentation applicative. La génération n'exécute pas leurs handlers. Pour servir ces routes, raccorder les capacités réelles ; pour démarrer un exemple autonome, utiliser [l'initialisation minimale](examples/initialize.ts).
 
 ## Distribuer et utiliser le résultat
 

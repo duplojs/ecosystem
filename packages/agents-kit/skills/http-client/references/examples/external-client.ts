@@ -69,7 +69,7 @@ export async function readExternalUser(userId: number) {
 			"strict"
 		>;
 
-		return response.body;
+		return DEither.success(response.body);
 	}
 
 	// Le 404 et les autres réponses reçues restent accessibles via unexpect-response.

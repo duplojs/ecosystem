@@ -26,14 +26,14 @@ pnpm exec duplojs-agents-kit install modeling --type codex
 pnpm exec duplojs-agents-kit install test --type codex
 ```
 
-The former `http` skill is split into two independently installable skills:
+Two independently installable skills cover HTTP:
 
 - `http-server` (`duplojs-http-server`) guides server setup, routes, reusable flows, and contract and schema generation.
 - `http-client` (`duplojs-http-client`) guides typed calls to DuploJS or external APIs, response expectations, hooks, Predicted mode, SSE, and streams. It accepts generated or handwritten route types.
 
 The `server` skill (`duplojs-server`) guides filesystem operations, typed I/O errors, file and folder structures, environment configuration, and process capabilities through `@duplojs/server`. It prioritizes the package's runtime abstractions and distinguishes the process working directory from the module directory.
 
-The `modeling` skill (`duplojs-modeling`) guides business system modeling and implementation with Type-Driven Design: understanding the existing domain, entity lifecycles, flags, facts, evidence, aggregates, repositories, use cases, and infrastructure boundaries. It requires reading the relevant concepts and domain contracts before implementation, including when only the application or infrastructure changes.
+The `modeling` skill (`duplojs-modeling`) guides business system modeling and implementation with Type-Driven Design: understanding the existing domain, entity lifecycles, flags, facts, evidence, aggregates, repositories, use cases, and infrastructure boundaries. It starts with architecture boundaries and the affected domain contracts, then selects conceptual reading according to the responsibility being changed, including for application or infrastructure work.
 
 The `test` skill (`duplojs-test`) guides testing DuploJS results and type contracts, selecting expected Either information, monitoring new result variants with exhaustive selectors, and isolating server dependencies through `TESTImplementation`. It also points to the concepts for organizing E2E tests with `@duplojs/playwright`.
 

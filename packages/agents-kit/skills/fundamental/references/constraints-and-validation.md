@@ -8,7 +8,7 @@ Déclarer ce type ne valide rien et ne transforme pas la valeur. La garantie vie
 
 ## Entrées : décrire le contrat complet
 
-Toute donnée entrante passe par un data parser. Une `DDataStructure` porte un schéma commun au runtime et au typage ; ses contraintes précisent le contrat au-delà de la nature de la donnée.
+Une donnée reçue à une frontière externe passe par un data parser avant d'être considérée fiable. Une `DDataStructure` porte un schéma commun au runtime et au typage ; ses contraintes précisent le contrat au-delà de la nature de la donnée. Dans les fonctions internes, réutiliser les garanties déjà établies et suivre celles que les transformations conservent.
 
 Voir [un contrat et sa validation](examples/input-validation.ts).
 
@@ -34,9 +34,9 @@ Préférer `cast` dans le cas courant. Utiliser `DCommon.infer` lorsqu'une valeu
 
 Voir [la conservation du littéral dans une propriété](examples/infer.ts).
 
-## Paramètre générique direct : expliciter la cible avec `satisfies`
+## Difficulté d'inférence : cible d'un paramètre générique direct
 
-Si le paramètre est lui-même générique, TypeScript peut ne pas fournir une cible assez précise à `cast` ou `infer`. Placer `satisfies` immédiatement après l'appel avec le type contraint attendu.
+Lorsque `cast` ou `infer` est passé à un paramètre lui-même générique, TypeScript peut ne pas fournir une cible assez précise au calcul. Si le type attendu n'est pas inféré dans cette situation, l'expliciter avec `satisfies` immédiatement après l'appel. Ce traitement répond à une difficulté de contexte ; il n'est pas nécessaire à chaque utilisation de ces fonctions.
 
 Voir [le calcul des contraintes avec un paramètre générique direct](examples/generic-inference.ts).
 

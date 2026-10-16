@@ -15,5 +15,5 @@ const environment = await DSCommon.environmentVariableOrThrow({
 	]),
 });
 
-// Exception d'environnement sans argument externe, si sa propagation serait trop coûteuse.
+// Ici, l'initialisation exige un dossier de travail accessible pour démarrer.
 const currentDirectory = DSCommon.getCurrentWorkDirectoryOrThrow();

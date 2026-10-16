@@ -14,7 +14,7 @@ Après l'extraction, vérifier la valeur avec le runner : propriétés d'un obje
 
 Le sélecteur de `unwrapSelectionOrThrow` doit contenir toutes les informations de l'union reçue, avec des booléens littéraux : `true` extrait la valeur et `false` fait échouer le test si cette information apparaît. Les clés étrangères à l'union sont refusées. Accepter plusieurs informations n'a de sens que si le même scénario tolère réellement leurs résultats ; la valeur extraite prend alors l'union des valeurs acceptées.
 
-Dans l'exemple, TypeScript infère les résultats possibles de `findUserByEmail` depuis son implémentation. Si une branche retournant une nouvelle information, par exemple `user.disabled`, est ajoutée à la fonction, les sélecteurs incomplets échouent au typage jusqu'à leur révision.
+L'ajout d'une information au type de retour rend le sélecteur incomplet et provoque une erreur de typage. Il ne se met pas à jour automatiquement : décider si le scénario accepte ou rejette la nouvelle information, généralement avec une seule entrée à `true`. L'exemple vérifie cette surveillance à partir des résultats inférés de la fonction.
 
 Ne pas réécrire manuellement une union réduite aux résultats déjà connus et ne pas filtrer le résultat avant de l'envoyer au sélecteur : le contrôle porte sur le type reçu à cet endroit. Les sélecteurs surveillent les informations ; une évolution de valeur ou de sous-type d'erreur nécessite les vérifications adaptées sur le contenu et son type.
 

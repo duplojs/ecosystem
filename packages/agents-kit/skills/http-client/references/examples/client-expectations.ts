@@ -50,7 +50,7 @@ export async function selectProfile(onAuthenticationRequired: () => void) {
 		type _CheckCode = DCommon.ExpectType<typeof response.code, "200", "strict">;
 		type _CheckBody = DCommon.ExpectType<typeof response.body, { name: string }, "strict">;
 
-		return response.body;
+		return DEither.success(response.body);
 	}
 
 	// Les autres branches portent unexpect-response ou request-error.

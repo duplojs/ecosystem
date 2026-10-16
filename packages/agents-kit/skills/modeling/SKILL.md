@@ -7,7 +7,9 @@ description: "Comprendre, concevoir ou faire évoluer un système métier DuploJ
 
 ## Trouver les concepts
 
-Pour rechercher un concept ou une façon de faire, consulter en priorité `docs/concepts.llms.md` dans le package `@duplojs/agents-kit` et lire uniquement les pages et exemples pertinents pour la tâche. Le setup indique son chemin dans `AGENTS.md` ou `CLAUDE.md` : le résoudre depuis le dossier de ce fichier. Les chemins `docs/` partent de la racine du package installé ; les liens de chaque document se résolvent depuis son dossier. Même avec `--copy`, la documentation reste dans le package installé ; les références propres au skill se résolvent depuis son `SKILL.md`.
+Appliquer la démarche du skill et lire les ressources indiquées lorsque leur condition est rencontrée. Pour rechercher un concept ou un mécanisme non couvert, consulter `docs/concepts.llms.md` du package `@duplojs/agents-kit`.
+
+Le setup indique ce chemin dans `AGENTS.md` ou `CLAUDE.md`, relativement à leur dossier. Les chemins `docs/` partent du package installé, même avec `--copy`. Les références du skill partent de son dossier ; les liens d'un document se résolvent depuis ce document.
 
 Si le chemin du routeur manque, le retrouver depuis le projet consommateur :
 
@@ -15,28 +17,23 @@ Si le chemin du routeur manque, le retrouver depuis le projet consommateur :
 node --input-type=module -e 'import { fileURLToPath } from "node:url"; console.log(fileURLToPath(import.meta.resolve("@duplojs/agents-kit/docs/concepts.llms.md")))'
 ```
 
-## Comprendre avant d'implémenter
+## Délimiter l'intervention
 
-Ici, TDD signifie **Type-Driven Design**. Le domaine exprime le métier et impose ses garanties par ses types. Avant toute implémentation, même uniquement applicative ou technique, lire les concepts et les contrats du domaine concerné. Ne pas se contenter des titres du routeur.
+Ici, TDD signifie **Type-Driven Design**. Le domaine exprime le métier et impose ses garanties par ses types. Partir de l'opération concernée et choisir la lecture selon la responsabilité modifiée :
 
-Depuis la racine du package installé, lire :
-
-- `docs/concepts/05-type-driven-design/01-architecture/10-boundaries.md` pour les opérations autorisées par couche ;
-- les pages `10-entities.md`, `20-aggregates.md` et `30-repositories.md` de `docs/concepts/05-type-driven-design/02-domains/` pour les invariants, transitions et exigences du métier ;
-- les pages `03-applications/10-use-case.md` et `04-infrastructure/10-implementation.md` de `docs/concepts/05-type-driven-design/` pour préparer, exécuter et raccorder ces contrats ;
-- les exemples pertinents de `docs/concepts/01-fundamental/06-modeling/`, notamment `40-entity-lifecycle.ts` et `50-evidence.ts`, avant de manipuler des états ou des preuves. Lire aussi les exemples DataStructure, NewType, Entity, TaggedObject ou SignedFunction lorsque ces primitives interviennent.
-
-Dans le projet consommateur, retrouver les entités, qualifications, faits, agrégats, repositories et use cases de l'opération. Suivre leurs imports et lire les signatures ainsi que les implémentations concernées. Reconstituer, pour chaque opération :
-
-| À comprendre | Questions à résoudre dans les contrats |
+| Intervention | Contrats à examiner et référence à lire |
 | --- | --- |
-| Données et invariants | Quelles valeurs et formes sont autorisées pour toute entité ? |
-| Conditions d'entrée | Quels flags, évidences et relations sont exigés ? Qui les établit ? |
-| Événement | Quels faits modifient quelles cibles ? Dans quel ordre ? |
-| Sorties | Quels nouveaux états, faits courants, résultats et effets sont produits ? |
-| Refus | Quelles branches empêchent de continuer ? Quelle couche les traite ? |
+| Concevoir ou modifier un modèle, une qualification ou une transition | Invariants, faits et agrégats concernés : [Modèles et transitions](references/domain.md). |
+| Modifier un use case | Préconditions de l'agrégat, ports, refus, effets et persistance : [Des preuves aux points d'entrée](references/orchestration.md). |
+| Raccorder un point d'entrée ou implémenter un port existant | Contrat consommé, préparation des entrées et garanties produites : [Des preuves aux points d'entrée](references/orchestration.md). |
 
-Utiliser cette compréhension pour implémenter le périmètre demandé. Si le domaine est fourni par l'utilisateur, conserver ses contrats ; une difficulté de raccordement ne justifie pas de retirer une précondition ou de déplacer une règle. Si une règle métier nécessaire manque ou se contredit, isoler la décision à clarifier et avancer sur les parties indépendantes.
+## Comprendre le contrat et les faits concernés
+
+Lire les entrées, garanties, sorties et refus du contrat actuel. Lorsqu'un agrégat intervient, lire son implémentation et les faits qu'il appelle : leurs préconditions, leurs cibles et leur ordre expliquent les transitions et l'intention de l'opération. Lire aussi les qualifications ou opérations qui établissent les garanties requises ; une signature seule ne prouve pas leur réalisation.
+
+Étendre la lecture si une précondition, une provenance, un effet ou une responsabilité nécessaire reste inexpliqué. Arrêter l'exploration lorsque les contrats et les faits concernés permettent de réaliser et vérifier la modification ; les autres parcours du domaine restent hors de cette lecture.
+
+Pour raccorder un domaine fourni, conserver ses contrats : une difficulté technique ne justifie pas de retirer une précondition ou de déplacer une règle. Si une décision métier nécessaire manque ou se contredit, isoler la question et avancer sur les parties indépendantes.
 
 ## Respecter les couches
 
@@ -49,6 +46,8 @@ Utiliser cette compréhension pour implémenter le périmètre demandé. Si le d
 L'entrée habituelle d'une opération métier dans le domaine est un **agrégat appelé par un use case**. Le domaine orchestre les règles et les faits ; l'application orchestre leurs besoins techniques. Un repository est un contrat de capacité extérieure au domaine, pas nécessairement un accès à une base de données.
 
 L'infrastructure peut appeler directement une opération de lecture de repository, comme `findById` ou `findMany`, et une qualification du domaine pour préparer une entrée. Ne pas imposer un use case de simple relais. Dès qu'il faut conduire une opération métier, ses transitions ou ses effets, passer par l'orchestration applicative. Ne pas appeler directement un fait ou un agrégat depuis un point d'entrée.
+
+Lorsqu'une tâche crée une couche ou modifie ses responsabilités, lire `docs/concepts/05-type-driven-design/01-architecture/10-boundaries.md`. Pour un raccordement existant, appliquer ces frontières aux contrats concernés.
 
 ## Choisir les garanties du modèle
 
@@ -64,11 +63,13 @@ L'infrastructure peut appeler directement une opération de lecture de repositor
 | Exiger une opération identifiée, au-delà de sa signature d'appel | `SignedFunction`. |
 | Déclarer des effets à exécuter autour des résultats métier | `Resolver` retourné par l'agrégat, exécuté par l'application. |
 
-Pour concevoir ou modifier le domaine, lire [Modèles et transitions](references/domain.md). Pour raccorder les contrats à l'application et à l'infrastructure, lire [Des preuves aux points d'entrée](references/orchestration.md).
+Si le contrat exige une `Evidence` ou `GetEvidenceResult`, lire `docs/concepts/01-fundamental/06-modeling/50-evidence.ts` avant de préparer l'entrée. S'il exige une `SignedFunction`, lire `docs/concepts/01-fundamental/06-modeling/60-signed-function.ts`. Ces mécanismes portent des exigences distinctes : conserver l'opération réelle qui établit la garantie.
 
 ## Implémenter et vérifier l'opération
 
-Partir du contrat de l'agrégat, puis remonter les exigences vers ses appelants. Décider pour chaque entrée si le use case reçoit une valeur déjà qualifiée ou l'obtient à travers ses ports. Conserver le type métier exigé jusque dans la validation HTTP, CLI ou autre frontière ; un cast ne produit aucune garantie.
+Adapter les appelants du contrat modifié. Pour une opération métier, remonter les exigences de l'agrégat vers le use case et son point d'entrée ; pour une lecture ou une qualification isolée, partir directement de son contrat. Décider qui reçoit les valeurs déjà qualifiées et qui les obtient par ses ports. Conserver les types métier jusque dans la validation externe ; un cast ne produit aucune garantie.
+
+Si la tâche assemble des ports ou des Readers, lire `docs/concepts/05-type-driven-design/03-applications/10-use-case.md` pour leur déclaration et leur résolution. Reader injecte les dépendances du use case ; Resolver exécute les effets déclarés par l'agrégat. Lire le contenu des ressources sélectionnées, pas seulement leurs titres.
 
 Vérifier que chaque preuve est établie par une opération réelle, que seules les branches autorisées atteignent l'agrégat et que l'enchaînement utilise les nouvelles entités retournées. Vérifier aussi le sens des imports et l'ordre entre effets et persistance. Un `Left` attendu doit empêcher les étapes qui nécessitent le résultat positif.
 

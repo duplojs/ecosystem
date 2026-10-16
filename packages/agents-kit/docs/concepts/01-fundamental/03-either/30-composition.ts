@@ -29,9 +29,9 @@ const resultRightPipe = DEither.rightPipe(
 			return DEither.left("wrong");
 		}
 
-		return elementAt;
+		return DEither.success(elementAt);
 	},
-	// Cette étape reçoit la string retournée ci-dessus, pas un Success<string>.
+	// Cette étape reçoit la string du Success retourné ci-dessus, pas son wrapper.
 	(value) => value.toUpperCase(),
 );
 // `rightAsyncPipe` applique le même arrêt sur Left et attend chaque étape

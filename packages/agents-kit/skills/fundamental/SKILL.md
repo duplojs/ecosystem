@@ -7,7 +7,9 @@ description: "Appliquer les API et la philosophie fonctionnelle DuploJS pour tou
 
 ## Trouver les concepts
 
-Pour rechercher un concept ou une façon de faire, consulter en priorité `docs/concepts.llms.md` dans le package `@duplojs/agents-kit` et lire uniquement les pages et exemples pertinents pour la tâche. Le setup indique son chemin dans `AGENTS.md` ou `CLAUDE.md` : le résoudre depuis le dossier de ce fichier. Les chemins `docs/` partent de la racine du package installé ; les liens de chaque document se résolvent depuis son dossier. Même avec `--copy`, la documentation reste dans le package installé ; les références propres au skill se résolvent depuis son `SKILL.md`.
+Appliquer la démarche du skill et lire les ressources indiquées lorsque leur condition est rencontrée. Pour rechercher un concept ou un mécanisme non couvert, consulter `docs/concepts.llms.md` du package `@duplojs/agents-kit`.
+
+Le setup indique ce chemin dans `AGENTS.md` ou `CLAUDE.md`, relativement à leur dossier. Les chemins `docs/` partent du package installé, même avec `--copy`. Les références du skill partent de son dossier ; les liens d'un document se résolvent depuis ce document.
 
 Si le chemin du routeur manque, le retrouver depuis le projet consommateur :
 
@@ -27,13 +29,13 @@ Importer le sous-export du domaine avec son namespace long lorsqu'il est exposé
 
 ## Laisser les types s'inférer
 
-Laisser TypeScript inférer les retours des fonctions et les valeurs issues des appels pour que leurs types suivent l'implémentation et ses dépendances. Ne pas reconstituer manuellement un type que l'expression ou l'API peut inférer. Annoter un type de retour uniquement pour résoudre une récursivité.
+Dans les implémentations, laisser TypeScript inférer les retours des fonctions et les valeurs issues des appels pour que leurs types suivent le code et ses dépendances. Ne pas reconstituer manuellement un type que l'expression ou l'API peut inférer. Annoter un type de retour uniquement pour résoudre une récursivité. Les signatures d'interfaces et les déclarations de fonctions des exemples décrivent des contrats à implémenter ; elles ne demandent pas d'annoter le retour de leur implémentation.
 
 ## Faire évoluer le code à l'endroit responsable
 
-Pour toute tâche de code, lire les définitions, les contrats et les appelants concernés avant de choisir où intervenir. Intégrer le besoin dans la fonction, le modèle ou le module qui porte cette responsabilité. Si une modification multiplie les conditions, les adaptations ou les imbrications dans le traitement ou chez ses appelants, réexaminer la déclaration d'origine et simplifier la partie concernée plutôt qu'accumuler des contournements autour d'elle.
+Lire les définitions, les contrats et les appelants concernés, puis intégrer le besoin dans la fonction, le modèle ou le module responsable. Si les adaptations se multiplient dans le traitement ou chez ses appelants, réexaminer cette responsabilité et simplifier la partie concernée.
 
-Privilégier les fonctions pures, l'immutabilité et des transformations explicites. Isoler les interactions avec l'environnement et représenter les échecs dans les types de retour. Recomposer les étapes ou extraire une responsabilité lorsque cela clarifie le traitement, en conservant les garanties métier et le rôle de chaque couche.
+Privilégier les fonctions pures, l'immutabilité et des transformations explicites. Isoler les interactions avec l'environnement et représenter les échecs prévisibles dans les types de retour. Recomposer les étapes ou extraire une responsabilité lorsque cela clarifie le traitement, en conservant les garanties métier et le rôle de chaque couche.
 
 Limiter le remaniement au besoin demandé, puis relire la partie modifiée avec ses usages : déroulement compréhensible, absence de duplication et complexité proportionnée. Adapter les appelants concernés et vérifier les contrats ainsi que le comportement attendu.
 
@@ -41,30 +43,34 @@ Limiter le remaniement au besoin demandé, puis relire la partie modifiée avec 
 
 De nombreuses fonctions proposent une forme curifiée pour `DCommon.pipe` : fournir les paramètres fixes, puis laisser le pipe transmettre la donnée entre les étapes d'une même transformation.
 
-Un appel simple peut rester direct. Préparer séparément les arguments issus de sources indépendantes avant de les combiner. Lire [Composition](references/composition.md) pour composer un traitement ou gérer l'asynchronisme.
+Un appel simple peut rester direct. Préparer séparément les arguments issus de sources indépendantes avant de les combiner. Pour plusieurs étapes asynchrones, `DCommon.asyncPipe` attend chaque étape ; un seul `await` sur le résultat final suffit.
+
+Lorsque les étapes doivent s'arrêter sur un `Left`, utiliser `DEither.rightPipe` ou `DEither.rightAsyncPipe` : chaque étape reçoit la valeur du `Right` précédent et le premier `Left` arrête la suite. Lire [Composition](references/composition.md) avant de construire ou modifier un tel enchaînement ; l'[exemple direct et curifié](references/examples/composition.ts) montre le cas synchrone sans échec.
 
 ## Valider les entrées et conserver les garanties
 
-Toute donnée entrante est non sûre et passe par un data parser. Décrire son contrat avec une `DDataStructure`, en utilisant l'intégration prévue par le module qui reçoit la donnée lorsqu'elle existe. Exploiter ensuite les valeurs validées.
+Aux frontières du logiciel, valider les données externes avec une `DDataStructure`, qui porte leur contrat au runtime et dans les types. Utiliser l'intégration prévue par le module récepteur lorsqu'elle existe. Dans les traitements internes, exploiter les garanties déjà établies, sans refaire une validation pour le seul passage d'une fonction à une autre.
 
 Préciser les contraintes utiles : bornes, entier, format, longueur minimale, maximale ou exacte. Une contrainte enrichit le type ; sa seule déclaration ne valide rien au runtime.
 
 Choisir la construction selon les informations disponibles :
 
-1. **Littéral ou garantie compatible** : `DCommon.cast`, `DCommon.infer` pour conserver le littéral, ou un helper comme `DPath.declarePath`. Pour Chrono, préférer la surcharge littérale sûre.
+1. **Littéral ou garantie compatible** : déclaration sûre ou calcul de compatibilité avec `DCommon.cast` ; utiliser `DCommon.infer` si le littéral doit être conservé.
 2. **Valeur runtime sans preuve** : validation ou fabrique sûre renvoyant un `Either` à traiter ou propager.
-3. **Refus de `cast` ou `infer`** : ne pas forcer avec `as`, `!` ou un helper sans preuve. Si un paramètre générique direct bloque l'inférence, ajouter `satisfies` avec le type contraint attendu ; sinon choisir une autre construction sûre.
+3. **Refus du compilateur** : vérifier l'inférence et l'origine de la garantie attendue ; ne pas la fabriquer avec `as`, `!` ou un helper sans preuve.
 
-`cast` et `infer` calculent une compatibilité de types, sans validation runtime. Lire [Contraintes et validation](references/constraints-and-validation.md) pour choisir une construction ou résoudre une difficulté de typage.
+`cast` et `infer` calculent une compatibilité de types, sans validation runtime. Pour écrire un contrat de validation, construire une valeur contrainte ou résoudre un refus de compatibilité, lire [Contraintes et validation](references/constraints-and-validation.md). L'[exemple de validation](references/examples/input-validation.ts) montre l'acquisition de garanties depuis une entrée inconnue.
 
-Exploiter les garanties propagées par les fonctions : `MinElements<2>` garantit `first`, `last` et `at` aux indices `0` et `1`, sans absence ajoutée au type. Ne pas ajouter de garde ou d'assertion redondante. Respecter le nouveau type si une transformation perd une garantie.
+Après chaque transformation, suivre le type du résultat : une garantie peut avoir été préservée, renforcée ou perdue. Exploiter les accès garantis aux collections sans garde redondante. Si la cible de `cast` n'est pas inférée dans un appel générique, lire la difficulté d'inférence de la référence avant de modifier les types.
 
-## Renvoyer les échecs, décider à la frontière d'exécution
+## Distinguer les résultats des défaillances d'environnement
 
-Une fonction réutilisable qui peut échouer renvoie un `Either` : `Right` pour la réussite, `Left` pour l'échec. Résoudre, propager ou adapter le `Left` en conservant l'échec dans le type de retour. Discriminer avant de déballer ; composer avec les outils `DEither`.
+Une issue prévisible et exploitable par le traitement appartient au contrat de résultat : réussite en `Right`, refus en `Left`. Cela comprend les validations de données externes, les absences et les manipulations impossibles, y compris techniques. L'information du résultat identifie le cas ; sa valeur transporte les données ou les détails du refus.
 
-La frontière d'exécution est l'endroit responsable de décider de l'effet final du traitement. Elle interprète le `Left` et peut produire une réponse, terminer l'exécution ou lever une exception adaptée. Ses sous-fonctions renvoient leurs résultats sans `throw` caché, quel que soit le mécanisme qui déclenche l'exécution.
+Dès qu'une branche d'une fonction renvoie un `Right` ou un `Left`, toutes ses branches renvoient un `Either`. Envelopper les valeurs de réussite dans un `Right`, y compris avec `DEither.ok()` pour une réussite sans valeur ; ne pas mélanger des `Either` et des valeurs brutes dans le contrat de retour.
 
-Préférer les déclarations sûres et les `Either` à `OrThrow`. **Ne jamais utiliser `OrThrow` pour valider ou contraindre une donnée externe**, quelle que soit sa provenance. Même au point d'entrée, valider puis interpréter le résultat.
+Les exceptions de défaillance imprévue émises par les dépendances ou le runtime remontent implicitement. Les fonctions réutilisables n'ajoutent pas de `throw` ; elles propagent ou adaptent leurs `Left`. Discriminer le résultat avant de le déballer.
 
-Exceptions limitées : préparation de valeurs en tests sans déclaration sûre adaptée ; configuration de l'environnement au démarrage ; opération d'environnement sans entrée externe dont l'échec est très rare et la propagation très coûteuse en complexité, comme le répertoire courant. Lire [Résultats et erreurs](references/results-and-errors.md) avant d'utiliser `throw` ou `OrThrow`.
+Réserver les `throw` explicites et `OrThrow` à la consommation finale du résultat par la frontière d'exécution : réponse, fin du programme ou exception adaptée. Être appelé depuis cette frontière ne suffit pas à autoriser un `throw`. La rareté ou le coût de propagation d'un refus prévisible ne changent pas cette règle.
+
+Avant d'adapter une API qui lève sur un refus prévisible ou d'introduire `OrThrow`, lire [Résultats et erreurs](references/results-and-errors.md) pour choisir le traitement selon la responsabilité de l'appelant. Préférer les déclarations sûres pour les constantes connues ; l'[exemple de propagation](references/examples/error-propagation.ts) conserve les erreurs d'une opération dans le contrat de retour.

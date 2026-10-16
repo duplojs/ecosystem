@@ -11,7 +11,7 @@ Le placement dans le floor dépend de la forme déclarée :
 - Une source décrite directement par une structure conserve sa clé de source : une structure sur `body` produit `floor.body`.
 - Une source décrite par un objet de structures ajoute chaque propriété au floor : un objet sous `params` contenant `userId` produit `floor.userId`.
 
-Voir [la récupération d'une ressource](examples/user-route.ts) pour une extraction par propriété et [la modification d'une ressource](examples/rename-user-route.ts) pour un body conservé sous sa clé.
+Voir [la route autonome](examples/minimal-route.ts) pour une extraction par propriété. Les exemples de [récupération](examples/user-route.ts) et de [modification d'une ressource](examples/rename-user-route.ts) montrent ensuite le raccordement applicatif et un body conservé sous sa clé. Leurs capacités déclarées avec `declare function` sont des contrats à remplacer par les implémentations du projet avant exécution.
 
 ## Enrichir le floor
 

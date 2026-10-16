@@ -7,7 +7,9 @@ description: "Créer, modifier ou corriger une interface en ligne de commande av
 
 ## Trouver les concepts
 
-Pour rechercher un concept ou une façon de faire, consulter en priorité `docs/concepts.llms.md` dans le package `@duplojs/agents-kit` et lire uniquement les pages et exemples pertinents pour la tâche. Le setup indique son chemin dans `AGENTS.md` ou `CLAUDE.md` : le résoudre depuis le dossier de ce fichier. Les chemins `docs/` partent de la racine du package installé ; les liens de chaque document se résolvent depuis son dossier. Même avec `--copy`, la documentation reste dans le package installé ; les références propres au skill se résolvent depuis son `SKILL.md`.
+Appliquer la démarche du skill et lire les ressources indiquées lorsque leur condition est rencontrée. Pour rechercher un concept ou un mécanisme non couvert, consulter `docs/concepts.llms.md` du package `@duplojs/agents-kit`.
+
+Le setup indique ce chemin dans `AGENTS.md` ou `CLAUDE.md`, relativement à leur dossier. Les chemins `docs/` partent du package installé, même avec `--copy`. Les références du skill partent de son dossier ; les liens d'un document se résolvent depuis ce document.
 
 Si le chemin du routeur manque, le retrouver depuis le projet consommateur :
 
@@ -21,26 +23,26 @@ Importer le domaine sous le namespace `DSCommand` depuis `@duplojs/server/comman
 
 | Besoin | Construction |
 | --- | --- |
-| Définir une commande nommée à composer | `DSCommand.create` |
-| Lire les arguments du processus et lancer la commande racine | `DSCommand.exec` |
-| Recevoir une valeur positionnelle | `createArgument` dans `subjects` |
-| Recevoir une option avec une valeur | `createOption` dans `options` |
-| Recevoir un flag de présence | `createBooleanOption` |
-| Recevoir une liste de valeurs | `createArrayOption` |
-| Lire uniquement les options d'un script | `DSCommand.execOptions` |
+| Exécuter une commande racine avec ses entrées | `DSCommand.exec` lit les arguments du processus et appelle le callback après validation. |
+| Assembler plusieurs actions nommées | `DSCommand.create` définit les sous-commandes, placées dans les `subjects` du parent exécuté avec `exec`. |
+| Lire uniquement les options d'un script | `DSCommand.execOptions` retourne le résultat du parsing ; le script décide ensuite de lancer le traitement. |
 
-Pour créer une commande, identifier les entrées et leurs contraintes, déclarer leur contrat, puis écrire le callback avec les `args` et `options` inférés. Pour plusieurs actions, créer les commandes nommées et les assembler dans les `subjects` du parent. Exécuter la racine une seule fois au point d'entrée.
+Identifier les entrées et leurs contraintes, déclarer leur contrat, puis écrire le callback avec les `args` et `options` inférés. Exécuter la racine une seule fois au point d'entrée. Pour une racine simple, lire la première déclaration de `docs/concepts/02-server/40-command/10-use.ts` ; pour un script sans arguments positionnels, suivre l'[exemple à options seules](references/examples/options-only.ts).
 
 ## Déclarer les entrées
 
 Les entrées du terminal sont externes : les faire décoder et valider par les data structures intégrées aux déclarations. Décrire les contraintes utiles, comme un entier borné ou un choix de littéraux ; ne pas remplacer cette validation par un cast ou une conversion manuelle dans le callback.
 
-- Les arguments sont obligatoires par défaut. Mettre les arguments facultatifs, déclarés avec `optional: true`, après les arguments obligatoires.
-- Les options à valeur et les listes sont facultatives par défaut : leur absence produit `undefined`. Utiliser `required: true` lorsqu'elles sont nécessaires. Une option présente sans valeur reste invalide.
-- Un flag booléen vaut `false` lorsqu'il est absent, `true` lorsqu'il est présent ; il ne reçoit pas de valeur.
-- Les noms doivent être uniques dans chaque ensemble d'options ou de sujets. Choisir aussi des alias sans collision et conserver `help` / `h` pour l'aide intégrée.
+| Entrée | Déclaration et garantie |
+| --- | --- |
+| Valeur positionnelle | `createArgument` dans `subjects`, obligatoire par défaut. Placer les arguments `optional: true` après les obligatoires. |
+| Option à valeur | `createOption` dans `options`, facultative par défaut : absence en `undefined`. `required: true` la rend obligatoire ; une présence sans valeur reste invalide. |
+| Flag de présence | `createBooleanOption`, `false` si absent et `true` si présent ; ne reçoit pas de valeur. |
+| Liste | `createArrayOption`, facultative par défaut ; son schéma décrit un élément. Les bornes ne rendent pas la liste obligatoire. |
 
-Lire [Entrées et garanties](references/inputs.md) pour la syntaxe, les listes bornées et l'[exemple de commande typée](references/examples/preview-command.ts).
+Les noms doivent être uniques dans chaque ensemble d'options ou de sujets. Choisir aussi des alias sans collision et conserver `help` / `h` pour l'aide intégrée.
+
+Pour créer ou modifier une entrée, lire [Entrées et garanties](references/inputs.md) avant de choisir sa syntaxe et son schéma. L'[exemple complet](references/examples/preview-command.ts) combine arguments, options, flag et liste bornée ; reprendre les constructions nécessaires au contrat de la commande.
 
 ## Assembler et exécuter
 
@@ -48,11 +50,13 @@ Un même `subjects` contient soit des arguments, soit des sous-commandes. Le pre
 
 Décrire les commandes et leurs entrées pour alimenter l'aide intégrée `--help` / `-h`. Choisir `displayName` sur la racine pour identifier le programme dans l'aide et les diagnostics.
 
-Lire [Arbre, aide et résultat d'exécution](references/execution.md) pour le point d'entrée, le binaire et le traitement des erreurs. Les exemples [CLI avec sous-commande](references/examples/cli.ts) et [script à options seules](references/examples/options-only.ts) montrent les deux formes d'exécution.
+Si la tâche ajoute un arbre, modifie l'exécution ou expose un binaire, lire [Arbre, aide et résultat d'exécution](references/execution.md). L'[exemple avec sous-commande](references/examples/cli.ts) montre l'assemblage et le code de sortie sur erreur de validation.
 
 ## Raccorder l'application et vérifier
 
-Le callback est un point d'entrée d'infrastructure : il adapte les données validées, appelle les capacités de l'application et interprète leurs résultats pour le terminal. Garder l'orchestration métier dans l'application et les échecs des fonctions réutilisables dans leurs `Either`.
+Le callback est un point d'entrée d'infrastructure : il adapte les données validées, appelle l'application et interprète ses résultats pour le terminal. Il retourne `void` ou une promesse de `void` ; lui retourner un `Either` métier ne propage pas cet échec à `exec`. Garder l'orchestration métier dans l'application et choisir le diagnostic et la conséquence finale dans le callback.
+
+Une erreur de validation empêche l'appel du callback ; `exec` retourne cette erreur après son affichage, sans fixer à lui seul un code de sortie d'échec. Avec `execOptions`, sélectionner l'information `success` avant de lancer le travail : l'aide est aussi un `Right`, sous `log-help`.
 
 Pour les opérations sur les fichiers, la configuration d'environnement et les capacités du processus appelées depuis une commande, consulter le skill `duplojs-server`.
 

@@ -3,9 +3,7 @@
  *
  * Exécuter les déclarations de routes avant de consommer le store global.
  */
-import "./user-route";
-import "./rename-user-route";
-import "./protected-route";
+import "./minimal-route";
 import { createHub, routeStore } from "@duplojs/http";
 import { createHttpServer } from "@duplojs/http/node";
 import * as DSCommon from "@duplojs/server/common";

@@ -4,7 +4,7 @@
 
 Un checker encapsule une opération avec un input et des résultats nommés. Le créer avec `useCheckerBuilder().handler(...)` et retourner les résultats avec `output(information, value)`. Il peut adapter les `Either` d'un repository ou d'une capacité applicative ; il ne choisit pas leur statut HTTP.
 
-Voir [le checker de recherche d'utilisateur](examples/user-checker.ts). Pour l'utiliser avec `.check(...)`, fournir :
+Voir [le checker de recherche d'utilisateur](examples/user-checker.ts). Sa capacité de recherche est déclarée avec `declare function` et doit être raccordée à l'application avant exécution. Pour l'utiliser avec `.check(...)`, fournir :
 
 - `input` : calcul de l'argument depuis le floor courant ;
 - `result` : information du résultat permettant de continuer ;
@@ -27,7 +27,7 @@ Créer un process avec `useProcessBuilder()`, enchaîner ses étapes, puis le fi
 
 Déclarer les clés exposées avec `.exports([ ... ])`. Au point d'appel, `.exec(process, { imports: [ ... ] })` récupère les clés nécessaires parmi ces exports. Utiliser les options du process si son comportement doit être paramétré ; consulter les signatures pour leur passage depuis le floor appelant.
 
-Voir [le process d'authentification](examples/authentication.ts) et son [exécution explicite dans une route](examples/protected-route.ts). Le process peut lui-même produire une réponse qui arrête le traitement. Son export décrit uniquement ce que la suite peut récupérer après réussite.
+Voir [le process d'authentification](examples/authentication.ts) et son [exécution explicite dans une route](examples/protected-route.ts). La vérification du token est un contrat déclaré à implémenter selon la politique de sécurité du projet. Le process peut lui-même produire une réponse qui arrête le traitement. Son export décrit uniquement ce que la suite peut récupérer après réussite.
 
 ## Preflight : préparer une famille de routes
 

@@ -51,7 +51,7 @@ export async function consumeEvents(onProgress: (percent: number) => void) {
 
 	// Enregistrer les callbacks ne démarre pas la lecture.
 	await response.consumeEventStream();
-	return undefined;
+	return DEither.ok();
 }
 
 export async function consumeText(onChunk: (chunk: string) => void) {
@@ -70,5 +70,5 @@ export async function consumeText(onChunk: (chunk: string) => void) {
 		onChunk(chunk);
 	}
 
-	return undefined;
+	return DEither.ok();
 }

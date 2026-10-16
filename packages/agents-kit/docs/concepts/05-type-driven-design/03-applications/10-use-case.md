@@ -22,7 +22,7 @@ Les opérations utilisées par les use cases renvoient souvent des monades `Eith
 | Réunir plusieurs résultats nécessaires à une étape | `group` ou `asyncGroup` rassemble les valeurs des `Right` dans un `Success`, ou retourne le premier `Left`. Fournir des getters permet de ne pas exécuter les opérations suivantes après un échec. |
 | Traiter un résultat précis | Les fonctions de discrimination, comme `whenHasInformation` et `matchInformation`, permettent de définir la suite selon l'information du résultat. |
 
-Un échec prévu par le domaine reste un résultat à gérer par les couches appelantes. Un `Left` porte une information discriminante et n'est pas automatiquement une erreur technique ; une erreur imprévisible est normalement levée. `unwrapRight` intervient seulement après la discrimination, lorsqu'une seule branche pertinente reste à poursuivre.
+Un refus prévisible reste un résultat à gérer par les couches appelantes, y compris lorsqu'il provient d'une opération technique. Les exceptions techniques déjà émises par les dépendances ou le runtime remontent implicitement ; le use case n'ajoute pas ses propres `throw`, conformément aux [résultats et exceptions](../../01-fundamental/03-either/50-external-results.ts). `unwrapRight` intervient seulement après la discrimination, lorsqu'une seule branche pertinente reste à poursuivre.
 
 Voir les fondamentaux : [composition et propagation des échecs](../../01-fundamental/03-either/30-composition.ts), [adaptation des résultats](../../01-fundamental/03-either/40-result-adaptation.ts), [discrimination](../../01-fundamental/03-either/10-discrimination.ts) et [traitement exhaustif](../../01-fundamental/03-either/20-exhaustive-handling.ts).
 

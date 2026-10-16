@@ -2,7 +2,7 @@
 
 ## Choisir l'opération
 
-Rechercher les capacités du domaine fichiers dans `docs/concepts.llms.md`, puis vérifier la signature de la fonction utile. Choisir selon le résultat nécessaire :
+Choisir l'opération selon le résultat nécessaire et vérifier sa signature publique. Pour une capacité absente de cette sélection, rechercher le mécanisme dans `docs/concepts.llms.md` :
 
 | Besoin | API à considérer |
 | --- | --- |
