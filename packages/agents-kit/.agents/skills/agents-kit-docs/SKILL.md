@@ -13,9 +13,13 @@ La documentation d'AgentKit fournit aux agents les connaissances nécessaires po
 
 Le **routage** permet de trouver la connaissance pertinente. Le **contenu documentaire** permet d'agir correctement une fois la ressource consultée. Organiser les deux pour limiter le contexte chargé et les répétitions.
 
+Pour documenter les fonctions dans `docs/API/`, appliquer les [précisions propres à la référence API](references/api.md) en complément des règles communes ci-dessous.
+
 ## Préparer l'intervention
 
 - Définir la connaissance que la ressource doit transmettre et les décisions qu'elle doit permettre à l'agent de prendre. Respecter le périmètre demandé.
+- Lire systématiquement le [skill fondamental](../../../skills/fundamental/SKILL.md) avant toute rédaction ou modification de documentation pour comprendre les principes et les usages communs de DuploJS et les appliquer aux explications et aux exemples.
+- Selon le domaine documenté, consulter les autres [skills distribués dans `skills/`](../../../skills/) et les références pertinentes qu'ils indiquent pour comprendre comment utiliser les API et composer les mécanismes de l'écosystème. S'appuyer sur ces démarches pour présenter des usages cohérents, puis confirmer les contrats dans les sources documentaires et les API publiques concernées.
 - Identifier le dossier source et les routeurs `*.llms.md` concernés à partir des commandes de génération du package. Appliquer les mêmes règles à chaque ensemble documentaire.
 - Consulter les documents voisins et les ressources consacrées aux notions mobilisées. Pour une révision, lire la ressource entière et les documents liés avant de choisir où intervenir. Identifier leur progression et la ressource responsable de chaque connaissance ; réutiliser leur terminologie et leurs références.
 - Vérifier les exports publics et les signatures TypeScript utiles ; lire les implémentations et les tests lorsque le comportement ou les garanties nécessitent confirmation.
@@ -60,7 +64,7 @@ Nommer le concept, le problème ou la capacité documentée avec un titre explic
  */
 ```
 
-Un symbole d'API peut nommer le concept lui-même. Les fonctions utilisées seulement pour l'illustrer restent dans l'exemple.
+Dans les sources conceptuelles, un symbole d'API peut nommer le concept lui-même. Les fonctions utilisées seulement pour l'illustrer restent dans l'exemple.
 
 Pour vérifier le périmètre du routage : **si l'exemple change mais transmet la même connaissance, le titre et la description doivent rester pertinents.**
 
@@ -80,10 +84,10 @@ Le Markdown porte les explications et contextualise les liens vers les exemples 
 
 Placer la ressource dans le domaine approprié selon les conventions d'organisation et d'exposition. Adapter l'index si le périmètre du domaine évolue.
 
-Le build `pnpm --filter @duplojs/agents-kit build` régénère les routeurs déclarés dans `.commands/build.sh` ; actuellement, il génère `docs/concepts.llms.md` depuis `docs/concepts/`. Pour chaque autre routeur concerné, utiliser sa commande de génération avec le dossier source et la sortie correspondants, depuis la racine du package :
+Le build `pnpm --filter @duplojs/agents-kit build` régénère les routeurs déclarés dans `.commands/build.sh`. Pour chaque routeur concerné, utiliser le dossier source et la sortie correspondants, depuis la racine du package :
 
 ```sh
-pnpm run generate-llms --input <dossier-source> --output <nom>.llms.md
+pnpm run generate:llms --input <dossier-source> --output <nom>.llms.md
 ```
 
 Les commandes `test:types` (via `tsconfig.doc.json`) et `test:lint` du package vérifient aussi les exemples et les fixtures. Vérifier que les nouveaux dossiers documentaires sont couverts par ces configurations. Le champ `files` du package doit inclure `docs` afin de publier ensemble les routeurs et leurs cibles ; adapter les fichiers publiés si les sources ou les routeurs sont placés ailleurs.

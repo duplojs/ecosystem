@@ -35,7 +35,8 @@
 			"require": "./dist/index.cjs",
 			"types": "./dist/index.d.ts"
 		},
-    "./docs/concepts.llms.md": "./docs/concepts.llms.md"
+    "./docs/concepts.llms.md": "./docs/concepts.llms.md",
+    "./docs/API.llms.md": "./docs/API.llms.md"
 	},
 	"dependencies": {
 		"@duplojs/lang": "workspace:*",

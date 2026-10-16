@@ -9,6 +9,7 @@ export default oxlint.defineConfig({
 		}),
 		createOxlintOverride({
 			files: [
+				"docs/**/*.ts",
 				"**/*.test.ts",
 				"**/*.bench.ts",
 				"integrations/**/*.ts",

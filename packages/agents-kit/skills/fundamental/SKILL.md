@@ -41,9 +41,13 @@ Limiter le remaniement au besoin demandé, puis relire la partie modifiée avec 
 
 ## Composer les transformations
 
-De nombreuses fonctions proposent une forme curifiée pour `DCommon.pipe` : fournir les paramètres fixes, puis laisser le pipe transmettre la donnée entre les étapes d'une même transformation.
+De nombreuses fonctions proposent une forme curifiée pour `DCommon.pipe` : fournir les paramètres fixes directement dans l'étape du pipe, puis laisser celui-ci transmettre la donnée.
 
-Un appel simple peut rester direct. Préparer séparément les arguments issus de sources indépendantes avant de les combiner. Pour plusieurs étapes asynchrones, `DCommon.asyncPipe` attend chaque étape ; un seul `await` sur le résultat final suffit.
+Lorsque la fonction retournée par la forme curifiée ne déclare pas ses propres génériques, ses types sont fixés lors de l'appel de configuration. Écrire cet appel directement comme argument de `pipe` ou `asyncPipe` : le contexte doit être disponible au moment de configurer l'étape. Préparer la fonction dans une variable puis passer cette variable à un pipe reste une préparation isolée ; l'ajout du pipe ne corrige pas cet usage. Ne pas ajouter des génériques explicites, annotations ou casts pour le forcer. L'[exemple de composition](references/examples/composition.ts) montre l'appel dans le pipe et la préparation à éviter ; [Composition](references/composition.md) explique les deux niveaux de signature.
+
+Toujours écrire les appels de pipe sur plusieurs lignes : chaque argument sur sa propre ligne, une virgule après le dernier et la parenthèse de fermeture sur une ligne séparée. Appliquer ce format même avec seulement deux arguments, une donnée et une étape ; écrire l'appel curifié lui-même à la ligne de cette étape.
+
+Un appel simple peut rester direct. Préparer séparément les données issues de sources indépendantes avant de les combiner ; les appels curifiés des étapes restent dans le pipe. Pour plusieurs étapes asynchrones, `DCommon.asyncPipe` attend chaque étape ; un seul `await` sur le résultat final suffit.
 
 Lorsque les étapes doivent s'arrêter sur un `Left`, utiliser `DEither.rightPipe` ou `DEither.rightAsyncPipe` : chaque étape reçoit la valeur du `Right` précédent et le premier `Left` arrête la suite. Lire [Composition](references/composition.md) avant de construire ou modifier un tel enchaînement ; l'[exemple direct et curifié](references/examples/composition.ts) montre le cas synchrone sans échec.
 
