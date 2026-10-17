@@ -5,7 +5,7 @@ import { TransformerEither } from './result';
 import { StructureTransformer } from './structureTransformer';
 import { TypeTransformer } from './typeTransformer';
 import { TransformerHook } from './hook';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 export interface TransformerFunctionParams {
     readonly identifier?: string;
     readonly structureTransformers: readonly StructureTransformer[];

@@ -2,9 +2,9 @@ import { ProcessStep, CheckerStep, CutStep, ExtractStep, stepKind, PresetChecker
 import { Floor } from '../types/floor';
 import { HookRouteLifeCycle } from '../route';
 import { Metadata } from '../metadata';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DObject from "@duplojs-v1/lang/object";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DObject from "@duplojs/lang/object";
+import type * as DKind from "@duplojs/lang/kind";
 export type * from './types';
 export interface ProcessStepsCustom {
 }

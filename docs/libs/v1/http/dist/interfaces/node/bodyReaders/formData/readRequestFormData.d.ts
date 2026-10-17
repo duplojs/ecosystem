@@ -1,7 +1,7 @@
 import { default as http } from 'http';
-import * as DCommon from "@duplojs-v1/lang/common";
-import * as DEither from "@duplojs-v1/lang/either";
-import * as DPath from "@duplojs-v1/lang/path";
+import * as DCommon from "@duplojs/lang/common";
+import * as DEither from "@duplojs/lang/either";
+import * as DPath from "@duplojs/lang/path";
 interface HeaderPartInformation {
     name: string;
     filename?: string & DPath.Segment;

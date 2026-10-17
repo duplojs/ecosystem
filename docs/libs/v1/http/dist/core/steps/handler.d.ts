@@ -3,8 +3,8 @@ import { Floor } from '../types';
 import { ServerSentEventsPredictedResponse, PredictedResponse, ResponseContract, PredictedResponses, StreamPredictedResponse, StreamTextPredictedResponse } from '../response';
 import { StepFunctionParams } from './types';
 import { Metadata } from '../metadata';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
 export interface HandlerStepFunctionParamsServerSentEventsResponse<GenericResponse extends ServerSentEventsPredictedResponse> {
     serverSentEventsResponse<GenericInformation extends GenericResponse["information"], GenericFilteredResponse extends Extract<GenericResponse, {
         information: GenericInformation;

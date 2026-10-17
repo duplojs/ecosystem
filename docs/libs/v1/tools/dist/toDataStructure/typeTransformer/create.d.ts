@@ -1,6 +1,6 @@
 import { Typescript } from '../../typescript';
 import { DataStructureTypeErrorEither, DataStructureTypeTransformerEither, TransformerSuccessEither } from '../result';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DStoTS from '../../toTypescript';
 export interface TypeTransformerParams {
     readonly importContext: DStoTS.MapImportContext;

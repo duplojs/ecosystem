@@ -3,8 +3,8 @@ import { HookRouteLifeCycle } from '../../route';
 import { ResponseContract } from '../../response';
 import { Environment } from '../../types';
 import { ExtractShapeCodecs } from '../../steps';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import * as DEither from "@duplojs-v1/lang/either";
+import type * as DCommon from "@duplojs/lang/common";
+import * as DEither from "@duplojs/lang/either";
 export interface BuildStepResult {
     readonly buildedFunction: BuildedStep;
     readonly hooksRouteLifeCycle: readonly HookRouteLifeCycle[];

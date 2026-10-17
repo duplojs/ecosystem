@@ -1,7 +1,7 @@
 import { ClientEventsResponse, ServerEvent, AllClientResponse, AllNotPredictedClientResponse, ClientStreamResponse } from './clientResponse';
 import { PromiseRequestParams } from './promiseRequestParams';
 import { ServerRouteResponseFlux } from './serverRoute';
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DCommon from "@duplojs/lang/common";
 export type RequestHook<GenericHookParams extends Record<string, unknown> = Record<string, unknown>> = (requestParams: PromiseRequestParams<GenericHookParams>) => DCommon.MaybePromise<PromiseRequestParams<GenericHookParams>>;
 export type ResponseHook<GenericHookParams extends Record<string, unknown> = Record<string, unknown>> = (response: AllClientResponse<GenericHookParams>) => DCommon.MaybePromise<AllClientResponse<GenericHookParams>>;
 export type InformationHook<GenericHookParams extends Record<string, unknown> = Record<string, unknown>> = (response: AllClientResponse<GenericHookParams>) => DCommon.MaybePromise<void>;

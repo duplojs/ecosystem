@@ -2,8 +2,8 @@ import { ConstraintTransformer } from './constraintTransformer';
 import { MapContext, StructureTransformer, TransformerHook } from './structureTransformer';
 import { TypeTransformer } from './typeTransformer';
 import { ConstraintErrorEither, ConstraintNotSupportedEither, DataStructureErrorEither, DataStructureNotSupportedEither, DataStructureTypeErrorEither, DataStructureTypeNotSupportedEither } from './result';
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import * as DEither from "@duplojs-v1/lang/either";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DEither from "@duplojs/lang/either";
 import type * as DStoTS from '../toTypescript';
 export interface BuildedContext {
     readonly context: MapContext;

@@ -1,5 +1,5 @@
-import type * as DKind from "@duplojs-v1/lang/kind";
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
+import type * as DCommon from "@duplojs/lang/common";
 declare const signerKind: DKind.Handler<DKind.Definition<"@DuplojsJsonWebToken/signer", unknown>>;
 export interface Signer<GenericAlgorithm extends string = string> extends DKind.Kind<typeof signerKind> {
     readonly algorithm: GenericAlgorithm;

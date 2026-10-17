@@ -1,6 +1,6 @@
 import { ClientRequestParamsBody, ClientRequestParamsHeaders, ClientRequestParamsParams, ClientRequestParamsQuery } from './clientRequestParams';
 import { ClientResponseBody } from './clientResponse';
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DCommon from "@duplojs/lang/common";
 export interface ClientCacheValue {
     information?: string;
     body: ClientResponseBody;

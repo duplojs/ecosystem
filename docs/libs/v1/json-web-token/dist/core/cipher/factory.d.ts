@@ -1,5 +1,5 @@
-import type * as DKind from "@duplojs-v1/lang/kind";
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
+import type * as DCommon from "@duplojs/lang/common";
 declare const cipherKind: DKind.Handler<DKind.Definition<"@DuplojsJsonWebToken/cipher", unknown>>;
 export interface Cipher<GenericAlgorithm extends string = string> extends DKind.Kind<typeof cipherKind> {
     readonly algorithm: GenericAlgorithm;

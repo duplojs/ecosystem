@@ -1,5 +1,5 @@
-import * as DEither from "@duplojs-v1/lang/either";
-import type * as DPath from "@duplojs-v1/lang/path";
+import * as DEither from "@duplojs/lang/either";
+import type * as DPath from "@duplojs/lang/path";
 declare module '../implementor' {
     interface ServerFunction {
         setCurrentWorkingDirectory(path: string & DPath.Absolute): DEither.Fail | DEither.Ok;

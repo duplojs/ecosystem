@@ -1,5 +1,5 @@
-import * as DModeling from "@duplojs-v1/lang/modeling";
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import * as DModeling from "@duplojs/lang/modeling";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 export interface OptionIssueBase {
     readonly data: unknown;
     readonly path: string;

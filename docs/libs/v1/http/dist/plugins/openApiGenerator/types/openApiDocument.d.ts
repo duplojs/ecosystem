@@ -1,4 +1,4 @@
-import { DataStructureToJsonSchema } from '@duplojs-v1/tools';
+import { DataStructureToJsonSchema } from '@duplojs/tools';
 import { OpenApiSecuritySchema } from './openApiSecuritySchema';
 import { OpenApiPath } from './openApiPath';
 export interface OpenApiDocument {

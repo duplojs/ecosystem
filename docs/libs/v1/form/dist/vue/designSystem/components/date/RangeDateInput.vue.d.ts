@@ -1,4 +1,4 @@
-import type * as DChrono from "@duplojs-v1/lang/chrono";
+import type * as DChrono from "@duplojs/lang/chrono";
 export interface Props {
     min?: DChrono.TheDate | DChrono.SerializedTheDate;
     max?: DChrono.TheDate | DChrono.SerializedTheDate;

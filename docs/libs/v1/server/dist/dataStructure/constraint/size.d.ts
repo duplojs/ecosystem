@@ -1,6 +1,6 @@
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DSFile from '../../file';
 export declare const sizeConstraintKind: DKind.Handler<DKind.Definition<"@DuplojsServerDataStructure/size-constraint", unknown>>;
 export interface SizeConstraintDefinition extends DDataStructure.ConstraintDefinition {

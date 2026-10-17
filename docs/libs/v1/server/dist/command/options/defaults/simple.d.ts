@@ -1,8 +1,8 @@
 import { Option } from '../base';
 import { EligibleType } from '../../types';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 export declare const simpleOptionKind: DKind.Handler<DKind.Definition<"@DuplojsServerCommand/command-simple-option", unknown>>;
 export interface SimpleOption<GenericName extends string = string, GenericValue extends EligibleType = EligibleType> extends DCommon.Forward<Option<GenericName, GenericValue> & DKind.Kind<typeof simpleOptionKind>> {
     readonly dataStructure: DDataStructure.Structure<GenericValue>;

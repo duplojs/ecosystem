@@ -1,8 +1,8 @@
 import { GetCheckerInput, Checker, GetCheckerOptions, GetCheckerResult } from './checker';
 import { ClientErrorResponseCode, ResponseContract } from './response';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DObject from "@duplojs-v1/lang/object";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DObject from "@duplojs/lang/object";
+import type * as DKind from "@duplojs/lang/kind";
 export interface PresetCheckerDefinition {
     readonly checker: Checker;
     readonly result: string | readonly string[];

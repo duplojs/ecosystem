@@ -2,8 +2,8 @@ import { BodyController, RequestMethods } from '../request';
 import { ExtractStep, CheckerStep, CutStep, HandlerStep, ProcessStep, stepKind, PresetCheckerStep } from '../steps';
 import { HookRouteLifeCycle } from './hooks';
 import { Metadata } from '../metadata';
-import type * as DObject from "@duplojs-v1/lang/object";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import type * as DObject from "@duplojs/lang/object";
+import type * as DKind from "@duplojs/lang/kind";
 export type * from './types';
 export * from './hooks';
 export interface RouteStepsCustom {

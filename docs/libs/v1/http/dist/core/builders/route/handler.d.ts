@@ -3,8 +3,8 @@ import { ResponseContract } from '../../response';
 import { Route, RouteDefinition } from '../../route';
 import { HandlerStep, HandlerStepFunctionParams } from '../../steps';
 import { Metadata } from '../../metadata';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DObject from "@duplojs-v1/lang/object";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DObject from "@duplojs/lang/object";
 declare module "./builder" {
     interface RouteBuilder<GenericDefinition extends RouteDefinition = RouteDefinition, GenericFloor extends Floor = {}> {
         handler<GenericResponseContract extends (ResponseContract.Contracts | readonly [

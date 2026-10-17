@@ -2,7 +2,7 @@ import { HookRouteLifeCycle, RouteDefinition, RoutePath } from '../../route';
 import { Floor } from '../../types';
 import { RequestMethods, BodyController } from '../../request';
 import { Metadata } from '../../metadata';
-import * as DCommon from "@duplojs-v1/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 export interface RouteBuilder<GenericDefinition extends RouteDefinition = RouteDefinition, GenericFloor extends Floor = {}> extends DCommon.Builder<RouteDefinition> {
 }
 export declare const routeBuilderHandler: DCommon.BuilderHandler<RouteBuilder<RouteDefinition, {}>>;

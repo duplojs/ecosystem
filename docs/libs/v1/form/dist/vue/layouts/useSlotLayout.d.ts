@@ -1,5 +1,5 @@
 import { GetFormFieldSlots, FormField, GetFormFieldCheckedValue, GetFormFieldValue, FormFieldSlotParams } from '../formField';
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DCommon from "@duplojs/lang/common";
 export type SlotPrimitiveDefaultValue = null | string | undefined | boolean | bigint | number;
 export type SlotDefaultValue = SlotPrimitiveDefaultValue | (() => object | SlotPrimitiveDefaultValue);
 export interface UseSlotLayoutParams<GenericDefaultValue extends SlotDefaultValue = SlotDefaultValue> {

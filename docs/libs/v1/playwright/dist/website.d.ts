@@ -1,8 +1,8 @@
 import { BrowserContext as PlaywrightBrowserContext, Page as PlaywrightPage } from 'playwright/test';
 import { createComponent } from './component';
 import { PageEngine } from './page';
-import type * as DKind from "@duplojs-v1/lang/kind";
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
+import type * as DCommon from "@duplojs/lang/common";
 declare const webSiteKind: DKind.Handler<DKind.Definition<"@DuplojsPlaywright/web-site", unknown>>;
 type PageOf<GenericPageEngine extends PageEngine<any, any, any, any, any>> = ReturnType<GenericPageEngine>;
 type PageArgs<GenericPageEngine extends PageEngine<any, any, any, any, any>> = Parameters<PageOf<GenericPageEngine>["makePath"]>;

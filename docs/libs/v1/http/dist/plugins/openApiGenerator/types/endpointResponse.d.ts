@@ -1,4 +1,4 @@
-import { DataStructureToJsonSchema } from '@duplojs-v1/tools';
+import { DataStructureToJsonSchema } from '@duplojs/tools';
 export interface EndpointResponseHeader {
     information: {
         schema: DataStructureToJsonSchema.JsonSchema;

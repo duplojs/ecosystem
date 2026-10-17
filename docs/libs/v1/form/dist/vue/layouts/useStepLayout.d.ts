@@ -2,7 +2,7 @@ import { VNode } from 'vue';
 import { GetFormFieldCheckedValue, FormField, GetFormFieldValue, MergeFormFieldSlots } from '../formField';
 import { VueComponent } from '../types';
 import { Templates } from '../template';
-import * as DCommon from "@duplojs-v1/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 export interface StepTemplateProperties {
     props: {
         fieldKey: string;

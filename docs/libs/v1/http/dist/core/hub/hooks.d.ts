@@ -2,8 +2,8 @@ import { Route } from '../route';
 import { Hub } from '.';
 import { RouterParams } from '../router';
 import { HttpServerParams } from '../types';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
 export declare const hookServerExitKind: DKind.Handler<DKind.Definition<"@DuplojsHttpCore/server-hook-exit", unknown>>;
 export interface ServerHookExit extends DKind.Kind<typeof hookServerExitKind> {
 }

@@ -1,5 +1,5 @@
 import { BodyControllerParams } from './base';
-import * as DCommon from "@duplojs-v1/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 export interface TextBodyReaderParams extends BodyControllerParams {
 }
 export declare const TextBodyController: import('./base').BodyControllerHandler<"text", TextBodyReaderParams>;

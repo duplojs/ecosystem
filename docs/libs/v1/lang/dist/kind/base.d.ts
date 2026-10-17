@@ -22,7 +22,7 @@ export interface Kind<GenericHandler extends Handler, GenericValue extends Gener
         [Prop in GenericHandler["definition"]["name"]]: GenericValue;
     };
 }
-export declare const keyKindPrefix = "@duplojs-v1/lang/kind/";
+export declare const keyKindPrefix = "@duplojs/lang/kind/";
 export type ForbiddenKindNameCharacter = "@" | "/";
 export declare function create<GenericName extends string, GenericKindValue extends unknown = unknown>(name: (GenericName & DString.ForbiddenContain<GenericName, ForbiddenKindNameCharacter>)): Handler<Definition<GenericName, GenericKindValue>>;
 export declare function isRuntimeKey(value: string): boolean;

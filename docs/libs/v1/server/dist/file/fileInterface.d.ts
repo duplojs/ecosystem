@@ -4,18 +4,19 @@ import { MoveResult } from './move';
 import { RemoveResult } from './remove';
 import { StatResult } from './stat';
 import { RelocateResult } from './relocate';
-import type * as DKind from "@duplojs-v1/lang/kind";
-import * as DPath from "@duplojs-v1/lang/path";
-import * as DEither from "@duplojs-v1/lang/either";
+import { EntryPath } from './unknownEntryInterface';
+import type * as DKind from "@duplojs/lang/kind";
+import * as DPath from "@duplojs/lang/path";
+import * as DEither from "@duplojs/lang/either";
 declare const fileInterfaceKind: DKind.Handler<DKind.Definition<"@DuplojsServer/fileInterface", unknown>>;
 type FileInterfaceRenameResult = Exclude<RenameResult, DEither.Right> | DEither.Right<"file-system-rename", FileInterface>;
 type FileInterfaceRelocateResult = Exclude<RelocateResult, DEither.Right> | DEither.Right<"file-system-relocate", FileInterface>;
 type FileInterfaceMoveResult = Exclude<MoveResult, DEither.Right> | DEither.Right<"file-system-move", FileInterface>;
-export interface FileInterface extends DKind.Kind<typeof fileInterfaceKind> {
-    path: string & DPath.Path;
-    getName(): (string & DPath.Segment) | null;
+export interface FileInterface<GenericPath extends EntryPath = EntryPath> extends DKind.Kind<typeof fileInterfaceKind> {
+    path: GenericPath & DPath.Path;
+    getName(): (string & DPath.Segment & DPath.Path) | null;
     getMimeType(): string | null;
-    getExtension(params?: DPath.GetExtensionNameParams): (string & DPath.Segment) | null;
+    getExtension(params?: DPath.GetExtensionNameParams): (string & DPath.Segment & DPath.Path) | null;
     getParentPath(): (string & DPath.Path) | null;
     rename(newName: string & DPath.Segment): Promise<FileInterfaceRenameResult>;
     relocate(parentPath: string & DPath.Path): Promise<FileInterfaceRelocateResult>;
@@ -25,6 +26,7 @@ export interface FileInterface extends DKind.Kind<typeof fileInterfaceKind> {
     stat(): Promise<StatResult>;
     isFile(): Promise<boolean>;
 }
-export declare function createFileInterface(path: string & DPath.Path): FileInterface;
-export declare function isFileInterface(input: unknown): input is FileInterface;
+export declare function createFileInterface<GenericPath extends EntryPath = EntryPath>(path: GenericPath): FileInterface<GenericPath>;
+export declare function isFileInterface<GenericInput extends unknown>(input: GenericInput): input is Extract<GenericInput, FileInterface>;
+export declare const isFileInterfaceFromUnknown: (input: unknown) => input is FileInterface;
 export {};

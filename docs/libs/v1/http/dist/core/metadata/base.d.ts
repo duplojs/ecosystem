@@ -1,5 +1,5 @@
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
 export declare const metadataKind: DKind.Handler<DKind.Definition<"@DuplojsHttpCore/metadata", {
     name: string;
     value: unknown;

@@ -1,6 +1,6 @@
 import { TheFile } from '../file';
 import { TheFolder } from '../folder';
-declare module "@duplojs-v1/lang/dataStructure" {
+declare module "@duplojs/lang/dataStructure" {
     interface FundamentalTypesStore {
         serverFile: TheFile;
         serverFolder: TheFolder;

@@ -1,7 +1,7 @@
 import { Floor } from '../../types';
 import { HookRouteLifeCycle, RoutePreFlightSteps } from '../../route';
 import { Metadata } from '../../metadata';
-import * as DCommon from "@duplojs-v1/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 export interface PreflightBuilderDefinition {
     readonly preflightSteps: readonly RoutePreFlightSteps[];
     readonly hooks: readonly HookRouteLifeCycle[];

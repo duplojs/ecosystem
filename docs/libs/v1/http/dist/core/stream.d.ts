@@ -1,4 +1,4 @@
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DCommon from "@duplojs/lang/common";
 export declare namespace Stream {
     interface StartSendingParams<GenericFlux extends unknown = unknown> {
         send(...args: DCommon.AnyTuple<GenericFlux>): Promise<void>;

@@ -1,7 +1,7 @@
 import { RequestMethods } from '../../core/request';
 import { HubPlugin } from '../../core/hub';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DObject from "@duplojs-v1/lang/object";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DObject from "@duplojs/lang/object";
 export interface CorsPluginParams {
     readonly allowOrigin?: (string | RegExp | DCommon.AnyTuple<string> | ((origin: string) => DCommon.MaybePromise<boolean>) | true);
     readonly allowHeaders?: string | DCommon.AnyTuple<string> | true;

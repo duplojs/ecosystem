@@ -1,8 +1,8 @@
 import { AllClientResponse } from './clientResponse';
 import { RequestErrorContent } from '../unexpectedResponseError';
-import type * as DEither from "@duplojs-v1/lang/either";
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DObject from "@duplojs-v1/lang/object";
+import type * as DEither from "@duplojs/lang/either";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DObject from "@duplojs/lang/object";
 export type ResponseToEitherByInformation<GenericHookParams extends Record<string, unknown>, GenericClientResponse extends AllClientResponse<GenericHookParams>, GenericSelector extends Record<Extract<GenericClientResponse["information"], string>, boolean>> = (DCommon.NeverCoalescing<DObject.Values<{
     [Prop in Extract<keyof GenericSelector, string>]: ((DCommon.Or<[
         DCommon.IsEqual<GenericSelector[Prop], true>,

@@ -1,5 +1,5 @@
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
 export declare const checkerOutputKind: DKind.Handler<DKind.Definition<"@DuplojsHttpCore/checker-output", unknown>>;
 export interface CheckerFunctionOutput<GenericInformation extends string = string, GenericValue extends unknown = unknown> extends DKind.Kind<typeof checkerOutputKind> {
     information: GenericInformation;

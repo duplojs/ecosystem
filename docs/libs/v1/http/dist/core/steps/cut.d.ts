@@ -3,8 +3,8 @@ import { Floor } from '../types';
 import { StepFunctionParams } from './types';
 import { PredictedResponse, ResponseContract } from '../response';
 import { Metadata } from '../metadata';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
 export declare const cutStepOutputKind: DKind.Handler<DKind.Definition<"@DuplojsHttpCore/cut-output", unknown>>;
 export interface CutStepFunctionOutput<GenericData extends Record<string, unknown> = Record<string, unknown>> extends DKind.Kind<typeof cutStepOutputKind, GenericData> {
 }

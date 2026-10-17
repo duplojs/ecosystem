@@ -1,6 +1,6 @@
 import { Floor } from '../../types';
 import { Process, ProcessExportValue, ProcessDefinition } from '../../process';
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DCommon from "@duplojs/lang/common";
 declare module "./builder" {
     interface ProcessBuilder<GenericDefinition extends ProcessDefinition = ProcessDefinition, GenericFloor extends Floor = {}> {
         exports<GenericExportation extends (keyof GenericFloor)[] = never>(exportedKey?: GenericExportation): Process<DCommon.SimplifyTopLevel<GenericDefinition & (DCommon.Or<[

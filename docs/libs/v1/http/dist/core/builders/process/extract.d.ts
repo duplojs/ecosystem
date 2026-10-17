@@ -3,9 +3,9 @@ import { ExtractShape, ExtractStep } from '../../steps';
 import { ClientErrorResponseCode, ResponseContract } from '../../response';
 import { ProcessDefinition } from '../../process';
 import { Metadata } from '../../metadata';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import type * as DObject from "@duplojs-v1/lang/object";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import type * as DObject from "@duplojs/lang/object";
 declare module "./builder" {
     interface ProcessBuilder<GenericDefinition extends ProcessDefinition = ProcessDefinition, GenericFloor extends Floor = {}> {
         extract<GenericShape extends ExtractShape, GenericResponseContract extends (ResponseContract.Contract<ClientErrorResponseCode, string, DDataStructure.Structure<undefined>> | undefined) = never, const GenericMetadata extends readonly Metadata[] = readonly []>(shape: GenericShape, responseContract?: GenericResponseContract, ...metadata: GenericMetadata): ProcessBuilder<DObject.Assign<GenericDefinition, {

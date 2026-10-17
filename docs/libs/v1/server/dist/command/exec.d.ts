@@ -2,9 +2,9 @@ import { CreateCommandExecuteParams, CreateCommandParams, Subjects } from './cre
 import { Error } from './error';
 import { Option } from './options';
 import { Argument } from './argument';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import * as DEither from "@duplojs-v1/lang/either";
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DCommon from "@duplojs/lang/common";
+import * as DEither from "@duplojs/lang/either";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 export interface ExecCommandParams<GenericOptions extends DCommon.AnyTuple<Option> = DCommon.AnyTuple<Option>, GenericSubjects extends Subjects = Subjects> extends CreateCommandParams<GenericOptions, GenericSubjects> {
     displayName?: string;
     dataStructureErrorInterpreter?: DDataStructure.ErrorInterpreter;

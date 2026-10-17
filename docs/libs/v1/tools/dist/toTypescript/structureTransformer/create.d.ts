@@ -2,7 +2,7 @@ import { Typescript } from '../../typescript';
 import { MapContext } from '../context';
 import { ImportKind, MapImportContext } from '../importContext';
 import { ConstraintTransformerEither, DataStructureErrorEither, DataStructureTypeTransformerEither, TransformerEither, TransformerSuccessEither } from '../result';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 export interface StructureTransformerParams {
     readonly context: MapContext;
     readonly importContext: MapImportContext;

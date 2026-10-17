@@ -1,6 +1,6 @@
 import { Locator as PlaywrightLocator } from 'playwright/test';
 import { Component, ComponentElements } from './component';
-import * as DKind from "@duplojs-v1/lang/kind";
+import * as DKind from "@duplojs/lang/kind";
 interface ContextStepEmbedded {
     component: Component<string, ComponentElements>;
     elementKey: string;

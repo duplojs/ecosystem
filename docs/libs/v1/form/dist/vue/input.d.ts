@@ -1,9 +1,9 @@
 import { FormFieldInstance, FormField, DetailsError } from './formField';
 import { VueComponent } from './types';
 import { Templates } from './template';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import * as DEither from "@duplojs-v1/lang/either";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DEither from "@duplojs/lang/either";
 export interface InputTemplateProperties {
     props: {
         getLabel?(): string;

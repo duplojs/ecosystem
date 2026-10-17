@@ -1,8 +1,8 @@
 import { StepKind } from './kind';
 import { Process } from '../process';
 import { Metadata } from '../metadata';
-import type * as DKind from "@duplojs-v1/lang/kind";
-import * as DCommon from "@duplojs-v1/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
+import * as DCommon from "@duplojs/lang/common";
 export interface ProcessStepDefinition {
     readonly process: Process;
     readonly options?: Record<string, unknown> | ((input: any) => Record<string, unknown>);

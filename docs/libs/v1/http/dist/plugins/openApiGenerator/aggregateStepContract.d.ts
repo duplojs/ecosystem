@@ -1,7 +1,7 @@
 import { Steps } from '../../core/steps';
 import { ResponseContract } from '../../core/response';
 import { EntrypointKey } from './types';
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 export type EntrypointReduceResult = Record<EntrypointKey, DDataStructure.Structure | Record<string, DDataStructure.Structure>>;
 export interface AggregateStepsResult {
     entrypointContract: EntrypointReduceResult;

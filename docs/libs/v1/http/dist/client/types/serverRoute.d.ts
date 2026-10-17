@@ -1,5 +1,5 @@
-import type * as DChrono from "@duplojs-v1/lang/chrono";
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DChrono from "@duplojs/lang/chrono";
+import type * as DCommon from "@duplojs/lang/common";
 export type ServerPrimitiveData = DCommon.MaybeConstraint<string | undefined | number | null | boolean | DChrono.TheDate | DChrono.TheTime>;
 export type ServerRouteHeaders = Record<string, ServerPrimitiveData | {
     toString(): string;

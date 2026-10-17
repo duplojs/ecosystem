@@ -1,6 +1,6 @@
 import { DataStructureTypeTransformerEither } from '../result';
 import { TypeTransformer } from './create';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DStoTS from '../../toTypescript';
 export interface TypeTransformerFunctionParams {
     readonly transformers: readonly TypeTransformer[];

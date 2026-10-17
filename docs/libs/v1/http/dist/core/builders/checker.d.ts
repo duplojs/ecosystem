@@ -1,5 +1,5 @@
 import { CheckerDefinition, Checker, CheckerFunctionOutput, CheckerFunctionParams } from '../checker';
-import * as DCommon from "@duplojs-v1/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 export interface CheckerBuilderParams {
     readonly options?: Record<string, unknown>;
 }

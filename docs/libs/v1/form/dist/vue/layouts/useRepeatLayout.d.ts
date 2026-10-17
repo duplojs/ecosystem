@@ -2,7 +2,7 @@ import { VNode } from 'vue';
 import { VueComponent } from '../types';
 import { Templates } from '../template';
 import { FormField, GetFormFieldCheckedValue, GetFormFieldValue, GetFormFieldSlots } from '../formField';
-import type * as DTuple from "@duplojs-v1/lang/tuple";
+import type * as DTuple from "@duplojs/lang/tuple";
 export interface RepeatTemplateProperties {
     props: {
         fieldKey: string;

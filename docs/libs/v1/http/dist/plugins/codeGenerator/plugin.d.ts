@@ -1,6 +1,6 @@
 import { HubPlugin } from '../../core/hub';
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import * as DPath from "@duplojs-v1/lang/path";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DPath from "@duplojs/lang/path";
 export interface GenerateStructureParams {
     outputFolder: string & DPath.Path;
     disabledFromRoute?: boolean;

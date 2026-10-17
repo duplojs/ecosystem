@@ -1,6 +1,6 @@
 import { Error, SymbolCommandError } from '../error';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
 export declare const optionKind: DKind.Handler<DKind.Definition<"@DuplojsServerCommand/command-option", unknown>>;
 export interface Option<GenericName extends string = string, GenericValue extends unknown = unknown> extends DKind.Kind<typeof optionKind> {
     readonly name: GenericName;

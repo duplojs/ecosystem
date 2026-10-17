@@ -1,7 +1,7 @@
 import { ClientRequestInitParams, ServerRoute, ServerRouteToClientRequestParams, ServerRouteToClientResponse, ClientRequestParams, Hooks, RequestHook, ResponseHook, InformationHook, CodeHook, ResponseTypeHook, ExpectedResponseHook, NotPredictedResponseHook, ErrorHook, GetServerRoutePath, AllClientResponse, BeforeRetryServerEventHook, CloseServerEventHook, ErrorServerEventHook, StartServerEventHook, ReceiveEventServerEventHook, ClientCacheInitialValues, ClientCacheStore, CloseStreamHook, ReceiveDataStreamHook, ErrorStreamHook, StartStreamHook } from './types';
 import { PromiseRequest } from './promiseRequest';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
 export declare const httpClientKind: DKind.Handler<DKind.Definition<"@DuplojsHttpClient/http-client", unknown>>;
 type MaybeRequestParams<GenericRequestParams extends object> = {} extends GenericRequestParams ? [params?: GenericRequestParams] : [params: GenericRequestParams];
 type HttpClientRequestMethod<GenericServerRoute extends ServerRoute, GenericHookParams extends Record<string, unknown>, GenericMethod extends string> = DCommon.IsEqual<GenericServerRoute, ServerRoute> extends true ? (path: string, params?: DCommon.SimplifyTopLevel<Omit<ClientRequestParams<GenericHookParams>, "method" | "path">>) => PromiseRequest<GenericHookParams, AllClientResponse<GenericHookParams>> : <GenericPath extends Extract<GenericServerRoute, {

@@ -1,8 +1,8 @@
 import { Error, SymbolCommandError } from './error';
 import { EligibleType } from './types';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 export declare const argumentKind: DKind.Handler<DKind.Definition<"@DuplojsServerCommand/command-argument", unknown>>;
 export interface Argument<GenericName extends string = string, GenericValue extends EligibleType = EligibleType> extends DKind.Kind<typeof argumentKind> {
     readonly name: GenericName;

@@ -1,10 +1,10 @@
 import { Ref, VNode } from 'vue';
 import { Templates } from './template';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DArray from "@duplojs-v1/lang/array";
-import type * as DKind from "@duplojs-v1/lang/kind";
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import type * as DEither from "@duplojs-v1/lang/either";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DArray from "@duplojs/lang/array";
+import type * as DKind from "@duplojs/lang/kind";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import type * as DEither from "@duplojs/lang/either";
 export interface FormFieldSlotParams<GenericValue extends unknown = unknown> {
     fieldKey: string;
     value: GenericValue;

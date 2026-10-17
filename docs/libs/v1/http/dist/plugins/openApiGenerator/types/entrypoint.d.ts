@@ -1,4 +1,4 @@
-import { DataStructureToJsonSchema } from '@duplojs-v1/tools';
+import { DataStructureToJsonSchema } from '@duplojs/tools';
 export interface EntrypointParameter {
     name: string;
     in: "path" | "query" | "header";

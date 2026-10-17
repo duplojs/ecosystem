@@ -1,8 +1,8 @@
 import { TokenHandlerConfig } from './index';
 import { DecodeTokenContent } from './shared';
-import type * as DChrono from "@duplojs-v1/lang/chrono";
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import * as DEither from "@duplojs-v1/lang/either";
+import type * as DChrono from "@duplojs/lang/chrono";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DEither from "@duplojs/lang/either";
 interface CreateTokenHandlerVerifyMethodParams {
     readonly config: TokenHandlerConfig;
     readonly decodeTokenContent: DecodeTokenContent;

@@ -1,0 +1,13 @@
+import { Left } from './left';
+import { Right } from './right';
+import { informationKind } from './kind';
+import { GetInformation } from './types';
+import type * as DCommon from '../common';
+import type * as DKind from '../kind';
+import type * as DObject from '../object';
+type Either = Right | Left;
+type ForbiddenMoreKey<GenericInput extends unknown, GenericSelector extends Record<string, boolean>> = DObject.ForbiddenKey<GenericSelector, Extract<Exclude<keyof GenericSelector, DKind.GetValue<typeof informationKind, Extract<GenericInput, Either>>>, string>>;
+type SelectedEither<GenericInput extends unknown, GenericSelector extends Record<string, boolean>> = Extract<GenericInput, Either & DKind.Kind<typeof informationKind, Extract<DObject.GetPropsWithValue<GenericSelector, true>, string>>>;
+export declare function isSelected<GenericInput extends Either | DCommon.AnyValue, const GenericSelector extends Record<GetInformation<Extract<GenericInput, Either>>, boolean>>(selector: GenericSelector & ForbiddenMoreKey<GenericInput, GenericSelector>): (input: GenericInput) => input is SelectedEither<GenericInput, GenericSelector>;
+export declare function isSelected<GenericInput extends Either | DCommon.AnyValue, const GenericSelector extends Record<GetInformation<Extract<GenericInput, Either>>, boolean>>(input: GenericInput, selector: GenericSelector & ForbiddenMoreKey<GenericInput, GenericSelector>): input is SelectedEither<GenericInput, GenericSelector>;
+export {};

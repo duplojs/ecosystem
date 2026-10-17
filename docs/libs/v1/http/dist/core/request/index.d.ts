@@ -1,7 +1,7 @@
 import { BodyResult, BodyReader } from './bodyController';
-import type * as DObject from "@duplojs-v1/lang/object";
-import * as DKind from "@duplojs-v1/lang/kind";
-import type * as DPath from "@duplojs-v1/lang/path";
+import type * as DObject from "@duplojs/lang/object";
+import * as DKind from "@duplojs/lang/kind";
+import type * as DPath from "@duplojs/lang/path";
 export * from './bodyController';
 export interface RequestMethodsWrapper {
     GET: true;
@@ -27,7 +27,7 @@ export interface RequestInitializationData {
     readonly url: string;
     readonly bodyReader: BodyReader;
 }
-declare const Request_base: new <GenericKindValue extends unknown = unknown, GenericParentInstance extends never = never>(kindValue: GenericKindValue) => import('@duplojs-v1/lang').NeverCoalescing<GenericParentInstance, {}> & DKind.Kind<DKind.Handler<DKind.Definition<"@DuplojsHttpCore/request", unknown>>, GenericKindValue>;
+declare const Request_base: new <GenericKindValue extends unknown = unknown, GenericParentInstance extends never = never>(kindValue: GenericKindValue) => import('@duplojs/lang').NeverCoalescing<GenericParentInstance, {}> & DKind.Kind<DKind.Handler<DKind.Definition<"@DuplojsHttpCore/request", unknown>>, GenericKindValue>;
 export declare class Request extends Request_base implements RequestInitializationData {
     method: string;
     headers: Partial<Record<string, string | readonly string[]>>;

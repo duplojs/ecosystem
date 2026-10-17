@@ -1,6 +1,6 @@
 import { Locator as PlaywrightLocator } from 'playwright/test';
 import { Website } from './website';
-import type * as DKind from "@duplojs-v1/lang/kind";
+import type * as DKind from "@duplojs/lang/kind";
 export type ComponentElements = Record<string, PlaywrightLocator>;
 export type ComponentMethods = Record<string, (...args: any[]) => any>;
 export interface ComponentEngine {

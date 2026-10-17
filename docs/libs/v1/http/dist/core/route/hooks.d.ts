@@ -1,7 +1,7 @@
 import { Request } from '../request';
 import { HookResponse, ResponseCode, Response } from '../response';
-import type * as DKind from "@duplojs-v1/lang/kind";
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
+import type * as DCommon from "@duplojs/lang/common";
 export declare const hookRouteExitKind: DKind.Handler<DKind.Definition<"@DuplojsHttpCore/route-hook-exit", unknown>>;
 export interface RouteHookExit extends DKind.Kind<typeof hookRouteExitKind> {
 }

@@ -8,4 +8,4 @@ export interface RetryParams {
     times?: number;
     timeout?: DCommon.TimeInString;
 }
-export declare const retry: <GenericInput extends unknown = unknown>({ timeout, times, }: RetryParams) => FlowControllerRetry<GenericInput>;
+export declare const retry: <GenericInput extends unknown>({ timeout, times, }: RetryParams) => FlowControllerRetry<GenericInput>;

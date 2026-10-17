@@ -1,9 +1,9 @@
 import { ServerRouteHeaders, ServerRouteParams, ServerRouteQuery, ServerRoute } from './serverRoute';
 import { ObjectCanBeEmpty } from './ObjectCanBeEmpty';
 import { CreateClientCacheKey } from './clientCache';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DObject from "@duplojs-v1/lang/object";
-import type * as DChrono from "@duplojs-v1/lang/chrono";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DObject from "@duplojs/lang/object";
+import type * as DChrono from "@duplojs/lang/chrono";
 export interface ClientRequestInitParams extends Pick<RequestInit, "cache" | "credentials" | "integrity" | "keepalive" | "mode" | "redirect" | "referrer" | "referrerPolicy" | "signal"> {
 }
 export type ClientRequestParamsHeaders = ServerRouteHeaders;

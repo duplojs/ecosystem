@@ -1,5 +1,5 @@
 import { default as http } from 'http';
-import * as DEither from "@duplojs-v1/lang/either";
+import * as DEither from "@duplojs/lang/either";
 export interface ReadRequestTextParams {
     maxBodySize: number;
 }

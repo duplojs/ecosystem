@@ -1,6 +1,6 @@
 import { Option } from '../base';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
 export declare const booleanOptionKind: DKind.Handler<DKind.Definition<"@DuplojsServerCommand/command-boolean-option", unknown>>;
 export interface BooleanOption<GenericName extends string = string> extends DCommon.Forward<Option<GenericName, boolean> & DKind.Kind<typeof booleanOptionKind>> {
 }

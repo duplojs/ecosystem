@@ -2,8 +2,8 @@ import { Option } from './options';
 import { SymbolCommandError, Error } from './error';
 import { Argument } from './argument';
 import { ForbiddenDuplicateName } from './types';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
 declare const commandKind: DKind.Handler<DKind.Definition<"@DuplojsServerCommand/command", unknown>>;
 export declare function isCommands(input: unknown): input is DCommon.AnyTuple<Command>;
 type CommandSubject = {

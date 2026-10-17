@@ -1,9 +1,9 @@
 import { Error } from './error';
 import { Option } from './options';
 import { ForbiddenDuplicateName } from './types';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import * as DEither from "@duplojs-v1/lang/either";
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DCommon from "@duplojs/lang/common";
+import * as DEither from "@duplojs/lang/either";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 type ComputeResult<GenericOptions extends DCommon.AnyTuple<Option>> = DCommon.SimplifyTopLevel<{
     readonly [GenericOption in GenericOptions[number] as GenericOption extends Option<infer GenericName, unknown> ? GenericName : never]: GenericOption extends Option<string, infer GenericResult> ? GenericResult : never;
 }>;

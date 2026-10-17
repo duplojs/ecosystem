@@ -1,7 +1,7 @@
 import { Request } from '..';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import * as DEither from "@duplojs-v1/lang/either";
-import * as DKind from "@duplojs-v1/lang/kind";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DEither from "@duplojs/lang/either";
+import * as DKind from "@duplojs/lang/kind";
 export declare const bodyResultKind: DKind.Handler<DKind.Definition<"@DuplojsHttpCore/body-result", unknown>>;
 export interface BodyResult extends DKind.Kind<typeof bodyResultKind> {
     extract<GenericStructureParse extends (DDataStructure.Structure["parse"] | DDataStructure.Structure["asyncParse"])>(getValue: (input: unknown) => unknown, structureParse: GenericStructureParse): Promise<Awaited<ReturnType<GenericStructureParse>> | DEither.Left<"reader-error", Error>>;

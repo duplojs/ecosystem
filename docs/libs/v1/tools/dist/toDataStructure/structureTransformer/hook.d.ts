@@ -1,5 +1,5 @@
 import { MapContext } from './create';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DStoTS from '../../toTypescript';
 export type TransformerHookAction = "stop" | "next";
 export interface TransformerHookOutput {

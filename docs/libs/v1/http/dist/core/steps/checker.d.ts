@@ -3,9 +3,9 @@ import { Checker } from '../checker';
 import { Floor } from '../types';
 import { ClientErrorResponseCode, ResponseContract } from '../response';
 import { Metadata } from '../metadata';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 export interface CheckerStepDefinition {
     readonly checker: Checker;
     readonly result: string | readonly string[];

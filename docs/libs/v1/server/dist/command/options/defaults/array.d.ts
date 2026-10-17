@@ -1,10 +1,10 @@
 import { Option } from '../base';
 import { EligibleType } from '../../types';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import type * as DNumber from "@duplojs-v1/lang/number";
-import type * as DArray from "@duplojs-v1/lang/array";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import type * as DNumber from "@duplojs/lang/number";
+import type * as DArray from "@duplojs/lang/array";
 export declare const arrayOptionKind: DKind.Handler<DKind.Definition<"@DuplojsServerCommand/command-array-option", unknown>>;
 export interface ArrayOption<GenericName extends string = string, GenericValue extends (readonly EligibleType[] | undefined) = (readonly EligibleType[] | undefined)> extends DCommon.Forward<Option<GenericName, GenericValue> & DKind.Kind<typeof arrayOptionKind>> {
     readonly dataStructure: DDataStructure.Structure<GenericValue>;

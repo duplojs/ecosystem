@@ -5,8 +5,8 @@ import { MapImportContext } from './importContext';
 import { ConstraintErrorEither, ConstraintNotSupportedEither, DataStructureErrorEither, DataStructureNotSupportedEither, DataStructureTypeErrorEither, DataStructureTypeNotSupportedEither } from './result';
 import { StructureTransformer } from './structureTransformer';
 import { TypeTransformer } from './typeTransformer';
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import * as DEither from "@duplojs-v1/lang/either";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DEither from "@duplojs/lang/either";
 export interface BuiltContext {
     readonly context: MapContext;
     readonly importContext: MapImportContext;

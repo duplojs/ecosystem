@@ -1,7 +1,7 @@
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DPath from "@duplojs-v1/lang/path";
-import * as DEither from "@duplojs-v1/lang/either";
-import * as DChrono from "@duplojs-v1/lang/chrono";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DPath from "@duplojs/lang/path";
+import * as DEither from "@duplojs/lang/either";
+import * as DChrono from "@duplojs/lang/chrono";
 export interface StatInfo {
     /** Type of entry */
     isFile: boolean;
@@ -33,22 +33,22 @@ export interface StatInfo {
     isFifo: boolean | null;
     isSocket: boolean | null;
 }
-declare const StatErrorNotFound_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-stat-not-found", Error> & import('@duplojs-v1/lang/kind').Kind<import('@duplojs-v1/lang/kind').Handler<import('@duplojs-v1/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-stat-not-found", unknown>>, unknown>;
+declare const StatErrorNotFound_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-stat-not-found", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-stat-not-found", unknown>>, unknown>;
 declare class StatErrorNotFound extends StatErrorNotFound_base {
 }
-declare const StatErrorPermissionDenied_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-stat-permission-denied", Error> & import('@duplojs-v1/lang/kind').Kind<import('@duplojs-v1/lang/kind').Handler<import('@duplojs-v1/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-stat-permission-denied", unknown>>, unknown>;
+declare const StatErrorPermissionDenied_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-stat-permission-denied", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-stat-permission-denied", unknown>>, unknown>;
 declare class StatErrorPermissionDenied extends StatErrorPermissionDenied_base {
 }
-declare const StatErrorNotDirectory_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-stat-not-directory", Error> & import('@duplojs-v1/lang/kind').Kind<import('@duplojs-v1/lang/kind').Handler<import('@duplojs-v1/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-stat-not-directory", unknown>>, unknown>;
+declare const StatErrorNotDirectory_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-stat-not-directory", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-stat-not-directory", unknown>>, unknown>;
 declare class StatErrorNotDirectory extends StatErrorNotDirectory_base {
 }
-declare const StatErrorTooManyOpenFiles_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-stat-too-many-open-files", Error> & import('@duplojs-v1/lang/kind').Kind<import('@duplojs-v1/lang/kind').Handler<import('@duplojs-v1/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-stat-too-many-open-files", unknown>>, unknown>;
+declare const StatErrorTooManyOpenFiles_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-stat-too-many-open-files", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-stat-too-many-open-files", unknown>>, unknown>;
 declare class StatErrorTooManyOpenFiles extends StatErrorTooManyOpenFiles_base {
 }
-declare const StatErrorBusy_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-stat-busy", Error> & import('@duplojs-v1/lang/kind').Kind<import('@duplojs-v1/lang/kind').Handler<import('@duplojs-v1/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-stat-busy", unknown>>, unknown>;
+declare const StatErrorBusy_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-stat-busy", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-stat-busy", unknown>>, unknown>;
 declare class StatErrorBusy extends StatErrorBusy_base {
 }
-declare const StatError_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-stat-error", Error> & import('@duplojs-v1/lang/kind').Kind<import('@duplojs-v1/lang/kind').Handler<import('@duplojs-v1/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-stat-error", unknown>>, unknown>;
+declare const StatError_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-stat-error", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-stat-error", unknown>>, unknown>;
 declare class StatError extends StatError_base {
 }
 export type StatErrors = (StatErrorNotFound | StatErrorPermissionDenied | StatErrorNotDirectory | StatErrorTooManyOpenFiles | StatErrorBusy | StatError);

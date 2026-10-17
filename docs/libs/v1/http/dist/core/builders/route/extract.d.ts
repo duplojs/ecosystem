@@ -4,9 +4,9 @@ import { ClientErrorResponseCode, ResponseContract } from '../../response';
 import { Request } from '../../request';
 import { Metadata } from '../../metadata';
 import { ExtractParamsKeyFromPath, Floor } from '../../types';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import type * as DObject from "@duplojs-v1/lang/object";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import type * as DObject from "@duplojs/lang/object";
 type HandleParamsInference<GenericShape extends ExtractShape, GenericPath extends string> = (GenericShape & {
     params?: ExtractParamsKeyFromPath<GenericPath> extends infer InferredKey extends string ? (Partial<Record<InferredKey, DDataStructure.Structure>> & Record<string, DDataStructure.Structure> & Record<Exclude<keyof GenericShape["params"], InferredKey>, never>) : {};
 });

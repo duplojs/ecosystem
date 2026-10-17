@@ -1,5 +1,5 @@
-import * as DChrono from "@duplojs-v1/lang/chrono";
-import * as DKind from "@duplojs-v1/lang/kind";
+import * as DChrono from "@duplojs/lang/chrono";
+import * as DKind from "@duplojs/lang/kind";
 declare const SerializeCookieError_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsCookiePlugin/serialize-cookie-error", unknown>>, ErrorConstructor>;
 export declare class SerializeCookieError extends SerializeCookieError_base {
     constructor(message: string);

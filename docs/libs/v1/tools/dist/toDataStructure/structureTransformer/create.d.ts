@@ -1,6 +1,6 @@
 import { Typescript } from '../../typescript';
 import { ConstraintErrorEither, ConstraintNotSupportedEither, DataStructureErrorEither, DataStructureTypeTransformerEither, TransformerEither, TransformerSuccessEither } from '../result';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DStoTS from '../../toTypescript';
 export type DependenciesContext = Set<DDataStructure.Structure>;
 export interface MapContextValue {

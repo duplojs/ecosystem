@@ -4,10 +4,10 @@ import { GetCheckerResult, Checker, GetCheckerInput, GetCheckerOptions } from '.
 import { ClientErrorResponseCode, ResponseContract } from '../../response';
 import { ProcessDefinition } from '../../process';
 import { Metadata } from '../../metadata';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DObject from "@duplojs-v1/lang/object";
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import type * as DArray from "@duplojs-v1/lang/array";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DObject from "@duplojs/lang/object";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import type * as DArray from "@duplojs/lang/array";
 declare module "./builder" {
     interface ProcessBuilder<GenericDefinition extends ProcessDefinition = ProcessDefinition, GenericFloor extends Floor = {}> {
         check<GenericChecker extends Checker, GenericResultInformation extends DCommon.MaybeArray<Awaited<GetCheckerResult<GenericChecker>>["information"]>, GenericInput extends GetCheckerInput<GenericChecker>, GenericResponseContract extends ResponseContract.Contract<ClientErrorResponseCode, string, DDataStructure.Structure<undefined>>, GenericIndex extends string = never, GenericOptions extends (GetCheckerOptions<GenericChecker> | ((floor: GenericFloor) => Exclude<GetCheckerOptions<GenericChecker>, undefined>)) = never, const GenericMetadata extends readonly Metadata[] = readonly []>(checker: GenericChecker, params: {

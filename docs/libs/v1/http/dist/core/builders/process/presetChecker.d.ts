@@ -3,8 +3,8 @@ import { PresetCheckerStep } from '../../steps';
 import { GetPresetCheckerIndex, GetPresetCheckerInformation, GetPresetCheckerResult, GetPresetCheckerInput, PresetChecker } from '../../presetChecker';
 import { ProcessDefinition } from '../../process';
 import { Metadata } from '../../metadata';
-import type * as DObject from "@duplojs-v1/lang/object";
-import type * as DArray from "@duplojs-v1/lang/array";
+import type * as DObject from "@duplojs/lang/object";
+import type * as DArray from "@duplojs/lang/array";
 declare module "./builder" {
     interface ProcessBuilder<GenericDefinition extends ProcessDefinition = ProcessDefinition, GenericFloor extends Floor = {}> {
         presetCheck<GenericPresetChecker extends PresetChecker, GenericInput extends GetPresetCheckerInput<GenericPresetChecker>, const GenericMetadata extends readonly Metadata[] = readonly []>(presetChecker: GenericPresetChecker, input: (floor: GenericFloor) => GenericInput, ...metadata: GenericMetadata): ProcessBuilder<DObject.Assign<GenericDefinition, {

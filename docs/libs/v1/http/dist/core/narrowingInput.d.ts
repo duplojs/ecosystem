@@ -1,4 +1,4 @@
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DCommon from "@duplojs/lang/common";
 export interface NarrowingInput<GenericKey extends DCommon.ObjectKey = DCommon.ObjectKey, GenericValue extends unknown = unknown> {
     inputName: GenericKey;
     value: GenericValue;

@@ -1,7 +1,7 @@
 import { EnvironmentVariableFileParams } from './environmentVariable';
-import * as DEither from "@duplojs-v1/lang/either";
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import * as DKind from "@duplojs-v1/lang/kind";
+import * as DEither from "@duplojs/lang/either";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DKind from "@duplojs/lang/kind";
 import type * as DSFile from '../file';
 declare const EnvironmentVariableError_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsServer/environment-variable-error", unknown>>, ErrorConstructor>;
 export declare class EnvironmentVariableError extends EnvironmentVariableError_base {

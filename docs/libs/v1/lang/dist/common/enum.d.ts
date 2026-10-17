@@ -7,7 +7,7 @@ export type Enum<GenericValues extends AnyTuple<string>> = SimplifyTopLevel<{
     [Prop in GenericValues[number]]: Prop;
 } & {
     toTuple(): GenericValues;
-    has(value: string): value is GenericValues[number];
+    has<GenericValue extends string>(value: GenericValue): value is (GenericValue & GenericValues[number]);
     contract<GenericContractValue extends string = GenericValues[number]>(...args: RequireEnumContract<GenericValues, GenericContractValue> extends infer InferredRequirement ? IsEqual<InferredRequirement, unknown> extends true ? [] : [] & InferredRequirement : never): Enum<GenericValues>;
 }>;
 export declare function createEnum<const GenericValues extends AnyTuple<string>>(values: GenericValues): Enum<GenericValues>;

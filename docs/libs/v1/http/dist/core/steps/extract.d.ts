@@ -2,10 +2,10 @@ import { StepKind } from './kind';
 import { Request } from '../request';
 import { ClientErrorResponseCode, ResponseContract } from '../response';
 import { Metadata } from '../metadata';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import type * as DObject from "@duplojs-v1/lang/object";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import type * as DObject from "@duplojs/lang/object";
+import type * as DKind from "@duplojs/lang/kind";
 export interface DisabledExtractKeysCustom {
 }
 export type DisabledExtractKeys = DObject.GetPropsWithValue<DisabledExtractKeysCustom, true>;

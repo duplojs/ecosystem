@@ -1,1 +1,1 @@
-export declare const defaultCutStepFunctionBuilder: (step: import('../../../steps').Steps, params: import('..').StepFunctionBuilderParams) => import('@duplojs-v1/lang').MaybePromise<import('..').BuildStepSuccessEither | import('..').BuildStepNotSupportEither>;
+export declare const defaultCutStepFunctionBuilder: (step: import('../../../steps').Steps, params: import('..').StepFunctionBuilderParams) => import('@duplojs/lang').MaybePromise<import('..').BuildStepSuccessEither | import('..').BuildStepNotSupportEither>;

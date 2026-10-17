@@ -2,7 +2,7 @@ import { ProcessDefinition } from '../../process';
 import { Floor } from '../../types';
 import { HookRouteLifeCycle } from '../../route';
 import { Metadata } from '../../metadata';
-import * as DCommon from "@duplojs-v1/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 export interface ProcessBuilder<GenericDefinition extends ProcessDefinition = ProcessDefinition, GenericFloor extends Floor = {}> extends DCommon.Builder<ProcessDefinition> {
 }
 export declare const processBuilder: DCommon.BuilderHandler<ProcessBuilder<ProcessDefinition, {}>>;

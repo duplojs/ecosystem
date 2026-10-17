@@ -1,6 +1,6 @@
 import { Request } from '../../request';
 import { PredictedResponse } from '../../response';
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DCommon from "@duplojs/lang/common";
 export interface StepFunctionParams<GenericResponse extends PredictedResponse = PredictedResponse> {
     request: Request;
     response<GenericInformation extends GenericResponse["information"], GenericFilteredResponse extends Extract<GenericResponse, {

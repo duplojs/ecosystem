@@ -2,7 +2,7 @@ import { Hub } from './hub';
 import { RouterParams } from './router';
 import { HttpServerParams } from './types';
 import { HookRouteLifeCycle } from './route';
-import * as DCommon from "@duplojs-v1/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 export interface GetInterfaceHooksParams {
     readonly hub: Hub;
     readonly httpServerParams: HttpServerParams;

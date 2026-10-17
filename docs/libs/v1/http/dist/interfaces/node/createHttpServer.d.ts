@@ -2,7 +2,7 @@ import { Hub } from '../../core/hub';
 import { default as http } from 'node:http';
 import { default as https } from 'node:https';
 import { HttpServerParams } from '../../core/types';
-import * as DObject from "@duplojs-v1/lang/object";
+import * as DObject from "@duplojs/lang/object";
 declare module '../../core/types' {
     interface HttpServerParams {
         readonly interface: "node";

@@ -1,5 +1,5 @@
 import { MapContext } from './context';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 export type TransformerHookAction = "stop" | "next";
 export interface TransformerHookOutput {
     readonly structure: DDataStructure.Structure;

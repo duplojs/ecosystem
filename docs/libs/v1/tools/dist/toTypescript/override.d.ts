@@ -1,13 +1,13 @@
 import { Typescript } from '../typescript';
 import { AddImport, MapImportContextValue } from './importContext';
 import { StructureTransformerBuildFunction } from './structureTransformer';
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 export type MapImportContextEntry = readonly [
     path: string,
     value: MapImportContextValue
 ];
 export type TypescriptTransformerOverride<GenericStructure extends DDataStructure.Structure = DDataStructure.Structure> = Typescript.TypeNode | StructureTransformerBuildFunction<GenericStructure>;
-declare module "@duplojs-v1/lang/dataStructure" {
+declare module "@duplojs/lang/dataStructure" {
     interface StructureDefinition {
         identifier?: string;
         overrideTypescriptTransformer?: StructureTransformerBuildFunction;

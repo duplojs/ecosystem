@@ -1,7 +1,7 @@
 import { StructureJsonSchema } from './structureTransformer/create';
 import { TypeJsonSchema } from './typeTransformer';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import type * as DEither from "@duplojs-v1/lang/either";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import type * as DEither from "@duplojs/lang/either";
 export interface JsonSchemaRef {
     $ref: string;
 }

@@ -2,8 +2,8 @@ import { StepKind } from './kind';
 import { Floor } from '../types';
 import { PresetChecker } from '../presetChecker';
 import { Metadata } from '../metadata';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DKind from "@duplojs/lang/kind";
 export interface PresetCheckerStepDefinition {
     readonly presetChecker: PresetChecker;
     input(input: Floor): unknown;

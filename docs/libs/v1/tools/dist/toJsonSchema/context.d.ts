@@ -1,5 +1,5 @@
 import { JsonSchema } from './result';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 export interface MapContextValue {
     readonly name: string;
     readonly schema: JsonSchema;

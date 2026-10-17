@@ -1,5 +1,5 @@
 import { createResearcher } from './researcher';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 export * from './researcher';
 export interface StructureFinderParams {
     readonly researchers: readonly ReturnType<typeof createResearcher>[];

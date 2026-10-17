@@ -1,6 +1,6 @@
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import * as DEither from "@duplojs-v1/lang/either";
-import type * as DPath from "@duplojs-v1/lang/path";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DEither from "@duplojs/lang/either";
+import type * as DPath from "@duplojs/lang/path";
 import type * as DSFile from '../../file';
 export interface EnvironmentVariableFileParams {
     includedEnvironmentFiles?: (string & DPath.Path)[];

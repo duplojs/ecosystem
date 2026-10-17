@@ -1,8 +1,8 @@
 import { RequestErrorContent } from './unexpectedResponseError';
 import { PromiseRequestParams, Hooks, NotPredictedResponseHook, ErrorHook, ClientEventsResponse, AllClientResponse, AllNotPredictedClientResponse, ClientResponse, ClientEventsResponseHandler, ServerEvent, ClientStreamResponseHandler, ClientStreamResponse, ResponseToEitherByInformation, ResponseToEitherByCode } from './types';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DObject from "@duplojs-v1/lang/object";
-import * as DEither from "@duplojs-v1/lang/either";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DObject from "@duplojs/lang/object";
+import * as DEither from "@duplojs/lang/either";
 type MaybeResponse<GenericClientResponse extends AllClientResponse = AllClientResponse> = (DEither.Right<"response", GenericClientResponse> | DEither.Left<"request-error", RequestErrorContent>);
 type MaybeWantedResponse<GenericWantedClientResponse extends AllClientResponse = AllClientResponse, GenericUnexpectClientResponse extends AllClientResponse = AllClientResponse> = (DEither.Right<"response", GenericWantedClientResponse> | DEither.Left<"unexpect-response", GenericUnexpectClientResponse> | DEither.Left<"request-error", RequestErrorContent>);
 type ForbiddenMoreKey<GenericInput extends ClientResponse, GenericSelector extends Record<string, boolean>, GenericProperty extends "information" | "code"> = DObject.ForbiddenKey<GenericSelector, Exclude<`${Extract<keyof GenericSelector, string | number>}`, `${GenericInput[GenericProperty]}`>>;

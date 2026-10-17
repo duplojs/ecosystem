@@ -1,4 +1,4 @@
-import * as DChrono from "@duplojs-v1/lang/chrono";
+import * as DChrono from "@duplojs/lang/chrono";
 export { default as TimeInput } from './TimeInput.vue';
 export { default as RangeTimeInput } from './RangeTimeInput.vue';
 declare module "@vue/reactivity" {

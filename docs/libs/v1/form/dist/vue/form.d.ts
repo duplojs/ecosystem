@@ -2,9 +2,9 @@ import { FunctionalComponent, HTMLAttributes, Ref } from 'vue';
 import { GetFormFieldCheckedValue, GetFormFieldValue, FormField, FormFieldInstance, GetFormFieldSlots, FormFieldSlots } from './formField';
 import { Templates } from './template';
 import { VueComponent } from './types';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DEither from "@duplojs-v1/lang/either";
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DEither from "@duplojs/lang/either";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 export interface FormTemplateProperties {
     props: {
         fieldKey: string;

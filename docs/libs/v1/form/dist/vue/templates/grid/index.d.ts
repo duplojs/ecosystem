@@ -3,7 +3,7 @@ import { GridCheckTemplate, GridFormTemplate, GridInputTemplate, GridMultiTempla
 import { FormTemplateProperties } from '../../form';
 import { InputTemplateProperties } from '../../input';
 import { SectionTemplateProperties, CheckTemplateProperties, MultiTemplateProperties, RepeatTemplateProperties, StepTemplateProperties, UnionTemplateProperties } from '../../layouts';
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DCommon from "@duplojs/lang/common";
 export type * from './types';
 export * from './components';
 export interface CreateGridTemplatesInput {

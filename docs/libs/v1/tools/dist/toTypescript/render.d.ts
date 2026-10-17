@@ -1,8 +1,8 @@
 import { BuildContextParams } from './buildContext';
 import { TransformerEither } from './result';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import * as DEither from "@duplojs-v1/lang/either";
-import * as DKind from "@duplojs-v1/lang/kind";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DEither from "@duplojs/lang/either";
+import * as DKind from "@duplojs/lang/kind";
 export interface RenderParams extends BuildContextParams {
 }
 declare const DataStructureToTypescriptRenderError_base: DKind.KindClass<DKind.Handler<DKind.Definition<"@DuplojsLangToolsDataStructureToTypescript/data-structure-to-typescript-render-error", unknown>>, ErrorConstructor>;

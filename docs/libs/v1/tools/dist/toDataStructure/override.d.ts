@@ -1,7 +1,7 @@
 import { Typescript } from '../typescript';
 import { StructureTransformerBuildFunction } from './structureTransformer';
 import { ConstraintTransformerBuildFunction } from './constraintTransformer';
-declare module "@duplojs-v1/lang/dataStructure" {
+declare module "@duplojs/lang/dataStructure" {
     interface StructureDefinition {
         overrideDataStructureTransformer?: StructureTransformerBuildFunction;
     }

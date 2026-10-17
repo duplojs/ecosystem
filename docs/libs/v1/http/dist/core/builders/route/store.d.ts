@@ -1,6 +1,6 @@
 import { Route } from '../../route';
 declare const SymbolRouteStore: unique symbol;
-declare module "@duplojs-v1/lang" {
+declare module "@duplojs/lang" {
     interface GlobalStore {
         [SymbolRouteStore]: Set<Route>;
     }

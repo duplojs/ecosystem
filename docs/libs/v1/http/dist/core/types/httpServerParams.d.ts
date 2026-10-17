@@ -1,6 +1,6 @@
 import { Hosts } from './hosts';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DPath from "@duplojs-v1/lang/path";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DPath from "@duplojs/lang/path";
 export interface HttpServerParams {
     readonly host: Hosts;
     readonly port: number;

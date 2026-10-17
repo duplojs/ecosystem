@@ -1,6 +1,6 @@
 import { JsonSchema, SupportedVersions, DataStructureTypeTransformerEither, DataStructureTypeErrorEither, DataStructureTypeSuccessEither } from '../result';
 import { JsonSchemaString, JsonSchemaStringLiteral, JsonSchemaNumber, JsonSchemaNumberLiteral, JsonSchemaBoolean, JsonSchemaBooleanLiteral, JsonSchemaBigint, JsonSchemaBigintLiteral, JsonSchemaFile, JsonSchemaUndefined, JsonSchemaNull } from './defaults';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 export type TypeJsonSchema = (JsonSchemaString | JsonSchemaStringLiteral | JsonSchemaNumber | JsonSchemaNumberLiteral | JsonSchemaBoolean | JsonSchemaBooleanLiteral | JsonSchemaBigint | JsonSchemaBigintLiteral | JsonSchemaFile | JsonSchemaUndefined | JsonSchemaNull);
 export interface TypeTransformerParams {
     readonly version: SupportedVersions;

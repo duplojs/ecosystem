@@ -1,4 +1,4 @@
-import { DataStructureToDataStructure } from '@duplojs-v1/tools';
+import { DataStructureToDataStructure } from '@duplojs/tools';
 export interface SubBuildedContext extends DataStructureToDataStructure.BuildedContext {
     identifier: string;
 }

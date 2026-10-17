@@ -1,5 +1,5 @@
 import { PromiseRequestParams, ClientResponse } from './types';
-import * as DKind from "@duplojs-v1/lang/kind";
+import * as DKind from "@duplojs/lang/kind";
 export interface RequestErrorContent {
     error: unknown;
     requestParams: PromiseRequestParams;

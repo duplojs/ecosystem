@@ -1,7 +1,7 @@
 import { Steps } from '../../core/steps';
 import { EntrypointKey } from './types';
 import { ResponseContract } from '../../core/response';
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 type EntrypointReduceResult = Record<EntrypointKey, DDataStructure.Structure | Record<string, DDataStructure.Structure>>;
 export interface StepsToStructureParams {
     readonly defaultExtractContract: ResponseContract.Contract;

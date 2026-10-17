@@ -1,10 +1,10 @@
 import { HubPlugin } from '../../core/hub';
 import { RoutePath } from '../../core/route';
 import { CacheControlDirectives } from '../cacheController/types';
-import * as DCommon from "@duplojs-v1/lang/common";
-import * as DSFile from "@duplojs-v1/server/file";
-import * as DKind from "@duplojs-v1/lang/kind";
-import type * as DPath from "@duplojs-v1/lang/path";
+import * as DCommon from "@duplojs/lang/common";
+import * as DSFile from "@duplojs/server/file";
+import * as DKind from "@duplojs/lang/kind";
+import type * as DPath from "@duplojs/lang/path";
 export interface BaseStaticPluginParams {
     readonly cacheControlConfig?: CacheControlDirectives;
 }

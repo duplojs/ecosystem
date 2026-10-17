@@ -1,7 +1,7 @@
 import { HubPlugin } from '../../core/hub';
 import { RoutePath } from '../../core/route';
 import { SupportedBearerFormat } from './types';
-import type * as DPath from "@duplojs-v1/lang/path";
+import type * as DPath from "@duplojs/lang/path";
 interface OpenApiSecurityOptionBearer {
     type: "bearer";
     bearerFormat?: SupportedBearerFormat;

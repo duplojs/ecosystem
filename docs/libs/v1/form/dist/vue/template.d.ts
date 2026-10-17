@@ -1,7 +1,7 @@
 import { ClassValue, VNode } from 'vue';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import type * as DObject from "@duplojs-v1/lang/object";
-import type * as DKind from "@duplojs-v1/lang/kind";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DObject from "@duplojs/lang/object";
+import type * as DKind from "@duplojs/lang/kind";
 export declare const templateKind: DKind.Handler<DKind.Definition<"@DuplojsVueForm/template", unknown>>;
 type AllowedTemplateComponentInstances = InstanceType<AllowedTemplateComponents[keyof AllowedTemplateComponents]>;
 export type CreateTemplateParams<GenericInputComponentInstance extends AllowedTemplateComponentInstances = AllowedTemplateComponentInstances, GenericTemplateSystemProps extends object = object> = DCommon.SimplifyTopLevel<(DCommon.SimplifyTopLevel<Omit<GenericInputComponentInstance["$props"], keyof GenericTemplateSystemProps>> extends infer InferredProps ? {} extends InferredProps ? {

@@ -1,4 +1,4 @@
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DCommon from "@duplojs/lang/common";
 export type ForbiddenDuplicateName<GenericItems extends readonly {
     readonly name: string;
 }[], GenericType extends string, GenericSeenNames extends string = never> = GenericItems extends readonly [

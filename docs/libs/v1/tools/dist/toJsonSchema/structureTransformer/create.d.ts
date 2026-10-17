@@ -1,7 +1,7 @@
 import { MapContext } from '../context';
 import { DataStructureErrorEither, JsonSchema, SupportedVersions, DataStructureTransformerEither, DataStructureSuccessEither, DataStructureTypeTransformerEither } from '../result';
 import { JsonSchemaNewType, JsonSchemaArray, JsonSchemaObject, JsonSchemaRecord, JsonSchemaNonEncodableString, JsonSchemaEntity, JsonSchemaTaggedObject } from './defaults';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 export type StructureJsonSchema = (JsonSchemaNewType | JsonSchemaArray | JsonSchemaObject | JsonSchemaRecord | JsonSchemaNonEncodableString | JsonSchemaEntity | JsonSchemaTaggedObject);
 export interface StructureTransformerParams {
     readonly context: MapContext;

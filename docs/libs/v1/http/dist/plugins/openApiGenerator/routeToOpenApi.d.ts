@@ -1,8 +1,8 @@
 import { Route } from '../../core/route';
 import { ResponseContract } from '../../core/response';
-import { DataStructureToJsonSchema } from '@duplojs-v1/tools';
+import { DataStructureToJsonSchema } from '@duplojs/tools';
 import { EndpointResponse, EntrypointParameter } from './types';
-import * as DArray from "@duplojs-v1/lang/array";
+import * as DArray from "@duplojs/lang/array";
 export type ResultSchemaContext = Map<string, Record<string, DataStructureToJsonSchema.JsonSchema>>;
 export interface RouteToOpenApiParams {
     readonly contextToJsonSchemaFactory: DataStructureToJsonSchema.MapContext;

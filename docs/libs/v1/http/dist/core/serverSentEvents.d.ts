@@ -1,5 +1,5 @@
 import { Stream } from './stream';
-import * as DCommon from "@duplojs-v1/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 export declare namespace ServerSentEvents {
     type DefinitionShape = Record<string, unknown>;
     interface SendParams {

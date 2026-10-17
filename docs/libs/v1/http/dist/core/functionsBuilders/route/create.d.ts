@@ -3,8 +3,8 @@ import { Environment } from '../../types';
 import { BuildStepSuccessEither, BuildStepNotSupportEither } from '../steps';
 import { Steps } from '../../steps';
 import { ResponseContract } from '../../response';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import * as DEither from "@duplojs-v1/lang/either";
+import type * as DCommon from "@duplojs/lang/common";
+import * as DEither from "@duplojs/lang/either";
 export type BuildRouteSuccessEither = DEither.Right<"buildSuccess", BuildedRoute>;
 export type BuildRouteNotSupportEither = DEither.Left<"routeNotSupport", Route>;
 export interface RouteFunctionBuilderParams {

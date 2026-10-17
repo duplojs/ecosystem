@@ -1,8 +1,8 @@
 import { StructureTransformerBuildFunction } from './structureTransformer';
 import { JsonSchema } from './result';
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 export type JsonSchemaTransformerOverride<GenericStructure extends DDataStructure.Structure = DDataStructure.Structure> = JsonSchema | StructureTransformerBuildFunction<GenericStructure>;
-declare module "@duplojs-v1/lang/dataStructure" {
+declare module "@duplojs/lang/dataStructure" {
     interface StructureDefinition {
         identifier?: string;
         overrideJsonSchemaTransformer?: StructureTransformerBuildFunction;

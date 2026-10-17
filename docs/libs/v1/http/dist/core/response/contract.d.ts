@@ -1,8 +1,8 @@
 import { ResponseCode, PredictedResponse, ServerSentEventsPredictedResponse, SuccessResponseCode, StreamTextPredictedResponse } from '.';
 import { StreamPredictedResponse } from './streamPredicted';
-import type * as DCommon from "@duplojs-v1/lang/common";
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import * as DKind from "@duplojs-v1/lang/kind";
+import type * as DCommon from "@duplojs/lang/common";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DKind from "@duplojs/lang/kind";
 export declare namespace ResponseContract {
     type SupportedStructure = DDataStructure.Structure;
     export const contractKind: DKind.Handler<DKind.Definition<"@DuplojsHttpCore/response-contract", unknown>>;

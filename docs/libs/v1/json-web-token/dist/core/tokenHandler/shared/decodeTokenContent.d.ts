@@ -1,5 +1,5 @@
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import * as DEither from "@duplojs-v1/lang/either";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DEither from "@duplojs/lang/either";
 export type TokenHeaderContent = {
     typ: "JWT";
     alg: string;

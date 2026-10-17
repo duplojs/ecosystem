@@ -1,7 +1,7 @@
 import { MapImportContext } from '../importContext';
 import { ConstraintTransformer } from './create';
 import { ConstraintTransformerEither } from '../result';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
 export interface ConstraintTransformerFunctionParams {
     readonly transformers: readonly ConstraintTransformer[];
     readonly importContext: MapImportContext;

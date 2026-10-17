@@ -1,7 +1,7 @@
 import { Locator as PlaywrightLocator } from 'playwright/test';
 import { ComponentEngine, ComponentMethods, GetComponentMethodsParams, GetComponentElementsParams, GetComponentMainElementParams, ComponentElements, Component } from './component';
 import { Website } from './website';
-import type * as DKind from "@duplojs-v1/lang/kind";
+import type * as DKind from "@duplojs/lang/kind";
 declare const pageKind: DKind.Handler<DKind.Definition<"@DuplojsPlaywright/page", unknown>>;
 export interface PageEngine<GenericName extends string = string, GenericPathParams extends Record<string, unknown> = Record<string, unknown>, GenericElements extends ComponentElements | undefined = undefined, GenericMethods extends ComponentMethods | undefined = undefined, GenericComponent extends ComponentEngine = never> {
     (website: Website): Page<GenericName, GenericPathParams, GenericElements, GenericMethods, GenericComponent>;

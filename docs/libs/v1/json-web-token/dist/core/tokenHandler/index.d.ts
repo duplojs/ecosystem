@@ -1,12 +1,12 @@
 import { CreateSigner, Signer } from '../signer';
 import { CreateCipher, Cipher } from '../cipher';
 import { ExtractRequiredKeys, UnknownToUndefined } from '../types';
-import * as DCommon from "@duplojs-v1/lang/common";
-import type * as DChrono from "@duplojs-v1/lang/chrono";
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import * as DEither from "@duplojs-v1/lang/either";
-import type * as DObject from "@duplojs-v1/lang/object";
-import * as DKind from "@duplojs-v1/lang/kind";
+import * as DCommon from "@duplojs/lang/common";
+import type * as DChrono from "@duplojs/lang/chrono";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DEither from "@duplojs/lang/either";
+import type * as DObject from "@duplojs/lang/object";
+import * as DKind from "@duplojs/lang/kind";
 declare const tokenHandlerConfigDataStructure: NoInfer<DDataStructure.ObjectStructure<{
     readonly maxAge: DChrono.TheTime;
     readonly issuer?: string | undefined;

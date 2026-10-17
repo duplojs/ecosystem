@@ -1,5 +1,5 @@
 import { Steps } from '../../core/steps';
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 export type IdentifiedStructure = (DDataStructure.Structure & {
     definition: {
         identifier: string;

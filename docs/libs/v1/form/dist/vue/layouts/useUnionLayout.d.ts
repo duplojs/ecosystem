@@ -1,7 +1,7 @@
 import { FormField, GetFormFieldCheckedValue, GetFormFieldValue, MergeFormFieldSlots } from '../formField';
 import { Templates } from '../template';
 import { VueComponent } from '../types';
-import * as DCommon from "@duplojs-v1/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 export interface UnionTemplateProperties {
     props: {
         fieldKey: string;

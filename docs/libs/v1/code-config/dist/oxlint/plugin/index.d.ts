@@ -9,8 +9,9 @@ export declare const plugin: {
         readonly "no-unreachable-loop": import("eslint").Rule.RuleModule;
         readonly "prefer-destructuring": import("eslint").Rule.RuleModule;
         readonly "prefer-namespace-import": import("eslint").Rule.RuleModule;
-        readonly "no-restricted-import": import("eslint").Rule.RuleModule;
+        readonly "prefer-import-path": import("eslint").Rule.RuleModule;
+        readonly "prefer-namespace-from-barrel": import("eslint").Rule.RuleModule;
     };
 };
-export declare const pluginSpecifier = "@duplojs-v1/code-config/oxlint/plugin";
+export declare const pluginSpecifier = "@duplojs/code-config/oxlint/plugin";
 export default plugin;

@@ -3,7 +3,7 @@ import { TransformerHook } from './hook';
 import { SupportedVersions, DataStructureTransformerEither } from './result';
 import { StructureTransformer } from './structureTransformer';
 import { TypeTransformer } from './typeTransformer';
-import * as DDataStructure from "@duplojs-v1/lang/dataStructure";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
 export interface TransformerFunctionParams {
     readonly identifier?: string;
     readonly structureTransformers: readonly StructureTransformer[];

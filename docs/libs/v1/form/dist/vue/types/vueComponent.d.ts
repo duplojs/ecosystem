@@ -1,5 +1,5 @@
 import { EmitsToProps, EmitFn } from 'vue';
-import type * as DCommon from "@duplojs-v1/lang/common";
+import type * as DCommon from "@duplojs/lang/common";
 export interface VueComponentParams {
     props?: Record<string, unknown>;
     emits?: Record<string, DCommon.AnyFunction | any[]>;

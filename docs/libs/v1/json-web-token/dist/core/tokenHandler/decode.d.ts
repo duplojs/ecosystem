@@ -1,7 +1,7 @@
 import { TokenHandlerConfig } from './index';
 import { DecodeTokenContent } from './shared';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import * as DEither from "@duplojs-v1/lang/either";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DEither from "@duplojs/lang/either";
 interface CreateTokenHandlerDecodeMethodParams {
     readonly config: TokenHandlerConfig;
     readonly decodeTokenContent: DecodeTokenContent;

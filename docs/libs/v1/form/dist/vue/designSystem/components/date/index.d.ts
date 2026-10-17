@@ -1,4 +1,4 @@
-import * as DChrono from "@duplojs-v1/lang/chrono";
+import * as DChrono from "@duplojs/lang/chrono";
 export { default as DateInput } from './DateInput.vue';
 export { default as RangeDateInput } from './RangeDateInput.vue';
 export declare const useDateInput: import('../../../input').UseInput<import('vue').CreateComponentPublicInstanceWithMixins<Readonly<import('./DateInput.vue').Props & {

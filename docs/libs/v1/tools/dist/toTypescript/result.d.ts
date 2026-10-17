@@ -1,6 +1,6 @@
 import { Typescript } from '../typescript';
-import type * as DDataStructure from "@duplojs-v1/lang/dataStructure";
-import type * as DEither from "@duplojs-v1/lang/either";
+import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import type * as DEither from "@duplojs/lang/either";
 export type TransformerSuccessEither = DEither.Right<"buildSuccess", Typescript.TypeNode>;
 export type ConstraintNotSupportedEither = DEither.Left<"constraintNotSupport", DDataStructure.Constraint>;
 export type ConstraintErrorEither = DEither.Left<"buildConstraintError", DDataStructure.Constraint>;
