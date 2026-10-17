@@ -6,9 +6,13 @@
     "test:types": "./.commands/test-types.sh",
     "test:lint": "./.commands/test-lint.sh",
     "dev": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true ./.commands/dev.sh",
-    "build": "./.commands/build.sh"
+    "build": "./.commands/build.sh",
+    "snapshot:dist": "./.commands/snapshot-dist.sh"
   },
   "dependencies": {
+    "@duplojs/lang": "workspace:*",
+    "@duplojs/server": "workspace:*",
+
     "@duplojs-v1/code-config": "workspace:*",
     "@duplojs-v1/eslint": "workspace:*",
     "@duplojs-v1/form": "workspace:*",
@@ -20,6 +24,7 @@
     "@duplojs-v1/tools": "workspace:*",
     "@duplojs/code-config": "workspace:*",
     "@duplojs/eslint": "workspace:*",
+
     "@shikijs/vitepress-twoslash": "4.5.0",
     "@types/node": "24.13.3",
     "@types/web": "0.0.358",

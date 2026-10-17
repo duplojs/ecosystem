@@ -15,7 +15,6 @@ const scopes = [
 	"jsdoc-include",
 	"ci-cd",
 	"docs",
-	"snapshot-dist",
 ];
 
 const scopePattern = scopes.join("|");

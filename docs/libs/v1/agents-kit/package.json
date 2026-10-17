@@ -1,0 +1,15 @@
+{
+  "name": "@duplojs-v1/agents-kit",
+  "private": true,
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@duplojs-v1/lang": "workspace:*",
+    "@duplojs-v1/server": "workspace:*"
+  }
+}

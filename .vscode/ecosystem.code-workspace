@@ -49,10 +49,6 @@
 			"path": "../packages-private/jsdoc-include"
 		},
 		{
-			"name": "@duplojs/snapshot-dist",
-			"path": "../packages-private/snapshot-dist"
-		},
-		{
 			"name": "ecosystem",
 			"path": ".."
 		},

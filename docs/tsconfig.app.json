@@ -6,6 +6,11 @@
   "compilerOptions": {
 	"types": ["vitepress/client", "web", "node"],
   },
-  "include": [".vitepress/**/*.vue", ".vitepress/**/*.ts", "examples/**/*.ts"],
+  "include": [
+	".vitepress/**/*.vue", 
+	".vitepress/**/*.ts", 
+	"examples/**/*.ts", 
+	"bin/**/*.ts"
+  ],
   "exclude": ["libs/**/*.ts"],
 }
