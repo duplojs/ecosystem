@@ -100,7 +100,7 @@ describe("walkDirectory", () => {
 				},
 			]),
 		});
-		const matcher = vi.fn(DPath.createPattern(pattern));
+		const matcher = vi.fn(DPath.createMatcher(pattern));
 
 		const result = await DSFile.walkDirectory(DCommon.infer("demo"), {
 			recursive: true,

@@ -12,6 +12,7 @@ export const directoryToMarkdown: (
 	params: {
 		inputPathFolder: string & DPath.Absolute;
 		outputPathFolderFile: string & DPath.Absolute;
+		isIgnore: DPath.PathMatcher;
 	},
 ) => Promise<
 	| DEither.Left<"file-system-walk-directory-error", DSFile.WalkDirectoryErrors>
@@ -24,8 +25,8 @@ export const directoryToMarkdown: (
 			DCommon.forward,
 		),
 	),
-	DArray.from,
-	DArray.group(
+	(entries, { isIgnore }) => DGenerator.filter(entries, (entry) => !isIgnore(entry.path)),
+	DGenerator.group(
 		DCommon.innerPipe(
 			DPattern.when(
 				DSFile.isFolderInterface,
@@ -205,6 +206,7 @@ export const directoryToMarkdown: (
 				DArray.map((path) => directoryToMarkdown({
 					inputPathFolder: path,
 					outputPathFolderFile: argument.outputPathFolderFile,
+					isIgnore: argument.isIgnore,
 				})),
 				DCommon.promiseAll,
 				DArray.filter(DEither.isRight),

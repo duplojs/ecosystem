@@ -1,9 +1,9 @@
 import type { ExpectType } from "@scripts/common";
 import * as DPath from "@scripts/path";
 
-describe("createPattern", () => {
+describe("createMatcher", () => {
 	it("returns a path matcher constrained by Path", () => {
-		const matcher = DPath.createPattern("*.ts");
+		const matcher = DPath.createMatcher("*.ts");
 
 		type _CheckMatcher = ExpectType<
 			typeof matcher,
@@ -44,7 +44,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("ignores the pattern $pattern for $path", ({ pattern, path, expected }) => {
-		const matcher = DPath.createPattern(pattern);
+		const matcher = DPath.createMatcher(pattern);
 
 		const result = matcher(DPath.createOrThrow(path));
 		expect(result).toBe(expected);
@@ -60,7 +60,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("treats a string as one pattern for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern("*.ts\n*.json");
+		const matcher = DPath.createMatcher("*.ts\n*.json");
 
 		const result = matcher(DPath.createOrThrow(path));
 		expect(result).toBe(expected);
@@ -92,7 +92,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("matches literal paths and components for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern([
+		const matcher = DPath.createMatcher([
 			"README.md",
 			"src/index.ts",
 		]);
@@ -131,7 +131,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("supports wildcards inside path segments for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern([
+		const matcher = DPath.createMatcher([
 			"*.unit",
 			"file?.json",
 			"src/*.spec.ts",
@@ -203,7 +203,7 @@ describe("createPattern", () => {
 			expected: true,
 		},
 	])("supports globstars in $pattern against $path", ({ pattern, path, expected }) => {
-		const matcher = DPath.createPattern(pattern);
+		const matcher = DPath.createMatcher(pattern);
 
 		const result = matcher(DPath.createOrThrow(path));
 		expect(result).toBe(expected);
@@ -219,7 +219,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("applies the last matching globstar rule for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern([
+		const matcher = DPath.createMatcher([
 			"ignored/**",
 			"!ignored/public/**",
 		]);
@@ -255,7 +255,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("treats triple stars as ordinary wildcards in $pattern against $path", ({ pattern, path, expected }) => {
-		const matcher = DPath.createPattern(pattern);
+		const matcher = DPath.createMatcher(pattern);
 
 		const result = matcher(DPath.createOrThrow(path));
 		expect(result).toBe(expected);
@@ -275,7 +275,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("treats only segment-level double stars as globstars for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern("a/***/b");
+		const matcher = DPath.createMatcher("a/***/b");
 
 		const result = matcher(DPath.createOrThrow(path));
 		expect(result).toBe(expected);
@@ -331,7 +331,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("supports character classes and POSIX classes for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern([
+		const matcher = DPath.createMatcher([
 			"file[0-9].txt",
 			"letter[[:alpha:]].txt",
 			"not-[!ab].txt",
@@ -371,7 +371,7 @@ describe("createPattern", () => {
 			expected: true,
 		},
 	])("treats malformed character classes as literal brackets for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern([
+		const matcher = DPath.createMatcher([
 			"bad[abc",
 			"range[z-a].txt",
 			"unknown[[:custom:]].txt",
@@ -413,7 +413,7 @@ describe("createPattern", () => {
 			expected: true,
 		},
 	])("supports escaped special characters for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern([
+		const matcher = DPath.createMatcher([
 			"\\#hash.txt",
 			"\\!important.txt",
 			"literal\\*.txt",
@@ -459,7 +459,7 @@ describe("createPattern", () => {
 			expected: true,
 		},
 	])("supports anchored and unanchored patterns for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern([
+		const matcher = DPath.createMatcher([
 			"/root.txt",
 			"nested/file.txt",
 			"component.txt",
@@ -503,7 +503,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("matches directory patterns without requiring a directory input for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern([
+		const matcher = DPath.createMatcher([
 			"build/",
 			"/cache/",
 		]);
@@ -522,7 +522,7 @@ describe("createPattern", () => {
 			expected: true,
 		},
 	])("applies the last matching rule for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern([
+		const matcher = DPath.createMatcher([
 			"*.ts",
 			"!index.ts",
 			"index.ts",
@@ -566,7 +566,7 @@ describe("createPattern", () => {
 			expected: true,
 		},
 	])("supports negative rules and reinclusions for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern([
+		const matcher = DPath.createMatcher([
 			"dist/",
 			"!dist/index.js",
 			"!dist/public/",
@@ -604,7 +604,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("matches canonical Path values with $pattern against $path", ({ pattern, path, expected }) => {
-		const matcher = DPath.createPattern(pattern);
+		const matcher = DPath.createMatcher(pattern);
 
 		const result = matcher(DPath.createOrThrow(path));
 		expect(result).toBe(expected);
@@ -624,7 +624,7 @@ describe("createPattern", () => {
 			expected: true,
 		},
 	])("matches regex special characters literally for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern([
+		const matcher = DPath.createMatcher([
 			"file+(1).ts",
 			"folder/{name}/item$",
 		]);
@@ -643,7 +643,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("keeps regex results stable across matcher calls for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern([
+		const matcher = DPath.createMatcher([
 			"*.ts",
 			"!index.ts",
 		]);
@@ -667,7 +667,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("matches long paths ($expected)", ({ path, expected }) => {
-		const matcher = DPath.createPattern("src/**/target-*.ts");
+		const matcher = DPath.createMatcher("src/**/target-*.ts");
 
 		const result = matcher(DPath.createOrThrow(path));
 		expect(result).toBe(expected);
@@ -765,7 +765,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("matches a pattern prefixed with ./ ($pattern against $path)", ({ pattern, path, expected }) => {
-		const matcher = DPath.createPattern(pattern);
+		const matcher = DPath.createMatcher(pattern);
 
 		const result = matcher(DPath.createOrThrow(path));
 		expect(result).toBe(expected);
@@ -818,7 +818,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("requires an absolute path for $pattern against $path", ({ pattern, path, expected }) => {
-		const matcher = DPath.createPattern(pattern);
+		const matcher = DPath.createMatcher(pattern);
 
 		const result = matcher(DPath.createOrThrow(path));
 		expect(result).toBe(expected);
@@ -850,7 +850,7 @@ describe("createPattern", () => {
 			expected: false,
 		},
 	])("preserves path references in exclusions and reinclusions for $path", ({ path, expected }) => {
-		const matcher = DPath.createPattern([
+		const matcher = DPath.createMatcher([
 			"**",
 			"!./src/**",
 			"!/src/private/**",

@@ -7,10 +7,11 @@ import * as DPath from "@duplojs/lang/path";
 import * as DSCommon from "@duplojs/server/common";
 import * as DCommon from "@duplojs/lang/common";
 import * as DSDataStructure from "@duplojs/server/dataStructure";
+import * as DString from "@duplojs/lang/string";
 
-await DSCommand.exec(
+export const generateSummaryCommand = DSCommand.create(
+	"generate-summary",
 	{
-		displayName: "generate-llms",
 		options: [
 			DSCommand.createOption(
 				"input",
@@ -22,10 +23,20 @@ await DSCommand.exec(
 			),
 			DSCommand.createOption(
 				"output",
-				DDataStructure.string([DDataStructure.path()]),
+				DDataStructure.string([
+					DDataStructure.path(),
+					DDataStructure.refine(DString.endsWith(".llms.md")),
+				]),
 				{
 					required: true,
 					description: "file path output",
+				},
+			),
+			DSCommand.createArrayOption(
+				"ignore",
+				DDataStructure.string(),
+				{
+					description: "path pattern to ignore",
 				},
 			),
 		],
@@ -33,6 +44,7 @@ await DSCommand.exec(
 	async({ options }) => {
 		const result = DEither.unwrapRightOrThrow(
 			await directoryToMarkdown({
+				isIgnore: DPath.createMatcher(options.ignore ?? []),
 				inputPathFolder: DPath.resolveFrom(
 					DSCommon.getCurrentWorkDirectoryOrThrow(),
 					[options.input.path],

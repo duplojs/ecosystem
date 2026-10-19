@@ -100,7 +100,7 @@ describe("readDirectory", () => {
 		const fs = setFsPromisesMock({
 			readdir: vi.fn().mockResolvedValue(["index.ts", "nested//keep.ts", "nested/skip.test.ts", "README.md"]),
 		});
-		const matcher = vi.fn(DPath.createPattern(pattern));
+		const matcher = vi.fn(DPath.createMatcher(pattern));
 
 		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), {
 			recursive: true,
@@ -139,7 +139,7 @@ describe("readDirectory", () => {
 				},
 			]),
 		});
-		const matcher = vi.fn(DPath.createPattern("/workspace/mock/src/*.ts"));
+		const matcher = vi.fn(DPath.createMatcher("/workspace/mock/src/*.ts"));
 
 		const result = await DSFile.readDirectory(DCommon.infer("mock"), {
 			recursive: true,
@@ -167,7 +167,7 @@ describe("readDirectory", () => {
 		setFsPromisesMock({
 			readdir: vi.fn().mockResolvedValue([]),
 		});
-		const matcher = vi.fn(DPath.createPattern("**"));
+		const matcher = vi.fn(DPath.createMatcher("**"));
 
 		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"), { matcher });
 		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");

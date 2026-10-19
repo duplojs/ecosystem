@@ -27,7 +27,7 @@ Pour documenter les fonctions dans `docs/API/`, appliquer les [précisions propr
 
 ## Organisation et exposition
 
-Pour chaque routeur, le parcours de génération commence dans le dossier source passé à `generate-llms --input` et descend récursivement dans les dossiers à préfixe numérique. Il reconnaît les fichiers documentaires numérotés et les `index.md`. L'ordre est lexical. Ces conventions s'appliquent à tous les dossiers sources, dont `docs/concepts/`.
+Pour chaque routeur, le parcours de génération commence dans le dossier source passé à `llms generate-summary --input` et descend récursivement dans les dossiers à préfixe numérique. Il reconnaît les fichiers documentaires numérotés et les `index.md`. L'ordre est lexical. Ces conventions s'appliquent à tous les dossiers sources, dont `docs/concepts/`.
 
 | Ressource | Convention |
 | --- | --- |
@@ -87,10 +87,10 @@ Le Markdown porte les explications et contextualise les liens vers les exemples 
 
 Placer la ressource dans le domaine approprié selon les conventions d'organisation et d'exposition. Adapter l'index si le périmètre du domaine évolue.
 
-Le build `pnpm --filter @duplojs/agents-kit build` régénère les routeurs déclarés dans `.commands/build.sh`. Pour chaque routeur concerné, utiliser le dossier source et la sortie correspondants, depuis la racine du package :
+La CLI locale `pnpm run llms` regroupe les outils documentaires pour les LLM. Sa seule sous-commande actuelle, `generate-summary`, génère un résumé documentaire qui sert de routeur vers les sources. Le build `pnpm --filter @duplojs/agents-kit build` régénère les résumés déclarés dans `.commands/build.sh` : `docs/concepts.llms.md` et un `index.llms.md` par domaine API. Pour chaque résumé concerné, utiliser le dossier source et la sortie correspondants, depuis la racine du package :
 
 ```sh
-pnpm run generate:llms --input <dossier-source> --output <nom>.llms.md
+pnpm run llms generate-summary --input <dossier-source> --output <nom>.llms.md
 ```
 
 Les commandes `test:types` (via `tsconfig.doc.json`) et `test:lint` du package vérifient aussi les exemples et les fixtures. Vérifier que les nouveaux dossiers documentaires sont couverts par ces configurations. Le champ `files` du package doit inclure `docs` afin de publier ensemble les routeurs et leurs cibles ; adapter les fichiers publiés si les sources ou les routeurs sont placés ailleurs.

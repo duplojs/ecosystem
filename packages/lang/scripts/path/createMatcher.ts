@@ -26,7 +26,7 @@ const posixClassByName: Readonly<Record<string, string>> = {
 	xdigit: "A-Fa-f0-9",
 };
 
-export function createPattern(
+export function createMatcher(
 	patterns: string | readonly string[],
 ): PathMatcher {
 	const rules: PatternRule[] = [];

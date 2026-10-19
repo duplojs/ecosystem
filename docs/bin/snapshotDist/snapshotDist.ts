@@ -26,7 +26,7 @@ export class SnapshotPackageFolderNotFoundError extends DKind.parentClass("snaps
 	}
 }
 
-const ignoreNodeModules = DPath.createPattern(["**", "!node_modules"]);
+const ignoreNodeModules = DPath.createMatcher(["**", "!node_modules"]);
 
 type AbsolutePath = string & DPath.Absolute & DPath.Path;
 
@@ -87,7 +87,7 @@ async function copyDeclarations(source: string & DPath.Path, destination: string
 export async function snapshotDist({ rootDir, output, inputPattern }: SnapshotDistParams): Promise<void> {
 	const root = DPath.resolveFrom(DSCommon.getCurrentWorkDirectoryOrThrow(), [rootDir.path]);
 	const folders = await DCommon.asyncPipe(
-		findFolders(root, DPath.createPattern(inputPattern)),
+		findFolders(root, DPath.createMatcher(inputPattern)),
 		DCommon.when(
 			(value) => value.length === 0,
 			() => {

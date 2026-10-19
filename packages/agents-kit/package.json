@@ -21,7 +21,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "./.commands/build.sh",
-		"generate:llms": "tsx bin/generateLlms/index.ts",
+		"llms": "tsx bin/index.ts",
 		"test:types": "./.commands/test-types.sh",
 		"test:types:target": "./.commands/test-types-target.sh",
 		"test:lint": "./.commands/test-lint.sh",
@@ -36,7 +36,8 @@
 			"types": "./dist/index.d.ts"
 		},
     "./docs/concepts.llms.md": "./docs/concepts.llms.md",
-    "./docs/API.llms.md": "./docs/API.llms.md"
+    "./docs/API.llms.md": "./docs/API.llms.md",
+    "./docs/API/*/index.llms.md": "./docs/API/*/index.llms.md"
 	},
 	"dependencies": {
 		"@duplojs/lang": "workspace:*",

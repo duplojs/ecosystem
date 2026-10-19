@@ -111,6 +111,15 @@ importers:
         specifier: 3.3.11
         version: 3.3.11(typescript@6.0.3)
 
+  docs/libs/v1/agents-kit:
+    dependencies:
+      '@duplojs-v1/lang':
+        specifier: workspace:*
+        version: link:../lang
+      '@duplojs-v1/server':
+        specifier: workspace:*
+        version: link:../server
+
   docs/libs/v1/code-config:
     dependencies:
       '@commitlint/types':

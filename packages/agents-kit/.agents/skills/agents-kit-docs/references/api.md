@@ -8,7 +8,9 @@ Consacrer un fichier TypeScript à chaque fonction demandée, en regroupant ses 
 
 Le titre du header est `Namespace.fonction`, par exemple `@title DArray.map`, accompagné d'une courte phrase décrivant son rôle. Exposer uniquement ce header dans le routeur concerné, pour retrouver la fonction.
 
-Le routage API comprend plusieurs fichiers `*.llms.md`, notamment des routeurs par domaine. Rattacher chaque source au routeur correspondant à son domaine ; ne pas supposer que toute la référence API est regroupée dans un seul fichier.
+Chaque dossier de domaine de la référence API doit contenir un `index.md` sans préfixe numérique. Le créer s'il manque. Y placer un titre et une courte présentation expliquant le rôle du domaine et à quoi servent ses API, comme un en-tête de domaine.
+
+Chaque domaine API possède un résumé documentaire `index.llms.md` dans son dossier. Rattacher chaque source, y compris l'`index.md` de présentation, au résumé correspondant à son domaine. Après génération, vérifier que cette présentation est bien exposée dans le résumé du domaine.
 
 Dans le contenu du fichier, décrire en une phrase ce que fait globalement la fonction, puis le montrer par de petits exemples typés. Ne pas recopier les signatures publiques ni ajouter une explication détaillée de leurs paramètres, génériques ou surcharges : les appels illustrent leur utilisation.
 
