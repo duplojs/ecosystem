@@ -1,7 +1,37 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`stringTypeTransformer > renders a prefix after an empty inclusion pattern 1`] = `
+{
+  "allOf": [
+    {
+      "pattern": "^asset:",
+    },
+  ],
+  "pattern": "",
+  "type": "string",
+}
+`;
+
 exports[`stringTypeTransformer > renders a string type 1`] = `
 {
+  "type": "string",
+}
+`;
+
+exports[`stringTypeTransformer > renders combined literal and regex constraints 1`] = `
+{
+  "allOf": [
+    {
+      "pattern": "\\.json$",
+    },
+    {
+      "pattern": "/lang/",
+    },
+    {
+      "pattern": "^[a-z:/.]+$",
+    },
+  ],
+  "pattern": "^asset:",
   "type": "string",
 }
 `;
@@ -37,6 +67,103 @@ exports[`stringTypeTransformer > renders direct string constraints 1`] = `
   "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
   "type": "string",
 }
+`;
+
+exports[`stringTypeTransformer > renders empty literal string constraints 1`] = `
+[
+  {
+    "pattern": "^",
+    "type": "string",
+  },
+  {
+    "pattern": "$",
+    "type": "string",
+  },
+  {
+    "pattern": "",
+    "type": "string",
+  },
+]
+`;
+
+exports[`stringTypeTransformer > renders endsWith alone and alongside existing patterns 1`] = `
+[
+  {
+    "pattern": "\\.json$",
+    "type": "string",
+  },
+  {
+    "allOf": [
+      {
+        "pattern": "\\.json$",
+      },
+    ],
+    "pattern": "existing",
+    "type": "string",
+  },
+  {
+    "allOf": [
+      {
+        "pattern": "another",
+      },
+      {
+        "pattern": "\\.json$",
+      },
+    ],
+    "pattern": "existing",
+    "type": "string",
+  },
+]
+`;
+
+exports[`stringTypeTransformer > renders escaped literal patterns with Unicode and newlines 1`] = `
+[
+  {
+    "pattern": "^\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\\\-/"\`é😀\\
+",
+    "type": "string",
+  },
+  {
+    "pattern": "\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\\\-/"\`é😀\\
+$",
+    "type": "string",
+  },
+  {
+    "pattern": "\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\\\-/"\`é😀\\
+",
+    "type": "string",
+  },
+]
+`;
+
+exports[`stringTypeTransformer > renders include alone and alongside existing patterns 1`] = `
+[
+  {
+    "pattern": "/lang/",
+    "type": "string",
+  },
+  {
+    "allOf": [
+      {
+        "pattern": "/lang/",
+      },
+    ],
+    "pattern": "existing",
+    "type": "string",
+  },
+  {
+    "allOf": [
+      {
+        "pattern": "another",
+      },
+      {
+        "pattern": "/lang/",
+      },
+    ],
+    "pattern": "existing",
+    "type": "string",
+  },
+]
 `;
 
 exports[`stringTypeTransformer > renders repeated string constraints with allOf 1`] = `
@@ -160,6 +287,36 @@ exports[`stringTypeTransformer > renders standalone string pattern constraints 1
     ],
     "minLength": 1,
     "pattern": "^first$",
+    "type": "string",
+  },
+]
+`;
+
+exports[`stringTypeTransformer > renders startsWith alone and alongside existing patterns 1`] = `
+[
+  {
+    "pattern": "^asset:",
+    "type": "string",
+  },
+  {
+    "allOf": [
+      {
+        "pattern": "^asset:",
+      },
+    ],
+    "pattern": "existing",
+    "type": "string",
+  },
+  {
+    "allOf": [
+      {
+        "pattern": "another",
+      },
+      {
+        "pattern": "^asset:",
+      },
+    ],
+    "pattern": "existing",
     "type": "string",
   },
 ]

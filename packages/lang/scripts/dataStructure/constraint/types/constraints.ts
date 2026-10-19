@@ -5,6 +5,9 @@ export interface ConstraintsStore {
 	base: Constraint;
 
 	allowedCharacters: DDefaults.AllowedCharactersConstraint;
+	startsWith: DDefaults.StartsWithConstraint;
+	endsWith: DDefaults.EndsWithConstraint;
+	include: DDefaults.IncludeConstraint;
 	email: DDefaults.EmailConstraint;
 	url: DDefaults.UrlConstraint;
 	uuid: DDefaults.UuidConstraint;

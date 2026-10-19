@@ -1,4 +1,6 @@
-import { DDataStructure, type ExpectType, DModeling } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DModeling from "@scripts/modeling";
 
 describe("defaultErrorInterpreterDataStructureDictionary", () => {
 	it("formats default structure messages", () => {
@@ -83,6 +85,7 @@ describe("defaultErrorInterpreterDataStructureDictionary", () => {
 				DDataStructure.betweenThanOrEqual(1, 5),
 			),
 			dictionary["@DuplojsLangDataStructure/email-constraint"](),
+			dictionary["@DuplojsLangDataStructure/ends-with-constraint"](DDataStructure.endsWith(".ts")),
 			dictionary["@DuplojsLangDataStructure/even-constraint"](),
 			dictionary["@DuplojsLangDataStructure/greater-than-constraint"](
 				DDataStructure.greaterThan(1),
@@ -91,6 +94,7 @@ describe("defaultErrorInterpreterDataStructureDictionary", () => {
 				DDataStructure.greaterThanOrEqual(1),
 			),
 			dictionary["@DuplojsLangDataStructure/integer-constraint"](),
+			dictionary["@DuplojsLangDataStructure/include-constraint"](DDataStructure.include("duplo")),
 			dictionary["@DuplojsLangDataStructure/less-than-constraint"](DDataStructure.lessThan(5)),
 			dictionary["@DuplojsLangDataStructure/less-than-or-equal-constraint"](
 				DDataStructure.lessThanOrEqual(5),
@@ -121,6 +125,7 @@ describe("defaultErrorInterpreterDataStructureDictionary", () => {
 			dictionary["@DuplojsLangDataStructure/regex-constraint"](DDataStructure.regex(/value/u)),
 			dictionary["@DuplojsLangDataStructure/safe-constraint"](),
 			dictionary["@DuplojsLangDataStructure/segment-path-constraint"](),
+			dictionary["@DuplojsLangDataStructure/starts-with-constraint"](DDataStructure.startsWith("duplo")),
 			dictionary["@DuplojsLangDataStructure/strict-negative-constraint"](),
 			dictionary["@DuplojsLangDataStructure/strict-positive-constraint"](),
 			dictionary["@DuplojsLangDataStructure/string-length-equal-constraint"](
@@ -139,10 +144,12 @@ describe("defaultErrorInterpreterDataStructureDictionary", () => {
 			"Expected a number greater than 1 and less than 5.",
 			"Expected a number greater than or equal to 1 and less than or equal to 5.",
 			"Expected a valid email address.",
+			"Expected a string ending with \".ts\".",
 			"Expected an even number.",
 			"Expected a number greater than 1.",
 			"Expected a number greater than or equal to 1.",
 			"Expected an integer.",
+			"Expected a string containing \"duplo\".",
 			"Expected a number less than 5.",
 			"Expected a number less than or equal to 5.",
 			"Expected a string containing at most 10 characters.",
@@ -161,6 +168,7 @@ describe("defaultErrorInterpreterDataStructureDictionary", () => {
 			"Expected a string matching /value/u.",
 			"Expected a number strictly between Number.MIN_SAFE_INTEGER and Number.MAX_SAFE_INTEGER.",
 			"Expected a valid path segment.",
+			"Expected a string starting with \"duplo\".",
 			"Expected a number less than zero.",
 			"Expected a number greater than zero.",
 			"Expected a string containing exactly 3 characters.",
@@ -199,7 +207,7 @@ describe("defaultErrorInterpreterCodecDictionary", () => {
 			DDataStructure.defaultErrorInterpreterCodecDictionary,
 		)(errorHandler.createError());
 
-		type _CheckDictionary = ExpectType<
+		type _CheckDictionary = DCommon.ExpectType<
 			DDataStructure.CodecDictionaryParams,
 			typeof DDataStructure.defaultErrorInterpreterCodecDictionary,
 			"two-extends-one"

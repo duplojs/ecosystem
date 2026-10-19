@@ -4,6 +4,9 @@ export * from "./arrayLengthEqual";
 export * from "./betweenThan";
 export * from "./betweenThanOrEqual";
 export * from "./email";
+export * from "./endsWith";
+export * from "./include";
+export * from "./startsWith";
 export * from "./even";
 export * from "./greaterThan";
 export * from "./greaterThanOrEqual";
@@ -38,6 +41,9 @@ import { arrayLengthEqualConstraintTransformer } from "./arrayLengthEqual";
 import { betweenThanConstraintTransformer } from "./betweenThan";
 import { betweenThanOrEqualConstraintTransformer } from "./betweenThanOrEqual";
 import { emailConstraintTransformer } from "./email";
+import { endsWithConstraintTransformer } from "./endsWith";
+import { includeConstraintTransformer } from "./include";
+import { startsWithConstraintTransformer } from "./startsWith";
 import { evenConstraintTransformer } from "./even";
 import { greaterThanConstraintTransformer } from "./greaterThan";
 import { greaterThanOrEqualConstraintTransformer } from "./greaterThanOrEqual";
@@ -71,6 +77,9 @@ export const defaultConstraintTransformers = [
 	betweenThanConstraintTransformer,
 	betweenThanOrEqualConstraintTransformer,
 	emailConstraintTransformer,
+	endsWithConstraintTransformer,
+	includeConstraintTransformer,
+	startsWithConstraintTransformer,
 	evenConstraintTransformer,
 	greaterThanConstraintTransformer,
 	greaterThanOrEqualConstraintTransformer,

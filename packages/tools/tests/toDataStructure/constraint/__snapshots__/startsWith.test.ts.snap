@@ -1,0 +1,41 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`startsWithConstraintTransformer > renders a literal in a nested structure 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const resourceStructure = DDataStructure.ObjectStructure({
+    path: DDataStructure.TypeStructure(DDataStructure.StringType(), [
+        DDataStructure.StartsWithConstraint("asset:")
+    ])
+}, []);"
+`;
+
+exports[`startsWithConstraintTransformer > renders an empty literal in a nested structure 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const resourceStructure = DDataStructure.ObjectStructure({
+    path: DDataStructure.TypeStructure(DDataStructure.StringType(), [
+        DDataStructure.StartsWithConstraint("")
+    ])
+}, []);"
+`;
+
+exports[`startsWithConstraintTransformer > renders an escaped literal in a nested structure 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const resourceStructure = DDataStructure.ObjectStructure({
+    path: DDataStructure.TypeStructure(DDataStructure.StringType(), [
+        DDataStructure.StartsWithConstraint("\` \${value} \\\\ \\" \\u00E9\\uD83D\\uDE00\\n")
+    ])
+}, []);"
+`;
+
+exports[`startsWithConstraintTransformer > renders combined constraints on an identified structure 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const resourcePathStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), [
+    DDataStructure.StartsWithConstraint("asset:"),
+    DDataStructure.EndsWithConstraint(".json"),
+    DDataStructure.IncludeConstraint("/lang/")
+]);"
+`;

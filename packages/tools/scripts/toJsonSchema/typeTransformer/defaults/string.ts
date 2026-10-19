@@ -36,6 +36,69 @@ export const stringTypeTransformer = createTypeTransformer(
 			}) => DPattern.match(constraint)
 				.when(
 					DDataStructure.constraintIdentifier(
+						DDataStructure.startsWithConstraintKind,
+					),
+					({ definition }) => {
+						const escapedSearchString = DCommon.escapeRegExp(definition.searchString);
+						const pattern = `^${escapedSearchString}`;
+
+						return nextWithObject(
+							lastValue,
+							lastValue.pattern !== undefined
+								? {
+									allOf: [
+										...(lastValue.allOf ?? []),
+										{ pattern },
+									],
+								}
+								: { pattern },
+						);
+					},
+				)
+				.when(
+					DDataStructure.constraintIdentifier(
+						DDataStructure.endsWithConstraintKind,
+					),
+					({ definition }) => {
+						const escapedSearchString = DCommon.escapeRegExp(definition.searchString);
+						const pattern = `${escapedSearchString}$`;
+
+						return nextWithObject(
+							lastValue,
+							lastValue.pattern !== undefined
+								? {
+									allOf: [
+										...(lastValue.allOf ?? []),
+										{ pattern },
+									],
+								}
+								: { pattern },
+						);
+					},
+				)
+				.when(
+					DDataStructure.constraintIdentifier(
+						DDataStructure.includeConstraintKind,
+					),
+					({ definition }) => {
+						const escapedSearchString = DCommon.escapeRegExp(definition.searchString);
+						const pattern = escapedSearchString;
+
+						return nextWithObject(
+							lastValue,
+							lastValue.pattern !== undefined
+								? {
+									allOf: [
+										...(lastValue.allOf ?? []),
+										{ pattern },
+									],
+								}
+								: { pattern },
+						);
+					},
+				)
+				.when(
+					DDataStructure.constraintIdentifier(
 						DDataStructure.minCharactersConstraintKind,
 					),
 					({ definition }) => nextWithObject(

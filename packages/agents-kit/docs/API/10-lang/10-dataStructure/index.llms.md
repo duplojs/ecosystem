@@ -54,6 +54,10 @@ Construire une structure représentant les dates DuploJS.
 
 Construire une contrainte d’adresse email et l’appliquer à une structure de chaîne.
  
+### [DDataStructure.endsWith](10-endsWith.ts)
+
+Construire une contrainte de suffixe et l’appliquer à une structure de chaîne.
+ 
 ### [DDataStructure.even](10-even.ts)
 
 Construire une contrainte de nombre pair et l’appliquer à une structure numérique.
@@ -69,6 +73,10 @@ Construire une contrainte de nombre supérieur à un seuil.
 ### [DDataStructure.greaterThanOrEqual](10-greaterThanOrEqual.ts)
 
 Construire une contrainte de nombre supérieur ou égal à un seuil.
+ 
+### [DDataStructure.include](10-include.ts)
+
+Construire une contrainte d’inclusion et l’appliquer à une structure de chaîne.
  
 ### [DDataStructure.integer](10-integer.ts)
 
@@ -201,6 +209,10 @@ Construire une contrainte d’entier sûr JavaScript.
 ### [DDataStructure.segmentPath](10-segmentPath.ts)
 
 Construire une contrainte qui exige un segment de chemin.
+ 
+### [DDataStructure.startsWith](10-startsWith.ts)
+
+Construire une contrainte de préfixe et l’appliquer à une structure de chaîne.
  
 ### [DDataStructure.strictNegative](10-strictNegative.ts)
 

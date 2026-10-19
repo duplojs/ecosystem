@@ -1,0 +1,94 @@
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+
+describe("StartsWithConstraint", () => {
+	it("preserves the search string in its definition and inferred value", () => {
+		const constraint = DDataStructure.StartsWithConstraint("duplo");
+
+		type _CheckConstraint = DCommon.ExpectType<
+			typeof constraint,
+			DDataStructure.StartsWithConstraint<"duplo">,
+			"strict"
+		>;
+		type _CheckConstraintValue = DCommon.ExpectType<
+			DDataStructure.ConstraintValue<typeof constraint>,
+			`duplo${string}`,
+			"strict"
+		>;
+
+		expect(constraint.definition).toStrictEqual({ searchString: "duplo" });
+		expect(constraint.isAsynchronous()).toBe(false);
+		expect(DDataStructure.constraintKind.has(constraint)).toBe(true);
+		expect(DDataStructure.startsWithConstraintKind.has(constraint)).toBe(true);
+	});
+
+	it.each([
+		{
+			input: "duplo",
+			expected: DDataStructure.SuccessSymbol,
+		},
+		{
+			input: "duplojs",
+			expected: DDataStructure.SuccessSymbol,
+		},
+		{
+			input: "jsduplo",
+			expected: DDataStructure.ErrorSymbol,
+		},
+		{
+			input: "xduplox",
+			expected: DDataStructure.ErrorSymbol,
+		},
+		{
+			input: "Duplojs",
+			expected: DDataStructure.ErrorSymbol,
+		},
+		{
+			input: "dup",
+			expected: DDataStructure.ErrorSymbol,
+		},
+		{
+			input: "",
+			expected: DDataStructure.ErrorSymbol,
+		},
+	])("checks $input", ({ input, expected }) => {
+		const constraint = DDataStructure.StartsWithConstraint("duplo");
+
+		expect(constraint.executeCheck(input)).toBe(expected);
+	});
+
+	it.each(["", "duplojs"])("accepts %j when the search string is empty", (input) => {
+		const constraint = DDataStructure.StartsWithConstraint("");
+
+		type _CheckConstraintValue = DCommon.ExpectType<
+			DDataStructure.ConstraintValue<typeof constraint>,
+			string,
+			"strict"
+		>;
+
+		expect(constraint.executeCheck(input)).toBe(DDataStructure.SuccessSymbol);
+	});
+
+	it("matches special characters literally", () => {
+		const constraint = DDataStructure.StartsWithConstraint("a.*");
+
+		expect(constraint.executeCheck("a.*tail")).toBe(DDataStructure.SuccessSymbol);
+		expect(constraint.executeCheck("aZZtail")).toBe(DDataStructure.ErrorSymbol);
+	});
+
+	it("can be identified as a built-in constraint", () => {
+		const constraint: DDataStructure.Constraint = DDataStructure.StartsWithConstraint("duplo");
+
+		if (DDataStructure.constraintIdentifier(constraint, DDataStructure.startsWithConstraintKind)) {
+			type _CheckConstraint = DCommon.ExpectType<
+				typeof constraint,
+				DDataStructure.StartsWithConstraint,
+				"strict"
+			>;
+
+			expect(constraint.definition.searchString).toBe("duplo");
+		} else {
+			expect.unreachable();
+		}
+	});
+});

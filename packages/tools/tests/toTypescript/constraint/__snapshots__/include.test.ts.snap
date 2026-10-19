@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`includeConstraintTransformer > renders a literal 1`] = `"export type ResourcePath = string & \`\${string}/lang/\${string}\`;"`;
+
+exports[`includeConstraintTransformer > renders an empty literal 1`] = `"export type ResourcePath = string & \`\${string}\${string}\`;"`;
+
+exports[`includeConstraintTransformer > renders an escaped literal 1`] = `
+"export type ResourcePath = string & \`\${string}\\\` \\\${value} \\\\ " \\u00E9\\uD83D\\uDE00
+\${string}\`;"
+`;

@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`includeConstraintTransformer > renders a literal in a nested structure 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const resourceStructure = DDataStructure.ObjectStructure({
+    path: DDataStructure.TypeStructure(DDataStructure.StringType(), [
+        DDataStructure.IncludeConstraint("/lang/")
+    ])
+}, []);"
+`;
+
+exports[`includeConstraintTransformer > renders an empty literal in a nested structure 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const resourceStructure = DDataStructure.ObjectStructure({
+    path: DDataStructure.TypeStructure(DDataStructure.StringType(), [
+        DDataStructure.IncludeConstraint("")
+    ])
+}, []);"
+`;
+
+exports[`includeConstraintTransformer > renders an escaped literal in a nested structure 1`] = `
+"import * as DDataStructure from "@duplojs/lang/dataStructure";
+
+export const resourceStructure = DDataStructure.ObjectStructure({
+    path: DDataStructure.TypeStructure(DDataStructure.StringType(), [
+        DDataStructure.IncludeConstraint("\` \${value} \\\\ \\" \\u00E9\\uD83D\\uDE00\\n")
+    ])
+}, []);"
+`;
