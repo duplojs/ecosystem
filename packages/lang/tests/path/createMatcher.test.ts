@@ -19,6 +19,59 @@ describe("createMatcher", () => {
 
 	it.each([
 		{
+			patterns: ["!index.ts", "*.ts"],
+			path: "index.ts",
+			expected: false,
+		},
+		{
+			patterns: ["*.ts", "!index.ts"],
+			path: "index.ts",
+			expected: false,
+		},
+		{
+			patterns: ["!index.ts", "*.ts"],
+			path: "other.ts",
+			expected: true,
+		},
+		{
+			patterns: ["*.ts", "!index.ts"],
+			path: "other.ts",
+			expected: true,
+		},
+		{
+			patterns: ["!index.ts", "*.ts"],
+			path: "other.js",
+			expected: false,
+		},
+		{
+			patterns: ["*.js", "*.ts", "!other.ts", "!index.ts"],
+			path: "index.ts",
+			expected: false,
+		},
+		{
+			patterns: [],
+			path: "index.ts",
+			expected: false,
+		},
+		{
+			patterns: ["!index.ts"],
+			path: "index.ts",
+			expected: false,
+		},
+		{
+			patterns: ["!index.ts"],
+			path: "other.ts",
+			expected: false,
+		},
+	])("prioritizes exclusions in $patterns for $path ($expected)", ({ patterns, path, expected }) => {
+		const matcher = DPath.createMatcher(patterns);
+
+		const result = matcher(DPath.createOrThrow(path));
+		expect(result).toBe(expected);
+	});
+
+	it.each([
+		{
 			pattern: "",
 			path: "index.ts",
 			expected: false,
@@ -218,7 +271,7 @@ describe("createMatcher", () => {
 			path: "ignored/public/file.ts",
 			expected: false,
 		},
-	])("applies the last matching globstar rule for $path", ({ path, expected }) => {
+	])("excludes matching negative globstar rules for $path", ({ path, expected }) => {
 		const matcher = DPath.createMatcher([
 			"ignored/**",
 			"!ignored/public/**",
@@ -515,13 +568,13 @@ describe("createMatcher", () => {
 	it.each([
 		{
 			path: "index.ts",
-			expected: true,
+			expected: false,
 		},
 		{
 			path: "other.ts",
 			expected: true,
 		},
-	])("applies the last matching rule for $path", ({ path, expected }) => {
+	])("keeps exclusions despite later positive rules for $path", ({ path, expected }) => {
 		const matcher = DPath.createMatcher([
 			"*.ts",
 			"!index.ts",
@@ -559,13 +612,13 @@ describe("createMatcher", () => {
 		},
 		{
 			path: "dist/public/private",
-			expected: true,
+			expected: false,
 		},
 		{
 			path: "dist/public/private/key.txt",
-			expected: true,
+			expected: false,
 		},
-	])("supports negative rules and reinclusions for $path", ({ path, expected }) => {
+	])("keeps directory exclusions despite more specific positive rules for $path", ({ path, expected }) => {
 		const matcher = DPath.createMatcher([
 			"dist/",
 			"!dist/index.js",
@@ -835,7 +888,7 @@ describe("createMatcher", () => {
 		},
 		{
 			path: "src/public/index.ts",
-			expected: true,
+			expected: false,
 		},
 		{
 			path: "/src/private/key.ts",
@@ -843,13 +896,13 @@ describe("createMatcher", () => {
 		},
 		{
 			path: "/src/private/public/index.ts",
-			expected: true,
+			expected: false,
 		},
 		{
 			path: "src/private/public/index.ts",
 			expected: false,
 		},
-	])("preserves path references in exclusions and reinclusions for $path", ({ path, expected }) => {
+	])("preserves path references when exclusions override positive rules for $path", ({ path, expected }) => {
 		const matcher = DPath.createMatcher([
 			"**",
 			"!./src/**",

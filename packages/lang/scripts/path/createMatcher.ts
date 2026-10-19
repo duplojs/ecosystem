@@ -1,11 +1,8 @@
+import * as DArray from "@scripts/array";
+import * as DString from "@scripts/string";
 import type { Path } from "./constraints";
 
 export type PathMatcher = (path: string & Path) => boolean;
-
-interface PatternRule {
-	regex: RegExp;
-	negative: boolean;
-}
 
 const regexSpecialCharacters = /[\\^$.*+?()[\]{}|]/g;
 
@@ -29,7 +26,8 @@ const posixClassByName: Readonly<Record<string, string>> = {
 export function createMatcher(
 	patterns: string | readonly string[],
 ): PathMatcher {
-	const rules: PatternRule[] = [];
+	let positiveRules: readonly RegExp[] = [];
+	let negativeRules: readonly RegExp[] = [];
 	const patternList: readonly string[] = Array.isArray(patterns)
 		? patterns
 		: [patterns];
@@ -214,21 +212,35 @@ export function createMatcher(
 		}
 
 		source += "(?=$|/)";
-		rules.push({
-			regex: new RegExp(source),
-			negative,
-		});
+		const regex = new RegExp(source);
+
+		if (negative) {
+			negativeRules = DArray.push(negativeRules, regex);
+		} else {
+			positiveRules = DArray.push(positiveRules, regex);
+		}
 	}
 
 	return (path: string & Path): boolean => {
 		let selected = false;
 
-		for (const rule of rules) {
-			if (rule.regex.test(path)) {
-				selected = !rule.negative;
+		for (const rule of positiveRules) {
+			if (DString.test(path, rule)) {
+				selected = true;
+				break;
 			}
 		}
 
-		return selected;
+		if (!selected) {
+			return false;
+		}
+
+		for (const rule of negativeRules) {
+			if (DString.test(path, rule)) {
+				return false;
+			}
+		}
+
+		return true;
 	};
 }
