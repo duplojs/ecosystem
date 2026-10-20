@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@duplojs-v1/lang": "workspace:*",
-    "vite": "8.3.0",
     "vue": ">=3.5.42 <4.0.0"
   }
 }

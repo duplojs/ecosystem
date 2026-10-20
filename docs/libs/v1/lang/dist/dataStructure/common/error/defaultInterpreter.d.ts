@@ -25,9 +25,11 @@ export declare const defaultErrorInterpreterDataStructureDictionary: {
     readonly "@DuplojsLangDataStructure/between-than-constraint": (source: import('../..').BetweenThanConstraint<number, number>) => string;
     readonly "@DuplojsLangDataStructure/between-than-or-equal-constraint": (source: import('../..').BetweenThanOrEqualConstraint<number, number>) => string;
     readonly "@DuplojsLangDataStructure/email-constraint": () => string;
+    readonly "@DuplojsLangDataStructure/ends-with-constraint": (source: import('../..').EndsWithConstraint<string>) => string;
     readonly "@DuplojsLangDataStructure/even-constraint": () => string;
     readonly "@DuplojsLangDataStructure/greater-than-constraint": (source: import('../..').GreaterThanConstraint<number>) => string;
     readonly "@DuplojsLangDataStructure/greater-than-or-equal-constraint": (source: import('../..').GreaterThanOrEqualConstraint<number>) => string;
+    readonly "@DuplojsLangDataStructure/include-constraint": (source: import('../..').IncludeConstraint<string>) => string;
     readonly "@DuplojsLangDataStructure/integer-constraint": () => string;
     readonly "@DuplojsLangDataStructure/less-than-constraint": (source: import('../..').LessThanConstraint<number>) => string;
     readonly "@DuplojsLangDataStructure/less-than-or-equal-constraint": (source: import('../..').LessThanOrEqualConstraint<number>) => string;
@@ -47,6 +49,7 @@ export declare const defaultErrorInterpreterDataStructureDictionary: {
     readonly "@DuplojsLangDataStructure/regex-constraint": (source: import('../..').RegexConstraint) => string;
     readonly "@DuplojsLangDataStructure/safe-constraint": () => string;
     readonly "@DuplojsLangDataStructure/segment-path-constraint": () => string;
+    readonly "@DuplojsLangDataStructure/starts-with-constraint": (source: import('../..').StartsWithConstraint<string>) => string;
     readonly "@DuplojsLangDataStructure/strict-negative-constraint": () => string;
     readonly "@DuplojsLangDataStructure/strict-positive-constraint": () => string;
     readonly "@DuplojsLangDataStructure/string-length-equal-constraint": (source: import('../..').StringLengthEqualConstraint<number>) => string;

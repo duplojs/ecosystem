@@ -55,5 +55,6 @@
     "./printer": {
       "types": "./dist/printer/index.d.ts"
     }
-  }
+  },
+  "dependencies": {}
 }

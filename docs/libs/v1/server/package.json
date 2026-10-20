@@ -21,7 +21,6 @@
     }
   },
   "dependencies": {
-    "@duplojs-v1/lang": "workspace:*",
-    "@types/node": "24.13.3"
+    "@duplojs-v1/lang": "workspace:*"
   }
 }

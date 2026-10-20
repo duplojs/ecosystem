@@ -9,7 +9,14 @@
     }
   },
   "dependencies": {
+    "@duplojs-v1/code-config": "workspace:*",
+    "@duplojs-v1/eslint": "workspace:*",
+    "@duplojs-v1/form": "workspace:*",
+    "@duplojs-v1/http": "workspace:*",
+    "@duplojs-v1/json-web-token": "workspace:*",
     "@duplojs-v1/lang": "workspace:*",
-    "@duplojs-v1/server": "workspace:*"
+    "@duplojs-v1/playwright": "workspace:*",
+    "@duplojs-v1/server": "workspace:*",
+    "@duplojs-v1/tools": "workspace:*"
   }
 }

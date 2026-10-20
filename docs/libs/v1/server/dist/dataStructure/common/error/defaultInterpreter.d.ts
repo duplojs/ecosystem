@@ -31,9 +31,11 @@ export declare const defaultErrorInterpreterDataStructureDictionary: {
     readonly "@DuplojsLangDataStructure/between-than-constraint": (source: import('@duplojs/lang/dataStructure').BetweenThanConstraint<number, number>) => string;
     readonly "@DuplojsLangDataStructure/between-than-or-equal-constraint": (source: import('@duplojs/lang/dataStructure').BetweenThanOrEqualConstraint<number, number>) => string;
     readonly "@DuplojsLangDataStructure/email-constraint": () => string;
+    readonly "@DuplojsLangDataStructure/ends-with-constraint": (source: import('@duplojs/lang/dataStructure').EndsWithConstraint<string>) => string;
     readonly "@DuplojsLangDataStructure/even-constraint": () => string;
     readonly "@DuplojsLangDataStructure/greater-than-constraint": (source: import('@duplojs/lang/dataStructure').GreaterThanConstraint<number>) => string;
     readonly "@DuplojsLangDataStructure/greater-than-or-equal-constraint": (source: import('@duplojs/lang/dataStructure').GreaterThanOrEqualConstraint<number>) => string;
+    readonly "@DuplojsLangDataStructure/include-constraint": (source: import('@duplojs/lang/dataStructure').IncludeConstraint<string>) => string;
     readonly "@DuplojsLangDataStructure/integer-constraint": () => string;
     readonly "@DuplojsLangDataStructure/less-than-constraint": (source: import('@duplojs/lang/dataStructure').LessThanConstraint<number>) => string;
     readonly "@DuplojsLangDataStructure/less-than-or-equal-constraint": (source: import('@duplojs/lang/dataStructure').LessThanOrEqualConstraint<number>) => string;
@@ -53,6 +55,7 @@ export declare const defaultErrorInterpreterDataStructureDictionary: {
     readonly "@DuplojsLangDataStructure/regex-constraint": (source: import('@duplojs/lang/dataStructure').RegexConstraint) => string;
     readonly "@DuplojsLangDataStructure/safe-constraint": () => string;
     readonly "@DuplojsLangDataStructure/segment-path-constraint": () => string;
+    readonly "@DuplojsLangDataStructure/starts-with-constraint": (source: import('@duplojs/lang/dataStructure').StartsWithConstraint<string>) => string;
     readonly "@DuplojsLangDataStructure/strict-negative-constraint": () => string;
     readonly "@DuplojsLangDataStructure/strict-positive-constraint": () => string;
     readonly "@DuplojsLangDataStructure/string-length-equal-constraint": (source: import('@duplojs/lang/dataStructure').StringLengthEqualConstraint<number>) => string;

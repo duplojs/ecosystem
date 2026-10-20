@@ -7,14 +7,14 @@ import { snapshotDist } from "./snapshotDist";
 await DSCommand.exec(
 	{
 		displayName: "duplojs-snapshot-dist",
-		description: "Copy declaration files into existing snapshot package folders.",
+		description: "Create or update declaration snapshots and their package manifests.",
 		options: [
 			DSCommand.createOption(
 				"output",
-				DSDataStructure.folder([DSDataStructure.folderExist()]),
+				DSDataStructure.folder(),
 				{
 					required: true,
-					description: "Existing version folder containing the snapshot packages.",
+					description: "Version folder to create or update (for example ./libs/v1).",
 				},
 			),
 			DSCommand.createOption(
