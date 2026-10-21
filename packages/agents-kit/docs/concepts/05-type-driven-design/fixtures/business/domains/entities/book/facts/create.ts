@@ -6,6 +6,7 @@ export type CreateBookFact = DModeling.Fact<
 	"CreateBook",
 	{
 		id: Book.Id;
+		title: Book.Title;
 		state: Book.AvailableState;
 	}
 >;
