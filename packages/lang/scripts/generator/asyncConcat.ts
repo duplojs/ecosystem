@@ -1,18 +1,20 @@
 export function asyncConcat<
+	const GenericItemFrom extends unknown,
 	const GenericItem extends unknown,
 >(
 	items: AsyncIterable<GenericItem> | Iterable<GenericItem>,
 ): (
-	iterator: AsyncIterable<GenericItem> | Iterable<GenericItem>,
-) => AsyncGenerator<GenericItem, unknown, unknown>;
+	iterator: AsyncIterable<GenericItemFrom> | Iterable<GenericItemFrom>,
+) => AsyncGenerator<GenericItem | GenericItemFrom, unknown, unknown>;
 
 export function asyncConcat<
+	const GenericItemFrom extends unknown,
 	const GenericItem extends unknown,
 >(
-	iterator: AsyncIterable<GenericItem> | Iterable<GenericItem>,
+	iterator: AsyncIterable<GenericItemFrom> | Iterable<GenericItemFrom>,
 	items: AsyncIterable<GenericItem> | Iterable<GenericItem>,
 	...itemsRest: (AsyncIterable<GenericItem> | Iterable<GenericItem>)[]
-): AsyncGenerator<GenericItem, unknown, unknown>;
+): AsyncGenerator<GenericItem | GenericItemFrom, unknown, unknown>;
 
 export function asyncConcat(
 	...args:

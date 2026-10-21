@@ -7,7 +7,18 @@ export function getParentFolderPath<
 	GenericPath extends string & (Path | Absolute),
 >(
 	path: GenericPath,
-): (string & Path) | null;
+): (
+	| (
+		& string
+		& Path
+		& (
+			GenericPath extends Absolute
+				? Absolute
+				: unknown
+		)
+	)
+	| null
+);
 
 export function getParentFolderPath(
 	path: string,

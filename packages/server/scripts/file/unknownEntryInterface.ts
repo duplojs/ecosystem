@@ -11,7 +11,6 @@ export type EntryPath = (
 	& (
 		| DPath.Path
 		| DPath.Absolute
-		| DPath.Segment
 	)
 );
 
@@ -22,7 +21,7 @@ export interface UnknownEntryInterface<
 	> {
 	path: GenericPath & DPath.Path;
 	getName(): (string & DPath.Segment & DPath.Path) | null;
-	getParentPath(): (string & DPath.Path) | null;
+	getParentPath(): ReturnType<typeof DPath.getParentFolderPath<GenericPath>>;
 	stat(): Promise<StatResult>;
 	exist(): Promise<ExistsResult>;
 }

@@ -26,7 +26,7 @@ export interface FileInterface<
 	getName(): (string & DPath.Segment & DPath.Path) | null;
 	getMimeType(): string | null;
 	getExtension(params?: DPath.GetExtensionNameParams): (string & DPath.Segment & DPath.Path) | null;
-	getParentPath(): (string & DPath.Path) | null;
+	getParentPath(): ReturnType<typeof DPath.getParentFolderPath<GenericPath>>;
 	rename(newName: string & DPath.Segment): Promise<FileInterfaceRenameResult>;
 	relocate(parentPath: string & DPath.Path): Promise<FileInterfaceRelocateResult>;
 	move(newPath: string & DPath.Path): Promise<FileInterfaceMoveResult>;

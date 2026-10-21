@@ -1,6 +1,6 @@
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
-import type * as DCommon from "@duplojs/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 import { DSFile, setEnvironment } from "@scripts";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 
@@ -111,5 +111,85 @@ describe("unknownEntryInterface", () => {
 		expect(DSFile.isUnknownEntryInterfaceFromUnknown(folder)).toBe(false);
 		expect(DSFile.isUnknownEntryInterfaceFromUnknown({})).toBe(false);
 		expect(DSFile.isUnknownEntryInterfaceFromUnknown(null)).toBe(false);
+	});
+
+	it("keeps the parent relative when only the path constraint is known", () => {
+		const path: string & DPath.Path = DCommon.infer("alpha/entry");
+		const entry = DSFile.createUnknownEntryInterface(path);
+		const result = entry.getParentPath();
+
+		expect(result).toBe("alpha");
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			(string & DPath.Path) | null,
+			"strict"
+		>;
+	});
+
+	it.each([
+		{
+			input: "/alpha/entry",
+			expected: "/alpha",
+		},
+		{
+			input: "/entry",
+			expected: "/",
+		},
+		{
+			input: "/",
+			expected: null,
+		},
+	] as const)("preserves an absolute-only parent constraint for $input", ({ input, expected }) => {
+		const path: string & DPath.Absolute = DCommon.infer(input);
+		const entry = DSFile.createUnknownEntryInterface(path);
+		const result = entry.getParentPath();
+
+		expect(entry.path).toBe(input);
+		expect(result).toBe(expected);
+
+		type _CheckPath = DCommon.ExpectType<typeof entry.path, string & DPath.Absolute & DPath.Path, "strict">;
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			(string & DPath.Path & DPath.Absolute) | null,
+			"strict"
+		>;
+	});
+
+	it("preserves the absolute parent constraint when both path constraints are known", () => {
+		const path: string & DPath.Path & DPath.Absolute = DCommon.infer("/alpha/entry");
+		const entry = DSFile.createUnknownEntryInterface(path);
+		const result = entry.getParentPath();
+
+		expect(result).toBe("/alpha");
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			(string & DPath.Path & DPath.Absolute) | null,
+			"strict"
+		>;
+	});
+
+	it("does not guarantee an absolute parent for the default entry path type", () => {
+		const path: DSFile.EntryPath = DCommon.infer("alpha/entry");
+		const entry = DSFile.createUnknownEntryInterface(path);
+		const result = entry.getParentPath();
+
+		expect(result).toBe("alpha");
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			(string & DPath.Path) | null,
+			"strict"
+		>;
+	});
+
+	it("requires a path or absolute constraint instead of a segment alone", () => {
+		const segment: string & DPath.Segment = DCommon.infer("entry");
+
+		// @ts-expect-error a segment alone does not satisfy EntryPath.
+		DSFile.createUnknownEntryInterface(segment);
+		// @ts-expect-error an unvalidated string does not satisfy EntryPath.
+		DSFile.createUnknownEntryInterface("alpha/entry");
 	});
 });

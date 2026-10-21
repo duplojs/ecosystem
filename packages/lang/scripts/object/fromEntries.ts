@@ -2,7 +2,7 @@ import type * as DCommon from "@scripts/common";
 
 type FromEntriesOutput<
 	GenericEntry extends DCommon.ObjectEntry,
-> = DCommon.UnionContain<DCommon.ObjectKey, GenericEntry[0]> extends true
+> = DCommon.UnionContain<DCommon.ObjectKey, DCommon.RemoveConstraint<GenericEntry[0]>> extends true
 	? DCommon.SimplifyTopLevel<{
 		[Entry in GenericEntry as Entry[0]]: Entry[1]
 	}>

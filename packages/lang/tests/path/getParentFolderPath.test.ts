@@ -1,4 +1,5 @@
-import { DCommon, DPath, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPath from "@scripts/path";
 
 describe("getParentFolderPath", () => {
 	it("returns the parent folder for relative paths", () => {
@@ -60,7 +61,7 @@ describe("getParentFolderPath", () => {
 
 		expect(result).toBe("alpha/beta");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			(string & DPath.Path) | null,
 			"strict"
@@ -76,9 +77,9 @@ describe("getParentFolderPath", () => {
 
 		expect(result).toBe("/alpha/beta");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			(string & DPath.Path) | null,
+			(string & DPath.Path & DPath.Absolute) | null,
 			"strict"
 		>;
 	});
@@ -93,14 +94,66 @@ describe("getParentFolderPath", () => {
 	it("can be used directly in a pipe", () => {
 		const path: string & DPath.Path = DCommon.infer("alpha/beta");
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			path,
 			DPath.getParentFolderPath,
 		);
 
 		expect(result).toBe("alpha");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			(string & DPath.Path) | null,
+			"strict"
+		>;
+	});
+
+	it.each([
+		{
+			input: "/alpha/beta",
+			expected: "/alpha",
+		},
+		{
+			input: "/alpha",
+			expected: "/",
+		},
+		{
+			input: "/",
+			expected: null,
+		},
+	] as const)("preserves the absolute constraint for $input without a path constraint", ({ input, expected }) => {
+		const path: string & DPath.Absolute = DCommon.infer(input);
+		const result = DPath.getParentFolderPath(path);
+
+		expect(result).toBe(expected);
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			(string & DPath.Path & DPath.Absolute) | null,
+			"strict"
+		>;
+	});
+
+	it("preserves the absolute constraint in a pipe", () => {
+		const path: string & DPath.Absolute = DCommon.infer("/alpha/beta");
+		const result = DCommon.pipe(path, DPath.getParentFolderPath);
+
+		expect(result).toBe("/alpha");
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			(string & DPath.Path & DPath.Absolute) | null,
+			"strict"
+		>;
+	});
+
+	it("does not guarantee an absolute parent for a union of path constraints", () => {
+		const path = DPath.declarePath("alpha/beta") as string & (DPath.Path | DPath.Absolute);
+		const result = DPath.getParentFolderPath(path);
+
+		expect(result).toBe("alpha");
+
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			(string & DPath.Path) | null,
 			"strict"
