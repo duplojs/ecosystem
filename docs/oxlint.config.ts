@@ -52,6 +52,12 @@ export default oxlint.defineConfig({
 				],
 			},
 		}),
+		{
+			files: ["examples/**/*.ts"],
+			rules: {
+				"@stylistic/no-multiple-empty-lines": "off",
+			},
+		},
 	],
 	ignorePatterns: [
 		".vitepress/cache/**",
