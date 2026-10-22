@@ -1,4 +1,20 @@
 import type * as DArray from "@scripts/array";
+import * as DNumber from "@scripts/number";
+
+type ChunkOutput<
+	GenericItem extends unknown,
+	GenericSize extends number,
+> = Generator<
+	& readonly GenericItem[]
+	& DArray.MinElements<1>
+	& (
+		DNumber.IsPositiveInteger<GenericSize> extends true
+			? DArray.MaxElements<GenericSize>
+			: unknown
+	),
+	unknown,
+	unknown
+>;
 
 export function chunk<
 	const GenericItem extends unknown,
@@ -7,17 +23,7 @@ export function chunk<
 	size: GenericSize,
 ): (
 	iterator: Iterable<GenericItem>,
-) => Generator<
-	& readonly GenericItem[]
-	& DArray.MinElements<1>
-	& (
-		number extends GenericSize
-			? unknown
-			: DArray.MaxElements<GenericSize>
-	),
-	unknown,
-	unknown
->;
+) => ChunkOutput<GenericItem, GenericSize>;
 
 export function chunk<
 	const GenericItem extends unknown,
@@ -25,17 +31,7 @@ export function chunk<
 >(
 	iterator: Iterable<GenericItem>,
 	size: GenericSize,
-): Generator<
-	& readonly GenericItem[]
-	& DArray.MinElements<1>
-	& (
-		number extends GenericSize
-			? unknown
-			: DArray.MaxElements<GenericSize>
-	),
-	unknown,
-	unknown
->;
+): ChunkOutput<GenericItem, GenericSize>;
 
 export function chunk(
 	...args:
@@ -49,14 +45,19 @@ export function chunk(
 	}
 
 	const [iterator, size] = args;
+	const roundedSize = Math.round(size);
 
 	return (function *() {
+		if (!DNumber.isStrictPositive(roundedSize)) {
+			return;
+		}
+
 		let buffer: unknown[] = [];
 
 		for (const item of iterator) {
 			buffer.push(item);
 
-			if (buffer.length === size) {
+			if (buffer.length === roundedSize) {
 				yield buffer;
 				buffer = [];
 			}

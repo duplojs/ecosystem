@@ -1,4 +1,21 @@
+import * as DNumber from "@scripts/number";
 import { type MaxElements, type MinElements } from "./constraints";
+
+type ChunkOutput<
+	GenericArray extends readonly unknown[],
+	GenericSize extends number,
+> = Extract<
+	readonly (
+		& readonly GenericArray[number][]
+		& MinElements<1>
+		& (
+			DNumber.IsPositiveInteger<GenericSize> extends true
+				? MaxElements<GenericSize>
+				: unknown
+		)
+	)[],
+	any
+>;
 
 export function chunk<
 	GenericArray extends readonly unknown[],
@@ -7,15 +24,7 @@ export function chunk<
 	size: GenericSize,
 ): (
 	array: GenericArray,
-) => readonly (
-	& readonly GenericArray[number][]
-	& MinElements<1>
-	& (
-		number extends GenericSize
-			? unknown
-			: MaxElements<GenericSize>
-	)
-)[];
+) => ChunkOutput<GenericArray, GenericSize>;
 
 export function chunk<
 	GenericArray extends readonly unknown[],
@@ -23,15 +32,7 @@ export function chunk<
 >(
 	array: GenericArray,
 	size: GenericSize,
-): readonly (
-	& readonly GenericArray[number][]
-	& MinElements<1>
-	& (
-		number extends GenericSize
-			? unknown
-			: MaxElements<GenericSize>
-	)
-)[];
+): ChunkOutput<GenericArray, GenericSize>;
 
 export function chunk(
 	...args:
@@ -45,11 +46,16 @@ export function chunk(
 	}
 
 	const [array, size] = args;
+	const roundedSize = Math.round(size);
+
+	if (!DNumber.isStrictPositive(roundedSize)) {
+		return [];
+	}
 
 	const result = [];
 
-	for (let index = 0; index < array.length; index += size) {
-		result.push(array.slice(index, index + size));
+	for (let index = 0; index < array.length; index += roundedSize) {
+		result.push(array.slice(index, index + roundedSize));
 	}
 
 	return result;
