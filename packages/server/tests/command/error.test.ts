@@ -1,6 +1,7 @@
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
+import * as DModeling from "@duplojs/lang/modeling";
 import { DSCommand } from "@scripts";
 
 describe("error", () => {
@@ -23,6 +24,8 @@ describe("error", () => {
 		expect(error.addRequiredArgumentIssue("id")).toBe(DSCommand.SymbolCommandError);
 		expect(error.addDataStructureArgumentIssue("age", "old", dataStructureError)).toBe(DSCommand.SymbolCommandError);
 		expect(error.addTooMuchCommandArgumentIssue(1, 3)).toBe(DSCommand.SymbolCommandError);
+		expect(error.addUnknownOptionIssue(["--prot", "-x"])).toBe(DSCommand.SymbolCommandError);
+		expect(error.addUnknownSubCommandIssue("chlid")).toBe(DSCommand.SymbolCommandError);
 
 		expect(error.currentPath).toEqual(["root", "child"]);
 		expect(error.issues).toEqual([
@@ -63,6 +66,14 @@ describe("error", () => {
 				receive: 3,
 				path: "root.child",
 			}),
+			DModeling.taggedObject("UnknownOptionIssue", {
+				optionTokens: ["--prot", "-x"],
+				path: "root.child",
+			}) satisfies DSCommand.UnknownOptionIssue,
+			DModeling.taggedObject("UnknownSubCommandIssue", {
+				subCommandName: "chlid",
+				path: "root.child",
+			}) satisfies DSCommand.UnknownSubCommandIssue,
 		]);
 	});
 
@@ -138,6 +149,8 @@ describe("error", () => {
 		error.addRequiredOptionValueIssue("config");
 		error.addUnexpectedOptionValueIssue("verbose", "true");
 		error.addTooMuchCommandArgumentIssue(1, 2);
+		error.addUnknownOptionIssue(["--prot", "--hots=localhost", "-x"]);
+		error.addUnknownSubCommandIssue("chlid");
 
 		const result = DSCommand.interpretErrorIssues(error.issues, dataStructureErrorInterpreter);
 
@@ -152,6 +165,11 @@ describe("error", () => {
 		expect(result).toContain("Unexpected Value At This Option");
 		expect(result).toContain("Too Much Arguments");
 		expect(result).toContain("expect: 1 receive: 2");
+		expect(result).toContain("Unknown Option");
+		expect(result).toContain("--prot, --hots=localhost, -x");
+		expect(result).toContain("SUB-COMMAND:");
+		expect(result).toContain("Unknown Sub-command");
+		expect(result).toContain("chlid");
 		expect(result).toContain("invalid value");
 	});
 

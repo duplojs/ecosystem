@@ -4,7 +4,7 @@ import * as DArray from "@duplojs/lang/array";
 import * as DGenerator from "@duplojs/lang/generator";
 import * as DObject from "@duplojs/lang/object";
 import { createKind } from "./kind";
-import type { Option } from "./options";
+import { isOptionToken, type Option } from "./options";
 import { SymbolCommandError, type Error } from "./error";
 import { logCommandHelp, helpOption } from "./help";
 import { type Argument } from "./argument";
@@ -225,6 +225,12 @@ export function create(
 				return SymbolCommandError;
 			}
 
+			const unknownOptions = DArray.filter(commandOptions.restArgs, isOptionToken);
+
+			if (unknownOptions.length > 0) {
+				return error.addUnknownOptionIssue(unknownOptions);
+			}
+
 			if (self.subject?.type === "argument") {
 				if (self.subject.args.length < commandOptions.restArgs.length) {
 					return error.addTooMuchCommandArgumentIssue(
@@ -271,6 +277,10 @@ export function create(
 				});
 			} else {
 				if (commandOptions.restArgs.length > 0) {
+					if (self.subject?.type === "subCommand") {
+						return error.addUnknownSubCommandIssue(commandOptions.restArgs[0]!);
+					}
+
 					return error.addTooMuchCommandArgumentIssue(
 						0,
 						commandOptions.restArgs.length,

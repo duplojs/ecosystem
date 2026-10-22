@@ -1,5 +1,6 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DModeling from "@duplojs/lang/modeling";
 import { DSCommand, TESTImplementation, setEnvironment } from "@scripts";
 
 describe("create", () => {
@@ -223,7 +224,7 @@ describe("create", () => {
 		expect(error.issues).toEqual([]);
 	});
 
-	it("reports unexpected arguments when no sub-command matches", async() => {
+	it("reports an unknown sub-command when no sub-command matches", async() => {
 		setEnvironment("TEST");
 		const error = DSCommand.createError("root");
 		const child = DSCommand.create("child", () => undefined);
@@ -233,12 +234,198 @@ describe("create", () => {
 
 		expect(error.currentPath).toEqual(["root"]);
 		expect(error.issues).toEqual([
-			expect.objectContaining({
-				expect: 0,
-				receive: 1,
+			DModeling.taggedObject("UnknownSubCommandIssue", {
+				subCommandName: "unknown",
 				path: "root",
 			}),
 		]);
+	});
+
+	it.each([
+		{
+			args: ["--prot"],
+			optionTokens: ["--prot"],
+		},
+		{
+			args: ["--prot", "80", "--hots=localhost", "-x"],
+			optionTokens: ["--prot", "--hots=localhost", "-x"],
+		},
+	])("reports unknown options in $args", async({ args, optionTokens }) => {
+		const executeSpy = vi.fn();
+		const error = DSCommand.createError("root");
+		const command = DSCommand.create("root", {
+			options: [DSCommand.createOption("port", DDataStructure.number())],
+		}, executeSpy);
+
+		await expect(command.execute(args, error)).resolves.toBe(DSCommand.SymbolCommandError);
+
+		expect(error.issues).toEqual([
+			DModeling.taggedObject("UnknownOptionIssue", {
+				optionTokens,
+				path: "root",
+			}),
+		]);
+		expect(executeSpy).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		{
+			args: ["--prot"],
+			optionTokens: ["--prot"],
+		},
+		{
+			args: ["42", "--prot"],
+			optionTokens: ["--prot"],
+		},
+		{
+			args: ["--prot", "42", "--hots=localhost"],
+			optionTokens: ["--prot", "--hots=localhost"],
+		},
+	])("reports unknown options before parsing positional arguments in $args", async({ args, optionTokens }) => {
+		const executeSpy = vi.fn();
+		const error = DSCommand.createError("root");
+		const argument = DSCommand.createArgument("id", DDataStructure.number());
+		const argumentSpy = vi.spyOn(argument, "execute");
+		const command = DSCommand.create("root", { subjects: [argument] }, executeSpy);
+
+		await expect(command.execute(args, error)).resolves.toBe(DSCommand.SymbolCommandError);
+
+		expect(error.issues).toEqual([
+			DModeling.taggedObject("UnknownOptionIssue", {
+				optionTokens,
+				path: "root",
+			}),
+		]);
+		expect(argumentSpy).not.toHaveBeenCalled();
+		expect(executeSpy).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		{ args: ["--port=80", "42"] },
+		{ args: ["-p", "80", "42"] },
+		{ args: ["42", "--port", "80"] },
+	])("preserves recognized options and aliases in $args", async({ args }) => {
+		const executeSpy = vi.fn();
+		const error = DSCommand.createError("root");
+		const command = DSCommand.create("root", {
+			options: [DSCommand.createOption("port", DDataStructure.number(), { aliases: ["p"] })],
+			subjects: [DSCommand.createArgument("id", DDataStructure.number())],
+		}, executeSpy);
+
+		await expect(command.execute(args, error)).resolves.toBeUndefined();
+
+		expect(error.issues).toEqual([]);
+		expect(executeSpy).toHaveBeenCalledExactlyOnceWith({
+			options: { port: 80 },
+			args: { id: 42 },
+		});
+	});
+
+	it.each([
+		{
+			args: ["chlid"],
+			subCommandName: "chlid",
+			path: "root",
+		},
+		{
+			args: ["child", "garndchild"],
+			subCommandName: "garndchild",
+			path: "root.child",
+		},
+		{
+			args: ["child", "grandchild", "laef"],
+			subCommandName: "laef",
+			path: "root.child.grandchild",
+		},
+		{
+			args: ["prefix", "child"],
+			subCommandName: "prefix",
+			path: "root",
+		},
+		{
+			args: ["--port=80", "child"],
+			subCommandName: "child",
+			path: "root",
+		},
+	])("reports the unknown sub-command at its hierarchy level in $args", async({ args, subCommandName, path }) => {
+		const executeSpy = vi.fn();
+		const leaf = DSCommand.create("leaf", executeSpy);
+		const grandchild = DSCommand.create("grandchild", { subjects: [leaf] }, executeSpy);
+		const child = DSCommand.create("child", { subjects: [grandchild] }, executeSpy);
+		const root = DSCommand.create("root", {
+			options: [DSCommand.createOption("port", DDataStructure.number())],
+			subjects: [child],
+		}, executeSpy);
+		const error = DSCommand.createError("root");
+
+		await expect(root.execute(args, error)).resolves.toBe(DSCommand.SymbolCommandError);
+
+		expect(error.issues).toEqual([
+			DModeling.taggedObject("UnknownSubCommandIssue", {
+				subCommandName,
+				path,
+			}),
+		]);
+		expect(executeSpy).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		{
+			args: ["--prot"],
+			path: "root",
+		},
+		{
+			args: ["child", "--prot"],
+			path: "root.child",
+		},
+	])("reports unknown options on commands with sub-commands in $args", async({ args, path }) => {
+		const executeSpy = vi.fn();
+		const leaf = DSCommand.create("leaf", executeSpy);
+		const child = DSCommand.create("child", { subjects: [leaf] }, executeSpy);
+		const root = DSCommand.create("root", { subjects: [child] }, executeSpy);
+		const error = DSCommand.createError("root");
+
+		await expect(root.execute(args, error)).resolves.toBe(DSCommand.SymbolCommandError);
+
+		expect(error.issues).toEqual([
+			DModeling.taggedObject("UnknownOptionIssue", {
+				optionTokens: ["--prot"],
+				path,
+			}),
+		]);
+		expect(executeSpy).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		{
+			args: [],
+			path: ["root"],
+		},
+		{
+			args: ["child"],
+			path: ["root", "child"],
+		},
+		{
+			args: ["child", "grandchild"],
+			path: ["root", "child", "grandchild"],
+		},
+		{
+			args: ["child", "grandchild", "leaf"],
+			path: ["root", "child", "grandchild", "leaf"],
+		},
+	])("executes valid sub-commands and parents without a sub-command in $args", async({ args, path }) => {
+		const executeSpy = vi.fn();
+		const leaf = DSCommand.create("leaf", executeSpy);
+		const grandchild = DSCommand.create("grandchild", { subjects: [leaf] }, executeSpy);
+		const child = DSCommand.create("child", { subjects: [grandchild] }, executeSpy);
+		const root = DSCommand.create("root", { subjects: [child] }, executeSpy);
+		const error = DSCommand.createError("root");
+
+		await expect(root.execute(args, error)).resolves.toBeUndefined();
+
+		expect(error.issues).toEqual([]);
+		expect(error.currentPath).toEqual(path);
+		expect(executeSpy).toHaveBeenCalledExactlyOnceWith({ options: {} });
 	});
 
 	it("reports unexpected arguments when the command has no subject", async() => {
@@ -249,14 +436,19 @@ describe("create", () => {
 		await expect(command.execute(["extra", "args"], error)).resolves.toBe(DSCommand.SymbolCommandError);
 
 		expect(error.issues).toEqual([
-			expect.objectContaining({
+			DModeling.taggedObject("TooMuchCommandArgumentIssue", {
 				expect: 0,
 				receive: 2,
+				path: "root",
 			}),
 		]);
 	});
 
-	it("logs help and skips the execute handler", async() => {
+	it.each([
+		{ args: ["-h"] },
+		{ args: ["--help"] },
+		{ args: ["--prot", "--help"] },
+	])("logs help and skips the execute handler with $args", async({ args }) => {
 		setEnvironment("TEST");
 		const executeSpy = vi.fn();
 		const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
@@ -271,8 +463,11 @@ describe("create", () => {
 			executeSpy,
 		);
 
-		await expect(command.execute(["-h"], DSCommand.createError("root"))).resolves.toBeUndefined();
+		const error = DSCommand.createError("root");
 
+		await expect(command.execute(args, error)).resolves.toBeUndefined();
+
+		expect(error.issues).toEqual([]);
 		expect(executeSpy).not.toHaveBeenCalled();
 		expect(consoleLogSpy).toHaveBeenCalledTimes(1);
 		expect(String(consoleLogSpy.mock.calls[0]?.[0])).toContain("Root command.");
@@ -414,20 +609,20 @@ describe("create", () => {
 		{
 			scenario: "a required argument is missing",
 			args: ["only-one"],
-			issue: {
+			issue: DModeling.taggedObject("RequiredArgumentIssue", {
 				argumentName: "second",
 				data: undefined,
 				path: "root",
-			},
+			}),
 		},
 		{
 			scenario: "too many arguments are provided",
 			args: ["first", "second", "extra"],
-			issue: {
+			issue: DModeling.taggedObject("TooMuchCommandArgumentIssue", {
 				expect: 2,
 				receive: 3,
 				path: "root",
-			},
+			}),
 		},
 	])("returns a command error when $scenario", async({ args, issue }) => {
 		setEnvironment("TEST");
@@ -447,7 +642,7 @@ describe("create", () => {
 		await expect(command.execute(args, error)).resolves.toBe(DSCommand.SymbolCommandError);
 
 		expect(executeSpy).not.toHaveBeenCalled();
-		expect(error.issues).toEqual([expect.objectContaining(issue)]);
+		expect(error.issues).toEqual([issue]);
 	});
 
 	it("returns a command error when an argument fails", async() => {

@@ -45,6 +45,16 @@ export interface CommandArgumentIssueBase {
 	readonly path: string;
 }
 
+export interface UnknownOptionIssue extends CommandArgumentIssueBase,
+	DModeling.ObjectTag<"UnknownOptionIssue"> {
+	readonly optionTokens: readonly string[];
+}
+
+export interface UnknownSubCommandIssue extends CommandArgumentIssueBase,
+	DModeling.ObjectTag<"UnknownSubCommandIssue"> {
+	readonly subCommandName: string;
+}
+
 export interface TooMuchCommandArgumentIssue extends CommandArgumentIssueBase,
 	DModeling.ObjectTag<"TooMuchCommandArgumentIssue"> {
 	readonly expect: number;
@@ -59,6 +69,8 @@ export type Issues = (
 	| RequiredArgumentIssue
 	| DataStructureArgumentIssue
 	| TooMuchCommandArgumentIssue
+	| UnknownOptionIssue
+	| UnknownSubCommandIssue
 );
 
 export const SymbolCommandError = Symbol.for("SymbolCommandError");
@@ -68,6 +80,12 @@ export interface Error {
 	readonly issues: readonly Issues[];
 	readonly currentPath: readonly string[];
 	pushPath(path: string): void;
+	addUnknownOptionIssue(
+		optionTokens: readonly string[],
+	): SymbolCommandError;
+	addUnknownSubCommandIssue(
+		subCommandName: string,
+	): SymbolCommandError;
 	addRequiredOptionIssue(
 		optionName: string,
 	): SymbolCommandError;
@@ -107,6 +125,36 @@ export function createError(
 		issues,
 		currentPath,
 		pushPath: (path) => void currentPath.push(path),
+		addUnknownOptionIssue: (
+			optionTokens,
+		) => {
+			issues.push(
+				DModeling.taggedObject(
+					"UnknownOptionIssue",
+					{
+						optionTokens,
+						path: DString.join(currentPath, "."),
+					},
+				),
+			);
+
+			return SymbolCommandError;
+		},
+		addUnknownSubCommandIssue: (
+			subCommandName,
+		) => {
+			issues.push(
+				DModeling.taggedObject(
+					"UnknownSubCommandIssue",
+					{
+						subCommandName,
+						path: DString.join(currentPath, "."),
+					},
+				),
+			);
+
+			return SymbolCommandError;
+		},
 		addRequiredOptionIssue: (
 			optionName,
 		) => {
@@ -267,6 +315,28 @@ export function interpretErrorIssues(
 			DArray.map(
 				issues,
 				DPattern.matchWithTaggedObject({
+					UnknownOptionIssue: ({ optionTokens }) => [
+						DPrinter.render(
+							[
+								DPrinter.indent(1),
+								DPrinter.colorizedBold("OPTION: ", "blue"),
+								DString.join(optionTokens, ", "),
+							],
+							"",
+						),
+						`${DPrinter.indent(1)}↳ Unknown Option`,
+					],
+					UnknownSubCommandIssue: ({ subCommandName }) => [
+						DPrinter.render(
+							[
+								DPrinter.indent(1),
+								DPrinter.colorizedBold("SUB-COMMAND: ", "cyan"),
+								subCommandName,
+							],
+							"",
+						),
+						`${DPrinter.indent(1)}↳ Unknown Sub-command`,
+					],
 					DataStructureArgumentIssue: ({ argumentName, dataStructureError }) => [
 						DPrinter.render(
 							[

@@ -8,6 +8,10 @@ import { type Error, SymbolCommandError } from "../error";
 export const optionKind = createKind("command-option");
 const regexOption = /^(?<dashes>-{1,2})(?<key>[A-Za-z0-9][A-Za-z0-9_-]*)(?:=(?<value>.*))?$/;
 
+export function isOptionToken(input: string): boolean {
+	return DString.test(input, regexOption);
+}
+
 export interface Option<
 	GenericName extends string = string,
 	GenericValue extends unknown = unknown,
@@ -151,7 +155,7 @@ export function constructOption(
 						if (result.value === undefined) {
 							const nextArg = args[result.index + 1];
 
-							if (nextArg === undefined || DString.test(nextArg, regexOption)) {
+							if (nextArg === undefined || isOptionToken(nextArg)) {
 								return {
 									value: undefined,
 									argumentRest: DArray.spliceDelete(args, result.index, 1),

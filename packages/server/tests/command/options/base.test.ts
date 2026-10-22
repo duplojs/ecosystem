@@ -2,6 +2,61 @@ import type * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
 import { DSCommand } from "@scripts";
 
+describe("isOptionToken", () => {
+	it.each([
+		{
+			input: "--port",
+			expected: true,
+		},
+		{
+			input: "--port=80",
+			expected: true,
+		},
+		{
+			input: "-p",
+			expected: true,
+		},
+		{
+			input: "-p=80",
+			expected: true,
+		},
+		{
+			input: "--some_option-name=",
+			expected: true,
+		},
+		{
+			input: "-42",
+			expected: true,
+		},
+		{
+			input: "port",
+			expected: false,
+		},
+		{
+			input: "80",
+			expected: false,
+		},
+		{
+			input: "-",
+			expected: false,
+		},
+		{
+			input: "--",
+			expected: false,
+		},
+		{
+			input: "---port",
+			expected: false,
+		},
+		{
+			input: "--_port",
+			expected: false,
+		},
+	])("recognizes $input as an option token: $expected", ({ input, expected }) => {
+		expect(DSCommand.isOptionToken(input)).toBe(expected);
+	});
+});
+
 describe("constructOption", () => {
 	it("binds function properties to the created option", () => {
 		interface CustomOption extends DCommon.Forward<
