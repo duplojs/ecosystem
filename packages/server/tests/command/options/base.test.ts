@@ -57,6 +57,86 @@ describe("isOptionToken", () => {
 	});
 });
 
+describe("findOptionToken", () => {
+	it.each([
+		{
+			args: [],
+			expected: null,
+		},
+		{
+			args: ["app", "--other", "---verbose"],
+			expected: null,
+		},
+		{
+			args: ["--v"],
+			expected: null,
+		},
+		{
+			args: ["--verbose"],
+			expected: {
+				key: "verbose",
+				value: undefined,
+				index: 0,
+			},
+		},
+		{
+			args: ["-verbose"],
+			expected: {
+				key: "verbose",
+				value: undefined,
+				index: 0,
+			},
+		},
+		{
+			args: ["app", "-v"],
+			expected: {
+				key: "v",
+				value: undefined,
+				index: 1,
+			},
+		},
+		{
+			args: ["--other", "--verbose=true"],
+			expected: {
+				key: "verbose",
+				value: "true",
+				index: 1,
+			},
+		},
+		{
+			args: ["--verbose="],
+			expected: {
+				key: "verbose",
+				value: "",
+				index: 0,
+			},
+		},
+		{
+			args: ["-v=a=b"],
+			expected: {
+				key: "v",
+				value: "a=b",
+				index: 0,
+			},
+		},
+		{
+			args: ["-v", "--verbose=true"],
+			expected: {
+				key: "v",
+				value: undefined,
+				index: 0,
+			},
+		},
+	])("finds the first matching option in $args", ({ args, expected }) => {
+		const result = DSCommand.findOptionToken(args, {
+			name: "verbose",
+			aliases: ["v"],
+		});
+
+		expect(result).toEqual(expected);
+	});
+});
+
 describe("constructOption", () => {
 	it("binds function properties to the created option", () => {
 		interface CustomOption extends DCommon.Forward<

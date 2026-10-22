@@ -149,6 +149,110 @@ describe("create", () => {
 		});
 	});
 
+	it.each([
+		{
+			args: ["--verbose", "app", "dist"],
+			verbose: true,
+		},
+		{
+			args: ["app", "--verbose", "dist"],
+			verbose: true,
+		},
+		{
+			args: ["app", "dist", "--verbose"],
+			verbose: true,
+		},
+		{
+			args: ["-v", "app", "dist"],
+			verbose: true,
+		},
+		{
+			args: ["app", "-v", "dist"],
+			verbose: true,
+		},
+		{
+			args: ["app", "dist"],
+			verbose: false,
+		},
+	])("preserves positional arguments around boolean flags in $args", async({ args, verbose }) => {
+		const executeSpy = vi.fn();
+		const error = DSCommand.createError("cli");
+		const build = DSCommand.create("build", {
+			options: [DSCommand.createBooleanOption("verbose", { aliases: ["v"] })],
+			subjects: [
+				DSCommand.createArgument("target", DDataStructure.string()),
+				DSCommand.createArgument("destination", DDataStructure.string()),
+			],
+		}, executeSpy);
+		const command = DSCommand.create("cli", { subjects: [build] }, vi.fn());
+
+		await expect(command.execute(["build", ...args], error)).resolves.toBeUndefined();
+
+		expect(error.issues).toEqual([]);
+		expect(error.currentPath).toEqual(["cli", "build"]);
+		expect(executeSpy).toHaveBeenCalledExactlyOnceWith({
+			options: { verbose },
+			args: {
+				target: "app",
+				destination: "dist",
+			},
+		});
+	});
+
+	it.each([
+		{ args: ["--verbose", "app", "--output", "dist", "--tags", "alpha,beta"] },
+		{ args: ["-v", "app", "-o=dist", "-t=alpha,beta"] },
+		{ args: ["--tags=alpha,beta", "--output=dist", "--verbose", "app"] },
+	])("combines boolean, simple and array options with positional arguments in $args", async({ args }) => {
+		const executeSpy = vi.fn();
+		const error = DSCommand.createError("build");
+		const command = DSCommand.create("build", {
+			options: [
+				DSCommand.createBooleanOption("verbose", { aliases: ["v"] }),
+				DSCommand.createOption("output", DDataStructure.string(), {
+					aliases: ["o"],
+					required: true,
+				}),
+				DSCommand.createArrayOption("tags", DDataStructure.string(), {
+					aliases: ["t"],
+					required: true,
+				}),
+			],
+			subjects: [DSCommand.createArgument("target", DDataStructure.string())],
+		}, executeSpy);
+
+		await expect(command.execute(args, error)).resolves.toBeUndefined();
+
+		expect(error.issues).toEqual([]);
+		expect(executeSpy).toHaveBeenCalledExactlyOnceWith({
+			options: {
+				verbose: true,
+				output: "dist",
+				tags: ["alpha", "beta"],
+			},
+			args: { target: "app" },
+		});
+	});
+
+	it("reports unknown options remaining after a boolean flag", async() => {
+		const executeSpy = vi.fn();
+		const error = DSCommand.createError("build");
+		const command = DSCommand.create("build", {
+			options: [DSCommand.createBooleanOption("verbose")],
+			subjects: [DSCommand.createArgument("target", DDataStructure.string())],
+		}, executeSpy);
+
+		await expect(command.execute(["--verbose", "app", "--other"], error)).resolves.toBe(DSCommand.SymbolCommandError);
+
+		expect(error.issues).toEqual([
+			DModeling.taggedObject("UnknownOptionIssue", {
+				optionTokens: ["--other"],
+				path: "build",
+			}),
+		]);
+		expect(executeSpy).not.toHaveBeenCalled();
+	});
+
 	it("executes when its optional argument is omitted", async() => {
 		setEnvironment("TEST");
 		const executeSpy = vi.fn();
@@ -447,6 +551,8 @@ describe("create", () => {
 	it.each([
 		{ args: ["-h"] },
 		{ args: ["--help"] },
+		{ args: ["--help", "app"] },
+		{ args: ["-h", "app"] },
 		{ args: ["--prot", "--help"] },
 	])("logs help and skips the execute handler with $args", async({ args }) => {
 		setEnvironment("TEST");

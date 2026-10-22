@@ -12,6 +12,41 @@ export function isOptionToken(input: string): boolean {
 	return DString.test(input, regexOption);
 }
 
+export function findOptionToken(
+	args: readonly string[],
+	option: Pick<Option, "name" | "aliases">,
+) {
+	return DArray.reduce(
+		args,
+		DArray.reduceFrom(null),
+		({ element, next, exit, index }) => {
+			const extractResult = DString.extract(element, regexOption);
+
+			if (!extractResult) {
+				return next(null);
+			}
+
+			const key = extractResult.namedGroups!.key!;
+
+			if (
+				option.name !== key
+				&& (
+					!DArray.includes(option.aliases, key)
+					|| extractResult.namedGroups?.dashes !== "-"
+				)
+			) {
+				return next(null);
+			}
+
+			return exit({
+				key,
+				value: extractResult.namedGroups?.value,
+				index,
+			});
+		},
+	);
+}
+
 export interface Option<
 	GenericName extends string = string,
 	GenericValue extends unknown = unknown,
@@ -114,35 +149,7 @@ export function constructOption(
 					args: readonly string[],
 					error: Error,
 				) => {
-					const result = DArray.reduce(
-						args,
-						DArray.reduceFrom(null),
-						({ element, next, exit, index }) => {
-							const extractResult = DString.extract(element, regexOption);
-
-							if (!extractResult) {
-								return next(null);
-							}
-
-							const result = {
-								key: extractResult.namedGroups!.key!,
-								value: extractResult.namedGroups?.value,
-								index,
-							};
-
-							if (
-								self.name !== result.key
-								&& (
-									!DArray.includes(self.aliases, result.key)
-									|| extractResult.namedGroups?.dashes !== "-"
-								)
-							) {
-								return next(null);
-							}
-
-							return exit(result);
-						},
-					);
+					const result = findOptionToken(args, self);
 
 					const { value, argumentRest } = DCommon.justExec(() => {
 						if (!result) {

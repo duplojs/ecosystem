@@ -1,4 +1,5 @@
 import type * as DCommon from "@duplojs/lang/common";
+import * as DModeling from "@duplojs/lang/modeling";
 import { DSCommand } from "@scripts";
 
 describe("createBooleanOption", () => {
@@ -17,53 +18,145 @@ describe("createBooleanOption", () => {
 		expect(option.name).toBe("verbose");
 		expect(option.description).toBe("Enable verbose logs.");
 		expect(option.aliases).toEqual(["v"]);
+		expect(DSCommand.optionKind.has(option)).toBe(true);
 		expect(DSCommand.booleanOptionKind.has(option)).toBe(true);
 	});
 
-	it("returns false when a boolean option is missing", async() => {
+	it("uses default metadata", () => {
 		const option = DSCommand.createBooleanOption("verbose");
-		const error = DSCommand.createError("root");
 
-		await expect(option.execute(["positional", "--other"], error)).resolves.toEqual({
-			result: false,
+		expect(option.description).toBeNull();
+		expect(option.aliases).toEqual([]);
+	});
+
+	it.each([
+		{
+			args: [],
+			expected: false,
+			argumentRest: [],
+		},
+		{
+			args: ["positional", "--other"],
+			expected: false,
 			argumentRest: ["positional", "--other"],
-		});
-		expect(error.issues).toEqual([]);
-	});
-
-	it("returns true when a boolean option is present", async() => {
-		const option = DSCommand.createBooleanOption("verbose");
-		const error = DSCommand.createError("root");
-
-		await expect(option.execute(["--verbose", "--rest"], error)).resolves.toEqual({
-			result: true,
+		},
+		{
+			args: ["--verbose"],
+			expected: true,
+			argumentRest: [],
+		},
+		{
+			args: ["-v"],
+			expected: true,
+			argumentRest: [],
+		},
+		{
+			args: ["--verbose", "app"],
+			expected: true,
+			argumentRest: ["app"],
+		},
+		{
+			args: ["app", "--verbose"],
+			expected: true,
+			argumentRest: ["app"],
+		},
+		{
+			args: ["app", "--verbose", "dist"],
+			expected: true,
+			argumentRest: ["app", "dist"],
+		},
+		{
+			args: ["app", "-v", "dist"],
+			expected: true,
+			argumentRest: ["app", "dist"],
+		},
+		{
+			args: ["--verbose", "--rest"],
+			expected: true,
 			argumentRest: ["--rest"],
-		});
-		expect(error.issues).toEqual([]);
-	});
-
-	it("returns true when a boolean alias is present", async() => {
+		},
+		{
+			args: ["--other", "--verbose"],
+			expected: true,
+			argumentRest: ["--other"],
+		},
+		{
+			args: ["--verbose", "--output", "dist"],
+			expected: true,
+			argumentRest: ["--output", "dist"],
+		},
+		{
+			args: ["--v"],
+			expected: false,
+			argumentRest: ["--v"],
+		},
+		{
+			args: ["--verbose", "-v", "app"],
+			expected: true,
+			argumentRest: ["-v", "app"],
+		},
+	])("parses $args without consuming other tokens", async({ args, expected, argumentRest }) => {
 		const option = DSCommand.createBooleanOption("verbose", {
 			aliases: ["v"],
 		});
 		const error = DSCommand.createError("root");
+		const originalArgs = [...args];
+		const result = await option.execute(args, error);
 
-		await expect(option.execute(["-v"], error)).resolves.toEqual({
-			result: true,
-			argumentRest: [],
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			{
+				result: boolean;
+				argumentRest: readonly string[];
+			} | DSCommand.SymbolCommandError,
+			"strict"
+		>;
+
+		expect(result).toEqual({
+			result: expected,
+			argumentRest,
+		});
+		expect(args).toEqual(originalArgs);
+		expect(error.issues).toEqual([]);
+	});
+
+	it("does not recognize an undeclared alias", async() => {
+		const option = DSCommand.createBooleanOption("verbose");
+		const error = DSCommand.createError("root");
+
+		await expect(option.execute(["-v", "app"], error)).resolves.toEqual({
+			result: false,
+			argumentRest: ["-v", "app"],
 		});
 		expect(error.issues).toEqual([]);
 	});
 
-	it("returns a command error when a boolean option receives a value", async() => {
-		const option = DSCommand.createBooleanOption("verbose");
+	it.each([
+		{
+			token: "--verbose=true",
+			value: "true",
+		},
+		{
+			token: "--verbose=",
+			value: "",
+		},
+		{
+			token: "-v=false",
+			value: "false",
+		},
+		{
+			token: "-v=",
+			value: "",
+		},
+	])("rejects the explicit value in $token", async({ token, value }) => {
+		const option = DSCommand.createBooleanOption("verbose", { aliases: ["v"] });
 		const error = DSCommand.createError("root");
 
-		await expect(option.execute(["--verbose=true"], error)).resolves.toBe(DSCommand.SymbolCommandError);
+		await expect(option.execute([token], error)).resolves.toBe(DSCommand.SymbolCommandError);
 		expect(error.issues).toEqual([
-			expect.objectContaining({
+			DModeling.taggedObject("UnexpectedOptionValueIssue", {
 				optionName: "verbose",
-				data: "true",
+				data: value,
 				path: "root",
 			}),
 		]);

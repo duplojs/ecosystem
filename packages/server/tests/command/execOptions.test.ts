@@ -42,6 +42,43 @@ describe("execOptions", () => {
 		expect(getProcessArgumentsSpy).toHaveBeenCalledTimes(1);
 	});
 
+	it.each([
+		{ args: ["--verbose", "app", "--output", "dist", "--tags", "alpha,beta"] },
+		{ args: ["-v", "app", "-o=dist", "-t=alpha,beta"] },
+	])("parses boolean flags and value options around unmatched arguments in $args", async({ args }) => {
+		setEnvironment("TEST");
+		TESTImplementation.set("getProcessArguments", vi.fn().mockReturnValue(args));
+
+		const result = await DSCommand.execOptions([
+			DSCommand.createBooleanOption("verbose", { aliases: ["v"] }),
+			DSCommand.createOption("output", DDataStructure.string(), {
+				aliases: ["o"],
+				required: true,
+			}),
+			DSCommand.createArrayOption("tags", DDataStructure.string(), {
+				aliases: ["t"],
+				required: true,
+			}),
+		]);
+		const options = DEither.unwrapByInformationOrThrow(result, "success");
+
+		type _CheckOptions = DCommon.ExpectType<
+			typeof options,
+			{
+				readonly verbose: boolean;
+				readonly output: string;
+				readonly tags: readonly string[];
+			},
+			"strict"
+		>;
+
+		expect(options).toEqual({
+			verbose: true,
+			output: "dist",
+			tags: ["alpha", "beta"],
+		});
+	});
+
 	it("returns default option values while leaving unmatched arguments alone", async() => {
 		setEnvironment("TEST");
 		const getProcessArgumentsSpy = vi.fn().mockReturnValue(["remaining", "args"]);

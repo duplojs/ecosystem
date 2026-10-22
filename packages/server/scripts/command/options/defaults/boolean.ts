@@ -1,6 +1,7 @@
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
-import { constructOption, type Option } from "../base";
+import * as DArray from "@duplojs/lang/array";
+import { findOptionToken, optionKind, type Option } from "../base";
 import { createKind } from "@scripts/command/kind";
 
 export const booleanOptionKind = createKind("command-boolean-option");
@@ -20,30 +21,38 @@ export interface CreateBooleanOptionParams {
 	aliases?: readonly string[];
 }
 
-export const createBooleanOption = constructOption(
-	booleanOptionKind,
-	({ init }) => <
-		GenericName extends string,
-	>(
-		name: GenericName,
-		params?: CreateBooleanOptionParams,
-	) => init<
-		BooleanOption<GenericName>
-	>(
+export function createBooleanOption<
+	GenericName extends string,
+>(
+	name: GenericName,
+	params?: CreateBooleanOptionParams,
+): BooleanOption<GenericName> {
+	const self: BooleanOption<GenericName> = {
 		name,
-		(self, value, error) => {
-			if (typeof value === "string") {
-				return error.addUnexpectedOptionValueIssue(
-					self.name,
-					value,
+		description: params?.description ?? null,
+		aliases: params?.aliases ?? [],
+		execute: (args, error) => {
+			const token = findOptionToken(args, self);
+
+			if (token?.value !== undefined) {
+				return Promise.resolve(
+					error.addUnexpectedOptionValueIssue(
+						self.name,
+						token.value,
+					),
 				);
 			}
 
-			return value !== null;
+			return Promise.resolve({
+				result: token !== null,
+				argumentRest: token
+					? DArray.spliceDelete(args, token.index, 1)
+					: args,
+			});
 		},
-		{
-			description: params?.description ?? null,
-			aliases: params?.aliases ?? [],
-		},
-	),
-);
+		[optionKind.runTimeKey]: null,
+		[booleanOptionKind.runTimeKey]: null,
+	} satisfies DKind.Remove<BooleanOption<GenericName>> as never;
+
+	return self;
+}
