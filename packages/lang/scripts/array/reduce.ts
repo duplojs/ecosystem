@@ -23,7 +23,7 @@ export interface ReduceTheFunctionParams<
 	element: GenericArray[number];
 	index: number;
 	lastValue: GenericOutput;
-	nextWithObject: GenericOutput extends object
+	nextWithObject: DCommon.ContainExtends<GenericOutput, object> extends true
 		? (
 			object1: GenericOutput,
 			object2: Partial<GenericOutput>,
@@ -34,11 +34,13 @@ export interface ReduceTheFunctionParams<
 		GenericExitValue extends unknown,
 	>(output: GenericExitValue): ReduceExit<GenericExitValue>;
 	self: GenericArray;
-	nextPush: GenericOutput extends readonly any[]
-		? (
-			array: GenericOutput,
-			...values: GenericOutput
-		) => ReduceNext<GenericOutput>
+	nextPush: DCommon.ContainExtends<GenericOutput, readonly any[]> extends true
+		? GenericOutput extends readonly any[]
+			? (
+				array: GenericOutput,
+				...values: GenericOutput[number][]
+			) => ReduceNext<readonly GenericOutput[number][]>
+			: never
 		: undefined;
 }
 
@@ -73,9 +75,19 @@ export const reduceTools: Pick<
 	},
 	nextPush(
 		array: readonly unknown[],
-		...[value, ...values]: [unknown, ...unknown[]]
+		...args: [unknown, ...unknown[]]
 	) {
-		return { "-next": push(array, value, ...values) };
+		if (args.length === 0) {
+			return {
+				"-next": array,
+			};
+		}
+
+		const [value, ...rest] = args;
+
+		return {
+			"-next": push(array, value, ...rest),
+		};
 	},
 };
 

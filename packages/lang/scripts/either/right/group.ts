@@ -4,8 +4,8 @@ import * as DObject from "@scripts/object";
 import { isLeft, type Left } from "../left";
 import type { Right } from "./create";
 import { success, type Success } from "./success";
-import { whenIsRight } from "./when";
 import type { GetValue } from "../types";
+import { whenIsRightOtherwise } from "./whenOtherwise";
 
 type Either = Right | Left;
 
@@ -74,22 +74,19 @@ export function group<
 		return DCommon.pipe(
 			group as readonly DCommon.MayBeGetter<Either>[],
 			DArray.reduce(
-				DArray.reduceFrom<unknown[]>([]),
+				DArray.reduceFrom<readonly unknown[]>([]),
 				({ element, lastValue, nextPush, exit }) => DCommon.pipe(
 					element,
 					DCommon.when(
 						DCommon.isType("function"),
 						(getter) => getter(),
 					),
-					DCommon.when(
-						isLeft,
-						exit,
-					),
-					whenIsRight(
+					whenIsRightOtherwise(
 						(data) => nextPush(
 							lastValue,
 							data,
 						),
+						exit,
 					),
 				),
 			),
@@ -111,15 +108,12 @@ export function group<
 					DCommon.isType("function"),
 					(getter) => getter(),
 				),
-				DCommon.when(
-					isLeft,
-					exit,
-				),
-				whenIsRight(
+				whenIsRightOtherwise(
 					(data) => nextWithObject(
 						lastValue,
 						{ [key]: data },
 					),
+					exit,
 				),
 			),
 		),
