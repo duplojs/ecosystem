@@ -73,7 +73,7 @@ export function asyncGroup<
 		return DCommon.asyncPipe(
 			group as readonly DCommon.MayBeGetter<Either>[],
 			DGenerator.asyncReduce(
-				DGenerator.reduceFrom<unknown[]>([]),
+				DGenerator.reduceFrom<readonly unknown[]>([]),
 				({ item, lastValue, nextPush, exit }) => DCommon.asyncPipe(
 					item,
 					DCommon.when(

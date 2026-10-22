@@ -159,7 +159,7 @@ export function transformer(
 
 				const constraintResult = DArray.reduce(
 					currentDataStructure.definition.constraints,
-					DArray.reduceFrom<TransformerSuccessEither[]>([]),
+					DArray.reduceFrom<readonly TransformerSuccessEither[]>([]),
 					({
 						element: constraint,
 						lastValue,

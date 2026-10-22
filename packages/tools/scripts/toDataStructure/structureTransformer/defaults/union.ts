@@ -19,7 +19,7 @@ export const unionStructureTransformer = createStructureTransformer(
 	) => {
 		const values = DArray.reduce(
 			structure.definition.values.value,
-			DArray.reduceFrom<(Typescript.CallExpression | Typescript.Identifier)[]>([]),
+			DArray.reduceFrom<readonly (Typescript.CallExpression | Typescript.Identifier)[]>([]),
 			({
 				element: value,
 				lastValue,

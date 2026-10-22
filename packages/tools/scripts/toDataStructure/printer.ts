@@ -14,7 +14,7 @@ export function printer(params: BuildedContext) {
 
 	const dataStructureStatements = DGenerator.reduce(
 		params.context.values(),
-		DGenerator.reduceFrom<Typescript.VariableStatement[]>([]),
+		DGenerator.reduceFrom<readonly Typescript.VariableStatement[]>([]),
 		({
 			item: contextValue,
 			lastValue,

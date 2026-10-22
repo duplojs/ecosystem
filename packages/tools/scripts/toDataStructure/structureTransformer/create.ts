@@ -29,7 +29,7 @@ export interface StructureTransformerParams {
 	transformConstraint(
 		constraint: DDataStructure.Constraint | readonly DDataStructure.Constraint[],
 	): (
-		| (Typescript.CallExpression | Typescript.Identifier)[]
+		| readonly (Typescript.CallExpression | Typescript.Identifier)[]
 		| ConstraintNotSupportedEither
 		| ConstraintErrorEither
 	);

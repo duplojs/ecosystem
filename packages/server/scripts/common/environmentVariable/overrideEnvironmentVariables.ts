@@ -3,7 +3,7 @@ import * as DObject from "@duplojs/lang/object";
 import * as DArray from "@duplojs/lang/array";
 
 export function overrideEnvironmentVariables(
-	arrayEnv: Record<string, string>[],
+	arrayEnv: readonly Record<string, string>[],
 	override: boolean,
 ) {
 	return DCommon.pipe(

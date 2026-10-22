@@ -54,7 +54,7 @@ export function parseEnvironmentFiles(
 ) {
 	return DGenerator.asyncReduce(
 		paths,
-		DGenerator.reduceFrom<Record<string, string>[]>([baseEnv]),
+		DGenerator.reduceFrom<readonly Record<string, string>[]>([baseEnv]),
 		({ lastValue, item, nextPush, exit }) => DSFile
 			.readTextFile(item)
 			.then(

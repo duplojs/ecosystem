@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DArray from "@scripts/array";
+import * as DCommon from "@scripts/common";
 
 describe("reduceRight", () => {
 	it("should reduce values from right to left", () => {
@@ -10,7 +11,7 @@ describe("reduceRight", () => {
 
 		expect(result).toBe("cba");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -18,7 +19,7 @@ describe("reduceRight", () => {
 	});
 
 	it("should reduce values in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["a", "b", "c"] as const,
 			DArray.reduceRight("", (params) => params.next(`${params.lastValue}${params.element}`)),
 		);
@@ -41,10 +42,16 @@ describe("reduceRight", () => {
 	it("should reduce from wrapped value", () => {
 		const result = DArray.reduceRight(
 			["a", "b"] as const,
-			DArray.reduceFrom([] as string[]),
+			DArray.reduceFrom<readonly string[]>([]),
 			(params) => params.nextPush(params.lastValue, params.element),
 		);
 
 		expect(result).toEqual(["b", "a"]);
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			readonly string[],
+			"strict"
+		>;
 	});
 });

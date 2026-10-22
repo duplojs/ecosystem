@@ -124,7 +124,7 @@ export function structureTransformer(
 		transformConstraint: DCommon.innerPipe(
 			DArray.coalescing,
 			DArray.reduce(
-				DArray.reduceFrom<(Typescript.CallExpression | Typescript.Identifier)[]>([]),
+				DArray.reduceFrom<readonly (Typescript.CallExpression | Typescript.Identifier)[]>([]),
 				({
 					element: constraint,
 					nextPush,

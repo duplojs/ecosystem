@@ -25,7 +25,7 @@ export function createCacheControlResponseHeader(
 		],
 		DArray.concat(directives.extensions ? DObject.entries(directives.extensions) : []),
 		DArray.reduce(
-			DArray.reduceFrom<string[]>([]),
+			DArray.reduceFrom<readonly string[]>([]),
 			({ element: [key, value], lastValue, nextPush, next }) => {
 				if (
 					value === true

@@ -1,4 +1,5 @@
-import { DGenerator, pipe, type ExpectType } from "@scripts";
+import * as DGenerator from "@scripts/generator";
+import * as DCommon from "@scripts/common";
 
 describe("reduce", () => {
 	it("reduces iterable values from a primitive start value", () => {
@@ -10,7 +11,7 @@ describe("reduce", () => {
 
 		expect(result).toBe(15);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -29,7 +30,7 @@ describe("reduce", () => {
 
 		expect(result).toStrictEqual({ total: 3 });
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			{ total: number },
 			"strict"
@@ -39,15 +40,15 @@ describe("reduce", () => {
 	it("pushes values into a wrapped array value", () => {
 		const result = DGenerator.reduce(
 			["a", "b"] as const,
-			DGenerator.reduceFrom([] as string[]),
+			DGenerator.reduceFrom<readonly string[]>([]),
 			(params) => params.nextPush(params.lastValue, params.item),
 		);
 
 		expect(result).toStrictEqual(["a", "b"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			string[],
+			readonly string[],
 			"strict"
 		>;
 	});
@@ -63,7 +64,7 @@ describe("reduce", () => {
 
 		expect(result).toBe("stop");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number | string,
 			"strict"
@@ -71,14 +72,14 @@ describe("reduce", () => {
 	});
 
 	it("reduces values in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, 2, 3],
 			DGenerator.reduce(1, (params) => params.next(params.lastValue * params.item)),
 		);
 
 		expect(result).toBe(6);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -89,9 +90,9 @@ describe("reduce", () => {
 		const input = [1, "a"] as (1 | "a")[];
 		const result = DGenerator.reduce(
 			input,
-			DGenerator.reduceFrom([] as (1 | "a")[]),
+			DGenerator.reduceFrom<readonly (1 | "a")[]>([]),
 			(params) => {
-				type _CheckItem = ExpectType<
+				type _CheckItem = DCommon.ExpectType<
 					typeof params.item,
 					1 | "a",
 					"strict"
@@ -103,9 +104,9 @@ describe("reduce", () => {
 
 		expect(result).toStrictEqual([1, "a"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			(1 | "a")[],
+			readonly (1 | "a")[],
 			"strict"
 		>;
 	});

@@ -20,7 +20,7 @@ export const objectStructureTransformer = createStructureTransformer(
 		const entries = DCommon.pipe(
 			structure.definition.optimizedShape.value,
 			DArray.reduce(
-				DArray.reduceFrom<Typescript.PropertyAssignment[]>([]),
+				DArray.reduceFrom<readonly Typescript.PropertyAssignment[]>([]),
 				({
 					element,
 					lastValue,
