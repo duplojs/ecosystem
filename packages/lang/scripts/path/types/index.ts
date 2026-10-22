@@ -1,3 +1,4 @@
+export type * from "./anyPath";
 export type * from "./isLiteralAbsolutePath";
 export type * from "./isLiteralPath";
 export type * from "./isLiteralSegmentPath";

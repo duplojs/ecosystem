@@ -1,4 +1,5 @@
-import type { Absolute, Path, Segment } from "./constraints";
+import type { AnyPath } from "./types";
+import type { Path, Segment } from "./constraints";
 import { isSegment } from "./isSegment";
 
 const baseNameRegex = /([^/]+)$/;
@@ -9,7 +10,7 @@ export interface GetBaseNameParams {
 }
 
 export function getBaseName<
-	GenericPath extends string & (Path | Absolute | Segment),
+	GenericPath extends AnyPath,
 >(
 	path: GenericPath,
 	params?: GetBaseNameParams,

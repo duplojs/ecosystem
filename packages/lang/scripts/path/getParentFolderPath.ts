@@ -1,10 +1,11 @@
+import type { AnyPath } from "./types";
 import type { Absolute, Path } from "./constraints";
 
 const parentFolderPathRegex = /^([^]*)\/[^/]+$/;
 const onlyParentSegmentsRegex = /^(?:\.\.)(?:\/\.\.)*$/;
 
 export function getParentFolderPath<
-	GenericPath extends string & (Path | Absolute),
+	GenericPath extends AnyPath,
 >(
 	path: GenericPath,
 ): (
