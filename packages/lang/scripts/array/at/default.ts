@@ -4,11 +4,13 @@ export type At<
 	GenericArray extends readonly unknown[],
 	GenericIndex extends number,
 > = GenericArray extends unknown
-	? IsIndexOutOfRange<GenericArray, GenericIndex> extends true
-		? undefined
-		: IsIndexCovered<GenericArray, GenericIndex> extends true
-			? GenericArray[number]
-			: GenericArray[number] | undefined
+	? GenericIndex extends unknown
+		? IsIndexOutOfRange<GenericArray, GenericIndex> extends true
+			? undefined
+			: IsIndexCovered<GenericArray, GenericIndex> extends true
+				? GenericArray[number]
+				: GenericArray[number] | undefined
+		: never
 	: never;
 
 export function at<
