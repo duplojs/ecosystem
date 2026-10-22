@@ -66,22 +66,24 @@ export function omit(
 
 	const [input, omitValue] = args;
 
-	const formattedOmitValue: Partial<Record<string, boolean>> = Array.isArray(omitValue)
-		? omitValue.reduce<Partial<Record<string, boolean>>>(
-			(acc, value) => {
-				acc[String(value)] = true;
+	const formattedOmitValue: Partial<Record<DCommon.ObjectKey, boolean>> = Array.isArray(omitValue)
+		? omitValue.reduce<Partial<Record<DCommon.ObjectKey, boolean>>>(
+			(acc, value: DCommon.ObjectKey) => {
+				acc[value] = true;
 
 				return acc;
 			},
 			{},
 		)
-		: Object.fromEntries(Object.entries(omitValue));
+		: { ...omitValue } as Partial<Record<DCommon.ObjectKey, boolean>>;
 
-	return Object.entries(input)
-		.reduce<Record<string, unknown>>(
-			(acc, [key, value]) => {
+	const properties = { ...input } as Record<DCommon.ObjectKey, unknown>;
+
+	return Reflect.ownKeys(properties)
+		.reduce<Record<DCommon.ObjectKey, unknown>>(
+			(acc, key) => {
 				if (formattedOmitValue[key] !== true) {
-					acc[key] = value;
+					acc[key] = properties[key];
 				}
 
 				return acc;

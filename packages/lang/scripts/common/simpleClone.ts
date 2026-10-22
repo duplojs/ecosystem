@@ -1,3 +1,5 @@
+import * as DObject from "@scripts/object";
+
 export function simpleClone<
 	GenericInput extends unknown = unknown,
 >(
@@ -15,10 +17,18 @@ export function simpleClone(
 		input.constructor === undefined
 		|| input.constructor.name === "Object"
 	) {
-		const output: Record<string, unknown> = {};
+		const output: Record<PropertyKey, unknown> = {};
+		const keys = [
+			...DObject.keys(input),
+			...Object.getOwnPropertySymbols(input),
+		];
 
-		for (const key in input) {
+		for (const key of keys) {
 			const descriptor = Object.getOwnPropertyDescriptor(input, key);
+
+			if (descriptor?.enumerable === false) {
+				continue;
+			}
 
 			if (descriptor?.set || descriptor?.get) {
 				Object.defineProperty(

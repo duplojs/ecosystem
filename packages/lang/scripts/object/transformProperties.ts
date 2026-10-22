@@ -6,7 +6,7 @@ type TransformObject<
 	[Prop in keyof GenericObjectInput]?: (input: GenericObjectInput[Prop]) => unknown
 };
 
-type RuntimeTransformObject = Partial<Record<string, (input: never) => unknown>>;
+type RuntimeTransformObject = Partial<Record<DCommon.ObjectKey, (input: never) => unknown>>;
 
 type TransformPropertiesOutput<
 	GenericObjectInput extends object,
@@ -64,15 +64,19 @@ export function transformProperties(
 
 	const [obj, transformObject] = args;
 
-	return Object.entries(transformObject)
+	const transformers = { ...transformObject };
+
+	return Reflect.ownKeys(transformers)
 		.reduce(
-			(acc, [key, theFunction]) => {
+			(acc, key) => {
+				const theFunction = transformers[key];
+
 				if (theFunction) {
 					acc[key] = theFunction(acc[key] as never);
 				}
 
 				return acc;
 			},
-			{ ...obj } as Record<string, unknown>,
+			{ ...obj } as Record<DCommon.ObjectKey, unknown>,
 		);
 }

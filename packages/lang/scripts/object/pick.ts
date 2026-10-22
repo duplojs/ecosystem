@@ -73,22 +73,24 @@ export function pick(
 
 	const [input, pickValue] = args;
 
-	const formattedPickValue: Partial<Record<string, boolean>> = Array.isArray(pickValue)
-		? pickValue.reduce<Partial<Record<string, boolean>>>(
-			(acc, value) => {
-				acc[String(value)] = true;
+	const formattedPickValue: Partial<Record<DCommon.ObjectKey, boolean>> = Array.isArray(pickValue)
+		? pickValue.reduce<Partial<Record<DCommon.ObjectKey, boolean>>>(
+			(acc, value: DCommon.ObjectKey) => {
+				acc[value] = true;
 
 				return acc;
 			},
 			{},
 		)
-		: Object.fromEntries(Object.entries(pickValue));
+		: { ...pickValue } as Partial<Record<DCommon.ObjectKey, boolean>>;
 
-	return Object.entries(input)
-		.reduce<Record<string, unknown>>(
-			(acc, [key, value]) => {
+	const properties = { ...input } as Record<DCommon.ObjectKey, unknown>;
+
+	return Reflect.ownKeys(properties)
+		.reduce<Record<DCommon.ObjectKey, unknown>>(
+			(acc, key) => {
 				if (formattedPickValue[key] === true) {
-					acc[key] = value;
+					acc[key] = properties[key];
 				}
 
 				return acc;
