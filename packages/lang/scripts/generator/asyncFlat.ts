@@ -16,14 +16,22 @@ export async function *asyncFlat(
 	iterator: AsyncIterable<unknown> | Iterable<unknown>,
 	depth = 1,
 ): any {
-	for await (const item of iterator) {
+	for await (const rawItem of iterator) {
+		const item = await rawItem;
+
 		if (
 			depth >= 1
 			&& item
 			&& typeof item === "object"
 			&& (
-				Symbol.iterator in item
-				|| Symbol.asyncIterator in item
+				(
+					Symbol.asyncIterator in item
+					&& typeof item[Symbol.asyncIterator] === "function"
+				)
+				|| (
+					Symbol.iterator in item
+					&& typeof item[Symbol.iterator] === "function"
+				)
 			)
 		) {
 			yield *asyncFlat(item as never, depth - 1);

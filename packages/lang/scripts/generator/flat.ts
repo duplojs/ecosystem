@@ -22,6 +22,7 @@ export function *flat(
 			&& item
 			&& typeof item === "object"
 			&& Symbol.iterator in item
+			&& typeof item[Symbol.iterator] === "function"
 		) {
 			yield *flat(item as never, depth - 1);
 		} else {
