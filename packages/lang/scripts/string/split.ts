@@ -72,35 +72,39 @@ type ComputeSplitOutput<
 
 type SplitOutput<
 	GenericString extends string,
-	GenericSeparator extends string,
+	GenericSeparator extends string | RegExp,
 	GenericLimit extends number = number,
-> = GenericString extends Format<string>
-	? ComputeSplitOutput<
-		Extract<DCommon.RemoveConstraint<ApplyFormat<GenericString>>, string>,
-		GenericSeparator,
-		GenericLimit
-	>
-	: ComputeSplitOutput<
-		Extract<DCommon.RemoveConstraint<GenericString>, string>,
-		GenericSeparator, GenericLimit
-	>;
+> = DCommon.ContainExtends<GenericSeparator, RegExp> extends true
+	? readonly (string | undefined)[]
+	: GenericSeparator extends unknown
+		? GenericString extends Format<string>
+			? ComputeSplitOutput<
+				Extract<DCommon.RemoveConstraint<ApplyFormat<GenericString>>, string>,
+				Extract<GenericSeparator, string>,
+				GenericLimit
+			>
+			: ComputeSplitOutput<
+				Extract<DCommon.RemoveConstraint<GenericString>, string>,
+				Extract<GenericSeparator, string>, GenericLimit
+			>
+		: never;
 
 export function split<
 	GenericString extends string,
-	GenericSeparator extends string,
+	GenericSeparator extends string | RegExp,
 >(
-	separator: GenericSeparator | RegExp,
+	separator: GenericSeparator,
 ): (
 	string: GenericString,
 ) => SplitOutput<GenericString, GenericSeparator>;
 
 export function split<
 	GenericString extends string,
-	GenericSeparator extends string,
+	GenericSeparator extends string | RegExp,
 	GenericLimit extends number,
 >(
 	string: GenericString,
-	separator: GenericSeparator | RegExp,
+	separator: GenericSeparator,
 	params?: SplitParams<GenericLimit>,
 ): SplitOutput<GenericString, GenericSeparator, GenericLimit>;
 

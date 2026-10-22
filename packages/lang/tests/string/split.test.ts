@@ -32,7 +32,7 @@ describe("split", () => {
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			readonly string[] & DArray.MinElements<1>,
+			readonly (string | undefined)[],
 			"strict"
 		>;
 	});
@@ -43,9 +43,87 @@ describe("split", () => {
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			readonly string[] & DArray.MinElements<1>,
+			readonly (string | undefined)[],
 			"strict"
 		>;
+	});
+
+	it("should include undefined in its element type for unmatched regex captures", () => {
+		const result = DString.split("b", /(a)|(b)/);
+
+		type _CheckElement = DCommon.ExpectType<
+			typeof result[number],
+			string | undefined,
+			"strict"
+		>;
+
+		expect(result).toStrictEqual(["", undefined, "b", ""]);
+	});
+
+	it("should include undefined in its element type for unmatched regex captures in pipe", () => {
+		const result = DCommon.pipe("b", DString.split(/(a)|(b)/));
+
+		type _CheckElement = DCommon.ExpectType<
+			typeof result[number],
+			string | undefined,
+			"strict"
+		>;
+
+		expect(result).toStrictEqual(["", undefined, "b", ""]);
+	});
+
+	it("should allow undefined elements when the separator can be a string or regex", () => {
+		const separator = DCommon.forward<string | RegExp>(/(a)|(b)/);
+		const result = DString.split("b", separator);
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			readonly (string | undefined)[],
+			"strict"
+		>;
+
+		expect(result).toStrictEqual(["", undefined, "b", ""]);
+	});
+
+	it("should allow undefined elements when the separator can be a string or regex in pipe", () => {
+		const separator = DCommon.forward<string | RegExp>(/(a)|(b)/);
+		const result = DCommon.pipe("b", DString.split(separator));
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			readonly (string | undefined)[],
+			"strict"
+		>;
+
+		expect(result).toStrictEqual(["", undefined, "b", ""]);
+	});
+
+	it("should distribute string separator unions", () => {
+		const separator = DCommon.forward<"," | ";">(",");
+		const result = DString.split("a,b,c", separator);
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			| (readonly string[] & DArray.MinElements<3> & DArray.LengthEqual<3> & DArray.MaxElements<3>)
+			| (readonly string[] & DArray.MinElements<1> & DArray.LengthEqual<1> & DArray.MaxElements<1>),
+			"strict"
+		>;
+
+		expect(result).toStrictEqual(["a", "b", "c"]);
+	});
+
+	it("should distribute string separator unions in pipe", () => {
+		const separator = DCommon.forward<"," | ";">(",");
+		const result = DCommon.pipe("a,b,c", DString.split(separator));
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			| (readonly string[] & DArray.MinElements<3> & DArray.LengthEqual<3> & DArray.MaxElements<3>)
+			| (readonly string[] & DArray.MinElements<1> & DArray.LengthEqual<1> & DArray.MaxElements<1>),
+			"strict"
+		>;
+
+		expect(result).toStrictEqual(["a", "b", "c"]);
 	});
 
 	it("should handle empty string", () => {
@@ -117,5 +195,29 @@ describe("split", () => {
 		type _CheckResult = DCommon.ExpectType<typeof result, readonly string[] & DArray.MinElements<1>, "strict">;
 
 		expect(result.length).toBeGreaterThanOrEqual(1);
+	});
+
+	it("should allow an empty result for an empty string and regex separator", () => {
+		const result = DString.split("", /(?:)/);
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			readonly (string | undefined)[],
+			"strict"
+		>;
+
+		expect(result).toStrictEqual([]);
+	});
+
+	it("should allow an empty result for an empty string and regex separator in pipe", () => {
+		const result = DCommon.pipe("", DString.split(/(?:)/));
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			readonly (string | undefined)[],
+			"strict"
+		>;
+
+		expect(result).toStrictEqual([]);
 	});
 });
