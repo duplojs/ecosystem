@@ -26,6 +26,30 @@ describe("isOptionToken", () => {
 		},
 		{
 			input: "-42",
+			expected: false,
+		},
+		{
+			input: "--42",
+			expected: false,
+		},
+		{
+			input: "-42=value",
+			expected: false,
+		},
+		{
+			input: "--42=",
+			expected: false,
+		},
+		{
+			input: "-4.2",
+			expected: false,
+		},
+		{
+			input: "--port42",
+			expected: true,
+		},
+		{
+			input: "--42port=80",
 			expected: true,
 		},
 		{

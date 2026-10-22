@@ -6,7 +6,7 @@ import { createKind } from "../kind";
 import { type Error, SymbolCommandError } from "../error";
 
 export const optionKind = createKind("command-option");
-const regexOption = /^(?<dashes>-{1,2})(?<key>[A-Za-z0-9][A-Za-z0-9_-]*)(?:=(?<value>.*))?$/;
+const regexOption = /^(?<dashes>-{1,2})(?<key>(?![0-9]+(?:=|$))[A-Za-z0-9][A-Za-z0-9_-]*)(?:=(?<value>.*))?$/;
 
 export function isOptionToken(input: string): boolean {
 	return DString.test(input, regexOption);

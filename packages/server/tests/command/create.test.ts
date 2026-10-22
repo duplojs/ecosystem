@@ -234,6 +234,59 @@ describe("create", () => {
 		});
 	});
 
+	it.each([
+		{ input: ["--verbose", "--count", "-7", "-42"] },
+		{ input: ["--verbose", "-42", "--count", "-7"] },
+		{ input: ["-42", "--count", "-7", "--verbose"] },
+		{ input: ["-v", "-42", "-c", "-7"] },
+		{ input: ["--count=-7", "--verbose", "-42"] },
+	])("parses negative option values and positional arguments in $input", async({ input }) => {
+		const executeSpy = vi.fn();
+		const error = DSCommand.createError("root");
+		const command = DSCommand.create("root", {
+			options: [
+				DSCommand.createBooleanOption("verbose", { aliases: ["v"] }),
+				DSCommand.createOption("count", DDataStructure.number(), {
+					aliases: ["c"],
+					required: true,
+				}),
+			],
+			subjects: [DSCommand.createArgument("offset", DDataStructure.number())],
+		}, ({ options, args }) => {
+			type _CheckOptions = DCommon.ExpectType<
+				typeof options,
+				{
+					readonly verbose: boolean;
+					readonly count: number;
+				},
+				"strict"
+			>;
+
+			type _CheckArguments = DCommon.ExpectType<
+				typeof args,
+				{ readonly offset: number },
+				"strict"
+			>;
+
+			executeSpy({
+				options,
+				args,
+			});
+		});
+
+		const result = await command.execute(input, error);
+
+		expect(result).toBeUndefined();
+		expect(error.issues).toEqual([]);
+		expect(executeSpy).toHaveBeenCalledExactlyOnceWith({
+			options: {
+				verbose: true,
+				count: -7,
+			},
+			args: { offset: -42 },
+		});
+	});
+
 	it("reports unknown options remaining after a boolean flag", async() => {
 		const executeSpy = vi.fn();
 		const error = DSCommand.createError("build");
