@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.app.json",
+  "compilerOptions": {
+    "paths": {
+	  "@core/*": ["../core/*"],
+	  "@plugin-codeGenerator": ["../plugins/codeGenerator/index.ts"],
+	  "@plugin-codeGenerator/*": ["../plugins/codeGenerator/*"],
+    },
+  },
+  "include": ["**/*.ts", "../plugins/codeGenerator/**/*.ts", "../core/**/*.ts"],
+}

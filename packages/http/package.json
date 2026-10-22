@@ -16,6 +16,9 @@
   "bugs": {
     "url": "https://github.com/duplojs/ecosystem/issues"
   },
+  "bin": {
+    "duplojs-http": "./dist/bin/index.mjs"
+  },
   "scripts": {
     "build": "./.commands/build.sh",
     "test:types": "./.commands/test-types.sh",
@@ -88,7 +91,8 @@
   "peerDependencies": {
     "@duplojs/tools": "workspace:*",
     "@duplojs/server": "workspace:*",
-    "@duplojs/lang": "workspace:*"
+    "@duplojs/lang": "workspace:*",
+    "@typescript/native-API": "npm:typescript@7.1.0-dev.20261018.1"
   },
   "devDependencies": {
     "@duplojs/code-config": "workspace:*",

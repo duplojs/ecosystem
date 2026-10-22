@@ -4,10 +4,9 @@ import dts from "unplugin-dts/rolldown";
 const defaultConfig = {
 	treeshake: false,
 	external: [
-		/^@duplojs\/lang/,
-		/^@duplojs\/server/,
-		/^@duplojs\/tools/,
+		/^@duplojs\//,
 		/^node:/,
+		/^@typescript\//,
 	],
 	output: [
 		{
@@ -28,6 +27,26 @@ const defaultConfig = {
 } as const satisfies RolldownOptions;
 
 export default defineConfig([
+	// bin
+	{
+		...defaultConfig,
+		output: [
+			{
+				...defaultConfig.output[0],
+				cleanDir: true,
+			},
+		],
+		input: "scripts/bin/index.ts",
+		tsconfig: "scripts/bin/tsconfig.build.json",
+		plugins: [
+			dts({
+				tsconfigPath: "scripts/bin/tsconfig.build.json",
+				outDirs: "dist",
+				bundleTypes: false,
+			}),
+		],
+	},
+
 	// plugins
 	{
 		...defaultConfig,

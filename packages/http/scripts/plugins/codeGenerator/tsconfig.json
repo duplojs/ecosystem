@@ -5,7 +5,6 @@
 	  "@core/*": ["../../core/*"],
 	  "@plugin-codeGenerator/*": ["./*"],
     },
-	"types": ["node"],
   },
   "include": ["**/*.ts", "../../core/**/*.ts"],
 }
