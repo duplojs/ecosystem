@@ -30,5 +30,26 @@ export function isKeyof(
 
 	const [key, object] = args;
 
-	return object[key as never] !== undefined;
+	// Keys from Object.prototype are accepted only when redefined on the object
+	// or a custom prototype. This preserves useful keyof narrowing, but remains
+	// a runtime heuristic: erased TypeScript types cannot be checked exactly.
+	if (!Object.hasOwn(Object.prototype, key)) {
+		return key in object;
+	}
+
+	let current: object | null = object;
+
+	while (current !== null) {
+		if (Object.hasOwn(current, key)) {
+			return true;
+		}
+
+		current = Object.getPrototypeOf(current) as object | null;
+
+		if (current === Object.prototype) {
+			return false;
+		}
+	}
+
+	return false;
 }
