@@ -190,7 +190,7 @@ export const RecordStructure = createStructure(
 				const pathStage = errorHandler?.().createPathStage();
 
 				const encodedData = (requiredKeys ?? keyData).reduce<unknown>(
-					(accumulator, key) => key === "__proto__"
+					(accumulator, key) => (key === "__proto__" || key === "constructor")
 						? accumulator
 						: DCommon.callThen(
 							accumulator,
@@ -254,7 +254,7 @@ export const RecordStructure = createStructure(
 				const pathStage = errorHandler?.().createPathStage();
 
 				const decodedData = (requiredKeys ?? keyData).reduce<unknown>(
-					(accumulator, key) => key === "__proto__"
+					(accumulator, key) => (key === "__proto__" || key === "constructor")
 						? accumulator
 						: DCommon.callThen(
 							accumulator,

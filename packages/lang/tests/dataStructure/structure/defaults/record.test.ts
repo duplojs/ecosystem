@@ -490,6 +490,41 @@ describe("RecordStructure", () => {
 		});
 	});
 
+	it("ignores the constructor key while encoding and decoding records", () => {
+		const structure = DDataStructure.RecordStructure(
+			DDataStructure.string(),
+			DDataStructure.object({
+				name: DDataStructure.string(),
+				value: DDataStructure.string(),
+			}),
+			[],
+		);
+		const input = {
+			constructor: {
+				name: "Object",
+				value: "filtered",
+			},
+			safe: {
+				name: "Object",
+				value: "kept",
+			},
+		};
+		const codecs = DDataStructure.createCodecs({});
+		const encoded = DEither.unwrapByInformationOrThrow(
+			structure.encode(codecs, input),
+			"encode-success",
+		);
+		const decoded = DEither.unwrapByInformationOrThrow(
+			structure.decode(codecs, input),
+			"decode-success",
+		);
+
+		expect(encoded).toStrictEqual({ safe: input.safe });
+		expect(Object.hasOwn(encoded, "constructor")).toBe(false);
+		expect(decoded).toStrictEqual({ safe: input.safe });
+		expect(Object.hasOwn(decoded, "constructor")).toBe(false);
+	});
+
 	it("returns encode and decode errors when constraints fail after conversion", () => {
 		const structure = DDataStructure.RecordStructure(
 			DDataStructure.TypeStructure(DDataStructure.StringLiteralType("name"), []),
