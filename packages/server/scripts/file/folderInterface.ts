@@ -11,7 +11,6 @@ import { readDirectory, type ReadDirectoryResult } from "./readDirectory";
 import { stat, type StatResult } from "./stat";
 import { walkDirectory, type WalkDirectoryParams, type WalkDirectoryResult } from "./walkDirectory";
 import { relocate, type RelocateResult } from "./relocate";
-import { type EntryPath } from "./unknownEntryInterface";
 
 const folderInterfaceKind = createKind("folderInterface");
 
@@ -20,7 +19,7 @@ type FolderInterfaceRelocateResult = Exclude<RelocateResult, DEither.Right> | DE
 type FolderInterfaceMoveResult = Exclude<MoveResult, DEither.Right> | DEither.Right<"file-system-move", FolderInterface>;
 
 export interface FolderInterface<
-	GenericPath extends EntryPath = EntryPath,
+	GenericPath extends DPath.AnyPath = DPath.AnyPath,
 > extends DKind.Kind<
 	typeof folderInterfaceKind
 	> {
@@ -29,8 +28,8 @@ export interface FolderInterface<
 	getParentPath(): ReturnType<typeof DPath.getParentFolderPath<GenericPath>>;
 	rename(newName: (string & DPath.Segment)): Promise<FolderInterfaceRenameResult>;
 	exists(): Promise<ExistsResult>;
-	relocate(parentPath: string & DPath.Path): Promise<FolderInterfaceRelocateResult>;
-	move(newPath: string & DPath.Path): Promise<FolderInterfaceMoveResult>;
+	relocate(parentPath: DPath.AnyPath): Promise<FolderInterfaceRelocateResult>;
+	move(newPath: DPath.AnyPath): Promise<FolderInterfaceMoveResult>;
 	remove(): Promise<RemoveResult>;
 	getChildren(): Promise<ReadDirectoryResult>;
 	stat(): Promise<StatResult>;
@@ -39,13 +38,13 @@ export interface FolderInterface<
 }
 
 export function createFolderInterface<
-	GenericPath extends EntryPath = EntryPath,
+	GenericPath extends DPath.AnyPath = DPath.AnyPath,
 >(
 	path: GenericPath,
 ): FolderInterface<GenericPath>;
 
 export function createFolderInterface(
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 ): FolderInterface {
 	function getName() {
 		return DPath.getBaseName(path);
@@ -67,7 +66,7 @@ export function createFolderInterface(
 		);
 	}
 
-	function localRelocate(newParentPath: string & DPath.Path) {
+	function localRelocate(newParentPath: DPath.AnyPath) {
 		return DCommon.asyncPipe(
 			relocate(path, newParentPath),
 			DEither.whenIsRight(
@@ -79,7 +78,7 @@ export function createFolderInterface(
 		);
 	}
 
-	function localMove(newPath: string & DPath.Path) {
+	function localMove(newPath: DPath.AnyPath) {
 		return DCommon.asyncPipe(
 			move(path, newPath),
 			DEither.whenIsRight(
@@ -123,7 +122,7 @@ export function createFolderInterface(
 	}
 
 	return {
-		path,
+		path: DCommon.cast(path),
 		getName,
 		getParentPath,
 		move: localMove,

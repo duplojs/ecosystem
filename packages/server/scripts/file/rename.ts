@@ -3,17 +3,17 @@ import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
 
-class RenameErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-rename-not-found", Error) {}
-class RenameErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-rename-permission-denied", Error) {}
-class RenameErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-rename-already-exists", Error) {}
-class RenameErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-rename-is-directory", Error) {}
-class RenameErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-rename-not-directory", Error) {}
-class RenameErrorDirectoryNotEmpty extends DCommon.DuploJSError.parentClass("file-system-rename-directory-not-empty", Error) {}
-class RenameErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-rename-read-only", Error) {}
-class RenameErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-rename-invalid-argument", Error) {}
-class RenameErrorBusy extends DCommon.DuploJSError.parentClass("file-system-rename-busy", Error) {}
-class RenameErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-rename-cross-device", Error) {}
-class RenameError extends DCommon.DuploJSError.parentClass("file-system-rename-error", Error) {}
+export class RenameErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-rename-not-found", Error) {}
+export class RenameErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-rename-permission-denied", Error) {}
+export class RenameErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-rename-already-exists", Error) {}
+export class RenameErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-rename-is-directory", Error) {}
+export class RenameErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-rename-not-directory", Error) {}
+export class RenameErrorDirectoryNotEmpty extends DCommon.DuploJSError.parentClass("file-system-rename-directory-not-empty", Error) {}
+export class RenameErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-rename-read-only", Error) {}
+export class RenameErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-rename-invalid-argument", Error) {}
+export class RenameErrorBusy extends DCommon.DuploJSError.parentClass("file-system-rename-busy", Error) {}
+export class RenameErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-rename-cross-device", Error) {}
+export class RenameError extends DCommon.DuploJSError.parentClass("file-system-rename-error", Error) {}
 
 export type RenameErrors = (
 	| RenameErrorNotFound
@@ -103,7 +103,7 @@ function handleDenoRenameError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		rename(
-			path: string & DPath.Path,
+			path: DPath.AnyPath,
 			newName: string & DPath.Segment,
 		): Promise<RenameResult>;
 	}
@@ -158,23 +158,23 @@ const renameImplementation = implementFunction(
 export function rename(
 	newName: string & DPath.Segment,
 ): (
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 ) => Promise<RenameResult>;
 
 export function rename(
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 	newName: string & DPath.Segment,
 ): Promise<RenameResult>;
 
 export function rename(
 	...args:
 		| [newName: string & DPath.Segment]
-		| [path: string & DPath.Path, newName: string & DPath.Segment]
+		| [path: DPath.AnyPath, newName: string & DPath.Segment]
 ) {
 	if (args.length === 1) {
 		const [newName] = args;
 
-		return (path: string & DPath.Path) => renameImplementation(
+		return (path: DPath.AnyPath) => renameImplementation(
 			path,
 			newName,
 		);

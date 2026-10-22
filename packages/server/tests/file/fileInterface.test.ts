@@ -303,11 +303,16 @@ describe("fileInterface", () => {
 		>;
 	});
 
-	it("requires a path or absolute constraint instead of a segment alone", () => {
+	it("accepts a segment constraint and rejects an unvalidated string", () => {
 		const segment: string & DPath.Segment = DCommon.infer("entry");
 
-		// @ts-expect-error a segment alone does not satisfy EntryPath.
-		DSFile.createFileInterface(segment);
+		const entry = DSFile.createFileInterface(segment);
+
+		expect(entry.path).toBe("entry");
+		expect(entry.getName()).toBe("entry");
+		expect(entry.getParentPath()).toBe(".");
+
+		type _CheckPath = DCommon.ExpectType<typeof entry.path, string & DPath.Segment & DPath.Path, "strict">;
 		// @ts-expect-error an unvalidated string does not satisfy EntryPath.
 		DSFile.createFileInterface("alpha/entry");
 	});

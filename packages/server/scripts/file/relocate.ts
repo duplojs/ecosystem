@@ -3,17 +3,17 @@ import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
 
-class RelocateErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-relocate-not-found", Error) {}
-class RelocateErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-relocate-permission-denied", Error) {}
-class RelocateErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-relocate-already-exists", Error) {}
-class RelocateErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-relocate-is-directory", Error) {}
-class RelocateErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-relocate-not-directory", Error) {}
-class RelocateErrorDirectoryNotEmpty extends DCommon.DuploJSError.parentClass("file-system-relocate-directory-not-empty", Error) {}
-class RelocateErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-relocate-read-only", Error) {}
-class RelocateErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-relocate-invalid-argument", Error) {}
-class RelocateErrorBusy extends DCommon.DuploJSError.parentClass("file-system-relocate-busy", Error) {}
-class RelocateErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-relocate-cross-device", Error) {}
-class RelocateError extends DCommon.DuploJSError.parentClass("file-system-relocate-error", Error) {}
+export class RelocateErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-relocate-not-found", Error) {}
+export class RelocateErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-relocate-permission-denied", Error) {}
+export class RelocateErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-relocate-already-exists", Error) {}
+export class RelocateErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-relocate-is-directory", Error) {}
+export class RelocateErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-relocate-not-directory", Error) {}
+export class RelocateErrorDirectoryNotEmpty extends DCommon.DuploJSError.parentClass("file-system-relocate-directory-not-empty", Error) {}
+export class RelocateErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-relocate-read-only", Error) {}
+export class RelocateErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-relocate-invalid-argument", Error) {}
+export class RelocateErrorBusy extends DCommon.DuploJSError.parentClass("file-system-relocate-busy", Error) {}
+export class RelocateErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-relocate-cross-device", Error) {}
+export class RelocateError extends DCommon.DuploJSError.parentClass("file-system-relocate-error", Error) {}
 
 export type RelocateErrors = (
 	| RelocateErrorNotFound
@@ -103,8 +103,8 @@ function handleDenoRelocateError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		relocate(
-			fromPath: string & DPath.Path,
-			toPath: string & DPath.Path,
+			fromPath: DPath.AnyPath,
+			toPath: DPath.AnyPath,
 		): Promise<RelocateResult>;
 	}
 }
@@ -156,25 +156,25 @@ const relocateImplementation = implementFunction(
 );
 
 export function relocate(
-	toPath: string & DPath.Path,
+	toPath: DPath.AnyPath,
 ): (
-	fromPath: string & DPath.Path,
+	fromPath: DPath.AnyPath,
 ) => Promise<RelocateResult>;
 
 export function relocate(
-	fromPath: string & DPath.Path,
-	toPath: string & DPath.Path,
+	fromPath: DPath.AnyPath,
+	toPath: DPath.AnyPath,
 ): Promise<RelocateResult>;
 
 export function relocate(
 	...args:
-		| [toPath: string & DPath.Path]
-		| [fromPath: string & DPath.Path, toPath: string & DPath.Path]
+		| [toPath: DPath.AnyPath]
+		| [fromPath: DPath.AnyPath, toPath: DPath.AnyPath]
 ) {
 	if (args.length === 1) {
 		const [toPath] = args;
 
-		return (fromPath: string & DPath.Path) => relocateImplementation(
+		return (fromPath: DPath.AnyPath) => relocateImplementation(
 			fromPath,
 			toPath,
 		);

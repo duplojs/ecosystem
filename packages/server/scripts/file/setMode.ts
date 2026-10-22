@@ -21,12 +21,12 @@ interface ModeObject {
 
 type SetMode = ModeObject | number;
 
-class SetModeErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-set-mode-not-found", Error) {}
-class SetModeErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-set-mode-permission-denied", Error) {}
-class SetModeErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-set-mode-not-directory", Error) {}
-class SetModeErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-set-mode-read-only", Error) {}
-class SetModeErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-set-mode-invalid-argument", Error) {}
-class SetModeError extends DCommon.DuploJSError.parentClass("file-system-set-mode-error", Error) {}
+export class SetModeErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-set-mode-not-found", Error) {}
+export class SetModeErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-set-mode-permission-denied", Error) {}
+export class SetModeErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-set-mode-not-directory", Error) {}
+export class SetModeErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-set-mode-read-only", Error) {}
+export class SetModeErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-set-mode-invalid-argument", Error) {}
+export class SetModeError extends DCommon.DuploJSError.parentClass("file-system-set-mode-error", Error) {}
 
 export type SetModeErrors = (
 	| SetModeErrorNotFound
@@ -121,7 +121,7 @@ function toMode(mode: SetMode): number {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		setMode(
-			path: string & DPath.Path,
+			path: DPath.AnyPath,
 			mode: SetMode,
 		): Promise<SetModeResult>;
 	}
@@ -143,23 +143,23 @@ const setModeImplementation = implementFunction(
 export function setMode(
 	mode: SetMode,
 ): (
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 ) => Promise<SetModeResult>;
 
 export function setMode(
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 	mode: SetMode,
 ): Promise<SetModeResult>;
 
 export function setMode(
 	...args:
 		| [mode: SetMode]
-		| [path: string & DPath.Path, mode: SetMode]
+		| [path: DPath.AnyPath, mode: SetMode]
 ) {
 	if (args.length === 1) {
 		const [mode] = args;
 
-		return (path: string & DPath.Path) => setModeImplementation(
+		return (path: DPath.AnyPath) => setModeImplementation(
 			path,
 			mode,
 		);

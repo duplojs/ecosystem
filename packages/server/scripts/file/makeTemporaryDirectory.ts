@@ -2,13 +2,13 @@ import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
 
-class MakeTemporaryDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-permission-denied", Error) {}
-class MakeTemporaryDirectoryErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-not-directory", Error) {}
-class MakeTemporaryDirectoryErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-no-space", Error) {}
-class MakeTemporaryDirectoryErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-read-only", Error) {}
-class MakeTemporaryDirectoryErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-invalid-argument", Error) {}
-class MakeTemporaryDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-too-many-open-files", Error) {}
-class MakeTemporaryDirectoryError extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-error", Error) {}
+export class MakeTemporaryDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-permission-denied", Error) {}
+export class MakeTemporaryDirectoryErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-not-directory", Error) {}
+export class MakeTemporaryDirectoryErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-no-space", Error) {}
+export class MakeTemporaryDirectoryErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-read-only", Error) {}
+export class MakeTemporaryDirectoryErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-invalid-argument", Error) {}
+export class MakeTemporaryDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-too-many-open-files", Error) {}
+export class MakeTemporaryDirectoryError extends DCommon.DuploJSError.parentClass("file-system-make-temporary-directory-error", Error) {}
 
 export type MakeTemporaryDirectoryErrors = (
 	| MakeTemporaryDirectoryErrorPermissionDenied

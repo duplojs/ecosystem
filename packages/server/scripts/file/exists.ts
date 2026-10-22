@@ -3,11 +3,11 @@ import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
 
-class ExistsErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-exists-not-found", Error) {}
-class ExistsErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-exists-permission-denied", Error) {}
-class ExistsErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-exists-not-directory", Error) {}
-class ExistsErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-exists-too-many-open-files", Error) {}
-class ExistsError extends DCommon.DuploJSError.parentClass("file-system-exists-error", Error) {}
+export class ExistsErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-exists-not-found", Error) {}
+export class ExistsErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-exists-permission-denied", Error) {}
+export class ExistsErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-exists-not-directory", Error) {}
+export class ExistsErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-exists-too-many-open-files", Error) {}
+export class ExistsError extends DCommon.DuploJSError.parentClass("file-system-exists-error", Error) {}
 
 export type ExistsErrors = (
 	| ExistsErrorNotFound
@@ -73,7 +73,7 @@ function handleDenoExistsError(error: Error) {
 
 declare module "@scripts/implementor" {
 	interface ServerFunction {
-		exists(path: string & DPath.Path): Promise<ExistsResult>;
+		exists(path: DPath.AnyPath): Promise<ExistsResult>;
 	}
 }
 

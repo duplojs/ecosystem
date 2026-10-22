@@ -3,16 +3,16 @@ import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 
-class TruncateErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-truncate-not-found", Error) {}
-class TruncateErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-truncate-permission-denied", Error) {}
-class TruncateErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-truncate-is-directory", Error) {}
-class TruncateErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-truncate-not-directory", Error) {}
-class TruncateErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-truncate-no-space", Error) {}
-class TruncateErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-truncate-read-only", Error) {}
-class TruncateErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-truncate-invalid-argument", Error) {}
-class TruncateErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-truncate-too-many-open-files", Error) {}
-class TruncateErrorBusy extends DCommon.DuploJSError.parentClass("file-system-truncate-busy", Error) {}
-class TruncateError extends DCommon.DuploJSError.parentClass("file-system-truncate-error", Error) {}
+export class TruncateErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-truncate-not-found", Error) {}
+export class TruncateErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-truncate-permission-denied", Error) {}
+export class TruncateErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-truncate-is-directory", Error) {}
+export class TruncateErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-truncate-not-directory", Error) {}
+export class TruncateErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-truncate-no-space", Error) {}
+export class TruncateErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-truncate-read-only", Error) {}
+export class TruncateErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-truncate-invalid-argument", Error) {}
+export class TruncateErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-truncate-too-many-open-files", Error) {}
+export class TruncateErrorBusy extends DCommon.DuploJSError.parentClass("file-system-truncate-busy", Error) {}
+export class TruncateError extends DCommon.DuploJSError.parentClass("file-system-truncate-error", Error) {}
 
 export type TruncateErrors = (
 	| TruncateErrorNotFound
@@ -100,7 +100,7 @@ function handleDenoTruncateError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		truncate(
-			path: string & DPath.Path,
+			path: DPath.AnyPath,
 			size?: number,
 		): Promise<TruncateResult>;
 	}

@@ -5,12 +5,12 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
 import { getCurrentWorkDirectoryOrThrow } from "@scripts/common";
 
-class ReadDirectoryErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-directory-not-found", Error) {}
-class ReadDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-directory-permission-denied", Error) {}
-class ReadDirectoryErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-read-directory-not-directory", Error) {}
-class ReadDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-read-directory-too-many-open-files", Error) {}
-class ReadDirectoryErrorBusy extends DCommon.DuploJSError.parentClass("file-system-read-directory-busy", Error) {}
-class ReadDirectoryError extends DCommon.DuploJSError.parentClass("file-system-read-directory-error", Error) {}
+export class ReadDirectoryErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-directory-not-found", Error) {}
+export class ReadDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-directory-permission-denied", Error) {}
+export class ReadDirectoryErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-read-directory-not-directory", Error) {}
+export class ReadDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-read-directory-too-many-open-files", Error) {}
+export class ReadDirectoryErrorBusy extends DCommon.DuploJSError.parentClass("file-system-read-directory-busy", Error) {}
+export class ReadDirectoryError extends DCommon.DuploJSError.parentClass("file-system-read-directory-error", Error) {}
 
 export type ReadDirectoryErrors = (
 	| ReadDirectoryErrorNotFound
@@ -80,7 +80,7 @@ declare module "@scripts/implementor" {
 		readDirectory<
 			const GenericParams extends ReadDirectoryParams = {},
 		>(
-			path: string & DPath.Path,
+			path: DPath.AnyPath,
 			params?: GenericParams,
 		): Promise<
 			ReadDirectoryResult<GenericParams>

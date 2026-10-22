@@ -13,15 +13,15 @@ export interface SymlinkParams {
 	type: "file" | "dir" | "junction";
 }
 
-class SymlinkErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-symlink-not-found", Error) {}
-class SymlinkErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-symlink-permission-denied", Error) {}
-class SymlinkErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-symlink-already-exists", Error) {}
-class SymlinkErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-symlink-not-directory", Error) {}
-class SymlinkErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-symlink-read-only", Error) {}
-class SymlinkErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-symlink-invalid-argument", Error) {}
-class SymlinkErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-symlink-too-many-open-files", Error) {}
-class SymlinkErrorBusy extends DCommon.DuploJSError.parentClass("file-system-symlink-busy", Error) {}
-class SymlinkError extends DCommon.DuploJSError.parentClass("file-system-symlink-error", Error) {}
+export class SymlinkErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-symlink-not-found", Error) {}
+export class SymlinkErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-symlink-permission-denied", Error) {}
+export class SymlinkErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-symlink-already-exists", Error) {}
+export class SymlinkErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-symlink-not-directory", Error) {}
+export class SymlinkErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-symlink-read-only", Error) {}
+export class SymlinkErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-symlink-invalid-argument", Error) {}
+export class SymlinkErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-symlink-too-many-open-files", Error) {}
+export class SymlinkErrorBusy extends DCommon.DuploJSError.parentClass("file-system-symlink-busy", Error) {}
+export class SymlinkError extends DCommon.DuploJSError.parentClass("file-system-symlink-error", Error) {}
 
 export type SymlinkErrors = (
 	| SymlinkErrorNotFound
@@ -106,8 +106,8 @@ function handleDenoSymlinkError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		symlink(
-			oldPath: string & DPath.Path,
-			newPath: string & DPath.Path,
+			oldPath: DPath.AnyPath,
+			newPath: DPath.AnyPath,
 			params?: SymlinkParams
 		): Promise<SymlinkResult>;
 	}
@@ -135,26 +135,26 @@ const symlinkImplementation = implementFunction(
 );
 
 export function symlink(
-	newPath: string & DPath.Path,
+	newPath: DPath.AnyPath,
 ): (
-	oldPath: string & DPath.Path,
+	oldPath: DPath.AnyPath,
 ) => Promise<SymlinkResult>;
 
 export function symlink(
-	oldPath: string & DPath.Path,
-	newPath: string & DPath.Path,
+	oldPath: DPath.AnyPath,
+	newPath: DPath.AnyPath,
 	params?: SymlinkParams,
 ): Promise<SymlinkResult>;
 
 export function symlink(
 	...args:
-		| [newPath: string & DPath.Path]
-		| [oldPath: string & DPath.Path, newPath: string & DPath.Path, params?: SymlinkParams]
+		| [newPath: DPath.AnyPath]
+		| [oldPath: DPath.AnyPath, newPath: DPath.AnyPath, params?: SymlinkParams]
 ) {
 	if (args.length === 1) {
 		const [newPath] = args;
 
-		return (oldPath: string & DPath.Path) => symlinkImplementation(
+		return (oldPath: DPath.AnyPath) => symlinkImplementation(
 			oldPath,
 			newPath,
 		);

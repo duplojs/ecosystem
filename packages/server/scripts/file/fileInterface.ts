@@ -9,7 +9,6 @@ import { move, type MoveResult } from "./move";
 import { remove, type RemoveResult } from "./remove";
 import { stat, type StatResult } from "./stat";
 import { relocate, type RelocateResult } from "./relocate";
-import { type EntryPath } from "./unknownEntryInterface";
 
 const fileInterfaceKind = createKind("fileInterface");
 
@@ -18,7 +17,7 @@ type FileInterfaceRelocateResult = Exclude<RelocateResult, DEither.Right> | DEit
 type FileInterfaceMoveResult = Exclude<MoveResult, DEither.Right> | DEither.Right<"file-system-move", FileInterface>;
 
 export interface FileInterface<
-	GenericPath extends EntryPath = EntryPath,
+	GenericPath extends DPath.AnyPath = DPath.AnyPath,
 > extends DKind.Kind<
 	typeof fileInterfaceKind
 	> {
@@ -28,8 +27,8 @@ export interface FileInterface<
 	getExtension(params?: DPath.GetExtensionNameParams): (string & DPath.Segment & DPath.Path) | null;
 	getParentPath(): ReturnType<typeof DPath.getParentFolderPath<GenericPath>>;
 	rename(newName: string & DPath.Segment): Promise<FileInterfaceRenameResult>;
-	relocate(parentPath: string & DPath.Path): Promise<FileInterfaceRelocateResult>;
-	move(newPath: string & DPath.Path): Promise<FileInterfaceMoveResult>;
+	relocate(parentPath: DPath.AnyPath): Promise<FileInterfaceRelocateResult>;
+	move(newPath: DPath.AnyPath): Promise<FileInterfaceMoveResult>;
 	exists(): Promise<ExistsResult>;
 	remove(): Promise<RemoveResult>;
 	stat(): Promise<StatResult>;
@@ -37,13 +36,13 @@ export interface FileInterface<
 }
 
 export function createFileInterface<
-	GenericPath extends EntryPath = EntryPath,
+	GenericPath extends DPath.AnyPath = DPath.AnyPath,
 >(
 	path: GenericPath,
 ): FileInterface<GenericPath>;
 
 export function createFileInterface(
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 ) {
 	function getName() {
 		return DPath.getBaseName(path);
@@ -83,7 +82,7 @@ export function createFileInterface(
 		);
 	}
 
-	function localRelocate(newParentPath: string & DPath.Path) {
+	function localRelocate(newParentPath: DPath.AnyPath) {
 		return DCommon.asyncPipe(
 			relocate(path, newParentPath),
 			DEither.whenIsRight(
@@ -95,7 +94,7 @@ export function createFileInterface(
 		);
 	}
 
-	function localMove(newPath: string & DPath.Path) {
+	function localMove(newPath: DPath.AnyPath) {
 		return DCommon.asyncPipe(
 			move(path, newPath),
 			DEither.whenIsRight(
@@ -127,7 +126,7 @@ export function createFileInterface(
 	}
 
 	return {
-		path,
+		path: DCommon.cast(path),
 		getName,
 		getExtension,
 		getMimeType,

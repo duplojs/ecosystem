@@ -3,13 +3,13 @@ import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 
-class ReadJsonFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-json-file-not-found", Error) {}
-class ReadJsonFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-json-file-permission-denied", Error) {}
-class ReadJsonFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-read-json-file-is-directory", Error) {}
-class ReadJsonFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-read-json-file-not-directory", Error) {}
-class ReadJsonFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-read-json-file-too-many-open-files", Error) {}
-class ReadJsonFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-read-json-file-busy", Error) {}
-class ReadJsonFileError extends DCommon.DuploJSError.parentClass("file-system-read-json-file-error", Error) {}
+export class ReadJsonFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-json-file-not-found", Error) {}
+export class ReadJsonFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-json-file-permission-denied", Error) {}
+export class ReadJsonFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-read-json-file-is-directory", Error) {}
+export class ReadJsonFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-read-json-file-not-directory", Error) {}
+export class ReadJsonFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-read-json-file-too-many-open-files", Error) {}
+export class ReadJsonFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-read-json-file-busy", Error) {}
+export class ReadJsonFileError extends DCommon.DuploJSError.parentClass("file-system-read-json-file-error", Error) {}
 
 export type ReadJsonFileErrors = (
 	| ReadJsonFileErrorNotFound
@@ -85,7 +85,7 @@ function handleDenoReadJsonFileError(error: Error) {
 
 declare module "@scripts/implementor" {
 	interface ServerFunction {
-		readJsonFile(path: string & DPath.Path): Promise<ReadJsonFileResult>;
+		readJsonFile(path: DPath.AnyPath): Promise<ReadJsonFileResult>;
 	}
 }
 

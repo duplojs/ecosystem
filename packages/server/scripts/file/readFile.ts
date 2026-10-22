@@ -3,13 +3,13 @@ import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
 
-class ReadFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-file-not-found", Error) {}
-class ReadFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-file-permission-denied", Error) {}
-class ReadFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-read-file-is-directory", Error) {}
-class ReadFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-read-file-not-directory", Error) {}
-class ReadFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-read-file-too-many-open-files", Error) {}
-class ReadFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-read-file-busy", Error) {}
-class ReadFileError extends DCommon.DuploJSError.parentClass("file-system-read-file-error", Error) {}
+export class ReadFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-file-not-found", Error) {}
+export class ReadFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-file-permission-denied", Error) {}
+export class ReadFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-read-file-is-directory", Error) {}
+export class ReadFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-read-file-not-directory", Error) {}
+export class ReadFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-read-file-too-many-open-files", Error) {}
+export class ReadFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-read-file-busy", Error) {}
+export class ReadFileError extends DCommon.DuploJSError.parentClass("file-system-read-file-error", Error) {}
 
 export type ReadFileErrors = (
 	| ReadFileErrorNotFound
@@ -85,7 +85,7 @@ function handleDenoReadFileError(error: Error) {
 
 declare module "@scripts/implementor" {
 	interface ServerFunction {
-		readFile(path: string & DPath.Path): Promise<ReadFileResult>;
+		readFile(path: DPath.AnyPath): Promise<ReadFileResult>;
 	}
 }
 

@@ -1,4 +1,5 @@
 import type * as DKind from "@duplojs/lang/kind";
+import * as DCommon from "@duplojs/lang/common";
 import * as DPath from "@duplojs/lang/path";
 import { createKind } from "@scripts/kind";
 import { stat, type StatResult } from "./stat";
@@ -6,16 +7,10 @@ import { exists, type ExistsResult } from "./exists";
 
 const unknownInterfaceKind = createKind("unknownInterface");
 
-export type EntryPath = (
-	& string
-	& (
-		| DPath.Path
-		| DPath.Absolute
-	)
-);
+export type EntryPath = DPath.AnyPath;
 
 export interface UnknownEntryInterface<
-	GenericPath extends EntryPath = EntryPath,
+	GenericPath extends DPath.AnyPath = DPath.AnyPath,
 > extends DKind.Kind<
 	typeof unknownInterfaceKind
 	> {
@@ -27,13 +22,13 @@ export interface UnknownEntryInterface<
 }
 
 export function createUnknownEntryInterface<
-	GenericPath extends EntryPath = EntryPath,
+	GenericPath extends DPath.AnyPath = DPath.AnyPath,
 >(
 	path: GenericPath,
 ): UnknownEntryInterface<GenericPath>;
 
 export function createUnknownEntryInterface(
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 ): UnknownEntryInterface {
 	function getName() {
 		return DPath.getBaseName(path);
@@ -52,7 +47,7 @@ export function createUnknownEntryInterface(
 	}
 
 	return {
-		path,
+		path: DCommon.cast(path),
 		getName,
 		getParentPath,
 		stat: localStat,

@@ -3,14 +3,14 @@ import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeCrypto, nodeFileSystem, nodeOs } from "@scripts/implementor";
 
-class MakeTemporaryFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-permission-denied", Error) {}
-class MakeTemporaryFileErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-already-exists", Error) {}
-class MakeTemporaryFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-not-directory", Error) {}
-class MakeTemporaryFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-no-space", Error) {}
-class MakeTemporaryFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-read-only", Error) {}
-class MakeTemporaryFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-invalid-argument", Error) {}
-class MakeTemporaryFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-too-many-open-files", Error) {}
-class MakeTemporaryFileError extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-error", Error) {}
+export class MakeTemporaryFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-permission-denied", Error) {}
+export class MakeTemporaryFileErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-already-exists", Error) {}
+export class MakeTemporaryFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-not-directory", Error) {}
+export class MakeTemporaryFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-no-space", Error) {}
+export class MakeTemporaryFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-read-only", Error) {}
+export class MakeTemporaryFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-invalid-argument", Error) {}
+export class MakeTemporaryFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-too-many-open-files", Error) {}
+export class MakeTemporaryFileError extends DCommon.DuploJSError.parentClass("file-system-make-temporary-file-error", Error) {}
 
 export type MakeTemporaryFileErrors = (
 	| MakeTemporaryFileErrorPermissionDenied

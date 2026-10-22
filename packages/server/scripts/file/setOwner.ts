@@ -8,12 +8,12 @@ export interface SetOwnerParams {
 	groupId: number;
 }
 
-class SetOwnerErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-set-owner-not-found", Error) {}
-class SetOwnerErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-set-owner-permission-denied", Error) {}
-class SetOwnerErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-set-owner-not-directory", Error) {}
-class SetOwnerErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-set-owner-read-only", Error) {}
-class SetOwnerErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-set-owner-invalid-argument", Error) {}
-class SetOwnerError extends DCommon.DuploJSError.parentClass("file-system-set-owner-error", Error) {}
+export class SetOwnerErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-set-owner-not-found", Error) {}
+export class SetOwnerErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-set-owner-permission-denied", Error) {}
+export class SetOwnerErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-set-owner-not-directory", Error) {}
+export class SetOwnerErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-set-owner-read-only", Error) {}
+export class SetOwnerErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-set-owner-invalid-argument", Error) {}
+export class SetOwnerError extends DCommon.DuploJSError.parentClass("file-system-set-owner-error", Error) {}
 
 export type SetOwnerErrors = (
 	| SetOwnerErrorNotFound
@@ -82,7 +82,7 @@ function handleDenoSetOwnerError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		setOwner(
-			path: string & DPath.Path,
+			path: DPath.AnyPath,
 			params: SetOwnerParams,
 		): Promise<SetOwnerResult>;
 	}
@@ -104,23 +104,23 @@ const setOwnerImplementation = implementFunction(
 export function setOwner(
 	params: SetOwnerParams,
 ): (
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 ) => Promise<SetOwnerResult>;
 
 export function setOwner(
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 	params: SetOwnerParams,
 ): Promise<SetOwnerResult>;
 
 export function setOwner(
 	...args:
 		| [params: SetOwnerParams]
-		| [path: string & DPath.Path, params: SetOwnerParams]
+		| [path: DPath.AnyPath, params: SetOwnerParams]
 ) {
 	if (args.length === 1) {
 		const [params] = args;
 
-		return (path: string & DPath.Path) => setOwnerImplementation(
+		return (path: DPath.AnyPath) => setOwnerImplementation(
 			path,
 			params,
 		);

@@ -7,16 +7,16 @@ interface WriteJsonFileParams {
 	space?: number;
 }
 
-class WriteJsonFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-write-json-file-not-found", Error) {}
-class WriteJsonFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-write-json-file-permission-denied", Error) {}
-class WriteJsonFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-write-json-file-is-directory", Error) {}
-class WriteJsonFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-write-json-file-not-directory", Error) {}
-class WriteJsonFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-write-json-file-no-space", Error) {}
-class WriteJsonFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-write-json-file-read-only", Error) {}
-class WriteJsonFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-write-json-file-invalid-argument", Error) {}
-class WriteJsonFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-write-json-file-too-many-open-files", Error) {}
-class WriteJsonFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-write-json-file-busy", Error) {}
-class WriteJsonFileError extends DCommon.DuploJSError.parentClass("file-system-write-json-file-error", Error) {}
+export class WriteJsonFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-write-json-file-not-found", Error) {}
+export class WriteJsonFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-write-json-file-permission-denied", Error) {}
+export class WriteJsonFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-write-json-file-is-directory", Error) {}
+export class WriteJsonFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-write-json-file-not-directory", Error) {}
+export class WriteJsonFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-write-json-file-no-space", Error) {}
+export class WriteJsonFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-write-json-file-read-only", Error) {}
+export class WriteJsonFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-write-json-file-invalid-argument", Error) {}
+export class WriteJsonFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-write-json-file-too-many-open-files", Error) {}
+export class WriteJsonFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-write-json-file-busy", Error) {}
+export class WriteJsonFileError extends DCommon.DuploJSError.parentClass("file-system-write-json-file-error", Error) {}
 
 export type WriteJsonFileErrors = (
 	| WriteJsonFileErrorNotFound
@@ -104,7 +104,7 @@ function handleDenoWriteJsonFileError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		writeJsonFile(
-			path: string & DPath.Path,
+			path: DPath.AnyPath,
 			data: unknown,
 			params?: WriteJsonFileParams
 		): Promise<WriteJsonFileResult>;
@@ -184,11 +184,11 @@ const writeJsonFileImplementation = implementFunction(
 export function writeJsonFile(
 	data: unknown,
 ): (
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 ) => Promise<WriteJsonFileResult>;
 
 export function writeJsonFile(
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 	data: unknown,
 	params?: WriteJsonFileParams,
 ): Promise<WriteJsonFileResult>;
@@ -196,12 +196,12 @@ export function writeJsonFile(
 export function writeJsonFile(
 	...args:
 		| [data: unknown]
-		| [path: string & DPath.Path, data: unknown, params?: WriteJsonFileParams]
+		| [path: DPath.AnyPath, data: unknown, params?: WriteJsonFileParams]
 ) {
 	if (args.length === 1) {
 		const [data] = args;
 
-		return (path: string & DPath.Path) => writeJsonFileImplementation(
+		return (path: DPath.AnyPath) => writeJsonFileImplementation(
 			path,
 			data,
 		);

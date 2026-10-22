@@ -3,16 +3,16 @@ import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
 
-class CopyErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-copy-not-found", Error) {}
-class CopyErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-copy-permission-denied", Error) {}
-class CopyErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-copy-already-exists", Error) {}
-class CopyErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-copy-not-directory", Error) {}
-class CopyErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-copy-no-space", Error) {}
-class CopyErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-copy-read-only", Error) {}
-class CopyErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-copy-invalid-argument", Error) {}
-class CopyErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-copy-too-many-open-files", Error) {}
-class CopyErrorBusy extends DCommon.DuploJSError.parentClass("file-system-copy-busy", Error) {}
-class CopyError extends DCommon.DuploJSError.parentClass("file-system-copy-error", Error) {}
+export class CopyErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-copy-not-found", Error) {}
+export class CopyErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-copy-permission-denied", Error) {}
+export class CopyErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-copy-already-exists", Error) {}
+export class CopyErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-copy-not-directory", Error) {}
+export class CopyErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-copy-no-space", Error) {}
+export class CopyErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-copy-read-only", Error) {}
+export class CopyErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-copy-invalid-argument", Error) {}
+export class CopyErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-copy-too-many-open-files", Error) {}
+export class CopyErrorBusy extends DCommon.DuploJSError.parentClass("file-system-copy-busy", Error) {}
+export class CopyError extends DCommon.DuploJSError.parentClass("file-system-copy-error", Error) {}
 
 export type CopyErrors = (
 	| CopyErrorNotFound
@@ -73,8 +73,8 @@ function handleNodeCopyError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		copy(
-			fromPath: string & DPath.Path,
-			toPath: string & DPath.Path,
+			fromPath: DPath.AnyPath,
+			toPath: DPath.AnyPath,
 		): Promise<CopyResult>;
 	}
 }
@@ -93,25 +93,25 @@ const copyImplementation = implementFunction(
 );
 
 export function copy(
-	toPath: string & DPath.Path,
+	toPath: DPath.AnyPath,
 ): (
-	fromPath: string & DPath.Path,
+	fromPath: DPath.AnyPath,
 ) => Promise<CopyResult>;
 
 export function copy(
-	fromPath: string & DPath.Path,
-	toPath: string & DPath.Path,
+	fromPath: DPath.AnyPath,
+	toPath: DPath.AnyPath,
 ): Promise<CopyResult>;
 
 export function copy(
 	...args:
-		| [toPath: string & DPath.Path]
-		| [fromPath: string & DPath.Path, toPath: string & DPath.Path]
+		| [toPath: DPath.AnyPath]
+		| [fromPath: DPath.AnyPath, toPath: DPath.AnyPath]
 ) {
 	if (args.length === 1) {
 		const [toPath] = args;
 
-		return (fromPath: string & DPath.Path) => copyImplementation(
+		return (fromPath: DPath.AnyPath) => copyImplementation(
 			fromPath,
 			toPath,
 		);

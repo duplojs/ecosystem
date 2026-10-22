@@ -45,12 +45,12 @@ export interface StatInfo {
 	isSocket: boolean | null;
 }
 
-class StatErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-stat-not-found", Error) {}
-class StatErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-stat-permission-denied", Error) {}
-class StatErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-stat-not-directory", Error) {}
-class StatErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-stat-too-many-open-files", Error) {}
-class StatErrorBusy extends DCommon.DuploJSError.parentClass("file-system-stat-busy", Error) {}
-class StatError extends DCommon.DuploJSError.parentClass("file-system-stat-error", Error) {}
+export class StatErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-stat-not-found", Error) {}
+export class StatErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-stat-permission-denied", Error) {}
+export class StatErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-stat-not-directory", Error) {}
+export class StatErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-stat-too-many-open-files", Error) {}
+export class StatErrorBusy extends DCommon.DuploJSError.parentClass("file-system-stat-busy", Error) {}
+export class StatError extends DCommon.DuploJSError.parentClass("file-system-stat-error", Error) {}
 
 export type StatErrors = (
 	| StatErrorNotFound
@@ -121,7 +121,7 @@ function handleDenoStatError(error: Error) {
 
 declare module "@scripts/implementor" {
 	interface ServerFunction {
-		stat(path: string & DPath.Path): Promise<StatResult>;
+		stat(path: DPath.AnyPath): Promise<StatResult>;
 	}
 }
 

@@ -3,17 +3,17 @@ import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
 
-class LinkErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-link-not-found", Error) {}
-class LinkErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-link-permission-denied", Error) {}
-class LinkErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-link-already-exists", Error) {}
-class LinkErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-link-not-directory", Error) {}
-class LinkErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-link-no-space", Error) {}
-class LinkErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-link-read-only", Error) {}
-class LinkErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-link-invalid-argument", Error) {}
-class LinkErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-link-too-many-open-files", Error) {}
-class LinkErrorBusy extends DCommon.DuploJSError.parentClass("file-system-link-busy", Error) {}
-class LinkErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-link-cross-device", Error) {}
-class LinkError extends DCommon.DuploJSError.parentClass("file-system-link-error", Error) {}
+export class LinkErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-link-not-found", Error) {}
+export class LinkErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-link-permission-denied", Error) {}
+export class LinkErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-link-already-exists", Error) {}
+export class LinkErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-link-not-directory", Error) {}
+export class LinkErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-link-no-space", Error) {}
+export class LinkErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-link-read-only", Error) {}
+export class LinkErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-link-invalid-argument", Error) {}
+export class LinkErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-link-too-many-open-files", Error) {}
+export class LinkErrorBusy extends DCommon.DuploJSError.parentClass("file-system-link-busy", Error) {}
+export class LinkErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-link-cross-device", Error) {}
+export class LinkError extends DCommon.DuploJSError.parentClass("file-system-link-error", Error) {}
 
 export type LinkErrors = (
 	| LinkErrorNotFound
@@ -104,8 +104,8 @@ function handleDenoLinkError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		link(
-			existingPath: string & DPath.Path,
-			newPath: string & DPath.Path,
+			existingPath: DPath.AnyPath,
+			newPath: DPath.AnyPath,
 		): Promise<LinkResult>;
 	}
 }
@@ -130,25 +130,25 @@ const linkImplementation = implementFunction(
 );
 
 export function link(
-	newPath: string & DPath.Path,
+	newPath: DPath.AnyPath,
 ): (
-	existingPath: string & DPath.Path,
+	existingPath: DPath.AnyPath,
 ) => Promise<LinkResult>;
 
 export function link(
-	existingPath: string & DPath.Path,
-	newPath: string & DPath.Path,
+	existingPath: DPath.AnyPath,
+	newPath: DPath.AnyPath,
 ): Promise<LinkResult>;
 
 export function link(
 	...args:
-		| [newPath: string & DPath.Path]
-		| [existingPath: string & DPath.Path, newPath: string & DPath.Path]
+		| [newPath: DPath.AnyPath]
+		| [existingPath: DPath.AnyPath, newPath: DPath.AnyPath]
 ) {
 	if (args.length === 1) {
 		const [newPath] = args;
 
-		return (existingPath: string & DPath.Path) => linkImplementation(
+		return (existingPath: DPath.AnyPath) => linkImplementation(
 			existingPath,
 			newPath,
 		);
