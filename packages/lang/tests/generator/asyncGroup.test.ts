@@ -1,4 +1,5 @@
-import { DGenerator, pipe, type ExpectType } from "@scripts";
+import * as DGenerator from "@scripts/generator";
+import * as DCommon from "@scripts/common";
 
 describe("asyncGroup", () => {
 	it("groups async iterable values by callback output", async() => {
@@ -18,7 +19,7 @@ describe("asyncGroup", () => {
 			),
 		);
 
-		await expect(result).resolves.toStrictEqual({
+		await expect(result).resolves.toEqual({
 			short: [
 				{
 					item: "a",
@@ -37,7 +38,7 @@ describe("asyncGroup", () => {
 			],
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<{
 				readonly long?: readonly [{
@@ -60,7 +61,7 @@ describe("asyncGroup", () => {
 	});
 
 	it("groups async values in pipe", async() => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["alpha", "bee", "ace"] as const,
 			DGenerator.asyncMap(async(item) => Promise.resolve(item)),
 			DGenerator.asyncGroup((item, params) => params.output(
@@ -69,12 +70,12 @@ describe("asyncGroup", () => {
 			)),
 		);
 
-		await expect(result).resolves.toStrictEqual({
+		await expect(result).resolves.toEqual({
 			startA: ["alpha", "ace"],
 			other: ["bee"],
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<{
 				readonly startA?: readonly ["alpha" | "bee" | "ace", ...("alpha" | "bee" | "ace")[]] | undefined;
@@ -85,7 +86,7 @@ describe("asyncGroup", () => {
 	});
 
 	it("returns an empty result for an empty async iterable", async() => {
-		const result = DGenerator.asyncGroup(
+		const result = await DGenerator.asyncGroup(
 			(async function *() {
 				await Promise.resolve();
 				if (false) {
@@ -95,13 +96,14 @@ describe("asyncGroup", () => {
 			(item, params) => params.output("missing", item),
 		);
 
-		await expect(result).resolves.toStrictEqual({});
+		expect(result).toEqual({});
+		expect(Object.getPrototypeOf(result)).toBeNull();
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			Promise<{
+			{
 				readonly missing?: readonly [never, ...never[]] | undefined;
-			}>,
+			},
 			"strict"
 		>;
 	});
@@ -114,7 +116,7 @@ describe("asyncGroup", () => {
 		const result = DGenerator.asyncGroup(
 			input,
 			async(item, params) => {
-				type _CheckItem = ExpectType<
+				type _CheckItem = DCommon.ExpectType<
 					typeof item,
 					1 | "a",
 					"strict"
@@ -124,15 +126,49 @@ describe("asyncGroup", () => {
 			},
 		);
 
-		await expect(result).resolves.toStrictEqual({
+		await expect(result).resolves.toEqual({
 			value: [1, "a"],
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<{
 				readonly value?: readonly [1 | "a", ...(1 | "a")[]] | undefined;
 			}>,
+			"strict"
+		>;
+	});
+
+	it.each(["toString", "constructor", "__proto__"])("groups values under the dynamic prototype property name %s", async(groupName) => {
+		const input = DGenerator.asyncMap([1, 2] as const, (value) => value);
+		const result = await DGenerator.asyncGroup(
+			input,
+			(value, { output }) => output(groupName, value),
+		);
+
+		expect(result[groupName]).toStrictEqual([1, 2]);
+		expect(Object.getPrototypeOf(result)).toBeNull();
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			{ readonly [key: string]: readonly [1 | 2, ...(1 | 2)[]] | undefined },
+			"strict"
+		>;
+	});
+
+	it.each(["toString", "constructor", "__proto__"])("groups values under the dynamic prototype property name %s in pipe", async(groupName) => {
+		const result = await DCommon.pipe(
+			[1, 2] as const,
+			DGenerator.asyncMap((value) => value),
+			DGenerator.asyncGroup((value, { output }) => output(groupName, value)),
+		);
+
+		expect(result[groupName]).toStrictEqual([1, 2]);
+		expect(Object.getPrototypeOf(result)).toBeNull();
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			{ readonly [key: string]: readonly [1 | 2, ...(1 | 2)[]] | undefined },
 			"strict"
 		>;
 	});

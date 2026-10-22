@@ -95,7 +95,7 @@ export function group(
 	}
 	const [array, theFunction] = args;
 
-	const result: Record<string, unknown[]> = {};
+	const result: Record<string, unknown[]> = Object.create(null);
 
 	for (let index = 0; index < array.length; index++) {
 		const { group, value } = theFunction(array[index], {

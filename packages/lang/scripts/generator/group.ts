@@ -97,7 +97,7 @@ export function group(
 
 	const [iterator, theFunction] = args;
 
-	const result: Record<string, unknown[]> = {};
+	const result: Record<string, unknown[]> = Object.create(null);
 
 	let index = 0;
 
