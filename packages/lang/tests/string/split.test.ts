@@ -1,106 +1,75 @@
 import * as DArray from "@scripts/array";
-import type * as DNumber from "@scripts/number";
 import * as DString from "@scripts/string";
 import * as DCommon from "@scripts/common";
 
 describe("split", () => {
-	it("should split string with separator", () => {
+	it("should split with a string separator directly and in pipe", () => {
 		const result = DString.split("a,b,c", ",");
-		expect(result).toEqual(["a", "b", "c"]);
+		const pipedResult = DCommon.pipe(
+			"a,b,c",
+			DString.split(","),
+			DArray.map(DString.toUpperCase),
+		);
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly string[] & DArray.MinElements<3> & DArray.LengthEqual<3> & DArray.MaxElements<3>,
 			"strict"
 		>;
+		type _CheckPipedResult = DCommon.ExpectType<
+			typeof pipedResult,
+			readonly Uppercase<string>[] & DArray.LengthEqual<3> & DArray.MinElements<3> & DArray.MaxElements<3>,
+			"strict"
+		>;
+
+		expect(result).toStrictEqual(["a", "b", "c"]);
+		expect(pipedResult).toStrictEqual(["A", "B", "C"]);
 	});
 
 	it("should split string with limit", () => {
 		const result = DString.split("a,b,c,d", ",", { limit: 2 });
-		expect(result).toEqual(["a", "b"]);
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly string[] & DArray.MinElements<2> & DArray.LengthEqual<2> & DArray.MaxElements<2>,
 			"strict"
 		>;
+
+		expect(result).toStrictEqual(["a", "b"]);
 	});
 
-	it("should split string with regex separator", () => {
-		const result = DString.split("a,b;c:d", /[,;:]/);
-		expect(result).toEqual(["a", "b", "c", "d"]);
+	it("should filter unmatched regex captures and preserve empty and present captures", () => {
+		const separator = DCommon.forward<string | RegExp>(/(a)|(b)()/);
+		const result = DString.split("b", /(a)|(b)()/);
+		const pipedResult = DCommon.pipe("b", DString.split(separator));
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			readonly (string | undefined)[],
+			readonly string[] & DArray.MinElements<1>,
 			"strict"
 		>;
+		type _CheckPipedResult = DCommon.ExpectType<typeof pipedResult, typeof result, "strict">;
+
+		expect(result).toStrictEqual(["", "b", "", ""]);
+		expect(pipedResult).toStrictEqual(["", "b", "", ""]);
 	});
 
-	it("should split string with regex separator and limit", () => {
-		const result = DString.split("a,b;c:d", /[,;:]/, { limit: 3 });
-		expect(result).toEqual(["a", "b", "c"]);
+	it("should apply the regex limit before filtering unmatched captures", () => {
+		const result = DString.split("a,b;c", /(,)|(;)/, { limit: 4 });
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			readonly (string | undefined)[],
-			"strict"
-		>;
-	});
-
-	it("should include undefined in its element type for unmatched regex captures", () => {
-		const result = DString.split("b", /(a)|(b)/);
-
-		type _CheckElement = DCommon.ExpectType<
-			typeof result[number],
-			string | undefined,
+			readonly string[] & DArray.MinElements<1>,
 			"strict"
 		>;
 
-		expect(result).toStrictEqual(["", undefined, "b", ""]);
+		expect(result).toStrictEqual(["a", ",", "b"]);
 	});
 
-	it("should include undefined in its element type for unmatched regex captures in pipe", () => {
-		const result = DCommon.pipe("b", DString.split(/(a)|(b)/));
-
-		type _CheckElement = DCommon.ExpectType<
-			typeof result[number],
-			string | undefined,
-			"strict"
-		>;
-
-		expect(result).toStrictEqual(["", undefined, "b", ""]);
-	});
-
-	it("should allow undefined elements when the separator can be a string or regex", () => {
-		const separator = DCommon.forward<string | RegExp>(/(a)|(b)/);
-		const result = DString.split("b", separator);
-
-		type _CheckResult = DCommon.ExpectType<
-			typeof result,
-			readonly (string | undefined)[],
-			"strict"
-		>;
-
-		expect(result).toStrictEqual(["", undefined, "b", ""]);
-	});
-
-	it("should allow undefined elements when the separator can be a string or regex in pipe", () => {
-		const separator = DCommon.forward<string | RegExp>(/(a)|(b)/);
-		const result = DCommon.pipe("b", DString.split(separator));
-
-		type _CheckResult = DCommon.ExpectType<
-			typeof result,
-			readonly (string | undefined)[],
-			"strict"
-		>;
-
-		expect(result).toStrictEqual(["", undefined, "b", ""]);
-	});
-
-	it("should distribute string separator unions", () => {
+	it("should distribute string separator unions directly and in pipe", () => {
 		const separator = DCommon.forward<"," | ";">(",");
 		const result = DString.split("a,b,c", separator);
+		const pipedResult = DCommon.pipe("a,b,c", DString.split(separator));
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
@@ -108,116 +77,76 @@ describe("split", () => {
 			| (readonly string[] & DArray.MinElements<1> & DArray.LengthEqual<1> & DArray.MaxElements<1>),
 			"strict"
 		>;
+		type _CheckPipedResult = DCommon.ExpectType<typeof pipedResult, typeof result, "strict">;
 
 		expect(result).toStrictEqual(["a", "b", "c"]);
-	});
-
-	it("should distribute string separator unions in pipe", () => {
-		const separator = DCommon.forward<"," | ";">(",");
-		const result = DCommon.pipe("a,b,c", DString.split(separator));
-
-		type _CheckResult = DCommon.ExpectType<
-			typeof result,
-			| (readonly string[] & DArray.MinElements<3> & DArray.LengthEqual<3> & DArray.MaxElements<3>)
-			| (readonly string[] & DArray.MinElements<1> & DArray.LengthEqual<1> & DArray.MaxElements<1>),
-			"strict"
-		>;
-
-		expect(result).toStrictEqual(["a", "b", "c"]);
-	});
-
-	it("should handle empty string", () => {
-		const result = DString.split("", ",");
-		expect(result).toEqual([""]);
-
-		type _CheckResult = DCommon.ExpectType<
-			typeof result,
-			readonly string[] & DArray.MinElements<1> & DArray.LengthEqual<1> & DArray.MaxElements<1>,
-			"strict"
-		>;
+		expect(pipedResult).toStrictEqual(["a", "b", "c"]);
 	});
 
 	it("should handle separator not found", () => {
 		const result = DString.split("hello", ",");
-		expect(result).toEqual(["hello"]);
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly string[] & DArray.MinElements<1> & DArray.LengthEqual<1> & DArray.MaxElements<1>,
 			"strict"
 		>;
+
+		expect(result).toStrictEqual(["hello"]);
 	});
 
-	it("limit 0", () => {
+	it("should return an empty string when the limit is zero", () => {
 		const result = DString.split("a-b-c-d-e", "-", { limit: 0 });
-		expect(result).toStrictEqual([]);
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			readonly string[] & DArray.MinElements<0> & DArray.LengthEqual<0> & DArray.MaxElements<0>,
+			readonly string[] & DArray.MinElements<1> & DArray.LengthEqual<1> & DArray.MaxElements<1>,
 			"strict"
 		>;
+
+		expect(result).toStrictEqual([""]);
 	});
 
-	it("should require a positive integer limit", () => {
-		const limit = 1 as number & DNumber.StrictPositive;
-
-		// @ts-expect-error limit requires both positive and integer guarantees.
-		DString.split("a,b,c", ",", { limit });
-	});
-
-	it("use in pipe", () => {
-		const result = DCommon.pipe(
-			"apple,banana,cherry",
-			DString.split(","),
-			DArray.map(DString.toUpperCase),
-		);
-		expect(result).toEqual(["APPLE", "BANANA", "CHERRY"]);
+	it("should accept nonliteral limits and ignore negative or fractional limits", () => {
+		const limit = DCommon.forward<number>(2);
+		const result = DString.split("a,b,c", ",", { limit });
+		const negativeResult = DString.split("a,b,c", ",", { limit: -1 });
+		const fractionalResult = DString.split("a,b,c", ",", { limit: 1.5 });
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			readonly Uppercase<string>[] & DArray.LengthEqual<3> & DArray.MinElements<3> & DArray.MaxElements<3>,
+			readonly string[] & DArray.MinElements<1>,
 			"strict"
 		>;
+		type _CheckNegativeResult = DCommon.ExpectType<typeof negativeResult, typeof result, "strict">;
+		type _CheckFractionalResult = DCommon.ExpectType<typeof fractionalResult, typeof result, "strict">;
+
+		expect(result).toStrictEqual(["a", "b"]);
+		expect(negativeResult).toStrictEqual(["a", "b", "c"]);
+		expect(fractionalResult).toStrictEqual(["a", "b", "c"]);
 	});
 
-	it("respects its minimum length guarantee for an empty string and separator", () => {
-		const result = DString.split("", "");
-
-		type _CheckResult = DCommon.ExpectType<typeof result, readonly string[] & DArray.MinElements<1>, "strict">;
-
-		expect(result.length).toBeGreaterThanOrEqual(1);
-	});
-
-	it("respects its minimum length guarantee for an empty string and separator in pipe", () => {
-		const result = DCommon.pipe("", DString.split(""));
-
-		type _CheckResult = DCommon.ExpectType<typeof result, readonly string[] & DArray.MinElements<1>, "strict">;
-
-		expect(result.length).toBeGreaterThanOrEqual(1);
-	});
-
-	it("should allow an empty result for an empty string and regex separator", () => {
-		const result = DString.split("", /(?:)/);
+	it.each([
+		{
+			separator: "",
+			expected: [""],
+		},
+		{
+			separator: /(?:)/,
+			expected: [""],
+		},
+	])("should return a nonempty array for empty input with $separator", ({ separator, expected }) => {
+		const result = DString.split("", separator);
+		const pipedResult = DCommon.pipe("", DString.split(separator));
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			readonly (string | undefined)[],
+			readonly string[] & DArray.MinElements<1>,
 			"strict"
 		>;
+		type _CheckPipedResult = DCommon.ExpectType<typeof pipedResult, typeof result, "strict">;
 
-		expect(result).toStrictEqual([]);
-	});
-
-	it("should allow an empty result for an empty string and regex separator in pipe", () => {
-		const result = DCommon.pipe("", DString.split(/(?:)/));
-
-		type _CheckResult = DCommon.ExpectType<
-			typeof result,
-			readonly (string | undefined)[],
-			"strict"
-		>;
-
-		expect(result).toStrictEqual([]);
+		expect(result).toStrictEqual(expected);
+		expect(pipedResult).toStrictEqual(expected);
 	});
 });

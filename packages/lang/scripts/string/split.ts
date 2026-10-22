@@ -1,14 +1,13 @@
-import type * as DCommon from "@scripts/common";
-import type * as DNumber from "@scripts/number";
-import type * as DArray from "@scripts/array";
-import type * as DTuple from "@scripts/tuple";
+import * as DCommon from "@scripts/common";
+import * as DNumber from "@scripts/number";
+import * as DArray from "@scripts/array";
 import type { ApplyFormat, Format } from "./constraints";
 import type { IsKeyPattern } from "./types";
 
 export interface SplitParams<
 	GenericLimit extends number,
 > {
-	limit: GenericLimit & DNumber.RequirePositiveInteger<GenericLimit>;
+	limit: GenericLimit;
 }
 
 type CountSplitGroups<
@@ -28,14 +27,13 @@ type CountSplitGroups<
 type ApplySplitLimit<
 	GenericGroupNumber extends number,
 	GenericLimit extends number,
-> = DCommon.IsEqual<GenericLimit, number> extends true
+> = DCommon.IsNever<GenericLimit> extends true
 	? GenericGroupNumber
-	: DTuple.Create<unknown, GenericGroupNumber> extends readonly [
-		...DTuple.Create<unknown, GenericLimit>,
-		...unknown[],
-	]
-		? GenericLimit
-		: GenericGroupNumber;
+	: GenericLimit extends 0
+		? 1
+		: DNumber.IsGreaterOrEqual<GenericGroupNumber, GenericLimit> extends true
+			? GenericLimit
+			: GenericGroupNumber;
 
 type ComputeSplitOutput<
 	GenericString extends string,
@@ -73,9 +71,13 @@ type ComputeSplitOutput<
 type SplitOutput<
 	GenericString extends string,
 	GenericSeparator extends string | RegExp,
-	GenericLimit extends number = number,
-> = DCommon.ContainExtends<GenericSeparator, RegExp> extends true
-	? readonly (string | undefined)[]
+	GenericLimit extends number = never,
+> = DCommon.Or<[
+	DCommon.ContainExtends<GenericSeparator, RegExp>,
+	DCommon.Not<DNumber.IsPositiveInteger<GenericLimit>>,
+	DNumber.IsGreater<GenericLimit, 4294967295>,
+]> extends true
+	? readonly string[] & DArray.MinElements<1>
 	: GenericSeparator extends unknown
 		? GenericString extends Format<string>
 			? ComputeSplitOutput<
@@ -85,7 +87,8 @@ type SplitOutput<
 			>
 			: ComputeSplitOutput<
 				Extract<DCommon.RemoveConstraint<GenericString>, string>,
-				Extract<GenericSeparator, string>, GenericLimit
+				Extract<GenericSeparator, string>,
+				GenericLimit
 			>
 		: never;
 
@@ -101,7 +104,7 @@ export function split<
 export function split<
 	GenericString extends string,
 	GenericSeparator extends string | RegExp,
-	GenericLimit extends number,
+	GenericLimit extends number = never,
 >(
 	string: GenericString,
 	separator: GenericSeparator,
@@ -121,9 +124,16 @@ export function split(
 
 	const [string, separator, params] = args;
 
-	if (string === "" && separator === "") {
-		return [""];
-	}
+	const limit = params?.limit;
+	const validLimit = DCommon.isType(limit, "number")
+		&& DNumber.isPositive(limit)
+		&& DNumber.isInteger(limit)
+		? limit
+		: undefined;
+	const result = string.split(separator, validLimit);
+	const filteredResult = DCommon.isType(separator, "string")
+		? result
+		: DArray.filter(result, (value) => value !== undefined);
 
-	return string.split(separator, params?.limit);
+	return filteredResult.length === 0 ? [""] : filteredResult;
 }
