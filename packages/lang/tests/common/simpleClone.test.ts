@@ -1,4 +1,5 @@
 import * as DCommon from "@scripts/common";
+import * as DKind from "@scripts/kind";
 
 describe("simpleClone", () => {
 	it("returns primitive and falsy values directly", () => {
@@ -42,6 +43,37 @@ describe("simpleClone", () => {
 			Object.getOwnPropertyDescriptor(input, "value")?.get,
 		);
 		expect(result.value).toBe("computed");
+	});
+
+	it("preserves kind markers and deep clones their values", () => {
+		const kind = DKind.create<"clone", { values: readonly number[] }>("clone");
+		const input = kind.addTo({ name: "Duplo" }, { values: [1, 2] });
+
+		const result = DCommon.simpleClone(input);
+
+		type _CheckResult = DCommon.ExpectType<typeof result, typeof input, "strict">;
+
+		expect(result).toStrictEqual(input);
+		expect(result).not.toBe(input);
+		expect(kind.has(result)).toBe(true);
+		expect(kind.getValue(result)).not.toBe(kind.getValue(input));
+		expect(kind.getValue(result).values).not.toBe(kind.getValue(input).values);
+	});
+
+	it("preserves nested and inherited kind markers alongside symbols", () => {
+		const kind = DKind.create("nestedClone");
+		const key = Symbol("value");
+		const tagged = kind.addTo({ [key]: { value: 42 } }, null);
+		const inherited = Object.create(tagged) as typeof tagged;
+		const input = { values: [tagged, inherited] };
+
+		const result = DCommon.simpleClone(input);
+
+		expect(result.values).toStrictEqual([tagged, { [kind.runTimeKey]: null }]);
+		expect(result.values[0]).not.toBe(tagged);
+		expect(result.values[0]?.[key]).not.toBe(tagged[key]);
+		expect(kind.has(result.values[0])).toBe(true);
+		expect(kind.has(result.values[1])).toBe(true);
 	});
 
 	it("returns class instances directly", () => {

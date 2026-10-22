@@ -29,11 +29,7 @@ export const objectStructureTransformer = createStructureTransformer(
 				}) => DCommon.pipe(
 					element.value,
 					transformer,
-					DCommon.when(
-						DEither.isLeft,
-						exit,
-					),
-					DEither.whenIsRight(
+					DEither.whenIsRightOtherwise(
 						(value) => nextPush(
 							lastValue,
 							Typescript.factory.createPropertyAssignment(
@@ -41,6 +37,7 @@ export const objectStructureTransformer = createStructureTransformer(
 								value,
 							),
 						),
+						exit,
 					),
 				),
 			),
