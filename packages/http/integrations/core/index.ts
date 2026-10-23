@@ -8,7 +8,7 @@ import { cookiePlugin } from "@duplojs/http/cookie";
 import * as DPath from "@duplojs/lang/path";
 import "@duplojs/http/codeGenerator";
 
-import "./routes";
+import "@routes";
 
 const sourceFile = DSFile.createFileInterface(DPath.declarePath("files/fakeFiles/superTextFile.txt"));
 const sourceFolder = DSFile.createFolderInterface(DPath.declarePath("files/fakeFiles"));

@@ -1,16 +1,8 @@
 import { ResponseContract, useRouteBuilder } from "@duplojs/http";
 import { createCacheControllerHooks } from "@duplojs/http/cacheController";
 import * as DCommon from "@duplojs/lang/common";
-import type * as DChrono from "@duplojs/lang/chrono";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-
-interface User {
-	readonly id: number;
-	readonly name: string;
-	readonly age: number;
-	readonly friends?: readonly User[];
-	readonly createdAt?: DChrono.TheDate;
-}
+import { type User } from "@routes/types";
 
 const user: DDataStructure.Structure<User> = DDataStructure.object({
 	id: DDataStructure.number().setIdentifier("UserId"),

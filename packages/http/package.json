@@ -92,7 +92,7 @@
     "@duplojs/tools": "workspace:*",
     "@duplojs/server": "workspace:*",
     "@duplojs/lang": "workspace:*",
-    "@typescript/native-API": "npm:typescript@7.1.0-dev.20261018.1"
+    "@typescript/native-API": "npm:typescript@7.1.0-beta"
   },
   "devDependencies": {
     "@duplojs/code-config": "workspace:*",

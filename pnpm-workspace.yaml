@@ -12,3 +12,5 @@ allowBuilds:
   bun: true
   deno: true
   esbuild: true
+minimumReleaseAgeExclude:
+  - '@ttsc/paths@0.34.1'

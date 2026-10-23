@@ -2,6 +2,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@duplojs/http": "workspace:*"
+    "@duplojs/http": "workspace:*",
+    "typescript": "7.1.0-beta"
   }
 }
