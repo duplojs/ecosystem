@@ -1,4 +1,5 @@
-import { DArray, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("first", () => {
 	it("should return the first value", () => {
@@ -6,7 +7,7 @@ describe("first", () => {
 
 		expect(result).toBe("a");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string | undefined,
 			"strict"
@@ -19,7 +20,7 @@ describe("first", () => {
 
 		expect(result).toBe("a");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"a" | "b" | undefined,
 			"strict"
@@ -36,7 +37,7 @@ describe("first", () => {
 		const source = ["a"] as string[] & DArray.MinElements<1>;
 		const result = DArray.first(source);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -49,7 +50,7 @@ describe("first", () => {
 
 		expect(result).toBeUndefined();
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			undefined,
 			"strict"
@@ -60,7 +61,7 @@ describe("first", () => {
 		const source = ["a"] as string[] & DArray.LengthEqual<1>;
 		const result = DArray.first(source);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"

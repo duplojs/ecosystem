@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("prepend", () => {
 	it("should prepend arrays without mutating the source", () => {
@@ -8,7 +9,7 @@ describe("prepend", () => {
 		expect(result).toEqual(["a", true, 1, 2]);
 		expect(source).toEqual([1, 2]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly (number | "a" | true)[] & DArray.MinElements<2>,
 			"strict"
@@ -16,7 +17,7 @@ describe("prepend", () => {
 	});
 
 	it("should prepend arrays in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, 2] as const,
 			DArray.prepend(["a"] as const),
 		);
@@ -32,7 +33,7 @@ describe("prepend", () => {
 
 		expect(result).toEqual(["x", 1, 2, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly (number | "x")[] & DArray.MinElements<0>)
 			| (readonly (number | "x")[] & DArray.MinElements<3>),
@@ -44,7 +45,7 @@ describe("prepend", () => {
 		const sourceMax = [1, 2] as number[] & DArray.MaxElements<2>;
 		const resultMax = DArray.prepend(sourceMax, ["a"] as const);
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			readonly (number | "a")[],
 			"strict"
@@ -53,7 +54,7 @@ describe("prepend", () => {
 		const sourceLength = [1, 2] as number[] & DArray.LengthEqual<2>;
 		const resultLength = DArray.prepend(sourceLength, ["a"] as const);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			readonly (number | "a")[] & DArray.MinElements<2>,
 			"strict"

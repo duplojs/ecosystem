@@ -1,15 +1,17 @@
-import { DDataStructure, type DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DString from "@scripts/string";
 
 describe("UuidConstraint", () => {
 	it("creates a synchronous uuid constraint", () => {
 		const constraint = DDataStructure.UuidConstraint();
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.UuidConstraint,
 			"strict"
 		>;
-		type _CheckConstraintValue = ExpectType<
+		type _CheckConstraintValue = DCommon.ExpectType<
 			DDataStructure.ConstraintValue<typeof constraint>,
 			DString.Uuid,
 			"strict"

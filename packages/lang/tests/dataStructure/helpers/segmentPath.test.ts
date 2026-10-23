@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, type DPath, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DPath from "@scripts/path";
 
 describe("segmentPath", () => {
 	it("creates and applies a segment path constraint", () => {
@@ -7,12 +10,12 @@ describe("segmentPath", () => {
 		const success = structure.check("index.ts");
 		const failure = structure.check("src/index.ts");
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.SegmentPathConstraint,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string & DPath.Segment,
 			"strict"

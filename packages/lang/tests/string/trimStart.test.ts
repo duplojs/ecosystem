@@ -1,4 +1,5 @@
-import { DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("trimStart", () => {
 	it("should trim the start of a string", () => {
@@ -6,7 +7,7 @@ describe("trimStart", () => {
 
 		expect(result).toBe("hello  ");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DString.MaxCharacters<9>,
 			"strict"
@@ -17,7 +18,7 @@ describe("trimStart", () => {
 		const sourceMax = "  hello  " as string & DString.MaxCharacters<10>;
 		const resultMax = DString.trimStart(sourceMax);
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			string & DString.MaxCharacters<10>,
 			"strict"
@@ -26,7 +27,7 @@ describe("trimStart", () => {
 		const sourceMin = "  hello  " as string & DString.MinCharacters<3>;
 		const resultMin = DString.trimStart(sourceMin);
 
-		type _CheckMinResult = ExpectType<
+		type _CheckMinResult = DCommon.ExpectType<
 			typeof resultMin,
 			string,
 			"strict"
@@ -35,7 +36,7 @@ describe("trimStart", () => {
 		const sourceLength = "  hello  " as string & DString.LengthEqual<9>;
 		const resultLength = DString.trimStart(sourceLength);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			string & DString.MaxCharacters<9>,
 			"strict"

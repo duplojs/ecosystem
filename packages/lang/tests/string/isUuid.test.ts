@@ -1,4 +1,5 @@
-import { DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("isUuid", () => {
 	it("should validate an uuid", () => {
@@ -15,13 +16,13 @@ describe("isUuid", () => {
 		const source = "550e8400-e29b-41d4-a716-446655440000" as string;
 
 		if (DString.isUuid(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				string & DString.Uuid,
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				string,
 				"strict"

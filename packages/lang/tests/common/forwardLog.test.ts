@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("forwardLog", () => {
 	it("logs and returns the input unchanged", () => {
@@ -8,7 +9,7 @@ describe("forwardLog", () => {
 		try {
 			const result = DCommon.forwardLog(input);
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				typeof input,
 				"strict"

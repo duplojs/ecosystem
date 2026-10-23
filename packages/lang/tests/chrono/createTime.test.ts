@@ -1,4 +1,6 @@
-import { type ExpectType, DChrono, DEither } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
+import * as DEither from "@scripts/either";
 
 describe("createTime", () => {
 	it("creates from milliseconds by default", () => {
@@ -9,7 +11,7 @@ describe("createTime", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("time5000+");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeTime,
 			"strict"
@@ -21,7 +23,7 @@ describe("createTime", () => {
 
 		expect(DChrono.serialize(result)).toBe("time2000+");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheTime,
 			"strict"
@@ -53,7 +55,7 @@ describe("createTime", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe(`time${total}+`);
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeTime,
 			"strict"
@@ -122,7 +124,7 @@ describe("createTime", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe(`time${total}+`);
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeTime,
 			"strict"
@@ -145,7 +147,7 @@ describe("createTime", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe(`time${total}+`);
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeTime,
 			"strict"
@@ -165,7 +167,7 @@ describe("createTime", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe(`time${total}-`);
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeTime,
 			"strict"
@@ -184,7 +186,7 @@ describe("createTime", () => {
 			DEither.left("time-created-error", null),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeTime,
 			"strict"
@@ -228,7 +230,7 @@ describe("createTime", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("time2500-");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeTime,
 			"strict"
@@ -260,7 +262,7 @@ describe("createTime", () => {
 			DEither.left("time-created-error", null),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeTime,
 			"strict"
@@ -274,7 +276,7 @@ describe("createTime", () => {
 			DEither.left("time-created-error", null),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeTime,
 			"strict"
@@ -288,7 +290,7 @@ describe("createTime", () => {
 			DEither.left("time-created-error", null),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeTime,
 			"strict"
@@ -301,7 +303,7 @@ describe("createTime", () => {
 
 		expect(result).toBe(time);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeTime,
 			"strict"

@@ -1,4 +1,7 @@
-import { DCommon, DDataStructure, DModeling, type ExpectType, pipe, when } from "@scripts";
+
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DModeling from "@scripts/modeling";
 
 describe("isType", () => {
 	it("detects every supported runtime type", () => {
@@ -61,7 +64,7 @@ describe("isType", () => {
 	it("narrows the direct input", () => {
 		const format = (input: string | number) => {
 			if (DCommon.isType(input, "string")) {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					string,
 					"strict"
@@ -69,7 +72,7 @@ describe("isType", () => {
 
 				return input.toUpperCase();
 			} else {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					number,
 					"strict"
@@ -84,12 +87,12 @@ describe("isType", () => {
 	});
 
 	it("preserves narrowing in a pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"value" as string | number,
-			when(
+			DCommon.when(
 				DCommon.isType("string"),
 				(input) => {
-					type _CheckInput = ExpectType<
+					type _CheckInput = DCommon.ExpectType<
 						typeof input,
 						string,
 						"strict"
@@ -100,7 +103,7 @@ describe("isType", () => {
 			),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -123,7 +126,7 @@ describe("isType", () => {
 			"object",
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			boolean,
 			"strict"

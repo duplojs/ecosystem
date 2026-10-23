@@ -1,4 +1,5 @@
-import { DEither, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("rewriteInformation", () => {
 	it("should rewrite a specialized right as a pure right", () => {
@@ -16,7 +17,7 @@ describe("rewriteInformation", () => {
 		expect(DEither.unwrapRight(result)).toBe(value);
 		expect(DEither.successKind.has(result)).toBe(false);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Right<"loaded", { id: number }>
 			| DEither.Error<"message">,
@@ -33,7 +34,7 @@ describe("rewriteInformation", () => {
 		expect(result).toStrictEqual(DEither.left("failure", "message"));
 		expect(DEither.errorKind.has(result)).toBe(false);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.Left<"failure", "message">,
 			"strict"
@@ -46,7 +47,7 @@ describe("rewriteInformation", () => {
 				? DEither.error("message")
 				: DEither.success(42)
 		);
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.rewriteInformation({
 				error: "failure",
@@ -56,7 +57,7 @@ describe("rewriteInformation", () => {
 
 		expect(result).toStrictEqual(DEither.left("failure", "message"));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Left<"failure", "message">
 			| DEither.Right<"loaded", 42>,
@@ -72,12 +73,12 @@ describe("rewriteInformation", () => {
 		expect(result).toBe(input);
 		expect(plainResult).toBe("plain");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.Success<42>,
 			"strict"
 		>;
-		type _CheckPlainResult = ExpectType<
+		type _CheckPlainResult = DCommon.ExpectType<
 			typeof plainResult,
 			"plain",
 			"strict"

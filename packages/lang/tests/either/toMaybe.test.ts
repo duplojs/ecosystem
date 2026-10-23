@@ -1,4 +1,5 @@
-import { DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("toMaybe", () => {
 	it("should preserve right and left values", () => {
@@ -11,12 +12,12 @@ describe("toMaybe", () => {
 		expect(rightResult).toBe(right);
 		expect(leftResult).toBe(left);
 
-		type _CheckRightResult = ExpectType<
+		type _CheckRightResult = DCommon.ExpectType<
 			typeof rightResult,
 			DEither.Success<42>,
 			"strict"
 		>;
-		type _CheckLeftResult = ExpectType<
+		type _CheckLeftResult = DCommon.ExpectType<
 			typeof leftResult,
 			DEither.Error<"message">,
 			"strict"
@@ -30,12 +31,12 @@ describe("toMaybe", () => {
 		expect(nullResult).toStrictEqual(DEither.none());
 		expect(undefinedResult).toStrictEqual(DEither.none());
 
-		type _CheckNullResult = ExpectType<
+		type _CheckNullResult = DCommon.ExpectType<
 			typeof nullResult,
 			DEither.None,
 			"strict"
 		>;
-		type _CheckUndefinedResult = ExpectType<
+		type _CheckUndefinedResult = DCommon.ExpectType<
 			typeof undefinedResult,
 			DEither.None,
 			"strict"
@@ -49,7 +50,7 @@ describe("toMaybe", () => {
 		expect(result).toStrictEqual(DEither.some(input));
 		expect(DEither.unwrapRight(result)).toBe(input);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.Some<{ id: number }>,
 			"strict"
@@ -62,7 +63,7 @@ describe("toMaybe", () => {
 
 		expect(result).toStrictEqual(DEither.some("value"));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.Some<string> | DEither.None,
 			"strict"

@@ -1,15 +1,17 @@
-import { DDataStructure, type DNumber, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DNumber from "@scripts/number";
 
 describe("StrictPositiveConstraint", () => {
 	it("creates a synchronous strict positive number constraint", () => {
 		const constraint = DDataStructure.StrictPositiveConstraint();
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.StrictPositiveConstraint,
 			"strict"
 		>;
-		type _CheckConstraintValue = ExpectType<
+		type _CheckConstraintValue = DCommon.ExpectType<
 			DDataStructure.ConstraintValue<typeof constraint>,
 			DNumber.StrictPositive,
 			"strict"

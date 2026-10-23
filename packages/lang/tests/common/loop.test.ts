@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("loop", () => {
 	it("loops until exit and forwards the previous output", () => {
@@ -13,7 +14,7 @@ describe("loop", () => {
 			return params.next((params.previousOutput ?? 0) + 1);
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"

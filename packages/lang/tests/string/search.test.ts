@@ -1,4 +1,5 @@
-import { DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("search", () => {
 	it("should return the matching index", () => {
@@ -6,7 +7,7 @@ describe("search", () => {
 
 		expect(result).toBe(6);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number | undefined,
 			"strict"
@@ -18,7 +19,7 @@ describe("search", () => {
 	});
 
 	it("should search in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"hello world",
 			DString.search(/world/),
 		);

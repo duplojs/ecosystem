@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("promiseAll", () => {
 	it("awaits tuple values while preserving tuple output", async() => {
@@ -7,7 +8,7 @@ describe("promiseAll", () => {
 			"value" as const,
 		] as const);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<[1, "value"]>,
 			"strict"
@@ -24,7 +25,7 @@ describe("promiseAll", () => {
 			]),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<number[]>,
 			"strict"

@@ -1,4 +1,5 @@
-import { DPath, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DPath from "@scripts/path";
 
 describe("createOrThrow", () => {
 	it("creates a normalized path", () => {
@@ -25,7 +26,7 @@ describe("createOrThrow", () => {
 		const value = "foo/../bar";
 		const result = DPath.createOrThrow(value);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DPath.Path,
 			"strict"

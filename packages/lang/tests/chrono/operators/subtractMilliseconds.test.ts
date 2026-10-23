@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("subtractMilliseconds", () => {
 	const baseDate = DChrono.createDate("2020-01-01");
@@ -19,7 +20,7 @@ describe("subtractMilliseconds", () => {
 			})),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -36,7 +37,7 @@ describe("subtractMilliseconds", () => {
 			DChrono.serialize(DChrono.createDate("2020-01-01", { millisecond: "400" })),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -44,7 +45,7 @@ describe("subtractMilliseconds", () => {
 	});
 
 	it("use in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			baseDate,
 			DChrono.subtractMilliseconds(100),
 		);
@@ -58,7 +59,7 @@ describe("subtractMilliseconds", () => {
 			})),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -75,7 +76,7 @@ describe("subtractMilliseconds", () => {
 			DChrono.serialize(DChrono.createDate("-10-01-01", { millisecond: "750" })),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"

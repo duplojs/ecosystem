@@ -1,10 +1,11 @@
-import { DPrinter, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DPrinter from "@scripts/printer";
 
 describe("indent", () => {
 	it("returns repeated tabs for a finite positive level", () => {
 		const result = DPrinter.indent(2);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"

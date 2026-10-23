@@ -1,4 +1,6 @@
-import { type DNumber, DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import type * as DNumber from "@scripts/number";
+import * as DString from "@scripts/string";
 
 describe("charAt", () => {
 	it("should return the character at index", () => {
@@ -6,7 +8,7 @@ describe("charAt", () => {
 
 		expect(result).toBe("e");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DString.MaxCharacters<1>,
 			"strict"
@@ -14,7 +16,7 @@ describe("charAt", () => {
 	});
 
 	it("should return the character at index in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"hello",
 			DString.charAt(4),
 		);
@@ -37,7 +39,7 @@ describe("charAt", () => {
 		const sourceAllowed = "hello" as string & DString.AllowedCharacters<"a-z">;
 		const resultAllowed = DString.charAt(sourceAllowed, 1);
 
-		type _CheckAllowedResult = ExpectType<
+		type _CheckAllowedResult = DCommon.ExpectType<
 			typeof resultAllowed,
 			string & DString.MaxCharacters<1> & DString.AllowedCharacters<"a-z">,
 			"strict"

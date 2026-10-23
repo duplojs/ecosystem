@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("stringToMillisecond", () => {
 	it("converts supported units to milliseconds", () => {
@@ -17,7 +18,7 @@ describe("stringToMillisecond", () => {
 	it("returns numeric inputs directly", () => {
 		const result = DCommon.stringToMillisecond(200);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

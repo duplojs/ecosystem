@@ -1,4 +1,5 @@
-import { type ExpectType, DChrono } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("makeSafeTimeValue", () => {
 	it("returns 0 for NaN", () => {
@@ -6,7 +7,7 @@ describe("makeSafeTimeValue", () => {
 
 		expect(result).toBe(0);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -19,7 +20,7 @@ describe("makeSafeTimeValue", () => {
 		expect(result).toBe(DChrono.maxTimeValue);
 		expect(DChrono.makeSafeTimeValue(Infinity)).toBe(DChrono.maxTimeValue);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -32,7 +33,7 @@ describe("makeSafeTimeValue", () => {
 		expect(result).toBe(DChrono.minTimeValue);
 		expect(DChrono.makeSafeTimeValue(-Infinity)).toBe(DChrono.minTimeValue);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -45,7 +46,7 @@ describe("makeSafeTimeValue", () => {
 
 		expect(result).toBe(value);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

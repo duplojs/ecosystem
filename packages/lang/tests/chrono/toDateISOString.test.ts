@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("toISOString", () => {
 	it("toISOString converts positive TheDate to ISO string", () => {
@@ -6,7 +7,7 @@ describe("toISOString", () => {
 
 		expect(result).toBe("2021-01-01T00:00:00.000Z");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -18,7 +19,7 @@ describe("toISOString", () => {
 
 		expect(result).toBe("1969-12-31T23:59:59.000Z");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -37,7 +38,7 @@ describe("toISOString", () => {
 
 		expect(result).toBe("2021-06-15T14:30:45.123Z");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -51,7 +52,7 @@ describe("toISOString", () => {
 
 		expect(result).toBe("2021-12-25T00:00:00.000Z");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -65,7 +66,7 @@ describe("toISOString", () => {
 
 		expect(result).toBe("2020-02-29T00:00:00.000Z");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -73,14 +74,14 @@ describe("toISOString", () => {
 	});
 
 	it("use in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDateOrThrow(1609459200000),
 			DChrono.toDateISOString,
 		);
 
 		expect(result).toBe("2021-01-01T00:00:00.000Z");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -88,7 +89,7 @@ describe("toISOString", () => {
 	});
 
 	it("use in pipe with date creation", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2021-06-15", {
 				hour: "14",
 				minute: "30",
@@ -100,7 +101,7 @@ describe("toISOString", () => {
 
 		expect(result).toBe("2021-06-15T14:30:45.123Z");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"

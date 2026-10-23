@@ -1,4 +1,5 @@
-import { DInvocation, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DInvocation from "@scripts/invocation";
 
 describe("createPort", () => {
 	it("should create a port handler that returns its implementation", () => {
@@ -16,13 +17,13 @@ describe("createPort", () => {
 		expect(result).toBe(implementation);
 		expect(result.findName("42")).toBe("user-42");
 
-		type _CheckPort = ExpectType<
+		type _CheckPort = DCommon.ExpectType<
 			typeof UserRepository,
 			DInvocation.PortHandler<UserRepository>,
 			"strict"
 		>;
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			UserRepository,
 			"strict"

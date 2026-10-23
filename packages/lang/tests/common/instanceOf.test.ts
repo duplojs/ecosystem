@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType, pipe, when } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("instanceOf", () => {
 	it("checks a single constructor", () => {
@@ -16,7 +17,7 @@ describe("instanceOf", () => {
 	it("narrows direct inputs", () => {
 		const format = (input: Date | Error) => {
 			if (DCommon.instanceOf(input, Date)) {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					Date,
 					"strict"
@@ -24,7 +25,7 @@ describe("instanceOf", () => {
 
 				return input.getFullYear();
 			} else {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					Error,
 					"strict"
@@ -39,15 +40,15 @@ describe("instanceOf", () => {
 	});
 
 	it("supports curried checks in a pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			new Date() as Date | Error,
-			when(
+			DCommon.when(
 				DCommon.instanceOf(Date),
 				(input) => input.getTime(),
 			),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number | Error,
 			"strict"

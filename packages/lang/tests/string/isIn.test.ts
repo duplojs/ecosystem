@@ -1,4 +1,5 @@
-import { DString, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("isIn", () => {
 	it("should validate a string contained in an array", () => {
@@ -10,12 +11,12 @@ describe("isIn", () => {
 
 	it("should narrow a string contained in an array inside a pipe when callback", () => {
 		const source = "draft" as string;
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
-			when(
+			DCommon.when(
 				DString.isIn(["draft", "published"] as const),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						"draft" | "published",
 						"strict"
@@ -33,13 +34,13 @@ describe("isIn", () => {
 		const source = "draft" as "draft" | "archived";
 
 		if (DString.isIn(source, ["draft", "published"] as const)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				"draft",
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				"archived",
 				"strict"

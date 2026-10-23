@@ -1,10 +1,11 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("createExternalPromise", () => {
 	it("resolves the promise from the exposed resolver", async() => {
 		const externalPromise = DCommon.createExternalPromise<"done">();
 
-		type _CheckPromise = ExpectType<
+		type _CheckPromise = DCommon.ExpectType<
 			typeof externalPromise.promise,
 			Promise<"done">,
 			"strict"

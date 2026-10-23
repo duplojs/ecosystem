@@ -1,4 +1,6 @@
-import { DDataStructure, DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
 
 describe("undefined", () => {
 	it("creates an undefined type structure", () => {
@@ -6,12 +8,12 @@ describe("undefined", () => {
 		const success = structure.check(undefined);
 		const failure = structure.check(null);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.TypeStructure<undefined, readonly []>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			undefined,
 			"strict"
@@ -42,7 +44,7 @@ describe("undefined", () => {
 			},
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly state: {
@@ -63,7 +65,7 @@ describe("undefined", () => {
 		const directStructure = DDataStructure.undefined([
 			DDataStructure.refine(
 				(data): data is undefined => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						undefined,
 						"strict"
@@ -76,7 +78,7 @@ describe("undefined", () => {
 		const addedStructure = DDataStructure.undefined().addConstraint(
 			DDataStructure.refine(
 				(data): data is undefined => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						undefined,
 						"strict"
@@ -87,7 +89,7 @@ describe("undefined", () => {
 			),
 		);
 
-		type _CheckDirectConstraints = ExpectType<
+		type _CheckDirectConstraints = DCommon.ExpectType<
 			typeof directStructure,
 			DDataStructure.TypeStructure<
 				undefined,
@@ -95,12 +97,12 @@ describe("undefined", () => {
 			>,
 			"strict"
 		>;
-		type _CheckDirectValue = ExpectType<
+		type _CheckDirectValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof directStructure>,
 			undefined,
 			"strict"
 		>;
-		type _CheckAddedConstraints = ExpectType<
+		type _CheckAddedConstraints = DCommon.ExpectType<
 			typeof addedStructure,
 			DDataStructure.Structure<
 				undefined,
@@ -110,7 +112,7 @@ describe("undefined", () => {
 			>,
 			"strict"
 		>;
-		type _CheckAddedValue = ExpectType<
+		type _CheckAddedValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof addedStructure>,
 			undefined,
 			"strict"

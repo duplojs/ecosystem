@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType, pipe } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("whenNot", () => {
 	it("runs the callback when the predicate rejects the input", () => {
@@ -7,7 +8,7 @@ describe("whenNot", () => {
 			input,
 			(value): value is string => typeof value === "string",
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					number | null,
 					"strict"
@@ -19,7 +20,7 @@ describe("whenNot", () => {
 			},
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -38,7 +39,7 @@ describe("whenNot", () => {
 				: value.toFixed(2),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -48,7 +49,7 @@ describe("whenNot", () => {
 	});
 
 	it("supports curried usage in a pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			42 as string | number,
 			DCommon.whenNot(
 				(input): input is string => typeof input === "string",
@@ -56,7 +57,7 @@ describe("whenNot", () => {
 			),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"

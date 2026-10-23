@@ -1,4 +1,6 @@
-import { DChrono, DDataStructure, DEither } from "@scripts";
+import * as DChrono from "@scripts/chrono";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
 
 describe("codecsJson", () => {
 	it("round trips JSON encoded values", () => {

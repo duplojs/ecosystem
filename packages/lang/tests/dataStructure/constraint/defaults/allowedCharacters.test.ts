@@ -1,15 +1,17 @@
-import { DDataStructure, type DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DString from "@scripts/string";
 
 describe("AllowedCharactersConstraint", () => {
 	it("creates a synchronous allowed characters constraint", () => {
 		const constraint = DDataStructure.AllowedCharactersConstraint(["a-z", "0-9"]);
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.AllowedCharactersConstraint<"a-z" | "0-9">,
 			"strict"
 		>;
-		type _CheckConstraintValue = ExpectType<
+		type _CheckConstraintValue = DCommon.ExpectType<
 			DDataStructure.ConstraintValue<typeof constraint>,
 			DString.AllowedCharacters<"a-z" | "0-9">,
 			"strict"

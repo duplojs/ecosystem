@@ -1,13 +1,14 @@
-import { DDataStructure, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
 
 describe("result symbols", () => {
 	it("exposes stable success and error symbols", () => {
-		type _CheckSuccessSymbol = ExpectType<
+		type _CheckSuccessSymbol = DCommon.ExpectType<
 			typeof DDataStructure.SuccessSymbol,
 			DDataStructure.SuccessSymbol,
 			"strict"
 		>;
-		type _CheckErrorSymbol = ExpectType<
+		type _CheckErrorSymbol = DCommon.ExpectType<
 			typeof DDataStructure.ErrorSymbol,
 			DDataStructure.ErrorSymbol,
 			"strict"

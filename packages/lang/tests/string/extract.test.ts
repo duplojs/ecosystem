@@ -1,4 +1,5 @@
-import { DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("extract", () => {
 	it("should extract a match with groups", () => {
@@ -15,7 +16,7 @@ describe("extract", () => {
 			self: "price: 12 EUR",
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DString.ExtractOutput<"price: 12 EUR"> | undefined,
 			"strict"
@@ -23,7 +24,7 @@ describe("extract", () => {
 	});
 
 	it("should extract a match in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"user-42",
 			DString.extract(/\d+/),
 		);

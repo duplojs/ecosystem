@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("findAndReplace", () => {
 	it("should replace the first matching value without mutating the source", () => {
@@ -19,7 +20,7 @@ describe("findAndReplace", () => {
 		expect(result).toEqual(["a", 0, "ccc"]);
 		expect(source).toEqual(["a", "bb", "ccc"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			(
 				& readonly (string | 0)[]
@@ -32,7 +33,7 @@ describe("findAndReplace", () => {
 	});
 
 	it("should replace the first matching value in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["a", "bb"] as const,
 			DArray.findAndReplace((value) => value === "bb", "replaced"),
 		);
@@ -48,7 +49,7 @@ describe("findAndReplace", () => {
 
 		expect(result).toEqual([1, "x", 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly (number | "x")[] & DArray.LengthEqual<0>)
 			| (readonly (number | "x")[] & DArray.LengthEqual<3>)

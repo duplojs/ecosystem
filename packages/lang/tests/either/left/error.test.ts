@@ -1,4 +1,5 @@
-import { DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("error", () => {
 	it("should create an error left either", () => {
@@ -9,7 +10,7 @@ describe("error", () => {
 		expect(DEither.informationKind.getValue(either)).toBe("error");
 		expect(DEither.valueKind.getValue(either)).toBe("message");
 
-		type _CheckEither = ExpectType<
+		type _CheckEither = DCommon.ExpectType<
 			typeof either,
 			DEither.Error<"message">,
 			"strict"

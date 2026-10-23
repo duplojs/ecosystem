@@ -1,4 +1,5 @@
-import { DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("at", () => {
 	it("should return the character at a literal index", () => {
@@ -6,7 +7,7 @@ describe("at", () => {
 
 		expect(result).toBe("e");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"e",
 			"strict"
@@ -19,7 +20,7 @@ describe("at", () => {
 
 		expect(result).toBe("h");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"h" | undefined,
 			"strict"
@@ -32,7 +33,7 @@ describe("at", () => {
 
 		expect(result).toBe("a");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"a",
 			"strict"
@@ -40,14 +41,14 @@ describe("at", () => {
 	});
 
 	it("should return the character at a negative literal index in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"hello",
 			DString.at(-1),
 		);
 
 		expect(result).toBe("o");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"o",
 			"strict"
@@ -59,7 +60,7 @@ describe("at", () => {
 
 		expect(result).toBeUndefined();
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			undefined,
 			"strict"
@@ -71,7 +72,7 @@ describe("at", () => {
 
 		expect(result).toBeUndefined();
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			undefined,
 			"strict"
@@ -84,7 +85,7 @@ describe("at", () => {
 
 		expect(result).toBe("e");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			(string & DString.LengthEqual<1>) | undefined,
 			"strict"
@@ -97,7 +98,7 @@ describe("at", () => {
 
 		expect(result).toBe("b");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"a" | "b" | "c" | undefined,
 			"strict"
@@ -112,13 +113,13 @@ describe("at", () => {
 		expect(positiveResult).toBe("e");
 		expect(negativeResult).toBe("l");
 
-		type _CheckPositiveResult = ExpectType<
+		type _CheckPositiveResult = DCommon.ExpectType<
 			typeof positiveResult,
 			string & DString.LengthEqual<1>,
 			"strict"
 		>;
 
-		type _CheckNegativeResult = ExpectType<
+		type _CheckNegativeResult = DCommon.ExpectType<
 			typeof negativeResult,
 			string & DString.LengthEqual<1>,
 			"strict"
@@ -133,13 +134,13 @@ describe("at", () => {
 		expect(positiveResult).toBeUndefined();
 		expect(negativeResult).toBeUndefined();
 
-		type _CheckPositiveResult = ExpectType<
+		type _CheckPositiveResult = DCommon.ExpectType<
 			typeof positiveResult,
 			undefined,
 			"strict"
 		>;
 
-		type _CheckNegativeResult = ExpectType<
+		type _CheckNegativeResult = DCommon.ExpectType<
 			typeof negativeResult,
 			undefined,
 			"strict"
@@ -154,13 +155,13 @@ describe("at", () => {
 		expect(coveredResult).toBe("i");
 		expect(outOfRangeResult).toBeUndefined();
 
-		type _CheckCoveredResult = ExpectType<
+		type _CheckCoveredResult = DCommon.ExpectType<
 			typeof coveredResult,
 			string & DString.LengthEqual<1>,
 			"strict"
 		>;
 
-		type _CheckOutOfRangeResult = ExpectType<
+		type _CheckOutOfRangeResult = DCommon.ExpectType<
 			typeof outOfRangeResult,
 			undefined,
 			"strict"
@@ -174,7 +175,7 @@ describe("at", () => {
 
 		expect(result).toBeUndefined();
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			undefined,
 			"strict"
@@ -187,7 +188,7 @@ describe("at", () => {
 
 		expect(result).toBe("h");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DString.LengthEqual<1> & DString.AllowedCharacters<"a-z">,
 			"strict"

@@ -1,4 +1,5 @@
-import { DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("slice", () => {
 	it("should slice a string", () => {
@@ -6,7 +7,7 @@ describe("slice", () => {
 
 		expect(result).toBe("hello");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DString.MaxCharacters<11>,
 			"strict"
@@ -14,7 +15,7 @@ describe("slice", () => {
 	});
 
 	it("should slice a string in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"hello world",
 			DString.slice(6, 11),
 		);
@@ -34,7 +35,7 @@ describe("slice", () => {
 
 		expect(result).toBe("he");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (string & DString.MaxCharacters<0>)
 			| (string & DString.MaxCharacters<5>),
@@ -46,7 +47,7 @@ describe("slice", () => {
 		const sourceMax = "hello" as string & DString.MaxCharacters<10>;
 		const resultMax = DString.slice(sourceMax, 1, 3);
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			string & DString.MaxCharacters<10>,
 			"strict"
@@ -55,7 +56,7 @@ describe("slice", () => {
 		const sourceMin = "hello" as string & DString.MinCharacters<3>;
 		const resultMin = DString.slice(sourceMin, 1, 3);
 
-		type _CheckMinResult = ExpectType<
+		type _CheckMinResult = DCommon.ExpectType<
 			typeof resultMin,
 			string,
 			"strict"
@@ -64,7 +65,7 @@ describe("slice", () => {
 		const sourceLength = "hello" as string & DString.LengthEqual<5>;
 		const resultLength = DString.slice(sourceLength, 1, 3);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			string & DString.MaxCharacters<5>,
 			"strict"
@@ -73,7 +74,7 @@ describe("slice", () => {
 		const sourceAllowed = "hello" as string & DString.AllowedCharacters<"a-z">;
 		const resultAllowed = DString.slice(sourceAllowed, 1, 3);
 
-		type _CheckAllowedResult = ExpectType<
+		type _CheckAllowedResult = DCommon.ExpectType<
 			typeof resultAllowed,
 			string & DString.AllowedCharacters<"a-z">,
 			"strict"

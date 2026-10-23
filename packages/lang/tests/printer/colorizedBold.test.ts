@@ -1,19 +1,20 @@
-import { DPrinter, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPrinter from "@scripts/printer";
 
 describe("colorizedBold", () => {
 	it("formats colorized text in bold with direct and curried calls", () => {
 		const directResult = DPrinter.colorizedBold("value", "cyan");
-		const curriedResult = pipe(
+		const curriedResult = DCommon.pipe(
 			"value",
 			DPrinter.colorizedBold("cyan"),
 		);
 
-		type _CheckDirectResult = ExpectType<
+		type _CheckDirectResult = DCommon.ExpectType<
 			typeof directResult,
 			string,
 			"strict"
 		>;
-		type _CheckCurriedResult = ExpectType<
+		type _CheckCurriedResult = DCommon.ExpectType<
 			typeof curriedResult,
 			string,
 			"strict"

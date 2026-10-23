@@ -1,4 +1,5 @@
-import { DEither, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("whenIsLeft", () => {
 	it("should map left values and keep right or plain inputs unchanged", () => {
@@ -18,7 +19,7 @@ describe("whenIsLeft", () => {
 
 		expect(result).toBe("MESSAGE");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"MESSAGE" | DEither.Success<21>,
 			"strict"
@@ -26,7 +27,7 @@ describe("whenIsLeft", () => {
 	});
 
 	it("should map left values in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DEither.left("value", "data"),
 			DEither.whenIsLeft((value) => {
 				expect(value).toBe("data");
@@ -36,7 +37,7 @@ describe("whenIsLeft", () => {
 
 		expect(result).toBe("DATA");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"DATA",
 			"strict"
@@ -45,14 +46,14 @@ describe("whenIsLeft", () => {
 
 	it("should keep non left input in pipe", () => {
 		const input = DEither.success(42);
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.whenIsLeft((value) => value),
 		);
 
 		expect(result).toBe(input);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.Success<42>,
 			"strict"

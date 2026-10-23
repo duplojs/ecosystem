@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, DModeling, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DModeling from "@scripts/modeling";
 
 describe("hasInformation", () => {
 	it("should check one information or multiple informations", () => {
@@ -18,7 +21,7 @@ describe("hasInformation", () => {
 				: DEither.error("message")
 		);
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.hasInformation("created"),
 		);
@@ -26,7 +29,7 @@ describe("hasInformation", () => {
 		expect(result).toBe(true);
 
 		if (DEither.hasInformation(input, "created")) {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				DEither.Right<"created", 42>,
 				"strict"
@@ -46,7 +49,7 @@ describe("hasInformation", () => {
 			"map-success",
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			boolean,
 			"strict"

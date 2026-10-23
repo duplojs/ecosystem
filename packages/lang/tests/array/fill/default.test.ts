@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("fill", () => {
 	it("should fill a range without mutating the source", () => {
@@ -12,7 +13,7 @@ describe("fill", () => {
 		expect(result).toEqual([1, "x", "x", 4]);
 		expect(source).toEqual([1, 2, 3, 4]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly (number | "x")[] & DArray.LengthEqual<4> & DArray.MinElements<4> & DArray.MaxElements<4>,
 			"strict"
@@ -20,7 +21,7 @@ describe("fill", () => {
 	});
 
 	it("should fill a range in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, 2, 3] as const,
 			DArray.fill("x", 1, 2),
 		);
@@ -36,7 +37,7 @@ describe("fill", () => {
 
 		expect(result).toEqual([1, "x", 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly (number | "x")[] & DArray.LengthEqual<0>)
 			| (readonly (number | "x")[] & DArray.LengthEqual<3>),

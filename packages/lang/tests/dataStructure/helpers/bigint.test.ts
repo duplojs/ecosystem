@@ -1,4 +1,6 @@
-import { DDataStructure, DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
 
 describe("bigint", () => {
 	it("creates a bigint type structure", () => {
@@ -6,12 +8,12 @@ describe("bigint", () => {
 		const success = structure.check(12n);
 		const failure = structure.check(12);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.TypeStructure<bigint, readonly []>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			bigint,
 			"strict"
@@ -40,7 +42,7 @@ describe("bigint", () => {
 			},
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly user: {
@@ -60,7 +62,7 @@ describe("bigint", () => {
 		const directStructure = DDataStructure.bigint([
 			DDataStructure.refine(
 				(data): data is 1n => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						bigint,
 						"strict"
@@ -73,7 +75,7 @@ describe("bigint", () => {
 		const addedStructure = DDataStructure.bigint().addConstraint(
 			DDataStructure.refine(
 				(data): data is 1n => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						bigint,
 						"strict"
@@ -84,7 +86,7 @@ describe("bigint", () => {
 			),
 		);
 
-		type _CheckDirectConstraints = ExpectType<
+		type _CheckDirectConstraints = DCommon.ExpectType<
 			typeof directStructure,
 			DDataStructure.TypeStructure<
 				bigint,
@@ -92,12 +94,12 @@ describe("bigint", () => {
 			>,
 			"strict"
 		>;
-		type _CheckDirectValue = ExpectType<
+		type _CheckDirectValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof directStructure>,
 			1n,
 			"strict"
 		>;
-		type _CheckAddedConstraints = ExpectType<
+		type _CheckAddedConstraints = DCommon.ExpectType<
 			typeof addedStructure,
 			DDataStructure.Structure<
 				bigint,
@@ -107,7 +109,7 @@ describe("bigint", () => {
 			>,
 			"strict"
 		>;
-		type _CheckAddedValue = ExpectType<
+		type _CheckAddedValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof addedStructure>,
 			1n,
 			"strict"

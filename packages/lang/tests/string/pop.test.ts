@@ -1,4 +1,5 @@
-import { DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("pop", () => {
 	it("should remove the last character", () => {
@@ -6,7 +7,7 @@ describe("pop", () => {
 
 		expect(result).toBe("hell");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DString.MaxCharacters<5>,
 			"strict"
@@ -25,7 +26,7 @@ describe("pop", () => {
 
 		expect(result).toBe("hell");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (string & DString.MaxCharacters<0>)
 			| (string & DString.MaxCharacters<5>),
@@ -37,7 +38,7 @@ describe("pop", () => {
 		const sourceMax = "hello" as string & DString.MaxCharacters<10>;
 		const resultMax = DString.pop(sourceMax);
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			string & DString.MaxCharacters<10>,
 			"strict"
@@ -46,7 +47,7 @@ describe("pop", () => {
 		const sourceMin = "hello" as string & DString.MinCharacters<3>;
 		const resultMin = DString.pop(sourceMin);
 
-		type _CheckMinResult = ExpectType<
+		type _CheckMinResult = DCommon.ExpectType<
 			typeof resultMin,
 			string,
 			"strict"
@@ -55,7 +56,7 @@ describe("pop", () => {
 		const sourceLength = "hello" as string & DString.LengthEqual<5>;
 		const resultLength = DString.pop(sourceLength);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			string & DString.MaxCharacters<5>,
 			"strict"

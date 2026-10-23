@@ -1,4 +1,6 @@
-import { DDataStructure, DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
 
 describe("lazy", () => {
 	it("creates a lazy structure from a deferred structure getter", () => {
@@ -9,12 +11,12 @@ describe("lazy", () => {
 		const success = structure.check("value");
 		const failure = structure.check(123);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.LazyStructure<string, readonly []>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string,
 			"strict"
@@ -51,7 +53,7 @@ describe("lazy", () => {
 			},
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly node: {
@@ -125,7 +127,7 @@ describe("lazy", () => {
 			[
 				DDataStructure.refine(
 					(data): data is `user:${string}` => {
-						type check = ExpectType<
+						type check = DCommon.ExpectType<
 							typeof data,
 							string,
 							"strict"
@@ -141,7 +143,7 @@ describe("lazy", () => {
 		).addConstraint(
 			DDataStructure.refine(
 				(data): data is `user:${string}` => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						string,
 						"strict"
@@ -152,7 +154,7 @@ describe("lazy", () => {
 			),
 		);
 
-		type _CheckDirectConstraints = ExpectType<
+		type _CheckDirectConstraints = DCommon.ExpectType<
 			typeof directStructure,
 			DDataStructure.LazyStructure<
 				string,
@@ -160,12 +162,12 @@ describe("lazy", () => {
 			>,
 			"strict"
 		>;
-		type _CheckDirectValue = ExpectType<
+		type _CheckDirectValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof directStructure>,
 			`user:${string}`,
 			"strict"
 		>;
-		type _CheckAddedConstraints = ExpectType<
+		type _CheckAddedConstraints = DCommon.ExpectType<
 			typeof addedStructure,
 			DDataStructure.Structure<
 				string,
@@ -175,7 +177,7 @@ describe("lazy", () => {
 			>,
 			"strict"
 		>;
-		type _CheckAddedValue = ExpectType<
+		type _CheckAddedValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof addedStructure>,
 			`user:${string}`,
 			"strict"

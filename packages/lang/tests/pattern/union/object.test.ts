@@ -1,4 +1,6 @@
-import { DPattern, DString, type ExpectType, pipe } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPattern from "@scripts/pattern";
+import * as DString from "@scripts/string";
 
 describe("union discriminate object", () => {
 	interface Object1 {
@@ -26,12 +28,12 @@ describe("union discriminate object", () => {
 	} as TestObject;
 
 	it("union on key", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DPattern.match(
 				DPattern.union({ type: "one" }, { type: "two" }),
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						Object1 | Object2,
 						"strict"
@@ -44,7 +46,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | Object3,
 			"strict"
@@ -52,12 +54,12 @@ describe("union discriminate object", () => {
 	});
 
 	it("union on key", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DPattern.match(
 				{ type: DPattern.union("one", "two") },
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						Object1 | Object2,
 						"strict"
@@ -69,7 +71,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | Object3,
 			"strict"
@@ -77,12 +79,12 @@ describe("union discriminate object", () => {
 	});
 
 	it("union on key", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DPattern.match(
 				{ type: DPattern.union("one", "two") },
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						Object1 | Object2,
 						"strict"
@@ -94,7 +96,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | Object3,
 			"strict"
@@ -102,12 +104,12 @@ describe("union discriminate object", () => {
 	});
 
 	it("union on different key", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DPattern.match(
 				DPattern.union({ type: "one" }, { prop3: true }),
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						Object1 | Object3,
 						"strict"
@@ -119,7 +121,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | Object2,
 			"strict"
@@ -133,7 +135,7 @@ describe("union discriminate object", () => {
 			con: true,
 		};
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			inputDeep,
 			DPattern.match(
 				{
@@ -142,7 +144,7 @@ describe("union discriminate object", () => {
 					con: true,
 				},
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						{
 							test: Object1 | Object3;
@@ -159,7 +161,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | typeof inputDeep,
 			"strict"
@@ -173,7 +175,7 @@ describe("union discriminate object", () => {
 			con: true,
 		};
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			inputDeep,
 			DPattern.match(
 				DPattern.union(
@@ -189,7 +191,7 @@ describe("union discriminate object", () => {
 					},
 				),
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						{
 							prop: TestObject;
@@ -210,7 +212,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | typeof inputDeep,
 			"strict"
@@ -224,7 +226,7 @@ describe("union discriminate object", () => {
 			con: true,
 		};
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			inputDeep,
 			DPattern.match(
 				{
@@ -235,7 +237,7 @@ describe("union discriminate object", () => {
 					),
 				},
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						{
 							test: Object1 | Object3;
@@ -252,7 +254,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | {
 				prop: TestObject;
@@ -270,7 +272,7 @@ describe("union discriminate object", () => {
 			con: true,
 		};
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			inputDeep,
 			DPattern.match(
 				{
@@ -280,7 +282,7 @@ describe("union discriminate object", () => {
 					},
 				},
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						{
 							test: {
@@ -301,7 +303,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | {
 				prop: TestObject;
@@ -315,12 +317,12 @@ describe("union discriminate object", () => {
 	it("union on prop of object in array", () => {
 		const inputArray = [input];
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			inputArray,
 			DPattern.match(
 				[{ type: DPattern.union("one", "three") }],
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						[Object1 | Object3, ...TestObject[]],
 						"strict"
@@ -332,7 +334,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | TestObject[],
 			"strict"
@@ -342,7 +344,7 @@ describe("union discriminate object", () => {
 	it("union on array with specific objet", () => {
 		const inputArray = [input];
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			inputArray,
 			DPattern.match(
 				DPattern.union(
@@ -355,7 +357,7 @@ describe("union discriminate object", () => {
 					],
 				),
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						[Object1, ...TestObject[]] | [{
 							type: "three";
@@ -371,7 +373,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | TestObject[],
 			"strict"
@@ -381,7 +383,7 @@ describe("union discriminate object", () => {
 	it("union on array with specific objet", () => {
 		const inputArray = [input];
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			inputArray,
 			DPattern.match(
 				[
@@ -391,7 +393,7 @@ describe("union discriminate object", () => {
 					),
 				],
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						[Object1 | {
 							type: "one";
@@ -415,7 +417,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | TestObject[],
 			"strict"
@@ -425,12 +427,12 @@ describe("union discriminate object", () => {
 	it("union on prop of object in tuple", () => {
 		const inputArray = [input, input] as const;
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			inputArray,
 			DPattern.match(
 				[{ type: DPattern.union("one", "three") }],
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						[Object1 | Object3, TestObject],
 						"strict"
@@ -442,7 +444,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | [Object2, TestObject],
 			"strict"
@@ -452,12 +454,12 @@ describe("union discriminate object", () => {
 	it("union on prop of object in tuple", () => {
 		const inputArray = [input, input] as const;
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			inputArray,
 			DPattern.match(
 				[{ type: DPattern.union("one", "three") }, { type: "one" }],
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						[Object1 | Object3, Object1],
 						"strict"
@@ -469,7 +471,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | readonly [TestObject, TestObject],
 			"strict"
@@ -479,7 +481,7 @@ describe("union discriminate object", () => {
 	it("union on tuple with prop of object", () => {
 		const inputArray = [input, input] as const;
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			inputArray,
 			DPattern.match(
 				DPattern.union(
@@ -487,7 +489,7 @@ describe("union discriminate object", () => {
 					[{ type: "three" }, { type: "two" }],
 				),
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						[Object1, Object1] | [Object3, Object2],
 						"strict"
@@ -499,7 +501,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | readonly [TestObject, TestObject],
 			"strict"
@@ -507,14 +509,14 @@ describe("union discriminate object", () => {
 	});
 
 	it("union whit maybe all", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DPattern.match(
 				{
 					type: DString.test(/^o/),
 				},
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						Object1 | Object2 | Object3,
 						"strict"
@@ -526,7 +528,7 @@ describe("union discriminate object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | Object1 | Object2 | Object3,
 			"strict"

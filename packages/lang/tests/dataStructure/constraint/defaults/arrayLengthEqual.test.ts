@@ -1,15 +1,17 @@
-import { DDataStructure, type DArray, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DArray from "@scripts/array";
 
 describe("ArrayLengthEqualConstraint", () => {
 	it("creates a synchronous array length constraint", () => {
 		const constraint = DDataStructure.ArrayLengthEqualConstraint(2);
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.ArrayLengthEqualConstraint<2>,
 			"strict"
 		>;
-		type _CheckConstraintValue = ExpectType<
+		type _CheckConstraintValue = DCommon.ExpectType<
 			DDataStructure.ConstraintValue<typeof constraint>,
 			DArray.LengthEqual<2>,
 			"strict"

@@ -1,4 +1,5 @@
-import { DKind, type DCommon, type ExpectType, pipe, when } from "@scripts";
+import * as DKind from "@scripts/kind";
+import * as DCommon from "@scripts/common";
 
 describe("createKindIdentifier", () => {
 	it("creates a predicate that checks one or several kind handlers", () => {
@@ -48,7 +49,7 @@ describe("createKindIdentifier", () => {
 		>();
 
 		if (identifier(input, childKind)) {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				Child,
 				"strict"
@@ -86,7 +87,7 @@ describe("createKindIdentifier", () => {
 		>();
 
 		if (identifier(input, childKind)) {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				Child,
 				"strict"
@@ -126,7 +127,7 @@ describe("createKindIdentifier", () => {
 		>();
 
 		if (identifier(input, childKind)) {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				ChildWithData,
 				"strict"
@@ -167,7 +168,7 @@ describe("createKindIdentifier", () => {
 		>();
 
 		if (identifier(input, [childKind, featureKind])) {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				FeaturedChild,
 				"strict"
@@ -197,12 +198,12 @@ describe("createKindIdentifier", () => {
 			Child
 		>();
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
-			when(
+			DCommon.when(
 				identifier(childKind),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						Child,
 						"strict"

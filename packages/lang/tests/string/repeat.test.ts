@@ -1,4 +1,6 @@
-import { type DNumber, DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import type * as DNumber from "@scripts/number";
+import * as DString from "@scripts/string";
 
 describe("repeat", () => {
 	it("should repeat a string", () => {
@@ -6,7 +8,7 @@ describe("repeat", () => {
 
 		expect(result).toBe("hahaha");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -14,7 +16,7 @@ describe("repeat", () => {
 	});
 
 	it("should repeat a string in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"ha",
 			DString.repeat(2),
 		);
@@ -38,7 +40,7 @@ describe("repeat", () => {
 		const sourceAllowed = "abc" as string & DString.AllowedCharacters<"a-z">;
 		const resultAllowed = DString.repeat(sourceAllowed, 2);
 
-		type _CheckAllowedResult = ExpectType<
+		type _CheckAllowedResult = DCommon.ExpectType<
 			typeof resultAllowed,
 			string & DString.AllowedCharacters<"a-z">,
 			"strict"

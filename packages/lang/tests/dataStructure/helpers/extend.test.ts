@@ -1,4 +1,6 @@
-import { DDataStructure, DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
 
 describe("extend", () => {
 	it("extends an object structure shape with additional properties", () => {
@@ -18,7 +20,7 @@ describe("extend", () => {
 			age: 30,
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly name: string;
@@ -57,7 +59,7 @@ describe("extend", () => {
 			value: 42,
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly value: number;
@@ -92,7 +94,7 @@ describe("extend", () => {
 		).addConstraint(
 			DDataStructure.refine(
 				(data): data is AdultUser => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						ExtendedUser,
 						"strict"
@@ -103,7 +105,7 @@ describe("extend", () => {
 			),
 		);
 
-		type _CheckConstraints = ExpectType<
+		type _CheckConstraints = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.Structure<
 				{
@@ -124,7 +126,7 @@ describe("extend", () => {
 			>,
 			"strict"
 		>;
-		type _CheckValue = ExpectType<
+		type _CheckValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			ExtendedUser & AdultUser,
 			"strict"

@@ -1,4 +1,5 @@
-import { DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("stringify", () => {
 	it("stringifies JSON values", () => {
@@ -6,7 +7,7 @@ describe("stringify", () => {
 			name: "duplo",
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -18,7 +19,7 @@ describe("stringify", () => {
 	it("falls back to String when JSON stringify has no string result", () => {
 		const result = DString.stringify(undefined);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"

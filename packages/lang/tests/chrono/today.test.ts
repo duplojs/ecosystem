@@ -1,4 +1,5 @@
-import { type ExpectType, DChrono } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("today", () => {
 	it("today returns current day at midnight UTC", () => {
@@ -18,7 +19,7 @@ describe("today", () => {
 		const expectedTimestamp = new Date().setUTCHours(0, 0, 0, 0);
 		expect(timestamp).toBe(expectedTimestamp);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"

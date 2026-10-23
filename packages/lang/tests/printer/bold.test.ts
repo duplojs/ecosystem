@@ -1,10 +1,11 @@
-import { DPrinter, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DPrinter from "@scripts/printer";
 
 describe("bold", () => {
 	it("formats text in bold", () => {
 		const result = DPrinter.bold("value");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"

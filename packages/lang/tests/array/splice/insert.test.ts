@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("spliceInsert", () => {
 	it("should insert values without mutating the source", () => {
@@ -8,7 +9,7 @@ describe("spliceInsert", () => {
 		expect(result).toEqual([1, 2, 3, 4]);
 		expect(source).toEqual([1, 4]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly number[] & DArray.MinElements<2>,
 			"strict"
@@ -16,7 +17,7 @@ describe("spliceInsert", () => {
 	});
 
 	it("should insert values in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, 4] as const,
 			DArray.spliceInsert(1, [2, 3] as const),
 		);
@@ -32,7 +33,7 @@ describe("spliceInsert", () => {
 
 		expect(result).toEqual([1, 2, 3, 4]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly number[] & DArray.MinElements<0>)
 			| (readonly number[] & DArray.MinElements<2>),
@@ -44,7 +45,7 @@ describe("spliceInsert", () => {
 		const sourceMax = [1, 4] as number[] & DArray.MaxElements<2>;
 		const resultMax = DArray.spliceInsert(sourceMax, 1, [2, 3] as const);
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			readonly number[],
 			"strict"
@@ -53,7 +54,7 @@ describe("spliceInsert", () => {
 		const sourceLength = [1, 4] as number[] & DArray.LengthEqual<2>;
 		const resultLength = DArray.spliceInsert(sourceLength, 1, [2, 3] as const);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			readonly number[] & DArray.MinElements<2>,
 			"strict"

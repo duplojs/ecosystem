@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType, pipe } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("whenElse", () => {
 	it("runs the then branch when the predicate accepts the input", () => {
@@ -7,7 +8,7 @@ describe("whenElse", () => {
 			input,
 			(value): value is string => typeof value === "string",
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					string,
 					"strict"
@@ -16,7 +17,7 @@ describe("whenElse", () => {
 				return value.length;
 			},
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					number | null,
 					"strict"
@@ -28,7 +29,7 @@ describe("whenElse", () => {
 			},
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number | string,
 			"strict"
@@ -44,7 +45,7 @@ describe("whenElse", () => {
 			(value): value is string => typeof value === "string",
 			(value) => value.length,
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					number | null,
 					"strict"
@@ -56,7 +57,7 @@ describe("whenElse", () => {
 			},
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number | string,
 			"strict"
@@ -66,7 +67,7 @@ describe("whenElse", () => {
 	});
 
 	it("supports curried usage in a pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"value" as string | number,
 			DCommon.whenElse(
 				(input): input is string => typeof input === "string",
@@ -75,7 +76,7 @@ describe("whenElse", () => {
 			),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number | string,
 			"strict"

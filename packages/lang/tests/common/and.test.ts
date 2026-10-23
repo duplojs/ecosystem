@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType, pipe, when } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("and", () => {
 	it("returns true only when every predicate accepts the input", () => {
@@ -16,9 +17,9 @@ describe("and", () => {
 	});
 
 	it("supports curried predicates in a pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			2,
-			when(
+			DCommon.when(
 				DCommon.and([
 					(input: number) => input > 0,
 					(input: number) => input % 2 === 0,
@@ -27,7 +28,7 @@ describe("and", () => {
 			),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -44,7 +45,7 @@ describe("and", () => {
 					(value): value is string => typeof value === "string",
 				])
 			) {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					string,
 					"strict"
@@ -52,7 +53,7 @@ describe("and", () => {
 
 				return input.toUpperCase();
 			} else {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					number | null,
 					"strict"

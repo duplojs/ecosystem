@@ -1,4 +1,6 @@
-import { type DArray, DNumber, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import type * as DArray from "@scripts/array";
+import * as DNumber from "@scripts/number";
 
 describe("sort", () => {
 	it("should sort numbers in ascending order", () => {
@@ -7,7 +9,7 @@ describe("sort", () => {
 
 		expect(result).toEqual([1, 2, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly number[] & DArray.LengthEqual<3>,
 			"strict"
@@ -28,7 +30,7 @@ describe("sort", () => {
 
 		expect(result).toEqual([1, 2, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly number[] & DArray.LengthEqual<0>)
 			| (readonly number[] & DArray.LengthEqual<3>),
@@ -38,7 +40,7 @@ describe("sort", () => {
 
 	it("should sort numbers inside a pipe without mutating the source", () => {
 		const source = [3, 1, 2];
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
 			DNumber.sort("ASC"),
 			(array) => array.slice(0, 2),

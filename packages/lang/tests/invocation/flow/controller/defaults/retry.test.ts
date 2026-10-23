@@ -1,4 +1,6 @@
-import { DEither, DInvocation, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
+import * as DInvocation from "@scripts/invocation";
 
 describe("retry", () => {
 	afterEach(() => {
@@ -22,7 +24,7 @@ describe("retry", () => {
 		expect(attemptCount).toBe(3);
 		expect(result).toStrictEqual(DEither.result("created", 3));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Left<"temporary", undefined>
 			| DEither.Result<"created", number>,

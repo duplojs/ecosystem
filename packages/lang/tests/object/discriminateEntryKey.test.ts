@@ -1,4 +1,5 @@
-import { DObject, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DObject from "@scripts/object";
 
 describe("discriminateEntryKey", () => {
 	it("should validate an entry key", () => {
@@ -10,13 +11,13 @@ describe("discriminateEntryKey", () => {
 		const entry = ["name", "Duplo"] as ["name", string] | ["age", number];
 
 		if (DObject.discriminateEntryKey(entry, (key): key is "name" => key === "name")) {
-			type _CheckEntry = ExpectType<
+			type _CheckEntry = DCommon.ExpectType<
 				typeof entry,
 				["name", string],
 				"strict"
 			>;
 		} else {
-			type _CheckEntry = ExpectType<
+			type _CheckEntry = DCommon.ExpectType<
 				typeof entry,
 				["age", number],
 				"strict"

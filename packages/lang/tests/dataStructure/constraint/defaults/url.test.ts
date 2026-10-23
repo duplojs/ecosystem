@@ -1,15 +1,17 @@
-import { DDataStructure, type DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DString from "@scripts/string";
 
 describe("UrlConstraint", () => {
 	it("creates a synchronous url constraint", () => {
 		const constraint = DDataStructure.UrlConstraint();
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.UrlConstraint,
 			"strict"
 		>;
-		type _CheckConstraintValue = ExpectType<
+		type _CheckConstraintValue = DCommon.ExpectType<
 			DDataStructure.ConstraintValue<typeof constraint>,
 			DString.Url,
 			"strict"

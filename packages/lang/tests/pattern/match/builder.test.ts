@@ -1,4 +1,5 @@
-import { type AnyFunction, type AnyValue, DPattern, equal, type ExpectType, isType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPattern from "@scripts/pattern";
 
 describe("pattern match builder", () => {
 	it("matches with builder and falls back to otherwise", () => {
@@ -7,7 +8,7 @@ describe("pattern match builder", () => {
 				.with(
 					"foo",
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							"foo",
 							"strict"
@@ -17,7 +18,7 @@ describe("pattern match builder", () => {
 					},
 				)
 				.otherwise((rest) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof rest,
 						"bar",
 						"strict"
@@ -29,8 +30,8 @@ describe("pattern match builder", () => {
 
 		expect(
 			DPattern.match<"foo" | "bar">("bar")
-				.when(equal("foo"), (value) => {
-					type Check = ExpectType<
+				.when(DCommon.equal("foo"), (value) => {
+					type Check = DCommon.ExpectType<
 						typeof value,
 						"foo",
 						"strict"
@@ -54,10 +55,10 @@ describe("pattern match builder", () => {
 
 	it("supports predicate via when", () => {
 		const result = DPattern.match<number | string>(42)
-			.when(isType("number"), (num) => num + 1)
+			.when(DCommon.isType("number"), (num) => num + 1)
 			.otherwise((rest) => String(rest));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			string | number,
 			"strict"
@@ -69,9 +70,9 @@ describe("pattern match builder", () => {
 	it("supports predicate via whenNot", () => {
 		const result = DPattern.match(false ? [1] : undefined)
 			.whenNot(
-				isType("array"),
+				DCommon.isType("array"),
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						undefined,
 						"strict"
@@ -82,7 +83,7 @@ describe("pattern match builder", () => {
 			)
 			.otherwise((value) => value);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			"isDown" | number[],
 			"strict"
@@ -95,14 +96,16 @@ describe("pattern match builder", () => {
 		const builder = DPattern.match<"foo" | "bar">("bar")
 			.with("foo", () => "ok");
 
-		expect(() => (builder.exhaustive as unknown as AnyFunction)()).toThrow(DPattern.InvalidExhaustivePatternError);
+		expect(
+			() => (builder.exhaustive as unknown as DCommon.AnyFunction)(),
+		).toThrow(DPattern.InvalidExhaustivePatternError);
 	});
 
 	it("returns value when exhaustive matches", () => {
 		expect(
 			DPattern.match<"foo" | "bar">("foo")
 				.with("foo", (value) => `yes-${value}`)
-				.when(equal("bar"), () => 12)
+				.when(DCommon.equal("bar"), () => 12)
 				.exhaustive(),
 		).toBe("yes-foo");
 	});
@@ -110,9 +113,9 @@ describe("pattern match builder", () => {
 	it("supports unknown value", () => {
 		void DPattern.match(42 as unknown)
 			.with(
-				isType("number"),
+				DCommon.isType("number"),
 				(value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
 						number,
 						"strict"
@@ -120,9 +123,9 @@ describe("pattern match builder", () => {
 				},
 			)
 			.with(
-				isType("object"),
+				DCommon.isType("object"),
 				(value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
 						object,
 						"strict"
@@ -130,28 +133,28 @@ describe("pattern match builder", () => {
 				},
 			)
 			.with(
-				isType("array"),
+				DCommon.isType("array"),
 				(value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
-						AnyValue[],
+						DCommon.AnyValue[],
 						"strict"
 					>;
 				},
 			)
 			.with(
-				isType("function"),
+				DCommon.isType("function"),
 				(value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
-						AnyFunction,
+						DCommon.AnyFunction,
 						"strict"
 					>;
 				},
 			)
 			.otherwise(
 				(value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
 						string | bigint | boolean | null | undefined,
 						"strict"
@@ -165,12 +168,12 @@ describe("pattern match builder", () => {
 			.with(
 				{
 					test: DPattern.union(
-						isType("string"),
-						isType("number"),
+						DCommon.isType("string"),
+						DCommon.isType("number"),
 					),
 				},
 				(value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
 						{
 							test: string | number;
@@ -180,9 +183,9 @@ describe("pattern match builder", () => {
 				},
 			)
 			.with(
-				{ test: isType("object") },
+				{ test: DCommon.isType("object") },
 				(value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
 						{
 							test: object;
@@ -194,15 +197,15 @@ describe("pattern match builder", () => {
 			.with(
 				{
 					test: DPattern.union(
-						isType("array"),
-						isType("function"),
+						DCommon.isType("array"),
+						DCommon.isType("function"),
 					),
 				},
 				(value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
 						{
-							test: AnyFunction | AnyValue[];
+							test: DCommon.AnyFunction | DCommon.AnyValue[];
 						},
 						"strict"
 					>;
@@ -210,7 +213,7 @@ describe("pattern match builder", () => {
 			)
 			.otherwise(
 				(value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
 						{
 							test?: bigint | boolean | null | undefined;
@@ -242,7 +245,7 @@ describe("pattern match builder", () => {
 					},
 				),
 				(value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 							typeof value,
 							{
 								tt: string;
@@ -266,7 +269,7 @@ describe("pattern match builder", () => {
 				},
 			)
 			.otherwise((rest) => {
-				type check = ExpectType<
+				type check = DCommon.ExpectType<
 						typeof rest,
 						{
 							test: string;
@@ -285,7 +288,7 @@ describe("pattern match builder", () => {
 				return "otherwise" as const;
 			});
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			"with" | "otherwise",
 			"strict"

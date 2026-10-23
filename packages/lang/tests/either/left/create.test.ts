@@ -1,4 +1,5 @@
-import { DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("left", () => {
 	it("should create a left either with information and value", () => {
@@ -8,7 +9,7 @@ describe("left", () => {
 		expect(DEither.informationKind.getValue(either)).toBe("created");
 		expect(DEither.valueKind.getValue(either)).toBe(42);
 
-		type _CheckEither = ExpectType<
+		type _CheckEither = DCommon.ExpectType<
 			typeof either,
 			DEither.Left<"created", 42>,
 			"strict"
@@ -20,7 +21,7 @@ describe("left", () => {
 
 		expect(DEither.unwrapLeft(either)).toBeUndefined();
 
-		type _CheckEither = ExpectType<
+		type _CheckEither = DCommon.ExpectType<
 			typeof either,
 			DEither.Left<"empty", undefined>,
 			"strict"

@@ -1,4 +1,6 @@
-import { DEither, DInvocation, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
+import * as DInvocation from "@scripts/invocation";
 
 describe("appendEvidence", () => {
 	it("should append evidence in direct call", () => {
@@ -9,7 +11,7 @@ describe("appendEvidence", () => {
 
 		expect(result).toBe(input);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			typeof input & DInvocation.Evidence<"user-loaded">,
 			"strict"
@@ -20,14 +22,14 @@ describe("appendEvidence", () => {
 		const input = {
 			id: "42",
 		} as const;
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DInvocation.appendEvidence("user-loaded"),
 		);
 
 		expect(result).toBe(input);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			typeof input & DInvocation.Evidence<"user-loaded">,
 			"strict"
@@ -47,7 +49,7 @@ describe("evidenceResult", () => {
 		expect(DEither.informationKind.getValue(result)).toBe("user-loaded");
 		expect(DEither.valueKind.getValue(result)).toBe(input);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DInvocation.EvidenceResult<"user-loaded", typeof input>,
 			"strict"
@@ -58,14 +60,14 @@ describe("evidenceResult", () => {
 		const input = {
 			id: "42",
 		} as const;
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DInvocation.evidenceResult("user-loaded"),
 		);
 
 		expect(result).toStrictEqual(DInvocation.evidenceResult("user-loaded", input));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DInvocation.EvidenceResult<"user-loaded", typeof input>,
 			"strict"
@@ -79,7 +81,7 @@ describe("evidenceResult", () => {
 			}),
 		);
 
-		type _CheckEvidence = ExpectType<
+		type _CheckEvidence = DCommon.ExpectType<
 			DInvocation.GetEvidenceResult<typeof getUser, "user-loaded">,
 			& { id: string }
 			& DInvocation.Evidence<"user-loaded">,

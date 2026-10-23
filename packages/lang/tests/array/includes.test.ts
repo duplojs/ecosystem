@@ -1,4 +1,5 @@
-import { DArray, pipe } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("includes", () => {
 	it("should validate contained value", () => {
@@ -7,7 +8,7 @@ describe("includes", () => {
 	});
 
 	it("should validate contained value in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["draft", "published"] as const,
 			DArray.includes("draft"),
 		);

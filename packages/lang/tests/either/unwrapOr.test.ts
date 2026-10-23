@@ -1,4 +1,5 @@
-import { DEither, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("unwrapOr", () => {
 	it("should unwrap right values", () => {
@@ -11,7 +12,7 @@ describe("unwrapOr", () => {
 
 		expect(result).toBe(42);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			42 | "fallback",
 			"strict"
@@ -28,12 +29,12 @@ describe("unwrapOr", () => {
 		expect(leftResult).toBe("fallback");
 		expect(plainResult).toBe("fallback");
 
-		type _CheckLeftResult = ExpectType<
+		type _CheckLeftResult = DCommon.ExpectType<
 			typeof leftResult,
 			"fallback",
 			"strict"
 		>;
-		type _CheckPlainResult = ExpectType<
+		type _CheckPlainResult = DCommon.ExpectType<
 			typeof plainResult,
 			"fallback",
 			"strict"
@@ -46,14 +47,14 @@ describe("unwrapOr", () => {
 				? DEither.error("message")
 				: DEither.success(42)
 		);
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.unwrapOr("fallback"),
 		);
 
 		expect(result).toBe("fallback");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			42 | "fallback",
 			"strict"

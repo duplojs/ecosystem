@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, type DNumber, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DNumber from "@scripts/number";
 
 describe("even", () => {
 	it("creates and applies an even constraint", () => {
@@ -7,12 +10,12 @@ describe("even", () => {
 		const success = structure.check(2);
 		const failure = structure.check(3);
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.EvenConstraint,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			number & DNumber.Even,
 			"strict"

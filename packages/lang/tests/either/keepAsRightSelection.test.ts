@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, DModeling, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DModeling from "@scripts/modeling";
 
 describe("keepAsRightSelection", () => {
 	it("should convert selected left values to right values", () => {
@@ -9,7 +12,7 @@ describe("keepAsRightSelection", () => {
 
 		expect(result).toStrictEqual(DEither.right("selected", "value"));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.Right<"selected", "value">,
 			"strict"
@@ -36,7 +39,7 @@ describe("keepAsRightSelection", () => {
 
 	it("should keep selected right values and non either values unchanged in pipe", () => {
 		const input = DEither.success(42);
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.keepAsRightSelection({
 				success: true,
@@ -47,7 +50,7 @@ describe("keepAsRightSelection", () => {
 		expect(result).toBe(input);
 		expect(plain).toBe("plain");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.Success<42>,
 			"strict"
@@ -72,7 +75,7 @@ describe("keepAsRightSelection", () => {
 
 		expect(result).toStrictEqual(DEither.right("map-success", "Jane"));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Right<
 				"map-success",

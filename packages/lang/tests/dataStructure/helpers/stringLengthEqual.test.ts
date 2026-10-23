@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, type DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DString from "@scripts/string";
 
 describe("stringLengthEqual", () => {
 	it("creates and applies a string length equality constraint", () => {
@@ -7,12 +10,12 @@ describe("stringLengthEqual", () => {
 		const success = structure.check("abc");
 		const failure = structure.check("ab");
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.StringLengthEqualConstraint<3>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string & DString.LengthEqual<3>,
 			"strict"

@@ -1,4 +1,5 @@
-import { DDataStructure, type ExpectType, pipe, when } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
 
 describe("typeStructureIdentifier", () => {
 	it("identifies a type structure from its type kind", () => {
@@ -8,7 +9,7 @@ describe("typeStructureIdentifier", () => {
 			structure,
 			DDataStructure.numberTypeKind,
 		)) {
-			type _CheckStructure = ExpectType<
+			type _CheckStructure = DCommon.ExpectType<
 				typeof structure,
 				DDataStructure.TypeStructure<number>,
 				"strict"
@@ -41,14 +42,14 @@ describe("typeStructureIdentifier", () => {
 	it("narrows a type structure in a pipe with when", () => {
 		const structure: DDataStructure.Structure = DDataStructure.number();
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			structure,
-			when(
+			DCommon.when(
 				DDataStructure.typeStructureIdentifier(
 					DDataStructure.numberTypeKind,
 				),
 				(numberStructure) => {
-					type _CheckNumberStructure = ExpectType<
+					type _CheckNumberStructure = DCommon.ExpectType<
 						typeof numberStructure,
 						DDataStructure.TypeStructure<number>,
 						"strict"

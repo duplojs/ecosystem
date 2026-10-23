@@ -1,4 +1,6 @@
-import { type ExpectType, DChrono, DEither } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
+import * as DEither from "@scripts/either";
 
 describe("create", () => {
 	it("create from timestamp", () => {
@@ -9,7 +11,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1609459200000+");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -24,7 +26,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1000-");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -36,7 +38,7 @@ describe("create", () => {
 
 		expect(result).toStrictEqual(DEither.left("date-created-error", null));
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -48,7 +50,7 @@ describe("create", () => {
 
 		expect(result).toStrictEqual(DEither.left("date-created-error", null));
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -60,7 +62,7 @@ describe("create", () => {
 
 		expect(result).toStrictEqual(DEither.left("date-created-error", null));
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -76,7 +78,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1609459200000+");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -92,7 +94,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1000-");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -104,7 +106,7 @@ describe("create", () => {
 
 		expect(result).toStrictEqual(DEither.left("date-created-error", null));
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -127,7 +129,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1609459200000+");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -142,7 +144,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1000-");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -154,7 +156,7 @@ describe("create", () => {
 
 		expect(result).toStrictEqual(DEither.left("date-created-error", null));
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -173,7 +175,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe(expected);
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -189,7 +191,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1582934400000+");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -201,7 +203,7 @@ describe("create", () => {
 
 		expect(DChrono.serialize(result)).toBe("date1717545600000+");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -218,7 +220,7 @@ describe("create", () => {
 
 		expect(DChrono.serialize(result)).toBe("date1717631999999+");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -230,7 +232,7 @@ describe("create", () => {
 
 		expect(DChrono.serialize(result)).toBe("date62198755200000-");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -303,7 +305,7 @@ describe("create", () => {
 
 		expect(result).toStrictEqual(DEither.left("date-created-error", null));
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -319,7 +321,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1577836800000+");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -334,7 +336,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1609459200000+");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -349,7 +351,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1000-");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -364,7 +366,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1000+");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -379,7 +381,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1000-");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -395,7 +397,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1609459200000+");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -423,7 +425,7 @@ describe("create", () => {
 			);
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -440,7 +442,7 @@ describe("create", () => {
 			expect(DChrono.serialize(DEither.unwrapRight(result))).toBe("date1704067200000+");
 		}
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -485,7 +487,7 @@ describe("create", () => {
 			DEither.left("date-created-error", null),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -497,7 +499,7 @@ describe("create", () => {
 
 		expect(result).toStrictEqual(DEither.right("date-created", expect.any(DChrono.TheDate)));
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -512,7 +514,7 @@ describe("create", () => {
 
 		expect(result).toStrictEqual(DEither.left("date-created-error", null));
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"
@@ -524,7 +526,7 @@ describe("create", () => {
 
 		expect(result).toStrictEqual(DEither.left("date-created-error", null));
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.MayBeDate,
 			"strict"

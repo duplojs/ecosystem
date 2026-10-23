@@ -1,4 +1,5 @@
-import { DObject, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DObject from "@scripts/object";
 
 describe("getProperty", () => {
 	it("should get an object property", () => {
@@ -10,7 +11,7 @@ describe("getProperty", () => {
 		const result = DObject.getProperty(source, "name");
 		expect(result).toBe("Duplo");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"Duplo",
 			"strict"
@@ -18,7 +19,7 @@ describe("getProperty", () => {
 	});
 
 	it("should get an object property in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			{
 				name: "Duplo",
 				version: 1,
@@ -44,7 +45,7 @@ describe("getProperty", () => {
 		const result = DObject.getProperty(source, "label");
 		expect(result).toBeUndefined();
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			undefined,
 			"strict"

@@ -1,4 +1,5 @@
-import { DDataStructure, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
 
 describe("createErrorInterpreter", () => {
 	it("interprets structure, type, constraint and codec issues", () => {
@@ -26,12 +27,12 @@ describe("createErrorInterpreter", () => {
 		const interpret = DDataStructure.createErrorInterpreter(
 			{
 				"@DuplojsLangDataStructure/string-type": (source, issue) => {
-					type _CheckSource = ExpectType<
+					type _CheckSource = DCommon.ExpectType<
 						typeof source,
 						DDataStructure.StringType,
 						"strict"
 					>;
-					type _CheckIssue = ExpectType<
+					type _CheckIssue = DCommon.ExpectType<
 						typeof issue,
 						DDataStructure.Issue,
 						"strict"
@@ -40,12 +41,12 @@ describe("createErrorInterpreter", () => {
 					return `Global ${source.definition.message} for ${typeof issue.data}`;
 				},
 				"@DuplojsLangDataStructure/type-structure": (source, issue) => {
-					type _CheckSource = ExpectType<
+					type _CheckSource = DCommon.ExpectType<
 						typeof source,
 						DDataStructure.TypeStructure,
 						"strict"
 					>;
-					type _CheckIssue = ExpectType<
+					type _CheckIssue = DCommon.ExpectType<
 						typeof issue,
 						DDataStructure.Issue,
 						"strict"
@@ -54,12 +55,12 @@ describe("createErrorInterpreter", () => {
 					return `Global ${source.definition.message} for ${typeof issue.data}`;
 				},
 				"@DuplojsLangDataStructure/min-characters-constraint": (source, issue) => {
-					type _CheckSource = ExpectType<
+					type _CheckSource = DCommon.ExpectType<
 						typeof source,
 						DDataStructure.MinCharactersConstraint,
 						"strict"
 					>;
-					type _CheckIssue = ExpectType<
+					type _CheckIssue = DCommon.ExpectType<
 						typeof issue,
 						DDataStructure.Issue,
 						"strict"
@@ -72,12 +73,12 @@ describe("createErrorInterpreter", () => {
 				[
 					codec,
 					(source, issue) => {
-						type _CheckSource = ExpectType<
+						type _CheckSource = DCommon.ExpectType<
 							typeof source,
 							DDataStructure.Codec,
 							"strict"
 						>;
-						type _CheckIssue = ExpectType<
+						type _CheckIssue = DCommon.ExpectType<
 							typeof issue,
 							DDataStructure.EncodeIssue | DDataStructure.DecodeIssue,
 							"strict"
@@ -96,7 +97,7 @@ describe("createErrorInterpreter", () => {
 
 		const interpretedIssues = interpret(errorHandler.createError());
 
-		type _CheckInterpretedIssues = ExpectType<
+		type _CheckInterpretedIssues = DCommon.ExpectType<
 			typeof interpretedIssues,
 			readonly DDataStructure.InterpretedIssues[],
 			"strict"

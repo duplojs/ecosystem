@@ -1,16 +1,18 @@
-import { DDataStructure, type DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DString from "@scripts/string";
 
 describe("RegexConstraint", () => {
 	it("creates a synchronous regex constraint", () => {
 		const regex = /^contact@/;
 		const constraint = DDataStructure.RegexConstraint(regex);
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.RegexConstraint,
 			"strict"
 		>;
-		type _CheckConstraintValue = ExpectType<
+		type _CheckConstraintValue = DCommon.ExpectType<
 			DDataStructure.ConstraintValue<typeof constraint>,
 			string,
 			"strict"

@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("memoObject", () => {
 	it("creates the object lazily and proxies its properties", () => {
@@ -12,7 +13,7 @@ describe("memoObject", () => {
 			};
 		});
 
-		type _CheckMemoized = ExpectType<
+		type _CheckMemoized = DCommon.ExpectType<
 			typeof memoized,
 			{
 				name: string;

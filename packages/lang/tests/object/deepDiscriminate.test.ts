@@ -1,4 +1,5 @@
-import { DObject, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DObject from "@scripts/object";
 
 describe("deepDiscriminate", () => {
 	it("should discriminate an object from a nested property", () => {
@@ -20,7 +21,7 @@ describe("deepDiscriminate", () => {
 		if (DObject.deepDiscriminate(source, "profile.role", "admin")) {
 			expect(source.enabled).toBe(true);
 
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				{
 					profile: { role: "admin" };
@@ -29,7 +30,7 @@ describe("deepDiscriminate", () => {
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				{
 					profile: { role: "user" };
@@ -53,12 +54,12 @@ describe("deepDiscriminate", () => {
 			profile: { role: "admin" },
 		} as const;
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
-			when(
+			DCommon.when(
 				DObject.deepDiscriminate("profile.role", ["admin"]),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						{ readonly profile: { readonly role: "admin" } },
 						"strict"

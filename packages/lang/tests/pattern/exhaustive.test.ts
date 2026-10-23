@@ -1,4 +1,5 @@
-import { type ExpectType, DPattern } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DPattern from "@scripts/pattern";
 
 describe("exhaustive", () => {
 	it("returns the wrapped value", () => {
@@ -9,7 +10,7 @@ describe("exhaustive", () => {
 
 		expect(extracted).toBe(sample);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof extracted,
 			typeof sample,
 			"strict"

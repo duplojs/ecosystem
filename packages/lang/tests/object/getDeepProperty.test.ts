@@ -1,4 +1,5 @@
-import { DObject, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DObject from "@scripts/object";
 
 describe("getDeepProperty", () => {
 	it("should get a nested property", () => {
@@ -11,7 +12,7 @@ describe("getDeepProperty", () => {
 		const result = DObject.getDeepProperty(source, "profile.name");
 		expect(result).toBe("Duplo");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"Duplo",
 			"strict"
@@ -27,7 +28,7 @@ describe("getDeepProperty", () => {
 	});
 
 	it("should get a nested property in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			{
 				profile: {
 					name: "Duplo",

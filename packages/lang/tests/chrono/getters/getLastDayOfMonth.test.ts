@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("getLastDayOfMonth", () => {
 	it("returns month end for mid-month date", () => {
@@ -15,7 +16,7 @@ describe("getLastDayOfMonth", () => {
 			})),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -36,7 +37,7 @@ describe("getLastDayOfMonth", () => {
 			})),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -57,7 +58,7 @@ describe("getLastDayOfMonth", () => {
 			})),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -65,7 +66,7 @@ describe("getLastDayOfMonth", () => {
 	});
 
 	it("use in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2021-12-25"),
 			DChrono.getLastDayOfMonth,
 		);
@@ -79,7 +80,7 @@ describe("getLastDayOfMonth", () => {
 			})),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -100,7 +101,7 @@ describe("getLastDayOfMonth", () => {
 			})),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"

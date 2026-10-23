@@ -1,16 +1,18 @@
-import { DChrono, DDataStructure, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
+import * as DDataStructure from "@scripts/dataStructure";
 
 describe("TheTime", () => {
 	it("accepts chrono time values", () => {
 		const value = DChrono.createTimeOrThrow(0);
 		const result = DDataStructure.TheTime.executeCheck(value);
 
-		type _CheckFundamentalType = ExpectType<
+		type _CheckFundamentalType = DCommon.ExpectType<
 			typeof DDataStructure.TheTime,
 			DDataStructure.TheTime,
 			"strict"
 		>;
-		type _CheckFundamentalValue = ExpectType<
+		type _CheckFundamentalValue = DCommon.ExpectType<
 			DDataStructure.FundamentalTypeValue<typeof DDataStructure.TheTime>,
 			DChrono.TheTime,
 			"strict"

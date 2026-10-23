@@ -1,4 +1,5 @@
-import { DNumber, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DNumber from "@scripts/number";
 
 describe("isNegative", () => {
 	it("should validate a negative number including zero", () => {
@@ -11,7 +12,7 @@ describe("isNegative", () => {
 		const source = -1 as number;
 
 		if (DNumber.isNegative(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				number & DNumber.Negative,
 				"strict"
@@ -23,7 +24,7 @@ describe("isNegative", () => {
 		const source = -1 as -1 | 1;
 
 		if (DNumber.isNegative(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				(-1 | 1) & DNumber.Negative,
 				"strict"
@@ -32,12 +33,12 @@ describe("isNegative", () => {
 	});
 
 	it("should narrow a number inside a pipe when callback", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			-1 as number,
-			when(
+			DCommon.when(
 				DNumber.isNegative,
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						number & DNumber.Negative,
 						"strict"

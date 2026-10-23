@@ -1,4 +1,5 @@
-import { DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("prepend", () => {
 	it("should prepend strings", () => {
@@ -6,7 +7,7 @@ describe("prepend", () => {
 
 		expect(result).toBe("hello world");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"hello world",
 			"strict"
@@ -14,14 +15,14 @@ describe("prepend", () => {
 	});
 
 	it("should prepend a string in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"world",
 			DString.prepend("hello "),
 		);
 
 		expect(result).toBe("hello world");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"hello world",
 			"strict"
@@ -33,7 +34,7 @@ describe("prepend", () => {
 		const prefix = "hello " as "hello " & DString.MinCharacters<6>;
 		const resultMin = DString.prepend(sourceMin, prefix);
 
-		type _CheckMinResult = ExpectType<
+		type _CheckMinResult = DCommon.ExpectType<
 			typeof resultMin,
 			`hello ${string}` & DString.MinCharacters<3>,
 			"strict"
@@ -42,7 +43,7 @@ describe("prepend", () => {
 		const sourceMax = "world" as string & DString.MaxCharacters<5>;
 		const resultMax = DString.prepend(sourceMax, prefix);
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			`hello ${string}`,
 			"strict"
@@ -51,7 +52,7 @@ describe("prepend", () => {
 		const sourceLength = "world" as string & DString.LengthEqual<5>;
 		const resultLength = DString.prepend(sourceLength, prefix);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			`hello ${string}` & DString.MinCharacters<5>,
 			"strict"

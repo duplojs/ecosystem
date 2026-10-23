@@ -1,4 +1,5 @@
-import { DPath, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DPath from "@scripts/path";
 
 describe("isSegment", () => {
 	it.each([
@@ -30,13 +31,13 @@ describe("isSegment", () => {
 		const literal = "foo" as "foo" | "." | "foo/bar";
 
 		if (DPath.isSegment(literal)) {
-			type _CheckLiteral = ExpectType<
+			type _CheckLiteral = DCommon.ExpectType<
 				typeof literal,
 				"foo",
 				"strict"
 			>;
 		} else {
-			type _CheckLiteral = ExpectType<
+			type _CheckLiteral = DCommon.ExpectType<
 				typeof literal,
 				"." | "foo/bar",
 				"strict"
@@ -46,13 +47,13 @@ describe("isSegment", () => {
 		const value = "foo" as string;
 
 		if (DPath.isSegment(value)) {
-			type _CheckValue = ExpectType<
+			type _CheckValue = DCommon.ExpectType<
 				typeof value,
 				string & DPath.Segment,
 				"strict"
 			>;
 		} else {
-			type _CheckValue = ExpectType<
+			type _CheckValue = DCommon.ExpectType<
 				typeof value,
 				string,
 				"strict"
@@ -64,7 +65,7 @@ describe("isSegment", () => {
 		const value = "foo" as string & DPath.Segment;
 
 		if (DPath.isSegment(value)) {
-			type _CheckValue = ExpectType<
+			type _CheckValue = DCommon.ExpectType<
 				typeof value,
 				string & DPath.Segment,
 				"strict"

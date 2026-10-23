@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType, pipe } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("when", () => {
 	it("runs the callback when the predicate accepts the input", () => {
@@ -7,7 +8,7 @@ describe("when", () => {
 			input,
 			(value): value is string => typeof value === "string",
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					string,
 					"strict"
@@ -17,7 +18,7 @@ describe("when", () => {
 			},
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number | null,
 			"strict"
@@ -34,7 +35,7 @@ describe("when", () => {
 			(value) => value.length,
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number | null,
 			"strict"
@@ -44,7 +45,7 @@ describe("when", () => {
 	});
 
 	it("supports curried usage in a pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"value" as string | number,
 			DCommon.when(
 				(input): input is string => typeof input === "string",
@@ -52,7 +53,7 @@ describe("when", () => {
 			),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

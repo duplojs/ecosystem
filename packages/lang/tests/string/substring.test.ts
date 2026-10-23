@@ -1,4 +1,5 @@
-import { DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("substring", () => {
 	it("should extract a substring", () => {
@@ -6,7 +7,7 @@ describe("substring", () => {
 
 		expect(result).toBe("hello");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DString.MaxCharacters<11>,
 			"strict"
@@ -18,7 +19,7 @@ describe("substring", () => {
 	});
 
 	it("should extract a substring in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"hello world",
 			DString.substring(6),
 		);
@@ -39,7 +40,7 @@ describe("substring", () => {
 
 		expect(result).toBe("he");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (string & DString.MaxCharacters<0>)
 			| (string & DString.MaxCharacters<5>),
@@ -51,7 +52,7 @@ describe("substring", () => {
 		const sourceMax = "hello" as string & DString.MaxCharacters<10>;
 		const resultMax = DString.substring(sourceMax, 1, 3);
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			string & DString.MaxCharacters<10>,
 			"strict"
@@ -60,7 +61,7 @@ describe("substring", () => {
 		const sourceMin = "hello" as string & DString.MinCharacters<3>;
 		const resultMin = DString.substring(sourceMin, 1, 3);
 
-		type _CheckMinResult = ExpectType<
+		type _CheckMinResult = DCommon.ExpectType<
 			typeof resultMin,
 			string,
 			"strict"
@@ -69,7 +70,7 @@ describe("substring", () => {
 		const sourceLength = "hello" as string & DString.LengthEqual<5>;
 		const resultLength = DString.substring(sourceLength, 1, 3);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			string & DString.MaxCharacters<5>,
 			"strict"
@@ -78,7 +79,7 @@ describe("substring", () => {
 		const sourceAllowed = "hello" as string & DString.AllowedCharacters<"a-z">;
 		const resultAllowed = DString.substring(sourceAllowed, 1, 3);
 
-		type _CheckAllowedResult = ExpectType<
+		type _CheckAllowedResult = DCommon.ExpectType<
 			typeof resultAllowed,
 			string & DString.AllowedCharacters<"a-z">,
 			"strict"

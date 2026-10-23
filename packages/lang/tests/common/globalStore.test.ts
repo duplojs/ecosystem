@@ -1,4 +1,4 @@
-import { createGlobalStore, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
 
 declare module "@scripts" {
 	interface GlobalStore {
@@ -7,11 +7,11 @@ declare module "@scripts" {
 }
 
 it("globalStore", () => {
-	const myStore = createGlobalStore("testStore", "test");
+	const myStore = DCommon.createGlobalStore("testStore", "test");
 
 	expect(myStore.value).toBe("test");
 
-	type Check = ExpectType<
+	type Check = DCommon.ExpectType<
 		typeof myStore.value,
 		"test" | "toto",
 		"strict"
@@ -21,7 +21,7 @@ it("globalStore", () => {
 
 	expect(myStore.value).toBe("toto");
 
-	const myCloneStore = createGlobalStore("testStore", "test");
+	const myCloneStore = DCommon.createGlobalStore("testStore", "test");
 
 	expect(myCloneStore.value).toBe("toto");
 });

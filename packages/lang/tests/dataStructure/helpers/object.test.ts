@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, type DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DString from "@scripts/string";
 
 describe("object", () => {
 	it("keeps the helper shape and exposes an optimized shape", () => {
@@ -12,7 +15,7 @@ describe("object", () => {
 			age: 30,
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly name: string;
@@ -51,7 +54,7 @@ describe("object", () => {
 			},
 		};
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.ObjectStructure<{
 				readonly user: {
@@ -65,7 +68,7 @@ describe("object", () => {
 			}, readonly []>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly user: {
@@ -104,7 +107,7 @@ describe("object", () => {
 			[
 				DDataStructure.refine(
 					(data): data is Jane => {
-						type check = ExpectType<
+						type check = DCommon.ExpectType<
 							typeof data,
 							User,
 							"strict"
@@ -121,7 +124,7 @@ describe("object", () => {
 		}).addConstraint(
 			DDataStructure.refine(
 				(data): data is Jane => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						User,
 						"strict"
@@ -132,7 +135,7 @@ describe("object", () => {
 			),
 		);
 
-		type _CheckDirectConstraints = ExpectType<
+		type _CheckDirectConstraints = DCommon.ExpectType<
 			typeof directStructure,
 			DDataStructure.ObjectStructure<
 				{
@@ -151,12 +154,12 @@ describe("object", () => {
 			>,
 			"strict"
 		>;
-		type _CheckDirectValue = ExpectType<
+		type _CheckDirectValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof directStructure>,
 			User & Jane,
 			"strict"
 		>;
-		type _CheckAddedConstraints = ExpectType<
+		type _CheckAddedConstraints = DCommon.ExpectType<
 			typeof addedStructure,
 			DDataStructure.Structure<
 				{
@@ -177,7 +180,7 @@ describe("object", () => {
 			>,
 			"strict"
 		>;
-		type _CheckAddedValue = ExpectType<
+		type _CheckAddedValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof addedStructure>,
 			User & Jane,
 			"strict"

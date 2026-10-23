@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("detachObjectMethod", () => {
 	it("binds an object method to its owner", () => {
@@ -10,7 +11,7 @@ describe("detachObjectMethod", () => {
 		};
 		const getName = DCommon.detachObjectMethod(user, "getName");
 
-		type _CheckMethod = ExpectType<
+		type _CheckMethod = DCommon.ExpectType<
 			typeof getName,
 			() => string,
 			"strict"

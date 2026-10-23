@@ -1,4 +1,8 @@
-import { DDataStructure, type DCommon, type DKind, DEither, type ExpectType } from "@scripts";
+
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DCommon from "@scripts/common";
+import type * as DKind from "@scripts/kind";
+import * as DEither from "@scripts/either";
 
 declare module "@scripts/dataStructure" {
 	interface Structure {
@@ -63,12 +67,12 @@ describe("createStructure", () => {
 
 		const structure = TestStructure();
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			TestStructure,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string,
 			"strict"
@@ -371,7 +375,7 @@ describe("createStructure", () => {
 			expect(result).toBe("constraints:1");
 			expect(structure.testedValue).toBe("test");
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				`${string}:${number}`,
 				"strict"

@@ -1,13 +1,13 @@
-import { asyncPipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
 
 describe("asyncPipe", () => {
 	it("should await the input and every pipe output", async() => {
-		const result = asyncPipe(
+		const result = DCommon.asyncPipe(
 			Promise.resolve(20 as const),
 			(value) => {
 				expect(value).toBe(20);
 
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof value,
 					20,
 					"strict"
@@ -18,7 +18,7 @@ describe("asyncPipe", () => {
 			(value) => {
 				expect(value).toBe("21");
 
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof value,
 					"21",
 					"strict"
@@ -30,7 +30,7 @@ describe("asyncPipe", () => {
 
 		await expect(result).resolves.toBe(21);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<number>,
 			"strict"

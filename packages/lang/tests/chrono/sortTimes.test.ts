@@ -1,4 +1,6 @@
-import { DChrono, type DArray, pipe } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
+import type * as DArray from "@scripts/array";
 
 describe("DChrono sortTimes", () => {
 	const time01 = DChrono.createTime(1, "second");
@@ -10,7 +12,7 @@ describe("DChrono sortTimes", () => {
 			[time05, time10, time01] as DChrono.TheTime[] & DArray.MinElements<1>,
 			"ASC",
 		);
-		const dsc = pipe(
+		const dsc = DCommon.pipe(
 			[time01, time05, time10] as DChrono.TheTime[] & DArray.MinElements<1>,
 			DChrono.sortTimes("DSC"),
 		);

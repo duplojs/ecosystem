@@ -1,4 +1,5 @@
-import { DPattern, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DPattern from "@scripts/pattern";
 
 describe("array", () => {
 	it("simple", () => {
@@ -8,7 +9,7 @@ describe("array", () => {
 			{ array },
 			{ array: ["one", 2, 3n] },
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					{
 						array: ["one", 2, 3n, ...(string | number | bigint)[]];
@@ -22,7 +23,7 @@ describe("array", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			{
 				array: (string | number | bigint)[];
@@ -38,7 +39,7 @@ describe("array", () => {
 			{ array },
 			{ array: ["one"] },
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					{
 						array: ["one", 2, 3n] | ["one", ...string[]];
@@ -52,7 +53,7 @@ describe("array", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			{
 				array: ["two", 3, 4n];
@@ -68,7 +69,7 @@ describe("array", () => {
 			{ test: { array } },
 			{ test: { array: [] } },
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					{
 						test: {
@@ -84,7 +85,7 @@ describe("array", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue">,
 			"strict"
@@ -98,7 +99,7 @@ describe("array", () => {
 			[{ array }] as const,
 			[{ array: ["one"] }],
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					[
 						{
@@ -114,7 +115,7 @@ describe("array", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | [
 				{
@@ -132,7 +133,7 @@ describe("array", () => {
 			[{ array }],
 			[{ array: ["one"] }],
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					[
 						{
@@ -151,7 +152,7 @@ describe("array", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | {
 				array: ["one", 2, 3n] | ["two", 3, 4n] | ["one", ...string[]];
@@ -167,7 +168,7 @@ describe("array", () => {
 			{ array },
 			{ array: ["one", "test"] },
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					{
 						array: ["one", "test", ...string[]];
@@ -181,7 +182,7 @@ describe("array", () => {
 
 		expect(result).toStrictEqual({ array });
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | {
 				array: ["one", 2, 3n] | ["two", 3, 4n] | ["one", ...string[]];
@@ -213,7 +214,7 @@ describe("array", () => {
 			{ array },
 			{ array: [{ type: "one" }] },
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					{
 						array: [{
@@ -230,7 +231,7 @@ describe("array", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | {
 				array: [{
@@ -270,7 +271,7 @@ describe("array", () => {
 			{ array },
 			{ array: [{ prop1: "test" }] },
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					{
 						array: [{
@@ -287,7 +288,7 @@ describe("array", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | {
 				array: [{
@@ -314,7 +315,7 @@ describe("array", () => {
 			.with(
 				{ array: ["one", 2] },
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						{
 							array: ["one", 2, 3n];
@@ -328,7 +329,7 @@ describe("array", () => {
 			.with(
 				{ array: ["one"] },
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						{
 							array: ["one", number, 3n] | ["one", 1, 3n];
@@ -342,7 +343,7 @@ describe("array", () => {
 			.with(
 				{ array: ["two"] },
 				(rest) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 					typeof rest,
 					{
 						array: ["two", 3, 4n];

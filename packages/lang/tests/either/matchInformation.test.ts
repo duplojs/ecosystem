@@ -1,4 +1,5 @@
-import { DEither, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("matchInformation", () => {
 	it("should match every information value", () => {
@@ -18,7 +19,7 @@ describe("matchInformation", () => {
 
 		expect(result).toBe(84);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number | string,
 			"strict"
@@ -37,7 +38,7 @@ describe("matchInformation", () => {
 				: DEither.success(42)
 		);
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.matchInformation({
 				success: (value) => value,
@@ -50,7 +51,7 @@ describe("matchInformation", () => {
 
 		expect(result).toBe("MESSAGE");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			42 | string,
 			"strict"

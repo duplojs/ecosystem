@@ -1,4 +1,6 @@
-import { DCommon, DPath, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
+import * as DPath from "@scripts/path";
 
 describe("computeRelative", () => {
 	it.each<[string & DPath.Absolute, string & DPath.Absolute, string & DPath.Path]>([
@@ -52,7 +54,7 @@ describe("computeRelative", () => {
 		expect(result).toBe("../../delta/epsilon");
 		expect(DPath.is(result)).toBe(true);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DPath.Path,
 			"strict"
@@ -71,7 +73,7 @@ describe("computeRelative", () => {
 
 		expect(result).toBe("../gamma");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DPath.Path,
 			"strict"

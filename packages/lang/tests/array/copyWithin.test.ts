@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("copyWithin", () => {
 	it("should copy values within an array without mutating the source", () => {
@@ -12,7 +13,7 @@ describe("copyWithin", () => {
 		expect(result).toEqual([1, 3, 4, 4]);
 		expect(source).toEqual([1, 2, 3, 4]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly number[] & DArray.LengthEqual<4> & DArray.MinElements<4> & DArray.MaxElements<4>,
 			"strict"
@@ -20,7 +21,7 @@ describe("copyWithin", () => {
 	});
 
 	it("should copy values within an array in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, 2, 3, 4] as const,
 			DArray.copyWithin(0, 2, 3),
 		);
@@ -36,7 +37,7 @@ describe("copyWithin", () => {
 
 		expect(result).toEqual([1, 3, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly number[] & DArray.LengthEqual<0>)
 			| (readonly number[] & DArray.LengthEqual<3>),

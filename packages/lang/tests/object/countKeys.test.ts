@@ -1,4 +1,6 @@
-import { DKind, DObject, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DKind from "@scripts/kind";
+import * as DObject from "@scripts/object";
 
 describe("countKeys", () => {
 	it("should count public object keys", () => {
@@ -14,7 +16,7 @@ describe("countKeys", () => {
 		expect(DObject.countKeys(source)).toBe(2);
 
 		const result = DObject.countKeys(source);
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

@@ -1,10 +1,11 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("escapeRegExp", () => {
 	it("escapes every regexp special character and spaces", () => {
 		const result = DCommon.escapeRegExp("a+b [test] (ok)? #value");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"

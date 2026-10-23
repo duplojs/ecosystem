@@ -1,4 +1,5 @@
-import { DChrono, type ExpectType, pipe } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("TheTime", () => {
 	it("returns the stored time value", () => {
@@ -8,7 +9,7 @@ describe("TheTime", () => {
 
 		expect(result).toBe(1500);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -24,7 +25,7 @@ describe("TheTime", () => {
 		expect(asString).toBe(DChrono.serialize(baseTime));
 		expect(asJson).toBe(DChrono.serialize(baseTime));
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof asString,
 			DChrono.SerializedTheTime,
 			"strict"
@@ -34,14 +35,14 @@ describe("TheTime", () => {
 	it("works inside pipe with instance methods", () => {
 		const baseTime = DChrono.createTime(3_000, "millisecond");
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			baseTime,
 			(value) => value.toNative(),
 		);
 
 		expect(result).toBe(3000);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

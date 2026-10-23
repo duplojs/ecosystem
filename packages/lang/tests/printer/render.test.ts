@@ -1,4 +1,5 @@
-import { DPrinter, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPrinter from "@scripts/printer";
 
 describe("render", () => {
 	it("renders nested printable values", () => {
@@ -12,7 +13,7 @@ describe("render", () => {
 			" | ",
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -22,7 +23,7 @@ describe("render", () => {
 	});
 
 	it("renders values in a pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[
 				"title",
 				["", "body"],
@@ -32,7 +33,7 @@ describe("render", () => {
 			DPrinter.render("\n"),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"

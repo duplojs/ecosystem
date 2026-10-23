@@ -1,4 +1,5 @@
-import { DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("to", () => {
 	it("should convert primitives to string", () => {
@@ -13,7 +14,7 @@ describe("to", () => {
 	it("should preserve primitive literal string output", () => {
 		const result = DString.to(42);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"42",
 			"strict"

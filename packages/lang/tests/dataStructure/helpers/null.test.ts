@@ -1,4 +1,6 @@
-import { DDataStructure, DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
 
 describe("null", () => {
 	it("creates a null type structure", () => {
@@ -6,12 +8,12 @@ describe("null", () => {
 		const success = structure.check(null);
 		const failure = structure.check(undefined);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.TypeStructure<null, readonly []>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			null,
 			"strict"
@@ -42,7 +44,7 @@ describe("null", () => {
 			},
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly state: {
@@ -63,7 +65,7 @@ describe("null", () => {
 		const directStructure = DDataStructure.null([
 			DDataStructure.refine(
 				(data): data is null => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						null,
 						"strict"
@@ -76,7 +78,7 @@ describe("null", () => {
 		const addedStructure = DDataStructure.null().addConstraint(
 			DDataStructure.refine(
 				(data): data is null => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						null,
 						"strict"
@@ -87,7 +89,7 @@ describe("null", () => {
 			),
 		);
 
-		type _CheckDirectConstraints = ExpectType<
+		type _CheckDirectConstraints = DCommon.ExpectType<
 			typeof directStructure,
 			DDataStructure.TypeStructure<
 				null,
@@ -95,12 +97,12 @@ describe("null", () => {
 			>,
 			"strict"
 		>;
-		type _CheckDirectValue = ExpectType<
+		type _CheckDirectValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof directStructure>,
 			null,
 			"strict"
 		>;
-		type _CheckAddedConstraints = ExpectType<
+		type _CheckAddedConstraints = DCommon.ExpectType<
 			typeof addedStructure,
 			DDataStructure.Structure<
 				null,
@@ -110,7 +112,7 @@ describe("null", () => {
 			>,
 			"strict"
 		>;
-		type _CheckAddedValue = ExpectType<
+		type _CheckAddedValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof addedStructure>,
 			null,
 			"strict"

@@ -1,11 +1,13 @@
-import { DPattern, type DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPattern from "@scripts/pattern";
+import type * as DString from "@scripts/string";
 
 describe("matchWithString", () => {
 	it("should call the matching handler with the narrowed string in classic form", () => {
 		const input = "failure" as "success" | "failure";
 		const result = DPattern.matchWithString(input, {
 			success: (value) => {
-				type check = ExpectType<
+				type check = DCommon.ExpectType<
 					typeof value,
 					"success",
 					"strict"
@@ -14,7 +16,7 @@ describe("matchWithString", () => {
 				return 42 as const;
 			},
 			failure: (value) => {
-				type check = ExpectType<
+				type check = DCommon.ExpectType<
 					typeof value,
 					"failure",
 					"strict"
@@ -26,7 +28,7 @@ describe("matchWithString", () => {
 
 		expect(result).toBe("failed");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			42 | "failed",
 			"strict"
@@ -35,11 +37,11 @@ describe("matchWithString", () => {
 
 	it("should work in pipe with the curried form", () => {
 		const input = "success" as "success" | "failure";
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DPattern.matchWithString({
 				success: (value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
 						"success",
 						"strict"
@@ -48,7 +50,7 @@ describe("matchWithString", () => {
 					return 42 as const;
 				},
 				failure: (value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
 						"failure",
 						"strict"
@@ -61,7 +63,7 @@ describe("matchWithString", () => {
 
 		expect(result).toBe(42);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			42 | "failed",
 			"strict"
@@ -72,23 +74,23 @@ describe("matchWithString", () => {
 		const input = "success" as ("success" | "failure") & DString.NotEmpty;
 		const classicResult = DPattern.matchWithString(input, {
 			success: (value) => {
-				type check = ExpectType<typeof value, "success", "strict">;
+				type check = DCommon.ExpectType<typeof value, "success", "strict">;
 				return value;
 			},
 			failure: (value) => {
-				type check = ExpectType<typeof value, "failure", "strict">;
+				type check = DCommon.ExpectType<typeof value, "failure", "strict">;
 				return value;
 			},
 		});
-		const curriedResult = pipe(
+		const curriedResult = DCommon.pipe(
 			input,
 			DPattern.matchWithString({
 				success: (value) => {
-					type check = ExpectType<typeof value, "success", "strict">;
+					type check = DCommon.ExpectType<typeof value, "success", "strict">;
 					return value;
 				},
 				failure: (value) => {
-					type check = ExpectType<typeof value, "failure", "strict">;
+					type check = DCommon.ExpectType<typeof value, "failure", "strict">;
 					return value;
 				},
 			}),
@@ -96,8 +98,8 @@ describe("matchWithString", () => {
 
 		expect(classicResult).toBe("success");
 		expect(curriedResult).toBe("success");
-		type classicCheck = ExpectType<typeof classicResult, "success" | "failure", "strict">;
-		type curriedCheck = ExpectType<typeof curriedResult, "success" | "failure", "strict">;
+		type classicCheck = DCommon.ExpectType<typeof classicResult, "success" | "failure", "strict">;
+		type curriedCheck = DCommon.ExpectType<typeof curriedResult, "success" | "failure", "strict">;
 	});
 
 	it("should reject non-literal strings in classic and curried forms", () => {
@@ -108,7 +110,7 @@ describe("matchWithString", () => {
 			success: () => 42,
 		});
 
-		pipe(
+		DCommon.pipe(
 			// @ts-expect-error curried matcher only accepts its string literal keys
 			input,
 			DPattern.matchWithString({
@@ -134,14 +136,14 @@ describe("matchWithString", () => {
 			unexpected: () => false,
 		});
 
-		pipe(
+		DCommon.pipe(
 			input,
 			// @ts-expect-error curried matcher must handle every piped input literal
 			DPattern.matchWithString({
 				success: () => 42,
 			}),
 		);
-		pipe(
+		DCommon.pipe(
 			input,
 			DPattern.matchWithString(
 				// @ts-expect-error curried matcher cannot declare keys outside its input union

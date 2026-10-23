@@ -1,4 +1,5 @@
-import { DArray, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("reverse", () => {
 	it("should reverse values without mutating the source", () => {
@@ -12,7 +13,7 @@ describe("reverse", () => {
 		expect(result).toEqual([3, 2, 1]);
 		expect(source).toEqual([1, 2, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly number[] & DArray.LengthEqual<3> & DArray.MinElements<3> & DArray.MaxElements<3>,
 			"strict"
@@ -27,7 +28,7 @@ describe("reverse", () => {
 
 		expect(result).toEqual([3, 2, 1]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly number[] & DArray.LengthEqual<0>)
 			| (readonly number[] & DArray.LengthEqual<3>),

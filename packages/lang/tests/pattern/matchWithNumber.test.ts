@@ -1,11 +1,13 @@
-import { type DNumber, DPattern, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import type * as DNumber from "@scripts/number";
+import * as DPattern from "@scripts/pattern";
 
 describe("matchWithNumber", () => {
 	it("should call the matching handler with the narrowed number in classic form", () => {
 		const input = 2 as 1 | 2;
 		const result = DPattern.matchWithNumber(input, {
 			1: (value) => {
-				type check = ExpectType<
+				type check = DCommon.ExpectType<
 					typeof value,
 					1,
 					"strict"
@@ -14,7 +16,7 @@ describe("matchWithNumber", () => {
 				return 42 as const;
 			},
 			2: (value) => {
-				type check = ExpectType<
+				type check = DCommon.ExpectType<
 					typeof value,
 					2,
 					"strict"
@@ -26,7 +28,7 @@ describe("matchWithNumber", () => {
 
 		expect(result).toBe("failed");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			42 | "failed",
 			"strict"
@@ -35,11 +37,11 @@ describe("matchWithNumber", () => {
 
 	it("should work in pipe with the curried form", () => {
 		const input = 1 as 1 | 2;
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DPattern.matchWithNumber({
 				1: (value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
 						1,
 						"strict"
@@ -48,7 +50,7 @@ describe("matchWithNumber", () => {
 					return 42 as const;
 				},
 				2: (value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
 						2,
 						"strict"
@@ -61,7 +63,7 @@ describe("matchWithNumber", () => {
 
 		expect(result).toBe(42);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			42 | "failed",
 			"strict"
@@ -72,23 +74,23 @@ describe("matchWithNumber", () => {
 		const input = 1 as (1 | 2) & DNumber.Positive;
 		const classicResult = DPattern.matchWithNumber(input, {
 			1: (value) => {
-				type check = ExpectType<typeof value, 1, "strict">;
+				type check = DCommon.ExpectType<typeof value, 1, "strict">;
 				return value;
 			},
 			2: (value) => {
-				type check = ExpectType<typeof value, 2, "strict">;
+				type check = DCommon.ExpectType<typeof value, 2, "strict">;
 				return value;
 			},
 		});
-		const curriedResult = pipe(
+		const curriedResult = DCommon.pipe(
 			input,
 			DPattern.matchWithNumber({
 				1: (value) => {
-					type check = ExpectType<typeof value, 1, "strict">;
+					type check = DCommon.ExpectType<typeof value, 1, "strict">;
 					return value;
 				},
 				2: (value) => {
-					type check = ExpectType<typeof value, 2, "strict">;
+					type check = DCommon.ExpectType<typeof value, 2, "strict">;
 					return value;
 				},
 			}),
@@ -96,8 +98,8 @@ describe("matchWithNumber", () => {
 
 		expect(classicResult).toBe(1);
 		expect(curriedResult).toBe(1);
-		type classicCheck = ExpectType<typeof classicResult, 1 | 2, "strict">;
-		type curriedCheck = ExpectType<typeof curriedResult, 1 | 2, "strict">;
+		type classicCheck = DCommon.ExpectType<typeof classicResult, 1 | 2, "strict">;
+		type curriedCheck = DCommon.ExpectType<typeof curriedResult, 1 | 2, "strict">;
 	});
 
 	it("should reject non-literal numbers in classic and curried forms", () => {
@@ -108,7 +110,7 @@ describe("matchWithNumber", () => {
 			1: () => 42,
 		});
 
-		pipe(
+		DCommon.pipe(
 			// @ts-expect-error curried matcher only accepts its number literal keys
 			input,
 			DPattern.matchWithNumber({
@@ -134,14 +136,14 @@ describe("matchWithNumber", () => {
 			3: () => false,
 		});
 
-		pipe(
+		DCommon.pipe(
 			input,
 			// @ts-expect-error curried matcher must handle every piped input literal
 			DPattern.matchWithNumber({
 				1: () => 42,
 			}),
 		);
-		pipe(
+		DCommon.pipe(
 			input,
 			DPattern.matchWithNumber(
 				// @ts-expect-error curried matcher cannot declare keys outside its input union

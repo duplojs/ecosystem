@@ -1,4 +1,5 @@
-import { DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("uncapitalize", () => {
 	it("should uncapitalize the first character", () => {
@@ -6,7 +7,7 @@ describe("uncapitalize", () => {
 
 		expect(result).toBe("hello World");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"hello World",
 			"strict"
@@ -21,7 +22,7 @@ describe("uncapitalize", () => {
 		const sourceMin = "Hello" as string & DString.MinCharacters<3>;
 		const resultMin = DString.uncapitalize(sourceMin);
 
-		type _CheckMinResult = ExpectType<
+		type _CheckMinResult = DCommon.ExpectType<
 			typeof resultMin,
 			Uncapitalize<string> & DString.MinCharacters<3>,
 			"strict"
@@ -30,7 +31,7 @@ describe("uncapitalize", () => {
 		const sourceMax = "Hello" as string & DString.MaxCharacters<5>;
 		const resultMax = DString.uncapitalize(sourceMax);
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			Uncapitalize<string>,
 			"strict"
@@ -39,7 +40,7 @@ describe("uncapitalize", () => {
 		const sourceLength = "Hello" as string & DString.LengthEqual<5>;
 		const resultLength = DString.uncapitalize(sourceLength);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			Uncapitalize<string> & DString.MinCharacters<5>,
 			"strict"

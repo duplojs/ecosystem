@@ -1,4 +1,6 @@
-import { DPattern, DString, type ExpectType, forward, pipe } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPattern from "@scripts/pattern";
+import * as DString from "@scripts/string";
 
 describe("union", () => {
 	interface Test {
@@ -13,12 +15,12 @@ describe("union", () => {
 			type: "tata",
 		} as Test;
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DPattern.match(
 				{ type: DPattern.union("tata", { tt: "oo" }) },
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						{
 							type: "tata" | {
@@ -35,7 +37,7 @@ describe("union", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | {
 				type: "test" | "toto" | {
@@ -52,12 +54,12 @@ describe("union", () => {
 			type: "tata",
 		} as Test;
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DPattern.match(
 				{ type: DPattern.union("tata", "test") },
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						{
 							type: "tata" | "test";
@@ -71,7 +73,7 @@ describe("union", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | {
 				type: "toto" | {
@@ -90,9 +92,9 @@ describe("union", () => {
 
 		const result = DPattern.match(
 			input,
-			forward({ type: DPattern.union("test", "toto") }),
+			DCommon.forward({ type: DPattern.union("test", "toto") }),
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					{
 						type: "test" | "toto";
@@ -106,7 +108,7 @@ describe("union", () => {
 
 		expect(result).toStrictEqual(input);
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | {
 				type: "tata" | {
@@ -123,7 +125,7 @@ describe("union", () => {
 			type: "tata",
 		} as Test;
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DPattern.match(
 				DPattern.union(
@@ -131,7 +133,7 @@ describe("union", () => {
 					{ type: "test" },
 				),
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						{
 							type: "tata";
@@ -147,7 +149,7 @@ describe("union", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | {
 				type: "toto" | {
@@ -164,7 +166,7 @@ describe("union", () => {
 			"one" as "one" | "two",
 			DPattern.union(
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						"one" | "two",
 						"strict"
@@ -175,7 +177,7 @@ describe("union", () => {
 				"one",
 			),
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 						typeof value,
 						"one" | "two",
 						"strict"
@@ -187,7 +189,7 @@ describe("union", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 				typeof result,
 				"one" | "two" | DPattern.PatternResult<"myValue">,
 				"strict"
@@ -202,7 +204,7 @@ describe("union", () => {
 				"two",
 			),
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 						typeof value,
 						"one" | "two",
 						"strict"
@@ -214,7 +216,7 @@ describe("union", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue">,
 				"strict"

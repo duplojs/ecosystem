@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("map", () => {
 	it("should map values with callback params", () => {
@@ -13,7 +14,7 @@ describe("map", () => {
 
 		expect(result).toEqual(["0:1", "1:2", "2:3"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly `${number}:${number}`[],
 			"strict"
@@ -26,14 +27,14 @@ describe("map", () => {
 			& DArray.LengthEqual<3>
 			& DArray.MinElements<3>
 			& DArray.MaxElements<3>;
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
 			DArray.map((value) => `${value}`),
 		);
 
 		expect(result).toEqual(["1", "2", "3"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly string[] & DArray.LengthEqual<3> & DArray.MinElements<3> & DArray.MaxElements<3>,
 			"strict"
@@ -48,7 +49,7 @@ describe("map", () => {
 
 		expect(result).toEqual(["1", "2", "3"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly string[] & DArray.LengthEqual<0>)
 			| (readonly string[] & DArray.LengthEqual<3>),

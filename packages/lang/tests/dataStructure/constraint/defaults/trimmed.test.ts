@@ -1,15 +1,17 @@
-import { DDataStructure, type DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DString from "@scripts/string";
 
 describe("TrimmedConstraint", () => {
 	it("creates a synchronous trimmed string constraint", () => {
 		const constraint = DDataStructure.TrimmedConstraint();
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.TrimmedConstraint,
 			"strict"
 		>;
-		type _CheckConstraintValue = ExpectType<
+		type _CheckConstraintValue = DCommon.ExpectType<
 			DDataStructure.ConstraintValue<typeof constraint>,
 			DString.Trimmed,
 			"strict"

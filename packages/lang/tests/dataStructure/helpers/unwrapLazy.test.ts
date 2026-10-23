@@ -1,11 +1,12 @@
-import { DDataStructure, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
 
 describe("unwrapLazy", () => {
 	it("returns a non-lazy structure unchanged", () => {
 		const structure = DDataStructure.string();
 		const result = DDataStructure.unwrapLazy(structure);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DDataStructure.Structure<string>,
 			"strict"
@@ -21,7 +22,7 @@ describe("unwrapLazy", () => {
 		const firstResult = DDataStructure.unwrapLazy(structure);
 		const secondResult = DDataStructure.unwrapLazy(structure);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof firstResult,
 			DDataStructure.Structure<string>,
 			"strict"

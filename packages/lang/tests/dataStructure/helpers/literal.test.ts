@@ -1,4 +1,6 @@
-import { DDataStructure, DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
 
 describe("literal", () => {
 	it("creates a string literal type structure", () => {
@@ -6,12 +8,12 @@ describe("literal", () => {
 		const success = structure.check("admin");
 		const failure = structure.check("member");
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.TypeStructure<"admin", readonly []>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			"admin",
 			"strict"
@@ -36,27 +38,27 @@ describe("literal", () => {
 		const undefinedStructure = DDataStructure.literal(undefined);
 		const nullStructure = DDataStructure.literal(null);
 
-		type _CheckNumberValue = ExpectType<
+		type _CheckNumberValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof numberStructure>,
 			12,
 			"strict"
 		>;
-		type _CheckBigintValue = ExpectType<
+		type _CheckBigintValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof bigintStructure>,
 			12n,
 			"strict"
 		>;
-		type _CheckBooleanValue = ExpectType<
+		type _CheckBooleanValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof booleanStructure>,
 			true,
 			"strict"
 		>;
-		type _CheckUndefinedValue = ExpectType<
+		type _CheckUndefinedValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof undefinedStructure>,
 			undefined,
 			"strict"
 		>;
-		type _CheckNullValue = ExpectType<
+		type _CheckNullValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof nullStructure>,
 			null,
 			"strict"
@@ -85,12 +87,12 @@ describe("literal", () => {
 	it("creates a union structure from literal values", () => {
 		const structure = DDataStructure.literal(["draft", "published", true]);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.UnionStructure<"draft" | "published" | true, readonly []>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			"draft" | "published" | true,
 			"strict"
@@ -132,7 +134,7 @@ describe("literal", () => {
 			},
 		} as const;
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly kind: "user";
@@ -175,7 +177,7 @@ describe("literal", () => {
 			[
 				DDataStructure.refine(
 					(data): data is "admin" => {
-						type check = ExpectType<
+						type check = DCommon.ExpectType<
 							typeof data,
 							"admin" | "member",
 							"strict"
@@ -191,7 +193,7 @@ describe("literal", () => {
 		).addConstraint(
 			DDataStructure.refine(
 				(data): data is "admin" => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						"admin" | "member",
 						"strict"
@@ -202,7 +204,7 @@ describe("literal", () => {
 			),
 		);
 
-		type _CheckDirectConstraints = ExpectType<
+		type _CheckDirectConstraints = DCommon.ExpectType<
 			typeof directStructure,
 			DDataStructure.UnionStructure<
 				"admin" | "member",
@@ -210,12 +212,12 @@ describe("literal", () => {
 			>,
 			"strict"
 		>;
-		type _CheckDirectValue = ExpectType<
+		type _CheckDirectValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof directStructure>,
 			"admin",
 			"strict"
 		>;
-		type _CheckAddedConstraints = ExpectType<
+		type _CheckAddedConstraints = DCommon.ExpectType<
 			typeof addedStructure,
 			DDataStructure.Structure<
 				"admin" | "member",
@@ -225,7 +227,7 @@ describe("literal", () => {
 			>,
 			"strict"
 		>;
-		type _CheckAddedValue = ExpectType<
+		type _CheckAddedValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof addedStructure>,
 			"admin",
 			"strict"

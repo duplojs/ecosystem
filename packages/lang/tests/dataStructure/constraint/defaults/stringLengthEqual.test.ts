@@ -1,15 +1,17 @@
-import { DDataStructure, type DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DString from "@scripts/string";
 
 describe("StringLengthEqualConstraint", () => {
 	it("creates a synchronous string length constraint", () => {
 		const constraint = DDataStructure.StringLengthEqualConstraint(3);
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.StringLengthEqualConstraint<3>,
 			"strict"
 		>;
-		type _CheckConstraintValue = ExpectType<
+		type _CheckConstraintValue = DCommon.ExpectType<
 			DDataStructure.ConstraintValue<typeof constraint>,
 			DString.LengthEqual<3>,
 			"strict"

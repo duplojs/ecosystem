@@ -1,4 +1,8 @@
-import { DDataStructure, DEither, type DCommon, type DKind, type ExpectType } from "@scripts";
+
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DCommon from "@scripts/common";
+import type * as DKind from "@scripts/kind";
 
 describe("ArrayStructure", () => {
 	it("checks arrays with homogeneous elements and narrows with is", async() => {
@@ -10,19 +14,19 @@ describe("ArrayStructure", () => {
 		const success = structure.check(input);
 		const asyncSuccess = await structure.asyncCheck(input);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			readonly string[],
 			"strict"
 		>;
-		type _CheckSuccess = ExpectType<
+		type _CheckSuccess = DCommon.ExpectType<
 			typeof success,
 			| DEither.Right<"check-success", readonly string[]>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"check-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncSuccess = ExpectType<
+		type _CheckAsyncSuccess = DCommon.ExpectType<
 			typeof asyncSuccess,
 			| DEither.Right<"check-success", readonly string[]>
 			| DEither.Left<"check-error", DDataStructure.Error>,
@@ -33,7 +37,7 @@ describe("ArrayStructure", () => {
 		expect(asyncSuccess).toStrictEqual(DEither.right("check-success", input));
 		expect(structure.is(input)).toBe(true);
 		if (structure.is(input)) {
-			type _CheckNarrowedInput = ExpectType<
+			type _CheckNarrowedInput = DCommon.ExpectType<
 				typeof input,
 				readonly string[],
 				"strict"
@@ -112,48 +116,48 @@ describe("ArrayStructure", () => {
 			"decode-success",
 		);
 
-		type _CheckEncoded = ExpectType<
+		type _CheckEncoded = DCommon.ExpectType<
 			typeof encoded,
 			| DEither.Right<"encode-success", readonly number[]>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncEncoded = ExpectType<
+		type _CheckAsyncEncoded = DCommon.ExpectType<
 			typeof asyncEncoded,
 			| DEither.Right<"encode-success", readonly number[]>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckDecoded = ExpectType<
+		type _CheckDecoded = DCommon.ExpectType<
 			typeof decoded,
 			| DEither.Right<"decode-success", readonly string[]>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncDecoded = ExpectType<
+		type _CheckAsyncDecoded = DCommon.ExpectType<
 			typeof asyncDecoded,
 			| DEither.Right<"decode-success", readonly string[]>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckEncodedValue = ExpectType<
+		type _CheckEncodedValue = DCommon.ExpectType<
 			typeof encodedValue,
 			readonly number[],
 			"strict"
 		>;
-		type _CheckAsyncEncodedValue = ExpectType<
+		type _CheckAsyncEncodedValue = DCommon.ExpectType<
 			typeof asyncEncodedValue,
 			readonly number[],
 			"strict"
 		>;
-		type _CheckDecodedValue = ExpectType<
+		type _CheckDecodedValue = DCommon.ExpectType<
 			typeof decodedValue,
 			readonly string[],
 			"strict"
 		>;
-		type _CheckAsyncDecodedValue = ExpectType<
+		type _CheckAsyncDecodedValue = DCommon.ExpectType<
 			typeof asyncDecodedValue,
 			readonly string[],
 			"strict"

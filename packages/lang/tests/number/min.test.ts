@@ -1,4 +1,6 @@
-import { type DArray, DNumber, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import type * as DArray from "@scripts/array";
+import * as DNumber from "@scripts/number";
 
 describe("min", () => {
 	it("should return the smallest number", () => {
@@ -7,7 +9,7 @@ describe("min", () => {
 
 		expect(result).toBe(-1);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -16,7 +18,7 @@ describe("min", () => {
 
 	it("should return the smallest number inside a pipe", () => {
 		const source = [3, -1, 2] as number[] & DArray.MinElements<1>;
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
 			DNumber.min,
 			(value) => value * 2,

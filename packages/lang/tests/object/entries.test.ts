@@ -1,4 +1,8 @@
-import { DCommon, DKind, DObject, type DString, type ExpectType } from "@scripts";
+
+import type * as DCommon from "@scripts/common";
+import * as DKind from "@scripts/kind";
+import * as DObject from "@scripts/object";
+import type * as DString from "@scripts/string";
 
 describe("entries", () => {
 	it("should list public object entries", () => {
@@ -24,7 +28,7 @@ describe("entries", () => {
 			version: 1,
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly (readonly ["name", string] | readonly ["version", number])[],
 			"strict"
@@ -39,7 +43,7 @@ describe("entries", () => {
 			["1", "b"],
 		]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly(readonly [DString.Number, "a" | "b"])[],
 			"strict"

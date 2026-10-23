@@ -1,4 +1,5 @@
-import { DNumber, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DNumber from "@scripts/number";
 
 describe("isEven", () => {
 	it("should validate an even number", () => {
@@ -10,7 +11,7 @@ describe("isEven", () => {
 		const source = 2 as number;
 
 		if (DNumber.isEven(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				number & DNumber.Even,
 				"strict"
@@ -22,7 +23,7 @@ describe("isEven", () => {
 		const source = 2 as 2 | 3;
 
 		if (DNumber.isEven(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				(2 | 3) & DNumber.Even,
 				"strict"
@@ -31,12 +32,12 @@ describe("isEven", () => {
 	});
 
 	it("should narrow a number inside a pipe when callback", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			2 as number,
-			when(
+			DCommon.when(
 				DNumber.isEven,
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						number & DNumber.Even,
 						"strict"

@@ -1,4 +1,9 @@
-import { DCommon, type DArray, type DNumber, type DPath, type DString, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
+import type * as DArray from "@scripts/array";
+import type * as DNumber from "@scripts/number";
+import type * as DPath from "@scripts/path";
+import type * as DString from "@scripts/string";
 
 describe("infer", () => {
 	describe("string", () => {
@@ -18,7 +23,7 @@ describe("infer", () => {
 			}
 			const result = testInference({ wrap: DCommon.infer("hello") });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				& "hello"
 				& DString.MinCharacters<5>,
@@ -36,7 +41,7 @@ describe("infer", () => {
 			}
 			const result = testInference({ wrap: DCommon.infer("hello") });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				& "hello"
 				& DString.LengthEqual<5>
@@ -100,7 +105,7 @@ describe("infer", () => {
 			}
 			const result = testInference({ wrap: DCommon.infer("hello") });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				"hello" & DString.AllowedCharacters<"a-z">,
 				"strict"
@@ -152,7 +157,7 @@ describe("infer", () => {
 				{ wrap: DCommon.infer("hello") },
 			);
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				"hello"
 				& DString.LengthEqual<5>
@@ -178,7 +183,7 @@ describe("infer", () => {
 			}
 			const result = testInference({ wrap: DCommon.infer("hello") });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				& "hello"
 				& DString.MinCharacters<3>,
@@ -200,7 +205,7 @@ describe("infer", () => {
 			}
 			const result = testInference({ wrap: DCommon.infer("hello") });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				& "hello"
 				& DString.LengthEqual<5>
@@ -221,7 +226,7 @@ describe("infer", () => {
 			const source = "hello" as "hello" | "world";
 			const result = testInference({ wrap: DCommon.infer(source) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				| ("hello" & DString.MinCharacters<5>)
 				| ("world" & DString.MinCharacters<5>),
@@ -244,7 +249,7 @@ describe("infer", () => {
 			const source = "hi" as "hi" | "hello";
 			const result = testInference({ wrap: DCommon.infer(source) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				| ("hi" & DString.MaxCharacters<4>)
 				| ("hello" & DString.MinCharacters<5>),
@@ -389,7 +394,7 @@ describe("infer", () => {
 			}
 			const result = testInference({ wrap: DCommon.infer(3) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				& 3
 				& DNumber.GreaterThan<2>,
@@ -407,7 +412,7 @@ describe("infer", () => {
 			}
 			const result = testInference({ wrap: DCommon.infer(3) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				& 3
 				& DNumber.GreaterThan<2>
@@ -511,7 +516,7 @@ describe("infer", () => {
 				{ wrap: DCommon.infer(3) },
 			);
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				& 3
 				& DNumber.GreaterThan<2>
@@ -539,7 +544,7 @@ describe("infer", () => {
 			}
 			const result = testInference({ wrap: DCommon.infer(1) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				& 1
 				& DNumber.GreaterThan<0>,
@@ -561,7 +566,7 @@ describe("infer", () => {
 			}
 			const result = testInference({ wrap: DCommon.infer(1) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				& 1
 				& DNumber.GreaterThan<0>
@@ -582,7 +587,7 @@ describe("infer", () => {
 			const source = 3 as 3 | 4;
 			const result = testInference({ wrap: DCommon.infer(source) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				| (3 & DNumber.GreaterThan<2>)
 				| (4 & DNumber.GreaterThan<2>),
@@ -605,7 +610,7 @@ describe("infer", () => {
 			const source = 1 as -1 | 1;
 			const result = testInference({ wrap: DCommon.infer(source) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				| (-1 & DNumber.LessThan<0>)
 				| (1 & DNumber.GreaterThan<0>),
@@ -763,7 +768,7 @@ describe("infer", () => {
 			}
 			const result = testInference({ wrap: DCommon.infer(["a", "b"]) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				readonly ["a", "b"] & DArray.MinElements<2>,
 				"strict"
@@ -780,7 +785,7 @@ describe("infer", () => {
 			}
 			const result = testInference({ wrap: DCommon.infer(["a", "B"]) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				& readonly ["a", "B"]
 				& DArray.LengthEqual<2>
@@ -854,7 +859,7 @@ describe("infer", () => {
 				{ wrap: DCommon.infer(["a", "b", "c"]) },
 			);
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				readonly ["a", "b", "c"]
 				& DArray.LengthEqual<3>
@@ -880,7 +885,7 @@ describe("infer", () => {
 			}
 			const result = testInference({ wrap: DCommon.infer(["a", "b", "c"]) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				& readonly ["a", "b", "c"]
 				& DArray.MinElements<2>,
@@ -902,7 +907,7 @@ describe("infer", () => {
 			}
 			const result = testInference({ wrap: DCommon.infer(["a", "b", "c"]) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				& readonly ["a", "b", "c"]
 				& DArray.LengthEqual<3>
@@ -926,7 +931,7 @@ describe("infer", () => {
 				| readonly ["a", "b", "c"];
 			const result = testInference({ wrap: DCommon.infer(source) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				| (readonly ["a", "b"] & DArray.MinElements<2>)
 				| (readonly ["a", "b", "c"] & DArray.MinElements<2>),
@@ -951,7 +956,7 @@ describe("infer", () => {
 				| readonly ["a", "b", "c"];
 			const result = testInference({ wrap: DCommon.infer(source) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				| (readonly ["a"] & DArray.MaxElements<1>)
 				| (readonly ["a", "b", "c"] & DArray.MinElements<3>),
@@ -1074,7 +1079,7 @@ describe("infer", () => {
 			const source = "hello" as "hello" | 13;
 			const result = testInference({ wrap: DCommon.infer(source) });
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				| ("hello" & DString.MinCharacters<5>)
 				| (13 & DNumber.GreaterThan<12>),

@@ -1,15 +1,16 @@
-import { DDataStructure, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
 
 describe("UndefinedType", () => {
 	it("creates a synchronous undefined type", () => {
 		const type = DDataStructure.UndefinedType();
 
-		type _CheckType = ExpectType<
+		type _CheckType = DCommon.ExpectType<
 			typeof type,
 			DDataStructure.UndefinedType,
 			"strict"
 		>;
-		type _CheckTypeValue = ExpectType<
+		type _CheckTypeValue = DCommon.ExpectType<
 			DDataStructure.TypeValue<typeof type>,
 			undefined,
 			"strict"

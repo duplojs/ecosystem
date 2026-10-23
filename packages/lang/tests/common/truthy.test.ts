@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("truthy", () => {
 	it("detects truthy and falsy values", () => {
@@ -12,7 +13,7 @@ describe("truthy", () => {
 	it("narrows falsy values out of a union", () => {
 		const getLength = (input: string | undefined) => {
 			if (DCommon.truthy(input)) {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					string,
 					"strict"
@@ -20,7 +21,7 @@ describe("truthy", () => {
 
 				return input.length;
 			} else {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					undefined,
 					"strict"

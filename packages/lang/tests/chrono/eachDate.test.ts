@@ -1,4 +1,6 @@
-import { DArray, DChrono, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
+import * as DChrono from "@scripts/chrono";
 
 describe("eachDate", () => {
 	it("should iterate forward by day and include an aligned end date", () => {
@@ -13,7 +15,7 @@ describe("eachDate", () => {
 			"2020-01-03T00:00:00.000Z",
 		]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Generator<DChrono.TheDate, unknown, unknown>,
 			"strict"

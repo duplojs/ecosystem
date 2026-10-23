@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("findAndSpliceReplace", () => {
 	it("should replace values at the first match without mutating the source", () => {
@@ -15,7 +16,7 @@ describe("findAndSpliceReplace", () => {
 		expect(result).toEqual(["a", "B", "ccc"]);
 		expect(source).toEqual(["a", "bb", "ccc"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			("a" | "bb" | "ccc" | "B")[] | undefined,
 			"strict"
@@ -23,7 +24,7 @@ describe("findAndSpliceReplace", () => {
 	});
 
 	it("should replace values at the first match in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["a", "bb", "ccc"] as const,
 			DArray.findAndSpliceReplace((value) => value === "bb", ["B"] as const),
 		);

@@ -1,4 +1,6 @@
-import { DArray, DGenerator, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
+import * as DGenerator from "@scripts/generator";
 
 describe("createExternalAsyncGenerator", () => {
 	it("yields the next external value", async() => {
@@ -9,7 +11,7 @@ describe("createExternalAsyncGenerator", () => {
 
 		await expect(result).resolves.toStrictEqual([12]);
 
-		type _CheckExternal = ExpectType<
+		type _CheckExternal = DCommon.ExpectType<
 			typeof external,
 			{
 				asyncGenerator: AsyncGenerator<number, void, unknown>;

@@ -1,4 +1,5 @@
-import { DNumber, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DNumber from "@scripts/number";
 
 describe("isSafe", () => {
 	it("should validate a finite number inside safe bounds", () => {
@@ -15,7 +16,7 @@ describe("isSafe", () => {
 		const source = 1 as number;
 
 		if (DNumber.isSafe(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				number & DNumber.Safe,
 				"strict"
@@ -27,7 +28,7 @@ describe("isSafe", () => {
 		const source = 1 as 1 | 9007199254740992;
 
 		if (DNumber.isSafe(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				(1 | 9007199254740992) & DNumber.Safe,
 				"strict"
@@ -36,12 +37,12 @@ describe("isSafe", () => {
 	});
 
 	it("should narrow a number inside a pipe when callback", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			1 as number,
-			when(
+			DCommon.when(
 				DNumber.isSafe,
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						number & DNumber.Safe,
 						"strict"

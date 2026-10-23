@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("promiseObject", () => {
 	it("awaits every promised property and keeps direct values", async() => {
@@ -8,7 +9,7 @@ describe("promiseObject", () => {
 			active: Promise.resolve(true as const),
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<{
 				id: 1;

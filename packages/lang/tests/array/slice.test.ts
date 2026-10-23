@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("slice", () => {
 	it("should slice values", () => {
@@ -6,7 +7,7 @@ describe("slice", () => {
 
 		expect(result).toEqual(["b", "c"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			("a" | "b" | "c")[],
 			"strict"
@@ -14,7 +15,7 @@ describe("slice", () => {
 	});
 
 	it("should slice values in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["a", "b", "c"] as const,
 			DArray.slice(1, 2),
 		);

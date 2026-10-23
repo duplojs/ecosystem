@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, type DNumber, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DNumber from "@scripts/number";
 
 describe("strictNegative", () => {
 	it("creates and applies a strict negative constraint", () => {
@@ -7,12 +10,12 @@ describe("strictNegative", () => {
 		const success = structure.check(-1);
 		const failure = structure.check(0);
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.StrictNegativeConstraint,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			number & DNumber.StrictNegative,
 			"strict"

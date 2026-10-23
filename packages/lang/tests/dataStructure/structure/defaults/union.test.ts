@@ -1,4 +1,8 @@
-import { DDataStructure, DEither, type DCommon, type DKind, type ExpectType } from "@scripts";
+
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DCommon from "@scripts/common";
+import type * as DKind from "@scripts/kind";
 
 describe("UnionStructure", () => {
 	it("checks values against the first matching structure and narrows with is", async() => {
@@ -11,19 +15,19 @@ describe("UnionStructure", () => {
 		const numberSuccess = await structure.asyncCheck(42);
 		const failure = structure.check(true);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string | number,
 			"strict"
 		>;
-		type _CheckSuccess = ExpectType<
+		type _CheckSuccess = DCommon.ExpectType<
 			typeof success,
 			| DEither.Right<"check-success", string | number>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"check-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckNumberSuccess = ExpectType<
+		type _CheckNumberSuccess = DCommon.ExpectType<
 			typeof numberSuccess,
 			| DEither.Right<"check-success", string | number>
 			| DEither.Left<"check-error", DDataStructure.Error>,
@@ -34,7 +38,7 @@ describe("UnionStructure", () => {
 		expect(numberSuccess).toStrictEqual(DEither.right("check-success", 42));
 		expect(structure.is(input)).toBe(true);
 		if (structure.is(input)) {
-			type _CheckNarrowedInput = ExpectType<
+			type _CheckNarrowedInput = DCommon.ExpectType<
 				typeof input,
 				string | number,
 				"strict"
@@ -107,7 +111,7 @@ describe("UnionStructure", () => {
 			DDataStructure.LazyStructure(getNestedUnion, []),
 		], []);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string | number | boolean | bigint,
 			"strict"
@@ -182,27 +186,27 @@ describe("UnionStructure", () => {
 		const decodedNumber = await structure.asyncDecode(codecs, "number-42");
 		const parsed = structure.parse(4, codecs);
 
-		type _CheckEncodedString = ExpectType<
+		type _CheckEncodedString = DCommon.ExpectType<
 			typeof encodedString,
 			| DEither.Right<"encode-success", string | number>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckEncodedNumber = ExpectType<
+		type _CheckEncodedNumber = DCommon.ExpectType<
 			typeof encodedNumber,
 			| DEither.Right<"encode-success", string | number>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckDecodedString = ExpectType<
+		type _CheckDecodedString = DCommon.ExpectType<
 			typeof decodedString,
 			| DEither.Right<"decode-success", string | number>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckDecodedNumber = ExpectType<
+		type _CheckDecodedNumber = DCommon.ExpectType<
 			typeof decodedNumber,
 			| DEither.Right<"decode-success", string | number>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
@@ -538,7 +542,7 @@ describe("UnionStructure", () => {
 			[
 				DDataStructure.refine(
 					(data): data is string => {
-						type check = ExpectType<
+						type check = DCommon.ExpectType<
 							typeof data,
 							string | number,
 							"strict"
@@ -553,7 +557,7 @@ describe("UnionStructure", () => {
 		const struct = structure.addConstraint(
 			DDataStructure.RefineConstraint(
 				(value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
 						string | number,
 						"strict"
@@ -563,7 +567,7 @@ describe("UnionStructure", () => {
 			),
 		);
 
-		type _CheckStructValue = ExpectType<
+		type _CheckStructValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof struct>,
 			string,
 			"strict"
@@ -592,7 +596,7 @@ describe("UnionStructure", () => {
 					),
 				);
 
-		type _CheckDataStructureContractValue = ExpectType<
+		type _CheckDataStructureContractValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof dataStructureContract>,
 			string | number,
 			"strict"
@@ -601,7 +605,7 @@ describe("UnionStructure", () => {
 		dataStructureContract.addConstraint(
 			DDataStructure.RefineConstraint(
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						string | number,
 						"strict"

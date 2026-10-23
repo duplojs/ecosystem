@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("betweenTime", () => {
 	const lowerTime = DChrono.createTime(30, "second");
@@ -13,7 +14,7 @@ describe("betweenTime", () => {
 
 		expect(result).toBe(true);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			boolean,
 			"strict"
@@ -36,7 +37,7 @@ describe("betweenTime", () => {
 	});
 
 	it("use in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createTime(60, "second"),
 			DChrono.betweenThanOrEqualTime(lowerTime, upperTime),
 		);

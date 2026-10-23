@@ -1,4 +1,5 @@
-import { DObject, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DObject from "@scripts/object";
 
 describe("isSimple", () => {
 	it("should accept plain objects", () => {
@@ -26,7 +27,7 @@ describe("isSimple", () => {
 		const input: unknown = { name: "Duplo" };
 
 		if (DObject.isSimple(input)) {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				object,
 				"strict"

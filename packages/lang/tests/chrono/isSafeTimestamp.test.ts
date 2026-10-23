@@ -1,4 +1,5 @@
-import { type ExpectType, DChrono } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("isSafeTimestamp", () => {
 	it("returns true for safe timestamp within range", () => {
@@ -6,7 +7,7 @@ describe("isSafeTimestamp", () => {
 
 		expect(result).toBe(true);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			boolean,
 			"strict"

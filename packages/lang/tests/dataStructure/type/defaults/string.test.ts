@@ -1,15 +1,16 @@
-import { DDataStructure, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
 
 describe("StringType", () => {
 	it("creates a synchronous string type", () => {
 		const type = DDataStructure.StringType();
 
-		type _CheckType = ExpectType<
+		type _CheckType = DCommon.ExpectType<
 			typeof type,
 			DDataStructure.StringType,
 			"strict"
 		>;
-		type _CheckTypeValue = ExpectType<
+		type _CheckTypeValue = DCommon.ExpectType<
 			DDataStructure.TypeValue<typeof type>,
 			string,
 			"strict"

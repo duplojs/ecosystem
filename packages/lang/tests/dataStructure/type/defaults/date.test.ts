@@ -1,15 +1,17 @@
-import { DChrono, DDataStructure, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
+import * as DDataStructure from "@scripts/dataStructure";
 
 describe("DateType", () => {
 	it("creates a synchronous date type", () => {
 		const type = DDataStructure.DateType();
 
-		type _CheckType = ExpectType<
+		type _CheckType = DCommon.ExpectType<
 			typeof type,
 			DDataStructure.DateType,
 			"strict"
 		>;
-		type _CheckTypeValue = ExpectType<
+		type _CheckTypeValue = DCommon.ExpectType<
 			DDataStructure.TypeValue<typeof type>,
 			DChrono.TheDate,
 			"strict"

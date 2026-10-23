@@ -1,4 +1,6 @@
-import { DChrono, type DArray, pipe } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
+import type * as DArray from "@scripts/array";
 
 describe("DChrono sort", () => {
 	const jan01 = DChrono.createDate("2024-01-01");
@@ -10,7 +12,7 @@ describe("DChrono sort", () => {
 			[jan05, jan10, jan01] as DChrono.TheDate[] & DArray.MinElements<1>,
 			"ASC",
 		);
-		const dsc = pipe(
+		const dsc = DCommon.pipe(
 			[jan01, jan05, jan10] as DChrono.TheDate[] & DArray.MinElements<1>,
 			DChrono.sortDates("DSC"),
 		);

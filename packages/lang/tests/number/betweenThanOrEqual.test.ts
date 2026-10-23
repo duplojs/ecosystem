@@ -1,4 +1,5 @@
-import { DNumber, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DNumber from "@scripts/number";
 
 describe("betweenThanOrEqual", () => {
 	it("should validate a number between bounds inclusively", () => {
@@ -19,7 +20,7 @@ describe("betweenThanOrEqual", () => {
 		const source = 4 as 2 | 4 | 6;
 
 		if (DNumber.betweenThanOrEqual(source, 4, 6)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				4 | 6,
 				"strict"
@@ -49,7 +50,7 @@ describe("betweenThanOrEqual", () => {
 			| (number & DNumber.GreaterThanOrEqual<2> & DNumber.LessThanOrEqual<4>);
 
 		if (DNumber.betweenThanOrEqual(source, 2, 4)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				ExpectedNarrowedSource,
 				"strict"
@@ -58,12 +59,12 @@ describe("betweenThanOrEqual", () => {
 	});
 
 	it("should narrow a number inside a pipe when callback", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			3 as number,
-			when(
+			DCommon.when(
 				DNumber.betweenThanOrEqual(2, 4),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						number & DNumber.GreaterThanOrEqual<2> & DNumber.LessThanOrEqual<4>,
 						"strict"

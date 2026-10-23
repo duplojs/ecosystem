@@ -1,4 +1,5 @@
-import { DEither, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("unwrapLeft", () => {
 	it("should unwrap left values and keep other inputs unchanged", () => {
@@ -13,17 +14,17 @@ describe("unwrapLeft", () => {
 		expect(unwrappedRight).toBe(right);
 		expect(plain).toBe("plain");
 
-		type _CheckLeft = ExpectType<
+		type _CheckLeft = DCommon.ExpectType<
 			typeof unwrappedLeft,
 			"message",
 			"strict"
 		>;
-		type _CheckRight = ExpectType<
+		type _CheckRight = DCommon.ExpectType<
 			typeof unwrappedRight,
 			DEither.Success<42>,
 			"strict"
 		>;
-		type _CheckPlain = ExpectType<
+		type _CheckPlain = DCommon.ExpectType<
 			typeof plain,
 			"plain",
 			"strict"
@@ -31,14 +32,14 @@ describe("unwrapLeft", () => {
 	});
 
 	it("should unwrap left values in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DEither.left("value", "data"),
 			DEither.unwrapLeft,
 		);
 
 		expect(result).toBe("data");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"data",
 			"strict"

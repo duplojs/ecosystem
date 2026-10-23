@@ -1,4 +1,6 @@
-import { DCommon, DKind, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
+import * as DKind from "@scripts/kind";
 
 describe("common kind", () => {
 	it("creates namespaced kind handlers", () => {
@@ -6,7 +8,7 @@ describe("common kind", () => {
 		const input = { id: 1 };
 		const result = testKind.addTo(input, "value");
 
-		type _CheckDefinition = ExpectType<
+		type _CheckDefinition = DCommon.ExpectType<
 			typeof testKind.definition,
 			DKind.Definition<"@DuplojsLangCommon/test-kind", string>,
 			"strict"

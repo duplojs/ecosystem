@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType, pipe, when } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("toCurriedPredicate", () => {
 	it("returns a predicate preserving narrowing", () => {
@@ -8,7 +9,7 @@ describe("toCurriedPredicate", () => {
 		const input = "value" as string | number;
 
 		if (isString(input)) {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				string,
 				"strict"
@@ -16,7 +17,7 @@ describe("toCurriedPredicate", () => {
 
 			expect(input.toUpperCase()).toBe("VALUE");
 		} else {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				number,
 				"strict"
@@ -28,15 +29,15 @@ describe("toCurriedPredicate", () => {
 		const isString = DCommon.toCurriedPredicate(
 			(input: string | number): input is string => typeof input === "string",
 		);
-		const result = pipe(
+		const result = DCommon.pipe(
 			"value" as string | number,
-			when(
+			DCommon.when(
 				isString,
 				(input) => input.length,
 			),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

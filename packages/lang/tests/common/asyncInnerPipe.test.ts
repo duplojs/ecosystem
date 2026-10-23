@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("asyncInnerPipe", () => {
 	it("creates an async pipe function", async() => {
@@ -9,7 +10,7 @@ describe("asyncInnerPipe", () => {
 		);
 		const result = innerPipe(Promise.resolve("value"));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<`${number}`>,
 			"strict"

@@ -1,7 +1,9 @@
-import { type AnyTuple, DCommon, DPath, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
+import * as DPath from "@scripts/path";
 
 describe("resolveRelative", () => {
-	it.each<[AnyTuple<string & DPath.Path>, string & DPath.Path]>([
+	it.each<[DCommon.AnyTuple<string & DPath.Path>, string & DPath.Path]>([
 		[[DCommon.infer(".")], DCommon.infer(".")],
 		[[DCommon.infer("."), DCommon.infer(".")], DCommon.infer(".")],
 
@@ -85,7 +87,7 @@ describe("resolveRelative", () => {
 			DCommon.infer("baz"),
 		]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DPath.Path & DPath.Absolute,
 			"strict"
@@ -123,7 +125,7 @@ describe("resolveRelative", () => {
 			DCommon.infer("gamma"),
 		]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DPath.Path,
 			"strict"

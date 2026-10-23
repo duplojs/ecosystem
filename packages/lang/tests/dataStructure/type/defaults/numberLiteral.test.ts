@@ -1,15 +1,16 @@
-import { DDataStructure, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
 
 describe("NumberLiteralType", () => {
 	it("creates a synchronous number literal type", () => {
 		const type = DDataStructure.NumberLiteralType(12);
 
-		type _CheckType = ExpectType<
+		type _CheckType = DCommon.ExpectType<
 			typeof type,
 			DDataStructure.NumberLiteralType<12>,
 			"strict"
 		>;
-		type _CheckTypeValue = ExpectType<
+		type _CheckTypeValue = DCommon.ExpectType<
 			DDataStructure.TypeValue<typeof type>,
 			12,
 			"strict"

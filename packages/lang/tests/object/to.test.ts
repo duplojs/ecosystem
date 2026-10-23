@@ -1,4 +1,5 @@
-import { DObject, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DObject from "@scripts/object";
 
 describe("to", () => {
 	it("should transform a value to an object", () => {
@@ -12,7 +13,7 @@ describe("to", () => {
 			length: 5,
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			{
 				name: string;
@@ -35,7 +36,7 @@ describe("to", () => {
 	});
 
 	it("should transform a value to an object in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"Duplo",
 			DObject.to({
 				length: (value) => value.length,

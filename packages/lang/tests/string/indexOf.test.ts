@@ -1,4 +1,5 @@
-import { DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("indexOf", () => {
 	it("should return the first matching index", () => {
@@ -6,7 +7,7 @@ describe("indexOf", () => {
 
 		expect(result).toBe(0);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number | undefined,
 			"strict"
@@ -14,7 +15,7 @@ describe("indexOf", () => {
 	});
 
 	it("should return the first matching index in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"hello hello",
 			DString.indexOf("hello"),
 		);

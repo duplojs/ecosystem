@@ -1,4 +1,5 @@
-import { DArray, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("coalescing", () => {
 	it("should keep arrays unchanged", () => {
@@ -7,7 +8,7 @@ describe("coalescing", () => {
 
 		expect(result).toBe(source);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly ["a", "b"],
 			"strict"
@@ -19,7 +20,7 @@ describe("coalescing", () => {
 
 		expect(result).toEqual(["a"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly ["a"],
 			"strict"

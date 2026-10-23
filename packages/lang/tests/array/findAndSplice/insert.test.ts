@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("findAndSpliceInsert", () => {
 	it("should insert values before the first match without mutating the source", () => {
@@ -15,7 +16,7 @@ describe("findAndSpliceInsert", () => {
 		expect(result).toEqual(["a", "bb", "ccc"]);
 		expect(source).toEqual(["a", "ccc"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			(readonly string[] & DArray.MinElements<2>) | undefined,
 			"strict"
@@ -23,7 +24,7 @@ describe("findAndSpliceInsert", () => {
 	});
 
 	it("should insert values before the first match in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["a", "ccc"] as const,
 			DArray.findAndSpliceInsert((value) => value === "ccc", ["bb"] as const),
 		);
@@ -49,7 +50,7 @@ describe("findAndSpliceInsert", () => {
 
 		expect(result).toEqual([1, 2, 3, 4]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly number[] & DArray.MinElements<0>)
 			| (readonly number[] & DArray.MinElements<2>)
@@ -62,7 +63,7 @@ describe("findAndSpliceInsert", () => {
 		const sourceMax = ["a", "ccc"] as string[] & DArray.MaxElements<2>;
 		const resultMax = DArray.findAndSpliceInsert(sourceMax, () => true, ["bb"]);
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			readonly string[] | undefined,
 			"strict"
@@ -75,7 +76,7 @@ describe("findAndSpliceInsert", () => {
 			["bb"],
 		);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			(readonly string[] & DArray.MinElements<2>) | undefined,
 			"strict"

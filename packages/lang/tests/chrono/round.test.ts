@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("round", () => {
 	it("rounds to day by default", () => {
@@ -13,7 +14,7 @@ describe("round", () => {
 			DChrono.serialize(DChrono.createDate("2024-01-15")),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -122,7 +123,7 @@ describe("round", () => {
 	});
 
 	it("use in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2024-01-15", {
 				hour: "12",
 				minute: "34",

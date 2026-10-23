@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DString from "@scripts/string";
 
 describe("refine", () => {
 	it("creates and applies a refine constraint", () => {
@@ -9,12 +12,12 @@ describe("refine", () => {
 		const success = structure.check("user:123");
 		const failure = structure.check("admin:123");
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.RefineConstraint<string, `user:${string}`>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			`user:${string}`,
 			"strict"

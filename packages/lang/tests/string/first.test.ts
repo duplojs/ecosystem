@@ -1,4 +1,5 @@
-import { DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("first", () => {
 	it("should return the first literal character", () => {
@@ -6,7 +7,7 @@ describe("first", () => {
 
 		expect(result).toBe("h");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"h",
 			"strict"
@@ -19,7 +20,7 @@ describe("first", () => {
 
 		expect(result).toBe("h");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"h" | undefined,
 			"strict"
@@ -32,7 +33,7 @@ describe("first", () => {
 
 		expect(result).toBe("a");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"a",
 			"strict"
@@ -44,7 +45,7 @@ describe("first", () => {
 
 		expect(result).toBeUndefined();
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			undefined,
 			"strict"
@@ -57,7 +58,7 @@ describe("first", () => {
 
 		expect(result).toBe("h");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			(string & DString.LengthEqual<1>) | undefined,
 			"strict"
@@ -70,7 +71,7 @@ describe("first", () => {
 
 		expect(result).toBe("h");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DString.LengthEqual<1>,
 			"strict"
@@ -83,7 +84,7 @@ describe("first", () => {
 
 		expect(result).toBeUndefined();
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			undefined,
 			"strict"
@@ -96,7 +97,7 @@ describe("first", () => {
 
 		expect(result).toBe("h");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DString.LengthEqual<1> & DString.AllowedCharacters<"a-z">,
 			"strict"

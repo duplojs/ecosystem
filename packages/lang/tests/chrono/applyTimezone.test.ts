@@ -1,4 +1,5 @@
-import { type ExpectType, DChrono } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("applyTimezone", () => {
 	afterEach(() => {
@@ -11,7 +12,7 @@ describe("applyTimezone", () => {
 
 		expect(result).toStrictEqual(theDate);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -30,7 +31,7 @@ describe("applyTimezone", () => {
 
 		expect(result).toStrictEqual(expected);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -51,7 +52,7 @@ describe("applyTimezone", () => {
 		expect(DChrono.toNative(result).getDate()).toBe(12);
 		expect(DChrono.toNative(result).getUTCDate()).toBe(12);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -67,7 +68,7 @@ describe("applyTimezone", () => {
 
 		expect(result).toStrictEqual(expected);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"

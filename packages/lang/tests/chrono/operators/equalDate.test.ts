@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("equal", () => {
 	it("simple case", () => {
@@ -47,12 +48,12 @@ describe("equal", () => {
 	});
 
 	it("use in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2024-01-03"),
 			DChrono.equalDate(DChrono.createDate("2024-01-03")),
 		);
 
-		type _check = ExpectType<
+		type _check = DCommon.ExpectType<
 			typeof result,
 			boolean,
 			"strict"

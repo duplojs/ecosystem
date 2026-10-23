@@ -1,4 +1,5 @@
-import { DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("isUrl", () => {
 	it("should validate an url", () => {
@@ -10,13 +11,13 @@ describe("isUrl", () => {
 		const source = "https://duplojs.dev" as string;
 
 		if (DString.isUrl(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				string & DString.Url,
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				string,
 				"strict"

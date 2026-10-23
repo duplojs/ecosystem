@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("unshift", () => {
 	it("should unshift values without mutating the source", () => {
@@ -8,7 +9,7 @@ describe("unshift", () => {
 		expect(result).toEqual(["a", true, 1, 2]);
 		expect(source).toEqual([1, 2]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly (number | string | boolean)[] & DArray.MinElements<2>,
 			"strict"
@@ -16,7 +17,7 @@ describe("unshift", () => {
 	});
 
 	it("should unshift a value in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, 2] as const,
 			DArray.unshift("a"),
 		);
@@ -32,7 +33,7 @@ describe("unshift", () => {
 
 		expect(result).toEqual(["x", 1, 2, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly (number | "x")[] & DArray.MinElements<0>)
 			| (readonly (number | "x")[] & DArray.MinElements<3>),
@@ -44,7 +45,7 @@ describe("unshift", () => {
 		const sourceMax = [1, 2] as number[] & DArray.MaxElements<2>;
 		const resultMax = DArray.unshift(sourceMax, "a");
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			readonly (number | "a")[],
 			"strict"
@@ -53,7 +54,7 @@ describe("unshift", () => {
 		const sourceLength = [1, 2] as number[] & DArray.LengthEqual<2>;
 		const resultLength = DArray.unshift(sourceLength, "a" as string);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			readonly (number | string)[] & DArray.MinElements<2>,
 			"strict"

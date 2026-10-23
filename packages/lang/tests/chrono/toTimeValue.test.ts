@@ -1,4 +1,5 @@
-import { type ExpectType, DChrono } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("toTimeValue", () => {
 	it("parses positive time strings", () => {
@@ -6,7 +7,7 @@ describe("toTimeValue", () => {
 
 		expect(result).toBe(123);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

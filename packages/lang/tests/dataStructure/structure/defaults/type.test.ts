@@ -1,4 +1,8 @@
-import { DDataStructure, DEither, type DCommon, type DKind, type ExpectType } from "@scripts";
+
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DCommon from "@scripts/common";
+import type * as DKind from "@scripts/kind";
 
 describe("TypeStructure", () => {
 	it("checks values with the wrapped type", async() => {
@@ -7,19 +11,19 @@ describe("TypeStructure", () => {
 		const failure = structure.check(123);
 		const asyncSuccess = await structure.asyncCheck("value");
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string,
 			"strict"
 		>;
-		type _CheckSuccess = ExpectType<
+		type _CheckSuccess = DCommon.ExpectType<
 			typeof success,
 			| DEither.Right<"check-success", string>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"check-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncSuccess = ExpectType<
+		type _CheckAsyncSuccess = DCommon.ExpectType<
 			typeof asyncSuccess,
 			| DEither.Right<"check-success", string>
 			| DEither.Left<"check-error", DDataStructure.Error>,
@@ -83,14 +87,14 @@ describe("TypeStructure", () => {
 		const fallbackSuccess = structure.encode(DDataStructure.createCodecs({}), "abcd");
 		const failure = structure.encode(DDataStructure.createCodecs({ codec }), 123 as never);
 
-		type _CheckSuccess = ExpectType<
+		type _CheckSuccess = DCommon.ExpectType<
 			typeof success,
 			| DEither.Right<"encode-success", number>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncSuccess = ExpectType<
+		type _CheckAsyncSuccess = DCommon.ExpectType<
 			typeof asyncSuccess,
 			| DEither.Right<"encode-success", number>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
@@ -181,20 +185,20 @@ describe("TypeStructure", () => {
 		const parseSuccess = structure.parse(4, DDataStructure.createCodecs({ codec }));
 		const parseFallbackSuccess = await structure.asyncParse("value");
 
-		type _CheckSuccess = ExpectType<
+		type _CheckSuccess = DCommon.ExpectType<
 			typeof success,
 			| DEither.Right<"decode-success", string>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncSuccess = ExpectType<
+		type _CheckAsyncSuccess = DCommon.ExpectType<
 			typeof asyncSuccess,
 			| DEither.Right<"decode-success", string>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckParseSuccess = ExpectType<
+		type _CheckParseSuccess = DCommon.ExpectType<
 			typeof parseSuccess,
 			| DEither.Right<"parse-success", string>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>

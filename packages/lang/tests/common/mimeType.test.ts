@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType, pipe } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("mimeType", () => {
 	it("maps known extensions to their MIME type", () => {
@@ -20,12 +21,12 @@ describe("mimeType", () => {
 	});
 
 	it("can be used in a pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"json",
 			(extension) => DCommon.mimeType.get(extension),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string | undefined,
 			"strict"

@@ -1,4 +1,5 @@
-import { DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("rightAsyncPipe", () => {
 	it("should pipe awaited right values and wrap the final plain output into success", async() => {
@@ -18,7 +19,7 @@ describe("rightAsyncPipe", () => {
 
 		await expect(result).resolves.toStrictEqual(DEither.success(42));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<DEither.Success<number>>,
 			"strict"

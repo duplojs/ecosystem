@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType, pipe, when } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("or", () => {
 	it("returns true when at least one predicate accepts the input", () => {
@@ -16,9 +17,9 @@ describe("or", () => {
 	});
 
 	it("supports curried predicates in a pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			2,
-			when(
+			DCommon.when(
 				DCommon.or([
 					(input: number) => input < 0,
 					(input: number) => input % 2 === 0,
@@ -27,7 +28,7 @@ describe("or", () => {
 			),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -44,7 +45,7 @@ describe("or", () => {
 		]);
 
 		if (result) {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				string | number,
 				"strict"
@@ -52,7 +53,7 @@ describe("or", () => {
 
 			expect(input).toBe("value");
 		} else {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				null,
 				"strict"

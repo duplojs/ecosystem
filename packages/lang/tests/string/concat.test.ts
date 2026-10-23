@@ -1,4 +1,5 @@
-import { DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("concat", () => {
 	it("should append strings", () => {
@@ -6,7 +7,7 @@ describe("concat", () => {
 
 		expect(result).toBe("hello world");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"hello world",
 			"strict"
@@ -14,14 +15,14 @@ describe("concat", () => {
 	});
 
 	it("should append a string in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"hello",
 			DString.concat(" world"),
 		);
 
 		expect(result).toBe("hello world");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"hello world",
 			"strict"
@@ -33,7 +34,7 @@ describe("concat", () => {
 		const suffix = "!" as "!" & DString.MaxCharacters<1>;
 		const resultMin = DString.concat(sourceMin, suffix);
 
-		type _CheckMinResult = ExpectType<
+		type _CheckMinResult = DCommon.ExpectType<
 			typeof resultMin,
 			`${string}!` & DString.MinCharacters<3>,
 			"strict"
@@ -42,7 +43,7 @@ describe("concat", () => {
 		const sourceMax = "hello" as string & DString.MaxCharacters<5>;
 		const resultMax = DString.concat(sourceMax, suffix);
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			`${string}!`,
 			"strict"
@@ -51,7 +52,7 @@ describe("concat", () => {
 		const sourceLength = "hello" as string & DString.LengthEqual<5>;
 		const resultLength = DString.concat(sourceLength, suffix);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			`${string}!` & DString.MinCharacters<5>,
 			"strict"

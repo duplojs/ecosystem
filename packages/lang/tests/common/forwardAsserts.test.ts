@@ -1,4 +1,5 @@
-import { DCommon, pipe, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("forwardAssert", () => {
 	it("forwards the narrowed value when the predicate accepts it", () => {
@@ -10,7 +11,7 @@ describe("forwardAssert", () => {
 
 		expect(result.toUpperCase()).toBe("VALUE");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -26,7 +27,7 @@ describe("forwardAssert", () => {
 
 		expect(result).toBe(value);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string | number,
 			"strict"
@@ -59,7 +60,7 @@ describe("forwardAssert", () => {
 	});
 
 	it("forwards the narrowed value in a pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"value" as string | number,
 			DCommon.forwardAsserts(
 				(input): input is string => typeof input === "string",
@@ -69,7 +70,7 @@ describe("forwardAssert", () => {
 
 		expect(result).toBe(5);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -80,7 +81,7 @@ describe("forwardAssert", () => {
 		const value = 10 as string | number;
 
 		expect(
-			() => pipe(
+			() => DCommon.pipe(
 				value,
 				DCommon.forwardAsserts(
 					(input): input is string => typeof input === "string",

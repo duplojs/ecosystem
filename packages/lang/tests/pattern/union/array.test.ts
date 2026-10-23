@@ -1,16 +1,17 @@
-import { DPattern, type ExpectType, pipe } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPattern from "@scripts/pattern";
 
 describe("union discriminate array", () => {
 	describe("array", () => {
 		const input = ["one", 5, 7n];
 
 		it("union on first value of array", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				input,
 				DPattern.match(
 					[DPattern.union("one", "two")],
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							["one" | "two", ...(string | number | bigint)[]],
 							"strict"
@@ -21,7 +22,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | (string | number | bigint)[],
 				"strict"
@@ -29,12 +30,12 @@ describe("union discriminate array", () => {
 		});
 
 		it("union on array", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				input,
 				DPattern.match(
 					DPattern.union(["one"], ["two"]),
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							| ["one", ...(string | number | bigint)[]]
 							| ["two", ...(string | number | bigint)[]],
@@ -46,7 +47,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | (string | number | bigint)[],
 				"strict"
@@ -58,12 +59,12 @@ describe("union discriminate array", () => {
 		const input = ["one", 5, 7n] as ["one", 5, 7n] | ["two", number] | ["three", ...string[]];
 
 		it("union on first value of tuple", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				input,
 				DPattern.match(
 					[DPattern.union("one", "two")],
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							["one", 5, 7n] | ["two", number],
 							"strict"
@@ -74,7 +75,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | ["three", ...string[]],
 				"strict"
@@ -82,12 +83,12 @@ describe("union discriminate array", () => {
 		});
 
 		it("union on tuple", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				input,
 				DPattern.match(
 					DPattern.union(["one"], ["two", 1]),
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							["one", 5, 7n] | ["two", 1],
 							"strict"
@@ -98,7 +99,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | ["two", number] | ["three", ...string[]],
 				"strict"
@@ -121,12 +122,12 @@ describe("union discriminate array", () => {
 		];
 
 		it("union on object prop in array", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				input,
 				DPattern.match(
 					[{ type: DPattern.union("tata", { sub: "ta" }) }],
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							[{
 								type: "tata" | {
@@ -142,7 +143,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | Test[],
 				"strict"
@@ -150,7 +151,7 @@ describe("union discriminate array", () => {
 		});
 
 		it("union on array with object", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				input,
 				DPattern.match(
 					DPattern.union(
@@ -158,7 +159,7 @@ describe("union discriminate array", () => {
 						[{ type: { tt: DPattern.union("oo", "yy") } }],
 					),
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							| [{
 								type: {
@@ -177,7 +178,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | Test[],
 				"strict"
@@ -185,7 +186,7 @@ describe("union discriminate array", () => {
 		});
 
 		it("object with union on array with object", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				{ input },
 				DPattern.match(
 					{
@@ -195,7 +196,7 @@ describe("union discriminate array", () => {
 						),
 					},
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							{
 								input: [{
@@ -215,7 +216,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | { readonly input: Test[] },
 				"strict"
@@ -223,12 +224,12 @@ describe("union discriminate array", () => {
 		});
 
 		it("object with union on object prop in array", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				{ input },
 				DPattern.match(
 					{ input: [{ type: DPattern.union("tata", { sub: "ta" }) }] },
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							{
 								input: [{
@@ -246,7 +247,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | { readonly input: Test[] },
 				"strict"
@@ -254,7 +255,7 @@ describe("union discriminate array", () => {
 		});
 
 		it("object with union on object prop in array", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				{
 					input,
 					con: true as boolean,
@@ -265,7 +266,7 @@ describe("union discriminate array", () => {
 						con: true,
 					},
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							{
 								input: [{
@@ -284,7 +285,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | {
 					readonly input: Test[];
@@ -312,12 +313,12 @@ describe("union discriminate array", () => {
 		] as [Test, number, ...string[]];
 
 		it("union on object prop in tuple", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				input,
 				DPattern.match(
 					[{ type: DPattern.union("tata", { sub: "ta" }) }],
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							[{
 								type: "tata" | {
@@ -333,7 +334,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | [{
 					type: "test" | "toto";
@@ -343,7 +344,7 @@ describe("union discriminate array", () => {
 		});
 
 		it("union on array with tuple", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				input,
 				DPattern.match(
 					DPattern.union(
@@ -351,7 +352,7 @@ describe("union discriminate array", () => {
 						[{ type: { tt: DPattern.union("oo", "yy") } }],
 					),
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							| [{
 								type: "tata";
@@ -370,7 +371,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | [{
 					type: "test" | "toto";
@@ -380,7 +381,7 @@ describe("union discriminate array", () => {
 		});
 
 		it("object with union on array with tuple", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				{ input },
 				DPattern.match(
 					{
@@ -390,7 +391,7 @@ describe("union discriminate array", () => {
 						),
 					},
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							{
 								input: [{
@@ -410,7 +411,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | {
 					input: [{
@@ -422,12 +423,12 @@ describe("union discriminate array", () => {
 		});
 
 		it("object with union on object prop in tuple", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				{ input },
 				DPattern.match(
 					{ input: [{ type: DPattern.union("tata", { sub: "ta" }) }] },
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							{
 								input: [{
@@ -445,7 +446,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | {
 					input: [{
@@ -457,12 +458,12 @@ describe("union discriminate array", () => {
 		});
 
 		it("object with union on object prop and number in tuple", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				{ input },
 				DPattern.match(
 					{ input: [{ type: DPattern.union("tata", { sub: "ta" }) }, 1] },
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							{
 								input: [{
@@ -480,7 +481,7 @@ describe("union discriminate array", () => {
 				),
 			);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | {
 					readonly input: [Test, number, ...string[]];

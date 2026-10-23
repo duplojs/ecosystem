@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("getMinute", () => {
 	it("getMinute returns minute in UTC", () => {
@@ -11,7 +12,7 @@ describe("getMinute", () => {
 
 		expect(result).toBe(30);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -25,7 +26,7 @@ describe("getMinute", () => {
 
 		expect(result).toBe(0);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -42,7 +43,7 @@ describe("getMinute", () => {
 
 		expect(result).toBe(59);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -57,7 +58,7 @@ describe("getMinute", () => {
 
 		expect(result).toBe(45);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -65,7 +66,7 @@ describe("getMinute", () => {
 	});
 
 	it("use in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2021-01-01", {
 				hour: "12",
 				minute: "30",
@@ -75,7 +76,7 @@ describe("getMinute", () => {
 
 		expect(result).toBe(30);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -83,14 +84,14 @@ describe("getMinute", () => {
 	});
 
 	it("use in pipe with timezone", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2021-01-01", { minute: "45" }),
 			(date) => DChrono.getMinute(date, "America/New_York"),
 		);
 
 		expect(result).toBe(45);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

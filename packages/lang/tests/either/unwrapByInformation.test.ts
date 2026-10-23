@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, DModeling, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DModeling from "@scripts/modeling";
 
 describe("unwrapByInformation", () => {
 	it("should unwrap matching information and keep other values", () => {
@@ -12,7 +15,7 @@ describe("unwrapByInformation", () => {
 
 		expect(result).toBe(42);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			42 | DEither.Error<"message">,
 			"strict"
@@ -26,14 +29,14 @@ describe("unwrapByInformation", () => {
 				: DEither.success(42)
 		);
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.unwrapByInformation(["success", "error"]),
 		);
 
 		expect(result).toBe("message");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			42 | "message",
 			"strict"
@@ -58,7 +61,7 @@ describe("unwrapByInformation", () => {
 			"map-success",
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (number & DModeling.NewType<"nested-number">)
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>

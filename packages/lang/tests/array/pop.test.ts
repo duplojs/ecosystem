@@ -1,4 +1,5 @@
-import { DArray, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("pop", () => {
 	it("should remove the last value without mutating the source", () => {
@@ -8,7 +9,7 @@ describe("pop", () => {
 		expect(result).toEqual([1, 2]);
 		expect(source).toEqual([1, 2, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly number[] & DArray.MaxElements<3>,
 			"strict"
@@ -27,7 +28,7 @@ describe("pop", () => {
 
 		expect(result).toEqual([1, 2]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly number[] & DArray.MaxElements<0>)
 			| (readonly number[] & DArray.MaxElements<3>),
@@ -39,7 +40,7 @@ describe("pop", () => {
 		const sourceMin = [1, 2, 3] as number[] & DArray.MinElements<3>;
 		const resultMin = DArray.pop(sourceMin);
 
-		type _CheckMinResult = ExpectType<
+		type _CheckMinResult = DCommon.ExpectType<
 			typeof resultMin,
 			readonly number[],
 			"strict"
@@ -48,7 +49,7 @@ describe("pop", () => {
 		const sourceLength = [1, 2, 3] as number[] & DArray.LengthEqual<3>;
 		const resultLength = DArray.pop(sourceLength);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			readonly number[] & DArray.MaxElements<3>,
 			"strict"

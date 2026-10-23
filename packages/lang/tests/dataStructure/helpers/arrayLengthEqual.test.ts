@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, type DArray, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DArray from "@scripts/array";
 
 describe("arrayLengthEqual", () => {
 	it("creates and applies an array length equality constraint", () => {
@@ -7,12 +10,12 @@ describe("arrayLengthEqual", () => {
 		const success = structure.check([1, 2]);
 		const failure = structure.check([1]);
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.ArrayLengthEqualConstraint<2>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			readonly number[] & DArray.LengthEqual<2>,
 			"strict"

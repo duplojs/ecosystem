@@ -1,4 +1,5 @@
-import { DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("group", () => {
 	it("should aggregate object right values into a success", () => {
@@ -12,7 +13,7 @@ describe("group", () => {
 			second: "value",
 		}));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.Success<{
 				first: 1;
@@ -43,7 +44,7 @@ describe("group", () => {
 
 		expect(result).toStrictEqual(DEither.success([1, "value"]));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.Success<[1, "value"]>,
 			"strict"
@@ -61,7 +62,7 @@ describe("group", () => {
 
 		expect(result).toStrictEqual(DEither.success([1, "value"]));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.Success<(number | string)[]>,
 			"strict"

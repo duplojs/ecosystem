@@ -1,4 +1,5 @@
-import { DChrono, type DArray } from "@scripts";
+import * as DChrono from "@scripts/chrono";
+import type * as DArray from "@scripts/array";
 
 describe("DChrono min", () => {
 	const jan01 = DChrono.createDate("2024-01-01");

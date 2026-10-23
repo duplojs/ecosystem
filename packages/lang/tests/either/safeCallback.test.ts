@@ -1,4 +1,5 @@
-import { DEither, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("safeCallback", () => {
 	it("should wrap callback output into a success either", () => {
@@ -6,7 +7,7 @@ describe("safeCallback", () => {
 
 		expect(result).toStrictEqual(DEither.right("safe-callback-success", 42));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.SafeCallbackSuccess<42> | DEither.SafeCallbackError,
 			"strict"
@@ -21,7 +22,7 @@ describe("safeCallback", () => {
 
 		expect(result).toStrictEqual(DEither.left("safe-callback-error", caught));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.SafeCallbackError,
 			"strict"
@@ -34,7 +35,7 @@ describe("safeCallback", () => {
 
 		expect(result).toBe(either);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.Error<"message"> | DEither.SafeCallbackError,
 			"strict"
@@ -49,7 +50,7 @@ describe("safeCallback", () => {
 		await expect(success).resolves.toStrictEqual(DEither.right("safe-callback-success", "done"));
 		await expect(failure).resolves.toEqual(DEither.left("safe-callback-error", expect.any(Error)));
 
-		type _CheckSuccess = ExpectType<
+		type _CheckSuccess = DCommon.ExpectType<
 			typeof success,
 			| Promise<DEither.SafeCallbackSuccess<string> | DEither.SafeCallbackError>
 			| DEither.SafeCallbackError,
@@ -58,14 +59,14 @@ describe("safeCallback", () => {
 	});
 
 	it("should preserve promised either outputs in pipe", async() => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			() => Promise.resolve(DEither.success(42)),
 			DEither.safeCallback,
 		);
 
 		await expect(result).resolves.toStrictEqual(DEither.success(42));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| Promise<DEither.Success<42> | DEither.SafeCallbackError>
 			| DEither.SafeCallbackError,
