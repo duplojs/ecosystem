@@ -10,7 +10,7 @@ import { type Project } from "@typescript/native-API/async";
 import * as DEither from "@duplojs/lang/either";
 
 async function isRouteHandler(
-	node: AST.StatementBase & AST.CallExpression,
+	node: AST.CallExpression,
 	project: Project,
 ): Promise<boolean> {
 	if (
@@ -73,7 +73,7 @@ export function createContentRoutesFiles(
 		typescriptInstance.project.program.getSourceFileNames(),
 		DGenerator.map(DPath.normalize),
 		DGenerator.filter(DCommon.isType("string")),
-		DGenerator.filter(params.isRoutePath),
+		DGenerator.filter((path) => params.isRoutePath(path)),
 		DGenerator.filter(DPath.isAbsolute),
 		DGenerator.asyncReduce(
 			DGenerator.reduceFrom<
@@ -107,8 +107,9 @@ export function createContentRoutesFiles(
 						}),
 						async({ item: statement, lastValue: subLastValue, index, next }) => {
 							if (
-								AST.isCallExpression(statement)
-								&& await isRouteHandler(statement, typescriptInstance.project)
+								AST.isExpressionStatement(statement)
+								&& AST.isCallExpression(statement.expression)
+								&& await isRouteHandler(statement.expression, typescriptInstance.project)
 							) {
 								const variableIdentifier = AST.factory.createIdentifier(`__duploRoute_${lastValue.size}_${index}`);
 
@@ -137,10 +138,10 @@ export function createContentRoutesFiles(
 											AST.factory.createImportTypeNode(
 												false,
 												AST.factory.createLiteralTypeNode(
-													AST.factory.createStringLiteral("@duplojs/http/codeGenerator", AST.TokenFlags.None),
+													AST.factory.createStringLiteral("@duplojs/http", AST.TokenFlags.None),
 												),
 												undefined,
-												AST.factory.createIdentifier("RouteToClientRoute"),
+												AST.factory.createIdentifier("RefineRouteTypeDeclaration"),
 												[
 													AST.factory.createTypeQueryNode(
 														variableIdentifier,

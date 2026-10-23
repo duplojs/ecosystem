@@ -15,13 +15,13 @@ import * as DPath from "@duplojs/lang/path";
 import * as DString from "@duplojs/lang/string";
 
 export interface GenerateStructureParams {
-	outputFolder: string & DPath.Path;
+	outputFolder: DPath.AnyPath;
 	disabledFromRoute?: boolean;
 	structures?: DDataStructure.Structure[];
 }
 
 export interface CodeGeneratorPluginParams {
-	outputFile: string & DPath.Path;
+	outputFile: DPath.AnyPath;
 	generateStructure?: GenerateStructureParams;
 }
 

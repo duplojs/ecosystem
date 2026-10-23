@@ -2,7 +2,7 @@ import * as DPath from "@duplojs/lang/path";
 import * as DSCommon from "@duplojs/server/common";
 import ts from "typescript";
 
-export function assertTypeScriptProject(tsconfigPath: string & DPath.Path) {
+export function assertTypeScriptProject(tsconfigPath: DPath.AnyPath) {
 	const resolvedTsconfigPath = DPath.resolveRelative([DSCommon.getCurrentWorkDirectoryOrThrow(), tsconfigPath]);
 	const tsconfigDirectory = DPath.getParentFolderPath(resolvedTsconfigPath) ?? "";
 

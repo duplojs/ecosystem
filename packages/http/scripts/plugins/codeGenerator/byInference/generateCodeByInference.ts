@@ -4,7 +4,6 @@ import { createTypescriptInstance } from "./createTypescriptInstance";
 import { createContentRoutesFiles } from "./createContentRoutesFiles";
 import * as DCommon from "@duplojs/lang/common";
 import { generateRouteIndex } from "./generateRouteIndex";
-import { updateTypescriptInstanceSnapshot } from "./updateTypescriptInstanceSnapshot";
 import { generateDeclaration } from "./generateDeclaration";
 
 export interface GenerateCodeByInferenceParams {
@@ -36,22 +35,14 @@ export function generateCodeByInference(params: GenerateCodeByInferenceParams) {
 				return routesIndexEntry;
 			}
 
-			const updatedTypescriptInstance = await DCommon.asyncPipe(
-				updateTypescriptInstanceSnapshot(
+			return DCommon.asyncPipe(
+				generateDeclaration(
 					typescriptInstance,
 					contentRoutesFiles,
 					routesIndexEntry,
+					{ outputFolder: params.outputFolder },
 				),
-				DEither.unwrapRight,
-			);
-
-			if (DEither.isLeft(updatedTypescriptInstance)) {
-				return updatedTypescriptInstance;
-			}
-
-			return generateDeclaration(
-				updatedTypescriptInstance,
-				{ outputFolder: params.outputFolder },
+				DCommon.tap(() => typescriptInstance.api.close()),
 			);
 		},
 	);

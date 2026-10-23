@@ -265,7 +265,7 @@ export namespace ResponseContract {
 				GenericContract["code"],
 				GenericContract["information"],
 				{
-					[
+					readonly [
 					Prop in keyof GenericContract["events"]
 					]: DDataStructure.StructureValue<GenericContract["events"][Prop]>
 				}

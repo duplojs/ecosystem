@@ -35,19 +35,13 @@ export async function generateRouteIndex(
 								path,
 							),
 							(path) => AST.factory.createStringLiteral(
-								path,
+								`./${path}`,
 								AST.TokenFlags.None,
 							),
 							AST.factory.createLiteralTypeNode,
 						),
 						undefined,
 						identifier,
-						[
-							AST.factory.createTypeQueryNode(
-								identifier,
-								undefined,
-							),
-						],
 					),
 				),
 				(value) => nextPush(
@@ -69,7 +63,7 @@ export async function generateRouteIndex(
 
 	const filePath = DPath.resolveFrom(
 		typescriptInstance.workDirectory,
-		[DCommon.cast("routes.d.ts")],
+		[DCommon.cast("routes.ts")],
 	);
 
 	const fileName = toRootedFilePath(

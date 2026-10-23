@@ -32,7 +32,7 @@ interface OpenApiSecurityOptionBasic {
 
 export interface OpenApiGeneratorPluginParams {
 	routePath?: RoutePath;
-	outputFile?: string & DPath.Path;
+	outputFile?: DPath.AnyPath;
 
 	/**
 	 * @default "Swagger API"
