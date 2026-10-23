@@ -33,29 +33,56 @@ async function isRouteHandler(
 		symbol?.name === "Route"
 		&& DArray.some(
 			symbol.declarations,
-			({ path }) => DString.includes(path, "/@duplojs/http/")
-			|| DString.includes(path, "/packages/http/"),
+			({ path }) => DString.includes(path, "http/dist"),
 		)
 	);
 }
 
 async function isRouteVariable(
-	node: AST.VariableDeclaration,
+	node: AST.VariableStatement,
 	project: Project,
 ): Promise<boolean> {
-	if (!AST.isIdentifier(node.name) || !node.initializer) {
+	const declaration = DArray.first(node.declarationList.declarations);
+
+	if (
+		!DArray.includes([AST.NodeFlags.Const, AST.NodeFlags.Let], node.declarationList.flags)
+		|| !declaration?.initializer
+	) {
 		return false;
 	}
 
-	const type = await project.checker.getTypeAtLocation(node.name);
+	const type = await project.checker.getTypeAtLocation(declaration.name);
 	const symbol = await type.getSymbol();
 
-	return symbol?.name === "Route"
+	return (
+		symbol?.name === "Route"
 		&& DArray.some(
 			symbol.declarations,
-			({ path }) => DString.includes(path, "/@duplojs/http/")
-			|| DString.includes(path, "/packages/http/"),
-		);
+			({ path }) => DString.includes(path, "http/dist"),
+		)
+	);
+}
+
+function createRouteTypeDeclaration(identifier: AST.Identifier) {
+	return AST.factory.createTypeAliasDeclaration(
+		[AST.factory.createToken(AST.SyntaxKind.ExportKeyword)],
+		identifier,
+		undefined,
+		AST.factory.createImportTypeNode(
+			false,
+			AST.factory.createLiteralTypeNode(
+				AST.factory.createStringLiteral("@duplojs/http", AST.TokenFlags.None),
+			),
+			undefined,
+			AST.factory.createIdentifier("RefineRouteTypeDeclaration"),
+			[
+				AST.factory.createTypeQueryNode(
+					identifier,
+					undefined,
+				),
+			],
+		),
+	);
 }
 
 export interface UpdateRoutesFilesParams {
@@ -85,7 +112,7 @@ export function createContentRoutesFiles(
 					}
 				>
 			>(new Map()),
-			async({ item, lastValue, exit, next }) => {
+			async({ item, lastValue, next }) => {
 				const sourceFile = await typescriptInstance.project.program.getSourceFile(item);
 
 				if (!sourceFile) {
@@ -131,58 +158,39 @@ export function createContentRoutesFiles(
 												AST.NodeFlags.Const,
 											),
 										),
-										AST.factory.createTypeAliasDeclaration(
-											[AST.factory.createToken(AST.SyntaxKind.ExportKeyword)],
-											variableIdentifier,
-											undefined,
-											AST.factory.createImportTypeNode(
-												false,
-												AST.factory.createLiteralTypeNode(
-													AST.factory.createStringLiteral("@duplojs/http", AST.TokenFlags.None),
-												),
-												undefined,
-												AST.factory.createIdentifier("RefineRouteTypeDeclaration"),
-												[
-													AST.factory.createTypeQueryNode(
-														variableIdentifier,
-														undefined,
-													),
-												],
-											),
-										),
+										createRouteTypeDeclaration(variableIdentifier),
 									),
 								});
 							}
 
-							if (
-								AST.isVariableDeclaration(statement)
-								&& AST.isIdentifier(statement.name)
-								&& await isRouteVariable(statement, typescriptInstance.project)
-							) {
+							const variableIdentifierOfRoute = await DCommon.justExec(async() => {
+								if (
+									!AST.isVariableStatement(statement)
+									|| !DArray.minElements(statement.declarationList.declarations, 1)
+									|| !(await isRouteVariable(statement, typescriptInstance.project))
+								) {
+									return null;
+								}
+
+								const variableDeclaration = DArray.first(statement.declarationList.declarations);
+
+								if (!AST.isIdentifier(variableDeclaration.name)) {
+									return null;
+								}
+
+								return variableDeclaration.name;
+							});
+
+							if (variableIdentifierOfRoute) {
 								return next({
-									variablesName: DArray.push(subLastValue.variablesName, statement.name),
+									variablesName: DArray.push(
+										subLastValue.variablesName,
+										variableIdentifierOfRoute,
+									),
 									statements: DArray.push(
 										subLastValue.statements,
 										statement,
-										AST.factory.createTypeAliasDeclaration(
-											[AST.factory.createToken(AST.SyntaxKind.ExportKeyword)],
-											statement.name,
-											undefined,
-											AST.factory.createImportTypeNode(
-												false,
-												AST.factory.createLiteralTypeNode(
-													AST.factory.createStringLiteral("@duplojs/http/codeGenerator", AST.TokenFlags.None),
-												),
-												undefined,
-												AST.factory.createIdentifier("RouteToClientRoute"),
-												[
-													AST.factory.createTypeQueryNode(
-														statement.name,
-														undefined,
-													),
-												],
-											),
-										),
+										createRouteTypeDeclaration(variableIdentifierOfRoute),
 									),
 								});
 							}

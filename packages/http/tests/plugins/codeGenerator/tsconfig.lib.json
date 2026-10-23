@@ -6,7 +6,7 @@
 	  "@core/*": ["../../../dist/core/*"],
 	  "@plugin-codeGenerator": ["../../../dist/plugins/codeGenerator/index.d.ts"],
 	  "@plugin-codeGenerator/*": ["../../../dist/plugins/codeGenerator/*"],
-	  "@test-utils/*": ["../../_utils/*"],
+	  "@test-utils/*": ["../../_utils/*", "./_utils/*"],
     },
   },
   "include": ["**/*.ts"],

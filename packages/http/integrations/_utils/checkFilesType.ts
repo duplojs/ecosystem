@@ -1,61 +1,21 @@
 import * as DPath from "@duplojs/lang/path";
 import * as DSCommon from "@duplojs/server/common";
-import ts from "typescript";
+import { spawnSync } from "node:child_process";
 
 export function assertTypeScriptProject(tsconfigPath: DPath.AnyPath) {
-	const resolvedTsconfigPath = DPath.resolveRelative([DSCommon.getCurrentWorkDirectoryOrThrow(), tsconfigPath]);
-	const tsconfigDirectory = DPath.getParentFolderPath(resolvedTsconfigPath) ?? "";
-
-	const configFileResult = ts.readConfigFile(
-		resolvedTsconfigPath,
-		ts.sys.readFile,
-	);
-
-	if (configFileResult.error) {
-		throw new Error(formatTypeScriptDiagnostics([configFileResult.error]));
-	}
-
-	const parsedConfig = ts.parseJsonConfigFileContent(
-		configFileResult.config,
-		ts.sys,
-		tsconfigDirectory,
-		{
-			noEmit: true,
-		},
-		resolvedTsconfigPath,
-	);
-
-	const program = ts.createProgram({
-		rootNames: parsedConfig.fileNames,
-		options: parsedConfig.options,
-		projectReferences: parsedConfig.projectReferences,
+	const workDirectory = DSCommon.getCurrentWorkDirectoryOrThrow();
+	const resolvedTsconfigPath = DPath.resolveRelative([workDirectory, tsconfigPath]);
+	const command = spawnSync("pnpm", ["exec", "tsc", "--project", resolvedTsconfigPath, "--noEmit"], {
+		cwd: workDirectory,
+		encoding: "utf8",
+		timeout: 30_000,
 	});
 
-	const diagnostics = [
-		...parsedConfig.errors,
-		...ts.getPreEmitDiagnostics(program),
-	];
-
-	if (diagnostics.length > 0) {
-		throw new Error(formatTypeScriptDiagnostics(diagnostics));
+	if (command.error) {
+		throw command.error;
 	}
-}
 
-function formatTypeScriptDiagnostics(
-	diagnostics: readonly ts.Diagnostic[],
-) {
-	const formatHost: ts.FormatDiagnosticsHost = {
-		getCanonicalFileName: (fileName) => (
-			ts.sys.useCaseSensitiveFileNames
-				? fileName
-				: fileName.toLowerCase()
-		),
-		getCurrentDirectory: ts.sys.getCurrentDirectory,
-		getNewLine: () => ts.sys.newLine,
-	};
-
-	return ts.formatDiagnosticsWithColorAndContext(
-		diagnostics,
-		formatHost,
-	);
+	if (command.status !== 0) {
+		throw new Error(`${command.stdout}\n${command.stderr}`);
+	}
 }

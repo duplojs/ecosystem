@@ -2,7 +2,9 @@
   "extends": "../../tsconfig.test.json",
   "compilerOptions": {
 	"paths": {
-		"@core": ["../core/index.ts"]
+		"@core": ["../core/index.ts"],
+		"@routes": ["../core/routes/index.ts"],
+		"@routes/*": ["../core/routes/*"]
 	},
 	"types": ["vitest/globals", "node"]
   },

@@ -54,9 +54,9 @@ export async function generateRouteIndex(
 			[AST.factory.createToken(AST.SyntaxKind.ExportKeyword)],
 			AST.factory.createIdentifier("Routes"),
 			undefined,
-			AST.factory.createUnionTypeNode(
-				importTypeNodes,
-			),
+			DArray.minElements(importTypeNodes, 1)
+				? AST.factory.createUnionTypeNode(importTypeNodes)
+				: AST.factory.createKeywordTypeNode(AST.SyntaxKind.NeverKeyword),
 		),
 		DArray.coalescing,
 	);
