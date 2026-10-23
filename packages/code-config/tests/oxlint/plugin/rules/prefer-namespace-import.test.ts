@@ -1,4 +1,3 @@
-
 import { RuleTester } from "oxlint/plugins-dev";
 import { DOxlint } from "@scripts";
 
@@ -46,59 +45,33 @@ ruleTester.run(
 test();`,
 			},
 			{
-				name: "ignores paths not configured",
+				name: "ignores unconfigured paths, subpaths and parent barrels",
 				code: `import { test } from "path/else";
-test();`,
+import { other } from "path/to/child";
+import { NomChoisi } from "path";
+test(other(), NomChoisi);`,
 				options,
 			},
 			{
-				name: "matches exact paths, not prefixes",
-				code: `import { test } from "path/to/child";
-test();`,
-				options,
-			},
-			{
-				name: "ignores parent barrel imports",
-				code: `import { NomChoisi } from "path";
-NomChoisi.test();`,
-				options,
-			},
-			{
-				name: "accepts a correct namespace import",
+				name: "accepts configured value and type namespace imports",
 				code: `import * as NomChoisi from "path/to";
-NomChoisi.test();`,
+import type * as Other from "path/other";
+NomChoisi.test();
+type T = Other.EE;`,
 				options,
 			},
 			{
-				name: "accepts a correct type-only namespace import",
-				code: `import type * as NomChoisi from "path/to";
-type T = NomChoisi.EE;`,
-				options,
-			},
-			{
-				name: "accepts default-only imports",
+				name: "ignores default-only and side-effect imports",
 				code: `import value from "path/to";
+import "path/to";
 value();`,
 				options,
 			},
 			{
-				name: "accepts side-effect imports",
-				code: "import \"path/to\";",
-				options,
-			},
-			{
-				name: "ignores direct re-exports",
-				code: "export { test } from \"path/to\";",
-				options,
-			},
-			{
-				name: "ignores namespace re-exports",
-				code: "export * as Alias from \"path/to\";",
-				options,
-			},
-			{
-				name: "ignores dynamic imports",
-				code: "const module = import(\"path/to\");",
+				name: "ignores re-exports and dynamic imports",
+				code: `export { test } from "path/to";
+export * as Alias from "path/to";
+const module = import("path/to");`,
 				options,
 			},
 		],
@@ -116,49 +89,26 @@ NomChoisi.test(other());`,
 				2,
 			),
 			invalid(
-				"converts named value and type imports",
-				`import { test, type EE } from "path/to";
-test();
-type TT = EE;`,
-				`import * as NomChoisi from "path/to";
-NomChoisi.test();
-type TT = NomChoisi.EE;`,
-			),
-			invalid(
-				"converts multiple named value imports",
-				`import { first, second } from "path/to";
-first(second());`,
-				`import * as NomChoisi from "path/to";
-NomChoisi.first(NomChoisi.second());`,
-			),
-			invalid(
-				"uses the imported name rather than its local alias",
-				`import { test as renamed, type EE as Alias } from "path/to";
-renamed();
+				"converts multiple named imports using their exported names",
+				`import { first as renamed, second, type EE as Alias } from "path/to";
+renamed(second());
 type T = Alias;`,
 				`import * as NomChoisi from "path/to";
-NomChoisi.test();
+NomChoisi.first(NomChoisi.second());
 type T = NomChoisi.EE;`,
 			),
 			invalid(
-				"preserves type-only declarations",
-				`import type { EE } from "path/to";
-type T = EE;`,
-				`import type * as NomChoisi from "path/to";
-type T = NomChoisi.EE;`,
-			),
-			invalid(
-				"converts a single inline type import",
-				`import { type EE } from "path/to";
-type T = EE;`,
-				`import type * as NomChoisi from "path/to";
-type T = NomChoisi.EE;`,
+				"converts type-only declarations to ordinary namespace imports",
+				`import type { EE, FF } from "path/to";
+type T = [EE, FF];`,
+				`import * as NomChoisi from "path/to";
+type T = [NomChoisi.EE, NomChoisi.FF];`,
 			),
 			invalid(
 				"converts multiple inline type imports",
 				`import { type EE, type FF } from "path/to";
 type T = [EE, FF];`,
-				`import type * as NomChoisi from "path/to";
+				`import * as NomChoisi from "path/to";
 type T = [NomChoisi.EE, NomChoisi.FF];`,
 			),
 			invalid(
@@ -183,22 +133,17 @@ run();`,
 NomChoisi.default();`,
 			),
 			invalid(
-				"updates every reference of the imported binding",
+				"updates every reference while preserving object shorthand keys",
 				`import { test } from "path/to";
 test();
-const f = test;
+const reference = test;
+const object = { test };
 export default test;`,
 				`import * as NomChoisi from "path/to";
 NomChoisi.test();
-const f = NomChoisi.test;
+const reference = NomChoisi.test;
+const object = { test: NomChoisi.test };
 export default NomChoisi.test;`,
-			),
-			invalid(
-				"preserves object shorthand keys",
-				`import { test } from "path/to";
-const object = { test };`,
-				`import * as NomChoisi from "path/to";
-const object = { test: NomChoisi.test };`,
 			),
 			invalid(
 				"does not rewrite shadowed references",
@@ -226,7 +171,7 @@ const object = { Alias: NomChoisi };`,
 				"renames a type-only namespace import",
 				`import type * as Alias from "path/to";
 type T = Alias.EE;`,
-				`import type * as NomChoisi from "path/to";
+				`import * as NomChoisi from "path/to";
 type T = NomChoisi.EE;`,
 			),
 			invalid(
@@ -235,13 +180,6 @@ type T = NomChoisi.EE;`,
 test();`,
 				`import * as NomChoisi from 'path/to';
 NomChoisi.test();`,
-			),
-			invalid(
-				"uses the namespace configured for another path",
-				`import { test } from "path/other";
-test();`,
-				`import * as Other from "path/other";
-Other.test();`,
 			),
 			invalid(
 				"converts multiple distinct configured paths",
@@ -254,40 +192,15 @@ NomChoisi.test(Other.other());`,
 				2,
 			),
 			invalid(
-				"reuses an existing value namespace import",
+				"reuses a value namespace while preserving the default import",
 				`import * as NomChoisi from "path/to";
-import { test } from "path/to";
-test();`,
-				`import * as NomChoisi from "path/to";
-
-NomChoisi.test();`,
-			),
-			invalid(
-				"reuses an existing type namespace import for types",
-				`import type * as NomChoisi from "path/to";
-import type { EE } from "path/to";
+import value, { test, type EE } from "path/to";
+value(test());
 type T = EE;`,
-				`import type * as NomChoisi from "path/to";
-
-type T = NomChoisi.EE;`,
-			),
-			invalid(
-				"reuses value namespace imports for type references",
-				`import * as NomChoisi from "path/to";
-import { type EE } from "path/to";
-type T = EE;`,
-				`import * as NomChoisi from "path/to";
-
-type T = NomChoisi.EE;`,
-			),
-			invalid(
-				"reuses a namespace and preserves the default import",
-				`import * as NomChoisi from "path/to";
-import value, { test } from "path/to";
-value(test());`,
 				`import * as NomChoisi from "path/to";
 import value from "path/to";
-value(NomChoisi.test());`,
+value(NomChoisi.test());
+type T = NomChoisi.EE;`,
 			),
 			invalid(
 				"does not fix a top-level namespace collision",
@@ -297,8 +210,9 @@ test();`,
 				null,
 			),
 			invalid(
-				"does not fix a namespace collision within a function",
-				`import { test } from "path/to";
+				"does not reuse a namespace shadowed at a reference",
+				`import type * as NomChoisi from "path/to";
+import { test } from "path/to";
 function run(NomChoisi: unknown) {
 	test();
 }`,
@@ -313,11 +227,48 @@ first(second());`,
 				2,
 			),
 			invalid(
-				"does not reuse a type namespace import for values",
-				`import type * as NomChoisi from "path/to";
-import { test } from "path/to";
+				"merges imports before and after a shared type namespace without retaining type modifiers",
+				`import { first, type EE } from "path/to";
+import type * as NomChoisi from "path/to";
+import type { FF } from "path/to";
+import { second } from "path/to";
+
+first(second());
+type T = [EE, FF, NomChoisi.EE];`,
+				`import * as NomChoisi from "path/to";
+
+NomChoisi.first(NomChoisi.second());
+type T = [NomChoisi.EE, NomChoisi.FF, NomChoisi.EE];`,
+				3,
+			),
+			invalid(
+				"preserves block, line and trailing comments when rewriting a namespace",
+				`import /* before */ type // after
+* as NomChoisi from "path/to" /* trailing */;
+import { test } from "path/to"; // keep this comment
 test();`,
-				null,
+				`import /* before */ // after
+* as NomChoisi from "path/to" /* trailing */;
+ // keep this comment
+NomChoisi.test();`,
+			),
+			invalid(
+				"removes indented import lines with CRLF and at the end of the file",
+				[
+					"import * as NomChoisi from \"path/to\";",
+					"\timport { first } from \"path/to\"; ",
+					"first(second());",
+					"  import { second } from \"path/to\";",
+				].join("\r\n"),
+				"import * as NomChoisi from \"path/to\";\r\nNomChoisi.first(NomChoisi.second());\r\n",
+				2,
+			),
+			invalid(
+				"preserves surrounding code when an import shares its line",
+				`import * as NomChoisi from "path/to";
+const value = 1; import { test } from "path/to"; test(value);`,
+				`import * as NomChoisi from "path/to";
+const value = 1;  NomChoisi.test(value);`,
 			),
 			invalid(
 				"does not fix imported bindings re-exported locally",
