@@ -4,6 +4,8 @@
     "paths": {
 	  "@client": ["../../scripts/client/index.ts"],
 	  "@client/*": ["../../scripts/client/*"],
+	  "@core": ["../../scripts/core/index.ts"],
+	  "@core/*": ["../../scripts/core/*"],
 	  "@test-utils/*": ["../_utils/*"],
     },
 	"types": ["web", "vitest/globals"],

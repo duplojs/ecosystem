@@ -1,4 +1,5 @@
-import { createHttpClient, type RequestErrorContent, type PromiseRequest, type PromiseRequestParams, type FindServerRoute, type AddPrefixPathServerRoute, type RemovePrefixPathServerRoute, type FindServerRouteResponse, type AllClientResponse, type AllNotPredictedClientResponse, type ClientEventsResponseHandler, type ServerRouteToClientRequestParams, type CreateClientCacheKeyParams, type ClientStreamResponseHandler } from "@client";
+import { createHttpClient, type RequestErrorContent, type PromiseRequest, type PromiseRequestParams, type AllClientResponse, type AllNotPredictedClientResponse, type ClientEventsResponseHandler, type CreateClientCacheKeyParams, type ClientStreamResponseHandler, type RouteContractToClientRequestParams } from "@client";
+import { type FindRouteContractResponse, type FindRouteContract, type RemovePrefixPathRouteContract, type AddPrefixPathRouteContract } from "@core";
 import type * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
@@ -29,7 +30,7 @@ type Routes = {
 	readonly responses: {
 		readonly code: "422";
 		readonly information: "extract-error";
-		readonly body?: undefined;
+		readonly body: undefined;
 	} | {
 		readonly code: "200";
 		readonly information: "users.find";
@@ -50,7 +51,7 @@ type Routes = {
 	readonly responses: {
 		readonly code: "422";
 		readonly information: "extract-error";
-		readonly body?: undefined;
+		readonly body: undefined;
 	} | {
 		readonly code: "200";
 		readonly information: "users.create";
@@ -71,11 +72,11 @@ type Routes = {
 	readonly responses: {
 		readonly code: "422";
 		readonly information: "extract-error";
-		readonly body?: undefined;
+		readonly body: undefined;
 	} | {
 		readonly code: "204";
 		readonly information: "file.receive";
-		readonly body?: undefined;
+		readonly body: undefined;
 	};
 } | {
 	readonly method: "GET";
@@ -95,7 +96,6 @@ type Routes = {
 			readonly message: { readonly test: string };
 			readonly ping: string;
 		};
-		readonly body: undefined;
 	};
 } | {
 	readonly method: "GET";
@@ -103,7 +103,6 @@ type Routes = {
 	readonly responses: {
 		readonly code: "200";
 		readonly information: "monSuperStream";
-		readonly body?: undefined;
 		readonly flux: Uint8Array<ArrayBuffer>;
 	};
 };
@@ -134,8 +133,8 @@ const promiseRequest = httpClient
 	});
 
 type RequestParams = DCommon.SimplifyTopLevel<
-	& ServerRouteToClientRequestParams<
-		FindServerRoute<
+	& RouteContractToClientRequestParams<
+		FindRouteContract<
 			Routes,
 			"GET",
 			"/users/{userId}"
@@ -1021,8 +1020,8 @@ void promiseRequest
 	});
 
 type RequestParams1 = DCommon.SimplifyTopLevel<
-	& ServerRouteToClientRequestParams<
-		FindServerRoute<
+	& RouteContractToClientRequestParams<
+		FindRouteContract<
 			Routes,
 			"GET",
 			"/users"
@@ -1096,8 +1095,8 @@ void httpClient.get("/users")
 	});
 
 type RequestParams2 = DCommon.SimplifyTopLevel<
-	& ServerRouteToClientRequestParams<
-		FindServerRoute<
+	& RouteContractToClientRequestParams<
+		FindRouteContract<
 			Routes,
 			"POST",
 			"/users"
@@ -1209,8 +1208,8 @@ void httpClient
 	});
 
 type RequestParams3 = DCommon.SimplifyTopLevel<
-	& ServerRouteToClientRequestParams<
-		FindServerRoute<
+	& RouteContractToClientRequestParams<
+		FindRouteContract<
 			Routes,
 			"GET",
 			"/sse"
@@ -1322,8 +1321,8 @@ void httpClient.get("/sse")
 	);
 
 type RequestParams4 = DCommon.SimplifyTopLevel<
-	& ServerRouteToClientRequestParams<
-		FindServerRoute<
+	& RouteContractToClientRequestParams<
+		FindRouteContract<
 			Routes,
 			"GET",
 			"/stream"
@@ -1597,9 +1596,9 @@ void promiseRequest.toEitherByCode({
 });
 
 type Check1 = DCommon.ExpectType<
-	RemovePrefixPathServerRoute<
-		AddPrefixPathServerRoute<
-			FindServerRoute<Routes, "GET", "/users/{userId}">,
+	RemovePrefixPathRouteContract<
+		AddPrefixPathRouteContract<
+			FindRouteContract<Routes, "GET", "/users/{userId}">,
 			"/titi/toto"
 		>,
 		"/titi/"
@@ -1613,7 +1612,7 @@ type Check1 = DCommon.ExpectType<
 		readonly responses: {
 			readonly code: "422";
 			readonly information: "extract-error";
-			readonly body?: undefined;
+			readonly body: undefined;
 		} | {
 			readonly code: "200";
 			readonly information: "users.find";
@@ -1628,8 +1627,8 @@ type Check1 = DCommon.ExpectType<
 >;
 
 type Check2 = DCommon.ExpectType<
-	FindServerRouteResponse<
-		FindServerRoute<Routes, "GET", "/users/{userId}">,
+	FindRouteContractResponse<
+		FindRouteContract<Routes, "GET", "/users/{userId}">,
 		"information",
 		"users.find"
 	>,

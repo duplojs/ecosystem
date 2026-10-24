@@ -1,6 +1,7 @@
 import { hub } from "@core";
+import { type FindRouteContract } from "@duplojs/http";
 import { createHttpServer } from "@duplojs/http/node";
-import { type AllNotPredictedClientResponse, type ClientEventsResponseHandler, createHttpClient, type FindServerRoute, type PromiseRequestParams, type RequestErrorContent, type ServerRouteToClientRequestParams } from "@duplojs/http/client";
+import { type AllNotPredictedClientResponse, type ClientEventsResponseHandler, createHttpClient, type PromiseRequestParams, type RequestErrorContent, type RouteContractToClientRequestParams } from "@duplojs/http/client";
 import { type Routes } from "./clientType";
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
@@ -36,8 +37,8 @@ describe("client", async() => {
 
 	it("get all users", async() => {
 		type RequestParams = DCommon.SimplifyTopLevel<
-			& ServerRouteToClientRequestParams<
-				FindServerRoute<
+			& RouteContractToClientRequestParams<
+				FindRouteContract<
 					Routes,
 					"GET",
 					"/users"
@@ -118,8 +119,8 @@ describe("client", async() => {
 		const result = await httpClient.get("/users/{userId}", { params: { userId: 15 } });
 
 		type RequestParams = DCommon.SimplifyTopLevel<
-			& ServerRouteToClientRequestParams<
-				FindServerRoute<
+			& RouteContractToClientRequestParams<
+				FindRouteContract<
 					Routes,
 					"GET",
 					"/users/{userId}"
@@ -195,8 +196,8 @@ describe("client", async() => {
 		});
 
 		type RequestParams = DCommon.SimplifyTopLevel<
-			& ServerRouteToClientRequestParams<
-				FindServerRoute<
+			& RouteContractToClientRequestParams<
+				FindRouteContract<
 					Routes,
 					"POST",
 					"/users"
@@ -272,8 +273,8 @@ describe("client", async() => {
 		});
 
 		type RequestParams = DCommon.SimplifyTopLevel<
-			& ServerRouteToClientRequestParams<
-				FindServerRoute<
+			& RouteContractToClientRequestParams<
+				FindRouteContract<
 					Routes,
 					"POST",
 					"/documents"
@@ -367,8 +368,8 @@ describe("client", async() => {
 				.iWantInformationOrThrow("super-sse");
 
 			type RequestParams = DCommon.SimplifyTopLevel<
-				& ServerRouteToClientRequestParams<
-					FindServerRoute<
+				& RouteContractToClientRequestParams<
+					FindRouteContract<
 						Routes,
 						"GET",
 						"/sse"

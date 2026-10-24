@@ -4,6 +4,8 @@ import { type PresetCheckerStep, type CheckerStep, type CutStep, type HandlerSte
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import { type defaultExtractContract } from "@core/hub";
+import { type FormDataBodyController } from "@core/request";
+import type * as DSFile from "@duplojs/server/file";
 
 export interface OverrideDefaultExtractEndpointContract {
 
@@ -30,7 +32,7 @@ type TreatExtractShape<
 		}
 		: never;
 
-export interface RouteStepToClientValue<
+export interface RouteStepDeclarationToContract<
 	GenericRouteStep extends RouteSteps = RouteSteps,
 > {
 	checkerStep: GenericRouteStep extends CheckerStep
@@ -42,7 +44,7 @@ export interface RouteStepToClientValue<
 			readonly responses: {
 				readonly code: GenericRouteStep["definition"]["responseContract"]["code"];
 				readonly information: GenericRouteStep["definition"]["responseContract"]["information"];
-				readonly body?: undefined;
+				readonly body: undefined;
 			};
 		}
 		: never;
@@ -55,7 +57,7 @@ export interface RouteStepToClientValue<
 			readonly responses: {
 				readonly code: GenericRouteStep["definition"]["presetChecker"]["definition"]["responseContract"]["code"];
 				readonly information: GenericRouteStep["definition"]["presetChecker"]["definition"]["responseContract"]["information"];
-				readonly body?: undefined;
+				readonly body: undefined;
 			};
 		}
 		: never;
@@ -150,12 +152,12 @@ export interface RouteStepToClientValue<
 				? {
 					readonly code: GenericRouteStep["definition"]["responseContract"]["code"];
 					readonly information: GenericRouteStep["definition"]["responseContract"]["information"];
-					readonly body?: undefined;
+					readonly body: undefined;
 				}
 				: {
 					readonly code: DefaultExtractEndpointContract["code"];
 					readonly information: DefaultExtractEndpointContract["information"];
-					readonly body?: undefined;
+					readonly body: undefined;
 				};
 		}
 		: never;
@@ -166,16 +168,23 @@ type RefineStepRouteType<
 > = Exclude<keyof GenericRouteSteps, keyof any[]> extends infer InferredKeys extends keyof GenericRouteSteps
 	? {
 		[Prop in InferredKeys]: GenericRouteSteps[Prop] extends RouteSteps
-			? RouteStepToClientValue<GenericRouteSteps[Prop]> extends infer InferredResult extends object
+			? RouteStepDeclarationToContract<GenericRouteSteps[Prop]> extends infer InferredResult extends object
 				? InferredResult[keyof InferredResult]
 				: never
 			: never
 	}[InferredKeys]
 	: never;
 
-type ExpectShape = Record<"headers" | "params" | "query" | "body" | "responses", unknown>;
+type ExpectShape = Record<
+	| "headers"
+	| "params"
+	| "query"
+	| "body"
+	| "responses",
+	unknown
+>;
 
-export type RefineRouteTypeDeclaration<
+export type RouteDeclarationToContract<
 	GenericRoute extends Route,
 > = GenericRoute extends any
 	? RefineStepRouteType<GenericRoute["definition"]["steps"]> extends infer InferredValues extends ExpectShape
@@ -206,7 +215,20 @@ export type RefineRouteTypeDeclaration<
 						& (
 							unknown extends InferredIntersectionValues["body"]
 								? {}
-								: { readonly body: InferredIntersectionValues["body"] }
+								: {
+									readonly body: GenericRoute["definition"]["bodyController"] extends ReturnType<typeof FormDataBodyController["create"]>
+										? DCommon.TheFormData<
+											Extract<
+												DCommon.Replace<
+													InferredIntersectionValues["body"],
+													[DSFile.FileInterface, File],
+													"extends"
+												>,
+												Record<string, DCommon.EligibleFormDataValue>
+											>
+										>
+										: InferredIntersectionValues["body"];
+								}
 						)
 					>
 					: never

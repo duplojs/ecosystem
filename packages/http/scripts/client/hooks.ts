@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
-import { type CodeHook, type ErrorHook, type InformationHook, type NotPredictedResponseHook, type RequestHook, type ResponseHook, type ResponseTypeHook, type PromiseRequestParams, type NotPredictedClientResponse, type ClientResponse, type CloseServerEventHook, type ClientEventsResponse, type BeforeRetryServerEventHook, type ErrorServerEventHook, type StartServerEventHook, type ServerEvent, type ReceiveEventServerEventHook, type CloseStreamHook, type ClientStreamResponse, type ReceiveDataStreamHook, type ErrorStreamHook, type StartStreamHook, type ServerRouteResponseFlux } from "./types";
+import { type RouteContractResponseFlux } from "@core";
+import { type CodeHook, type ErrorHook, type InformationHook, type NotPredictedResponseHook, type RequestHook, type ResponseHook, type ResponseTypeHook, type PromiseRequestParams, type NotPredictedClientResponse, type ClientResponse, type CloseServerEventHook, type ClientEventsResponse, type BeforeRetryServerEventHook, type ErrorServerEventHook, type StartServerEventHook, type ServerEvent, type ReceiveEventServerEventHook, type CloseStreamHook, type ClientStreamResponse, type ReceiveDataStreamHook, type ErrorStreamHook, type StartStreamHook } from "./types";
 
 export async function launchRequestHook(
 	clientHook: readonly RequestHook[],
@@ -211,7 +212,7 @@ export async function launchCloseStreamHook(
 export async function launchReceiveDataStreamHook(
 	clientHook: readonly ReceiveDataStreamHook[],
 	promiseRequestHook: readonly ReceiveDataStreamHook[],
-	data: ServerRouteResponseFlux,
+	data: RouteContractResponseFlux,
 	response: ClientStreamResponse,
 ) {
 	for (let index = 0; index < promiseRequestHook.length; index++) {

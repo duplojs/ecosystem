@@ -46,6 +46,7 @@ export type * from "./removeAbstractFromConstructor";
 export type * from "./removeDuplicateInUnion";
 export type * from "./removeFromUnion";
 export type * from "./removeReadonly";
+export type * from "./replace";
 export type * from "./requireConstructor";
 export type * from "./simplifyTopLevel";
 export type * from "./simplifyType";

@@ -8,15 +8,16 @@ import * as DEither from "@duplojs/lang/either";
 import type * as DCommon from "@duplojs/lang/common";
 
 interface Routes {
-	method: "GET";
-	path: "/profile";
-	responses: {
-		code: "200";
-		information: "profile.found";
-		body: { name: string };
+	readonly method: "GET";
+	readonly path: "/profile";
+	readonly responses: {
+		readonly code: "200";
+		readonly information: "profile.found";
+		readonly body: { name: string };
 	} | {
-		code: "401";
-		information: "auth.required";
+		readonly code: "401";
+		readonly information: "auth.required";
+		readonly body: undefined;
 	};
 }
 

@@ -9,74 +9,74 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 
 export type Routes = {
-	method: "POST";
-	path: "/users";
-	body: {
-		username: string;
-		age: number;
+	readonly method: "POST";
+	readonly path: "/users";
+	readonly body: {
+		readonly username: string;
+		readonly age: number;
 	};
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body: undefined;
 	} | {
-		code: "204";
-		information: "user.created";
-		body?: undefined;
+		readonly code: "204";
+		readonly information: "user.created";
+		readonly body: undefined;
 	};
 } | {
-	method: "POST";
-	path: "/users/{userId}/posts";
-	params: {
-		userId: number;
+	readonly method: "POST";
+	readonly path: "/users/{userId}/posts";
+	readonly params: {
+		readonly userId: number;
 	};
-	body: {
-		title: string;
-		content: string;
+	readonly body: {
+		readonly title: string;
+		readonly content: string;
 	};
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body: undefined;
 	} | {
-		code: "204";
-		information: "post.created";
-		body?: undefined;
+		readonly code: "204";
+		readonly information: "post.created";
+		readonly body: undefined;
 	};
 } | {
-	method: "POST";
-	path: "/documents";
-	body: DCommon.TheFormData<{
-		bool: boolean;
-		myFile: readonly File[] & DArray.LengthEqual<1>;
-		name: string;
+	readonly method: "POST";
+	readonly path: "/documents";
+	readonly body: DCommon.TheFormData<{
+		readonly bool: boolean;
+		readonly myFile: readonly File[] & DArray.LengthEqual<1>;
+		readonly name: string;
 	}>;
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body: undefined;
 	} | {
-		code: "204";
-		information: "file.receive";
-		body?: undefined;
+		readonly code: "204";
+		readonly information: "file.receive";
+		readonly body: undefined;
 	};
 } | {
-	method: "GET";
-	path: "/posts";
-	query: {
-		page: number;
+	readonly method: "GET";
+	readonly path: "/posts";
+	readonly query: {
+		readonly page: number;
 	};
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body: undefined;
 	} | {
-		code: "200";
-		information: "post.findMany";
-		body: {
-			title: string;
-			content: string;
-			authorId: number;
+		readonly code: "200";
+		readonly information: "post.findMany";
+		readonly body: readonly {
+			readonly title: string;
+			readonly content: string;
+			readonly authorId: number;
 		}[];
 	};
 };

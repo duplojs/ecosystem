@@ -74,7 +74,7 @@ function createRouteTypeDeclaration(identifier: AST.Identifier) {
 				AST.factory.createStringLiteral("@duplojs/http", AST.TokenFlags.None),
 			),
 			undefined,
-			AST.factory.createIdentifier("RefineRouteTypeDeclaration"),
+			AST.factory.createIdentifier("RouteDeclarationToContract"),
 			[
 				AST.factory.createTypeQueryNode(
 					identifier,

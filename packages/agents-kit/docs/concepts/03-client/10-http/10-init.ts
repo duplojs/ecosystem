@@ -9,19 +9,19 @@ import { createHttpClient } from "@duplojs/http/client";
 
 // Exemple réduit du contrat produit par `codeGeneratorPlugin`.
 export interface Routes {
-	method: "GET";
-	path: "/hello-world";
-	query: {
-		name: string;
+	readonly method: "GET";
+	readonly path: "/hello-world";
+	readonly query: {
+		readonly name: string;
 	};
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body: undefined;
 	} | {
-		code: "200";
-		information: "helloWorld.send";
-		body: string;
+		readonly code: "200";
+		readonly information: "helloWorld.send";
+		readonly body: string;
 	};
 }
 

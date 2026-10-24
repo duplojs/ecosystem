@@ -33,7 +33,7 @@ export type Routes = {
 	readonly responses: {
 		readonly code: "422";
 		readonly information: "extract-error";
-		readonly body?: undefined;
+		readonly body: undefined;
 	} | {
 		readonly code: "200";
 		readonly information: "users.find";
@@ -52,7 +52,7 @@ export type Routes = {
 	readonly responses: {
 		readonly code: "422";
 		readonly information: "extract-error";
-		readonly body?: undefined;
+		readonly body: undefined;
 	} | {
 		readonly code: "200";
 		readonly information: "users.create";
@@ -67,11 +67,11 @@ export type Routes = {
 	readonly responses: {
 		readonly code: "422";
 		readonly information: "extract-error";
-		readonly body?: undefined;
+		readonly body: undefined;
 	} | {
 		readonly code: "204";
 		readonly information: "users.deleted";
-		readonly body?: undefined;
+		readonly body: undefined;
 	};
 } | {
 	readonly method: "POST";
@@ -84,11 +84,11 @@ export type Routes = {
 	readonly responses: {
 		readonly code: "422";
 		readonly information: "extract-error";
-		readonly body?: undefined;
+		readonly body: undefined;
 	} | {
 		readonly code: "204";
 		readonly information: "file.receive";
-		readonly body?: undefined;
+		readonly body: undefined;
 	};
 } | {
 	readonly method: "GET";
@@ -107,11 +107,10 @@ export type Routes = {
 	readonly responses: {
 		readonly code: "422";
 		readonly information: "extract-error";
-		readonly body?: undefined;
+		readonly body: undefined;
 	} | {
 		readonly code: "200";
 		readonly information: "super-sse";
-		readonly body?: undefined;
 		readonly events: {
 			readonly other: string;
 			readonly message: {
@@ -121,7 +120,7 @@ export type Routes = {
 	} | {
 		readonly code: "204";
 		readonly information: "close";
-		readonly body?: undefined;
+		readonly body: undefined;
 	};
 } | {
 	readonly method: "GET";
@@ -129,7 +128,7 @@ export type Routes = {
 	readonly responses: {
 		readonly code: "422";
 		readonly information: "extract-error";
-		readonly body?: undefined;
+		readonly body: undefined;
 	} | {
 		readonly code: "200";
 		readonly information: "cookie.checked";
@@ -143,7 +142,7 @@ export type Routes = {
 	readonly responses: {
 		readonly code: "204";
 		readonly information: "cookie.dropped";
-		readonly body?: undefined;
+		readonly body: undefined;
 	};
 } | {
 	readonly method: "GET";
@@ -154,11 +153,10 @@ export type Routes = {
 	readonly responses: {
 		readonly code: "422";
 		readonly information: "extract-error";
-		readonly body?: undefined;
+		readonly body: undefined;
 	} | {
 		readonly code: "200";
 		readonly information: "monSuperStream";
-		readonly body?: undefined;
 		readonly flux: Uint8Array<ArrayBuffer>;
 	};
 } | {
@@ -170,11 +168,10 @@ export type Routes = {
 	readonly responses: {
 		readonly code: "422";
 		readonly information: "extract-error";
-		readonly body?: undefined;
+		readonly body: undefined;
 	} | {
 		readonly code: "200";
 		readonly information: "monSuperStream";
-		readonly body?: undefined;
 		readonly flux: string;
 	};
 } | {
@@ -187,7 +184,7 @@ export type Routes = {
 	} | {
 		readonly code: "304";
 		readonly information: "resource.notModified";
-		readonly body?: undefined;
+		readonly body: undefined;
 	};
 } | {
 	readonly method: "GET";
@@ -199,10 +196,10 @@ export type Routes = {
 	} | {
 		readonly code: "404";
 		readonly information: "resource.notfound";
-		readonly body?: undefined;
+		readonly body: undefined;
 	} | {
 		readonly code: "304";
 		readonly information: "resource.notModified";
-		readonly body?: undefined;
+		readonly body: undefined;
 	};
 };

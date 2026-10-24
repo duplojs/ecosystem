@@ -303,7 +303,7 @@ declare const __duploRoute_2_6: import("@duplojs/http").Route<{
     readonly metadata: readonly [];
   }>];
 }>;
-type __duploRoute_2_6 = import("@duplojs/http").RefineRouteTypeDeclaration<typeof __duploRoute_2_6>;
+type __duploRoute_2_6 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_2_6>;
 declare const __duploRoute_2_7: import("@duplojs/http").Route<{
   readonly method: "GET";
   readonly paths: readonly ["/users/{userId}"];
@@ -327,7 +327,7 @@ declare const __duploRoute_2_7: import("@duplojs/http").Route<{
     readonly metadata: readonly [];
   }>];
 }>;
-type __duploRoute_2_7 = import("@duplojs/http").RefineRouteTypeDeclaration<typeof __duploRoute_2_7>;
+type __duploRoute_2_7 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_2_7>;
 declare const __duploRoute_2_8: import("@duplojs/http").Route<{
   readonly method: "POST";
   readonly paths: readonly ["/users"];
@@ -349,7 +349,7 @@ declare const __duploRoute_2_8: import("@duplojs/http").Route<{
     readonly metadata: readonly [];
   }>];
 }>;
-type __duploRoute_2_8 = import("@duplojs/http").RefineRouteTypeDeclaration<typeof __duploRoute_2_8>;
+type __duploRoute_2_8 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_2_8>;
 declare const __duploRoute_2_9: import("@duplojs/http").Route<{
   readonly method: "DELETE";
   readonly paths: readonly ["/users"];
@@ -373,7 +373,7 @@ declare const __duploRoute_2_9: import("@duplojs/http").Route<{
     readonly metadata: readonly [];
   }>];
 }>;
-type __duploRoute_2_9 = import("@duplojs/http").RefineRouteTypeDeclaration<typeof __duploRoute_2_9>;
+type __duploRoute_2_9 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_2_9>;
 //#endregion
 //#region ../core/routes/document.d.ts
 declare const __duploRoute_3_8: import("@duplojs/http").Route<{
@@ -403,7 +403,7 @@ declare const __duploRoute_3_8: import("@duplojs/http").Route<{
     readonly metadata: readonly [];
   }>];
 }>;
-type __duploRoute_3_8 = import("@duplojs/http").RefineRouteTypeDeclaration<typeof __duploRoute_3_8>;
+type __duploRoute_3_8 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_3_8>;
 declare const __duploRoute_3_9: import("@duplojs/http").Route<{
   readonly method: "GET";
   readonly paths: readonly ["/documents/*"];
@@ -417,7 +417,7 @@ declare const __duploRoute_3_9: import("@duplojs/http").Route<{
     readonly metadata: readonly [];
   }>];
 }>;
-type __duploRoute_3_9 = import("@duplojs/http").RefineRouteTypeDeclaration<typeof __duploRoute_3_9>;
+type __duploRoute_3_9 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_3_9>;
 //#endregion
 //#region ../core/routes/serverSentEvent.d.ts
 declare const __duploRoute_4_3: import("@duplojs/http").Route<{
@@ -459,7 +459,7 @@ declare const __duploRoute_4_3: import("@duplojs/http").Route<{
     readonly metadata: readonly [];
   }>];
 }>;
-type __duploRoute_4_3 = import("@duplojs/http").RefineRouteTypeDeclaration<typeof __duploRoute_4_3>;
+type __duploRoute_4_3 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_4_3>;
 //#endregion
 //#region ../core/routes/cookie.d.ts
 declare const __duploRoute_5_2: import("@duplojs/http").Route<{
@@ -491,7 +491,7 @@ declare const __duploRoute_5_2: import("@duplojs/http").Route<{
     readonly metadata: readonly [];
   }>];
 }>;
-type __duploRoute_5_2 = import("@duplojs/http").RefineRouteTypeDeclaration<typeof __duploRoute_5_2>;
+type __duploRoute_5_2 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_5_2>;
 declare const __duploRoute_5_3: import("@duplojs/http").Route<{
   readonly method: "GET";
   readonly paths: readonly ["/cookie-drop"];
@@ -505,7 +505,7 @@ declare const __duploRoute_5_3: import("@duplojs/http").Route<{
     readonly metadata: readonly [];
   }>];
 }>;
-type __duploRoute_5_3 = import("@duplojs/http").RefineRouteTypeDeclaration<typeof __duploRoute_5_3>;
+type __duploRoute_5_3 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_5_3>;
 //#endregion
 //#region ../core/routes/stream.d.ts
 declare const __duploRoute_6_3: import("@duplojs/http").Route<{
@@ -531,7 +531,7 @@ declare const __duploRoute_6_3: import("@duplojs/http").Route<{
     readonly metadata: readonly [];
   }>];
 }>;
-type __duploRoute_6_3 = import("@duplojs/http").RefineRouteTypeDeclaration<typeof __duploRoute_6_3>;
+type __duploRoute_6_3 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_6_3>;
 declare const __duploRoute_6_4: import("@duplojs/http").Route<{
   readonly method: "POST";
   readonly paths: readonly ["/stream-text"];
@@ -555,7 +555,7 @@ declare const __duploRoute_6_4: import("@duplojs/http").Route<{
     readonly metadata: readonly [];
   }>];
 }>;
-type __duploRoute_6_4 = import("@duplojs/http").RefineRouteTypeDeclaration<typeof __duploRoute_6_4>;
+type __duploRoute_6_4 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_6_4>;
 //#endregion
 //#region ../core/routes.d.ts
 export type Routes = __duploRoute_2_6 | __duploRoute_2_7 | __duploRoute_2_8 | __duploRoute_2_9 | __duploRoute_3_8 | __duploRoute_3_9 | __duploRoute_4_3 | __duploRoute_5_2 | __duploRoute_5_3 | __duploRoute_6_3 | __duploRoute_6_4;

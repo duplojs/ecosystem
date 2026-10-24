@@ -1,6 +1,7 @@
 import * as DGenerator from "@duplojs/lang/generator";
 import { launchCloseStreamHook, launchErrorStreamHook, launchReceiveDataStreamHook, launchStartStreamHook } from "./hooks";
-import { type CloseStreamHook, type ErrorStreamHook, type ReceiveDataStreamHook, type StartStreamHook, type ClientResponse, type ClientStreamResponse, type AllClientResponse, type ServerRouteResponseFlux } from "./types";
+import { type CloseStreamHook, type ErrorStreamHook, type ReceiveDataStreamHook, type StartStreamHook, type ClientResponse, type ClientStreamResponse, type AllClientResponse } from "./types";
+import { type RouteContractResponseFlux } from "@core";
 
 const closeReason = Symbol("CloseReason");
 export function makeClientStreamResponse(
@@ -12,7 +13,7 @@ export function makeClientStreamResponse(
 	const createStreamResponse = (
 		streamReaderGenerator: (
 			emitError: (error: unknown) => Promise<void>,
-		) => AsyncGenerator<ServerRouteResponseFlux>,
+		) => AsyncGenerator<RouteContractResponseFlux>,
 	): ClientStreamResponse => {
 		let closeStream: CloseStreamHook[] | undefined = undefined;
 		let receiveDataStream: ReceiveDataStreamHook[] | undefined = undefined;
@@ -98,7 +99,7 @@ export function makeClientStreamResponse(
 
 	return createStreamResponse(
 		(emitError) => DGenerator.asyncLoop(
-			async({ next, exit }: DGenerator.LoopParams<ServerRouteResponseFlux>) => {
+			async({ next, exit }: DGenerator.LoopParams<RouteContractResponseFlux>) => {
 				try {
 					if (abortController.signal.aborted) {
 						return exit();

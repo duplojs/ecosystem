@@ -1,6 +1,6 @@
-import { type ClientRequestParamsBody, type ClientRequestParamsHeaders, type ClientRequestParamsParams, type ClientRequestParamsQuery } from "./clientRequestParams";
-import { type ClientResponseBody } from "./clientResponse";
 import type * as DCommon from "@duplojs/lang/common";
+import { type RouteContractParams, type RouteContractHeaders, type RouteContractQuery, type RouteContractBody } from "@core";
+import { type ClientResponseBody } from "./clientResponse";
 
 export interface ClientCacheValue {
 	information?: string;
@@ -23,10 +23,10 @@ export interface CreateClientCacheKeyParams<
 > {
 	method: string;
 	path: string;
-	headers: ClientRequestParamsHeaders | undefined;
-	params: ClientRequestParamsParams | undefined;
-	query: ClientRequestParamsQuery | undefined;
-	body: ClientRequestParamsBody;
+	headers: RouteContractHeaders | undefined;
+	params: RouteContractParams | undefined;
+	query: RouteContractQuery | undefined;
+	body: RouteContractBody;
 	hookParams: GenericHookParams | undefined;
 }
 

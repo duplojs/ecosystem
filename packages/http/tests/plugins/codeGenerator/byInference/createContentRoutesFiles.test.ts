@@ -38,8 +38,8 @@ describe("createContentRoutesFiles", () => {
 		expect(files.get(path)!.content).toContain("import { ResponseContract, useRouteBuilder } from \"@duplojs/http\";");
 		expect(files.get(path)!.content).toContain("const __duploRoute_0_1 = useRouteBuilder(\"GET\", \"/users\").handler(");
 		expect(files.get(path)!.content).toContain("const __duploRoute_0_2 = useRouteBuilder(\"POST\", \"/users\").handler(");
-		expect(files.get(path)!.content).toContain("export type __duploRoute_0_1 = import(\"@duplojs/http\").RefineRouteTypeDeclaration<typeof __duploRoute_0_1>;");
-		expect(files.get(path)!.content).toContain("export type __duploRoute_0_2 = import(\"@duplojs/http\").RefineRouteTypeDeclaration<typeof __duploRoute_0_2>;");
+		expect(files.get(path)!.content).toContain("export type __duploRoute_0_1 = import(\"@duplojs/http\").RouteDeclarationToContract<typeof __duploRoute_0_1>;");
+		expect(files.get(path)!.content).toContain("export type __duploRoute_0_2 = import(\"@duplojs/http\").RouteDeclarationToContract<typeof __duploRoute_0_2>;");
 		expect(source?.statements).toHaveLength(3);
 	});
 
@@ -60,7 +60,7 @@ describe("createContentRoutesFiles", () => {
 		const files = DEither.unwrapRightOrThrow(result);
 
 		expect(DArray.map(files.get(path)!.variablesName, ({ text }) => text)).toStrictEqual(["usersRoute"]);
-		expect(files.get(path)!.content).toContain("export type usersRoute = import(\"@duplojs/http\").RefineRouteTypeDeclaration<typeof usersRoute>;");
+		expect(files.get(path)!.content).toContain("export type usersRoute = import(\"@duplojs/http\").RouteDeclarationToContract<typeof usersRoute>;");
 		expect(files.get(path)!.content).toContain("export const usersRoute = ");
 		expect(files.get(path)!.content).not.toContain("__duploRoute_");
 	});
