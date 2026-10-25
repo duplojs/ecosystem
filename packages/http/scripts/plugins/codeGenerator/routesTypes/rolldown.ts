@@ -9,18 +9,18 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DGenerator from "@duplojs/lang/generator";
 import * as DObject from "@duplojs/lang/object";
 
-export interface GenerateRoutesTypesByInferenceRolldownParams {
+export interface GenerateRoutesTypesRolldownParams {
 	tsconfig: string & DPath.Path;
 	pattern: DCommon.MaybeArray<string>;
 }
 
-export function generateRoutesTypesByInferenceRolldown(
-	params: GenerateRoutesTypesByInferenceRolldownParams,
+export function generateRoutesTypesRolldown(
+	params: GenerateRoutesTypesRolldownParams,
 ): Plugin {
 	const routeFileMatcher = DPath.createMatcher(params.pattern);
 	let files = new Map<string, string>();
 	return {
-		name: "@duplojs/http/codeGenerator:routesTypesByInference",
+		name: "@duplojs/http/codeGenerator:routesTypes",
 		async options(options) {
 			const resolvedTsconfig = DPath.resolveFrom(
 				DSCommon.getCurrentWorkDirectoryOrThrow(),

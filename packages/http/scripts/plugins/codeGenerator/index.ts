@@ -1,5 +1,5 @@
 export * from "./aggregateStepContract";
-export * from "./byInference";
+export * from "./routesTypes";
 export * from "./createSubStructureBuildedContext";
 export * from "./findIdentifiedStructureInSteps";
 export * from "./metadata";

@@ -1,4 +1,4 @@
-import { createContentRoutesFiles, createTypescriptInstance, generateRouteIndex, generateRoutesTypesByInferenceRolldown } from "@plugin-codeGenerator";
+import { createContentRoutesFiles, createTypescriptInstance, generateRouteIndex, generateRoutesTypesRolldown } from "@plugin-codeGenerator";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import * as DInvocation from "@duplojs/lang/invocation";
@@ -12,7 +12,7 @@ vi.mock("@plugin-codeGenerator/byInference/createTypescriptInstance", () => ({ c
 vi.mock("@plugin-codeGenerator/byInference/createContentRoutesFiles", () => ({ createContentRoutesFiles: vi.fn() }));
 vi.mock("@plugin-codeGenerator/byInference/generateRouteIndex", () => ({ generateRouteIndex: vi.fn() }));
 
-describe("generateRoutesTypesByInferenceRolldown", () => {
+describe("generateRoutesTypesRolldown", () => {
 	const root: string & DPath.Absolute = DCommon.cast("/project");
 	const routePath: string & DPath.Path & DPath.Absolute = DCommon.cast("/project/src/users.ts");
 	const indexPath: string & DPath.Path & DPath.Absolute = DCommon.cast("/project/routes.ts");
@@ -39,7 +39,7 @@ describe("generateRoutesTypesByInferenceRolldown", () => {
 	});
 
 	it("exposes a typed plugin with an initially empty virtual filesystem", () => {
-		const plugin = generateRoutesTypesByInferenceRolldown({
+		const plugin = generateRoutesTypesRolldown({
 			tsconfig: DCommon.cast("tsconfig.json"),
 			pattern: "src/**/*.ts",
 		});
@@ -51,7 +51,7 @@ describe("generateRoutesTypesByInferenceRolldown", () => {
 	});
 
 	it("generates virtual files, replaces the input and preserves other options", async() => {
-		const plugin = generateRoutesTypesByInferenceRolldown({
+		const plugin = generateRoutesTypesRolldown({
 			tsconfig: DCommon.cast("config/tsconfig.json"),
 			pattern: ["/project/src/**/*.ts", "!/project/src/ignored.ts"],
 		});
@@ -85,7 +85,7 @@ describe("generateRoutesTypesByInferenceRolldown", () => {
 	});
 
 	it("replaces stale virtual files on a subsequent build and preserves empty content", async() => {
-		const plugin = generateRoutesTypesByInferenceRolldown({
+		const plugin = generateRoutesTypesRolldown({
 			tsconfig: DCommon.cast("tsconfig.json"),
 			pattern: "src/**/*.ts",
 		});
@@ -104,7 +104,7 @@ describe("generateRoutesTypesByInferenceRolldown", () => {
 
 	it("rejects an invalid TypeScript project before generating files", async() => {
 		vi.mocked(createTypescriptInstance).mockResolvedValueOnce(DEither.left("missingProject"));
-		const plugin = generateRoutesTypesByInferenceRolldown({
+		const plugin = generateRoutesTypesRolldown({
 			tsconfig: DCommon.cast("tsconfig.json"),
 			pattern: "src/**/*.ts",
 		});
@@ -118,7 +118,7 @@ describe("generateRoutesTypesByInferenceRolldown", () => {
 
 	it("closes the API and rejects when the route index path is invalid", async() => {
 		vi.mocked(generateRouteIndex).mockResolvedValueOnce(DEither.left("failToCreatePathKey"));
-		const plugin = generateRoutesTypesByInferenceRolldown({
+		const plugin = generateRoutesTypesRolldown({
 			tsconfig: DCommon.cast("tsconfig.json"),
 			pattern: "src/**/*.ts",
 		});
@@ -131,7 +131,7 @@ describe("generateRoutesTypesByInferenceRolldown", () => {
 	it("propagates transformation failures without publishing virtual files", async() => {
 		const error = new Error("Cannot transform routes");
 		vi.mocked(createContentRoutesFiles).mockRejectedValueOnce(error);
-		const plugin = generateRoutesTypesByInferenceRolldown({
+		const plugin = generateRoutesTypesRolldown({
 			tsconfig: DCommon.cast("tsconfig.json"),
 			pattern: "src/**/*.ts",
 		});

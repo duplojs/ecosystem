@@ -1,12 +1,12 @@
 import { defineConfig } from "rolldown";
 import { dts } from "rolldown-plugin-dts";
-import { generateRoutesTypesByInferenceRolldown } from "@duplojs/http/codeGenerator";
+import { generateRoutesTypesRolldown } from "@duplojs/http/codeGenerator";
 import * as DCommon from "@duplojs/lang/common";
 
 export default defineConfig({
 	treeshake: true,
 	plugins: [
-		generateRoutesTypesByInferenceRolldown({
+		generateRoutesTypesRolldown({
 			tsconfig: DCommon.cast("../core/tsconfig.json"),
 			pattern: ["routes"],
 		}),
@@ -15,7 +15,7 @@ export default defineConfig({
 			tsconfig: "../core/tsconfig.json",
 			emitDtsOnly: true,
 			tsgo: {
-				moduleUrl: import.meta.resolve("@typescript/native-API"),
+				moduleUrl: import.meta.resolve("typescript"),
 				vfs: true,
 			},
 		}),
