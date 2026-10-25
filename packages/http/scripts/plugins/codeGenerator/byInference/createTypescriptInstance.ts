@@ -1,4 +1,4 @@
-import { API } from "@typescript/native-API/async";
+import { TypescriptNativeAPI } from "@duplojs/tools/typescript";
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
@@ -17,7 +17,7 @@ export async function createTypescriptInstance(
 		return DEither.left("invalidTsconfigPath");
 	}
 
-	const api = new API({
+	const api = new TypescriptNativeAPI.API({
 		cwd: workDirectory,
 	});
 

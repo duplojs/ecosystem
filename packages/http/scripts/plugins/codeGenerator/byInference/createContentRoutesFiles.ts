@@ -1,4 +1,4 @@
-import * as AST from "@typescript/native-API/ast";
+import { TypescriptNativeAPI } from "@duplojs/tools/typescript";
 import * as DInvocation from "@duplojs/lang/invocation";
 import { type createTypescriptInstance } from "./createTypescriptInstance";
 import * as DPath from "@duplojs/lang/path";
@@ -6,15 +6,14 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DGenerator from "@duplojs/lang/generator";
 import * as DArray from "@duplojs/lang/array";
 import * as DString from "@duplojs/lang/string";
-import { type Project } from "@typescript/native-API/async";
 import * as DEither from "@duplojs/lang/either";
 
 async function isRouteHandler(
-	node: AST.CallExpression,
-	project: Project,
+	node: TypescriptNativeAPI.CallExpression,
+	project: TypescriptNativeAPI.Project,
 ): Promise<boolean> {
 	if (
-		!AST.isPropertyAccessExpression(node.expression)
+		!TypescriptNativeAPI.isPropertyAccessExpression(node.expression)
 		|| node.expression.name.text !== "handler"
 	) {
 		return false;
@@ -39,13 +38,16 @@ async function isRouteHandler(
 }
 
 async function isRouteVariable(
-	node: AST.VariableStatement,
-	project: Project,
+	node: TypescriptNativeAPI.VariableStatement,
+	project: TypescriptNativeAPI.Project,
 ): Promise<boolean> {
 	const declaration = DArray.first(node.declarationList.declarations);
 
 	if (
-		!DArray.includes([AST.NodeFlags.Const, AST.NodeFlags.Let], node.declarationList.flags)
+		!DArray.includes([
+			TypescriptNativeAPI.NodeFlags.Const,
+			TypescriptNativeAPI.NodeFlags.Let,
+		], node.declarationList.flags)
 		|| !declaration?.initializer
 	) {
 		return false;
@@ -63,20 +65,20 @@ async function isRouteVariable(
 	);
 }
 
-function createRouteTypeDeclaration(identifier: AST.Identifier) {
-	return AST.factory.createTypeAliasDeclaration(
-		[AST.factory.createToken(AST.SyntaxKind.ExportKeyword)],
+function createRouteTypeDeclaration(identifier: TypescriptNativeAPI.Identifier) {
+	return TypescriptNativeAPI.factory.createTypeAliasDeclaration(
+		[TypescriptNativeAPI.factory.createToken(TypescriptNativeAPI.SyntaxKind.ExportKeyword)],
 		identifier,
 		undefined,
-		AST.factory.createImportTypeNode(
+		TypescriptNativeAPI.factory.createImportTypeNode(
 			false,
-			AST.factory.createLiteralTypeNode(
-				AST.factory.createStringLiteral("@duplojs/http", AST.TokenFlags.None),
+			TypescriptNativeAPI.factory.createLiteralTypeNode(
+				TypescriptNativeAPI.factory.createStringLiteral("@duplojs/http", TypescriptNativeAPI.TokenFlags.None),
 			),
 			undefined,
-			AST.factory.createIdentifier("RouteDeclarationToContract"),
+			TypescriptNativeAPI.factory.createIdentifier("RouteDeclarationToContract"),
 			[
-				AST.factory.createTypeQueryNode(
+				TypescriptNativeAPI.factory.createTypeQueryNode(
 					identifier,
 					undefined,
 				),
@@ -108,7 +110,7 @@ export function createContentRoutesFiles(
 					string & DPath.Path & DPath.Absolute,
 					{
 						content: string;
-						variablesName: readonly AST.Identifier[];
+						variablesName: readonly TypescriptNativeAPI.Identifier[];
 					}
 				>
 			>(new Map()),
@@ -126,36 +128,36 @@ export function createContentRoutesFiles(
 					sourceFile.statements,
 					DGenerator.asyncReduce(
 						DGenerator.reduceFrom<{
-							statements: readonly AST.StatementBase[];
-							variablesName: readonly AST.Identifier[];
+							statements: readonly TypescriptNativeAPI.StatementBase[];
+							variablesName: readonly TypescriptNativeAPI.Identifier[];
 						}>({
 							statements: [],
 							variablesName: [],
 						}),
 						async({ item: statement, lastValue: subLastValue, index, next }) => {
 							if (
-								AST.isExpressionStatement(statement)
-								&& AST.isCallExpression(statement.expression)
+								TypescriptNativeAPI.isExpressionStatement(statement)
+								&& TypescriptNativeAPI.isCallExpression(statement.expression)
 								&& await isRouteHandler(statement.expression, typescriptInstance.project)
 							) {
-								const variableIdentifier = AST.factory.createIdentifier(`__duploRoute_${lastValue.size}_${index}`);
+								const variableIdentifier = TypescriptNativeAPI.factory.createIdentifier(`__duploRoute_${lastValue.size}_${index}`);
 
 								return next({
 									variablesName: DArray.push(subLastValue.variablesName, variableIdentifier),
 									statements: DArray.push(
 										subLastValue.statements,
-										AST.factory.createVariableStatement(
+										TypescriptNativeAPI.factory.createVariableStatement(
 											undefined,
-											AST.factory.createVariableDeclarationList(
+											TypescriptNativeAPI.factory.createVariableDeclarationList(
 												[
-													AST.factory.createVariableDeclaration(
+													TypescriptNativeAPI.factory.createVariableDeclaration(
 														variableIdentifier,
 														undefined,
 														undefined,
 														statement.expression,
 													),
 												],
-												AST.NodeFlags.Const,
+												TypescriptNativeAPI.NodeFlags.Const,
 											),
 										),
 										createRouteTypeDeclaration(variableIdentifier),
@@ -165,7 +167,7 @@ export function createContentRoutesFiles(
 
 							const variableIdentifierOfRoute = await DCommon.justExec(async() => {
 								if (
-									!AST.isVariableStatement(statement)
+									!TypescriptNativeAPI.isVariableStatement(statement)
 									|| !DArray.minElements(statement.declarationList.declarations, 1)
 									|| !(await isRouteVariable(statement, typescriptInstance.project))
 								) {
@@ -174,7 +176,7 @@ export function createContentRoutesFiles(
 
 								const variableDeclaration = DArray.first(statement.declarationList.declarations);
 
-								if (!AST.isIdentifier(variableDeclaration.name)) {
+								if (!TypescriptNativeAPI.isIdentifier(variableDeclaration.name)) {
 									return null;
 								}
 
@@ -204,7 +206,7 @@ export function createContentRoutesFiles(
 				);
 
 				const content = await DCommon.pipe(
-					AST.factory.updateSourceFile(
+					TypescriptNativeAPI.factory.updateSourceFile(
 						sourceFile,
 						statements,
 						sourceFile.endOfFileToken,

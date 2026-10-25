@@ -6,7 +6,6 @@ const defaultConfig = {
 	external: [
 		/^@duplojs\//,
 		/^node:/,
-		/^@typescript\//,
 	],
 	output: [
 		{

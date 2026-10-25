@@ -1,7 +1,6 @@
-import * as AST from "@typescript/native-API/ast";
+import { TypescriptNativeAPI } from "@duplojs/tools/typescript";
 import * as DInvocation from "@duplojs/lang/invocation";
 import { type createTypescriptInstance } from "./createTypescriptInstance";
-import { toRootedFilePath, tryPathKeyFromCanonical } from "@typescript/native-API/path";
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
@@ -23,22 +22,22 @@ export async function generateRouteIndex(
 	const statements = DCommon.pipe(
 		files,
 		DGenerator.reduce(
-			DGenerator.reduceFrom<readonly AST.ImportTypeNode[]>([]),
+			DGenerator.reduceFrom<readonly TypescriptNativeAPI.ImportTypeNode[]>([]),
 			({ item: [path, { variablesName }], lastValue, nextPush }) => DCommon.pipe(
 				variablesName,
 				DArray.map(
-					(identifier) => AST.factory.createImportTypeNode(
+					(identifier) => TypescriptNativeAPI.factory.createImportTypeNode(
 						false,
 						DCommon.pipe(
 							DPath.computeRelative(
 								typescriptInstance.workDirectory,
 								path,
 							),
-							(path) => AST.factory.createStringLiteral(
+							(path) => TypescriptNativeAPI.factory.createStringLiteral(
 								`./${path}`,
-								AST.TokenFlags.None,
+								TypescriptNativeAPI.TokenFlags.None,
 							),
-							AST.factory.createLiteralTypeNode,
+							TypescriptNativeAPI.factory.createLiteralTypeNode,
 						),
 						undefined,
 						identifier,
@@ -50,13 +49,13 @@ export async function generateRouteIndex(
 				),
 			),
 		),
-		(importTypeNodes) => AST.factory.createTypeAliasDeclaration(
-			[AST.factory.createToken(AST.SyntaxKind.ExportKeyword)],
-			AST.factory.createIdentifier("Routes"),
+		(importTypeNodes) => TypescriptNativeAPI.factory.createTypeAliasDeclaration(
+			[TypescriptNativeAPI.factory.createToken(TypescriptNativeAPI.SyntaxKind.ExportKeyword)],
+			TypescriptNativeAPI.factory.createIdentifier("Routes"),
 			undefined,
 			DArray.minElements(importTypeNodes, 1)
-				? AST.factory.createUnionTypeNode(importTypeNodes)
-				: AST.factory.createKeywordTypeNode(AST.SyntaxKind.NeverKeyword),
+				? TypescriptNativeAPI.factory.createUnionTypeNode(importTypeNodes)
+				: TypescriptNativeAPI.factory.createKeywordTypeNode(TypescriptNativeAPI.SyntaxKind.NeverKeyword),
 		),
 		DArray.coalescing,
 	);
@@ -66,12 +65,12 @@ export async function generateRouteIndex(
 		[DCommon.cast("routes.ts")],
 	);
 
-	const fileName = toRootedFilePath(
+	const fileName = TypescriptNativeAPI.toRootedFilePath(
 		filePath,
 		typescriptInstance.api.getCurrentDirectory(),
 	);
 
-	const path = tryPathKeyFromCanonical(
+	const path = TypescriptNativeAPI.tryPathKeyFromCanonical(
 		typescriptInstance.api.getCanonicalFileName(fileName),
 	);
 
@@ -80,9 +79,9 @@ export async function generateRouteIndex(
 	}
 
 	const contentImportFile = await DCommon.pipe(
-		AST.factory.createSourceFile(
+		TypescriptNativeAPI.factory.createSourceFile(
 			statements,
-			AST.factory.createToken(AST.SyntaxKind.EndOfFile),
+			TypescriptNativeAPI.factory.createToken(TypescriptNativeAPI.SyntaxKind.EndOfFile),
 			"",
 			fileName,
 			path,

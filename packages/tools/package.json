@@ -62,7 +62,8 @@
     "@duplojs/server": "workspace:*"
   },
   "dependencies": {
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "@typescript/native-API": "npm:typescript@7.1.0-beta"
   },
   "devDependencies": {
     "@duplojs/code-config": "workspace:*",
