@@ -57,7 +57,7 @@ function handleNodeWalkDirectoryError(error: Error) {
 
 export interface WalkDirectoryParams {
 	recursive?: boolean;
-	matcher?: DPath.PathMatcher;
+	matcher?: DPath.PathMatcher<string & DPath.Absolute>;
 }
 
 export type WalkDirectoryResult = (
@@ -106,11 +106,18 @@ export const walkDirectory = implementFunction(
 								),
 							}),
 						),
-						DGenerator.filter(
-							(value) => params?.matcher
-								? params?.matcher(value.path)
-								: true,
-						),
+						(generator) => {
+							const matcher = params?.matcher;
+
+							if (!matcher) {
+								return generator;
+							}
+
+							return DGenerator.filter(
+								generator,
+								({ path }) => matcher(path),
+							);
+						},
 						DGenerator.map(
 							DCommon.innerPipe(
 								DPattern.when(
