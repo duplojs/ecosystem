@@ -53,7 +53,7 @@ export namespace Book {
 		"Available",
 		AvailableState
 	>;
-	const AvailableFlag = DModeling.createFlag<
+	export const AvailableFlag = DModeling.createFlag<
 		AvailableFlag,
 		typeof Entity
 	>("Available");
@@ -62,7 +62,7 @@ export namespace Book {
 		"Borrowed",
 		BorrowedState
 	>;
-	const BorrowedFlag = DModeling.createFlag<
+	export const BorrowedFlag = DModeling.createFlag<
 		BorrowedFlag,
 		typeof Entity
 	>("Borrowed");
