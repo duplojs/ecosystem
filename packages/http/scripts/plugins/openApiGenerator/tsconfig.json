@@ -4,9 +4,8 @@
     "paths": {
 	  "@core/*": ["../../core/*"],
 	  "@plugin-openApiGenerator/*": ["./*"],
-	  "@plugin-codeGenerator/*": ["../codeGenerator/*"],
     },
 	"types": ["node"],
   },
-  "include": ["**/*.ts", "../../core/**/*.ts", "../codeGenerator/**/*.ts"],
+  "include": ["**/*.ts", "../../core/**/*.ts"],
 }

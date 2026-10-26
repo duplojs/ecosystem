@@ -1,6 +1,6 @@
 ---
 name: duplojs-http-server
-description: "Créer ou modifier des routes et un serveur HTTP DuploJS : Hub, entrées validées, réponses contractuelles, traitements réutilisables et génération des contrats partagés."
+description: "Créer ou modifier des routes et un serveur HTTP DuploJS : Hub, entrées validées, réponses contractuelles, traitements réutilisables."
 ---
 
 # Serveur HTTP DuploJS
@@ -57,10 +57,6 @@ Au démarrage, valider la configuration avec `DSCommon.environmentVariableOrThro
 
 Si la tâche touche le démarrage ou l'enregistrement des routes, lire [Initialisation et enregistrement](references/initialization.md) et l'[exemple minimal](references/examples/initialize.ts). Avec `routeStore.getAll()`, importer d'abord les modules de routes : le store collecte les déclarations finalisées par `.handler`, sans découvrir ni importer leurs fichiers.
 
-## Partager les contrats et les schémas
-
-Lorsque la tâche partage des types de routes ou des schémas, lire [Génération et consommation des contrats](references/code-generation.md) et l'[exemple de génération](references/examples/generate-sdk.ts). `codeGeneratorPlugin` produit ces ressources à partir des contrats du serveur ; il ne crée pas d'instance de client. Sa configuration seule ne lance pas la génération : celle-ci dépend du cycle de vie du Hub. Pour consommer l'API, utiliser le skill `duplojs-http-client` ou les concepts du client HTTP.
-
 ## Vérifier le flux exposé
 
-Exécuter le typage et les vérifications du projet. Vérifier que la route est effectivement enregistrée, qu'une entrée invalide est refusée et que chaque issue concernée produit le statut, l'information et le body déclarés. Vérifier aussi qu'un refus arrête les étapes dépendantes. Si la tâche touche la génération, exécuter celle-ci en `BUILD` puis vérifier les fichiers produits et leur utilisation depuis le consommateur.
+Exécuter le typage et les vérifications du projet. Vérifier que la route est effectivement enregistrée, qu'une entrée invalide est refusée et que chaque issue concernée produit le statut, l'information et le body déclarés. Vérifier aussi qu'un refus arrête les étapes dépendantes.

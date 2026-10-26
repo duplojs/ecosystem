@@ -1,6 +1,6 @@
 # Contrat et configuration du client
 
-Le client HTTP est utilisable partout où une application effectue une requête HTTP, que l'API soit développée avec DuploJS ou avec une autre technologie. `createHttpClient<Routes>` accepte un type compatible avec `ServerRoute` : chaque route décrit sa méthode, son chemin, ses entrées et l'union de ses réponses. Les types peuvent être écrits à la main, importés ou composés. La génération depuis un serveur DuploJS est une façon de produire ce contrat ; elle ne génère pas un client et n'est pas un prérequis à son utilisation. Pour configurer cette génération, utiliser le skill `duplojs-http-server` ou rechercher le partage des contrats HTTP dans `docs/concepts.llms.md` du package installé.
+Le client HTTP est utilisable partout où une application effectue une requête HTTP, que l'API soit développée avec DuploJS ou avec une autre technologie. `createHttpClient<Routes>` accepte un type compatible avec `ServerRoute` : chaque route décrit sa méthode, son chemin, ses entrées et l'union de ses réponses. Les types peuvent être écrits à la main, importés ou composés.
 
 Décrire précisément les requêtes et les réponses connues, y compris les erreurs contractuelles. Éviter de perdre ces garanties avec un client non paramétré ou des assertions sur les résultats. Le typage décrit le contrat supposé de l'API ; il n'effectue pas de validation runtime du body. Utiliser une data structure lorsque cette validation est nécessaire.
 

@@ -6,7 +6,7 @@ import { staticPlugin } from "@duplojs/http/static";
 import { corsPlugin } from "@duplojs/http/cors";
 import { cookiePlugin } from "@duplojs/http/cookie";
 import * as DPath from "@duplojs/lang/path";
-import "@duplojs/http/codeGenerator";
+import "@duplojs/tools/toTypescript";
 
 import "@routes";
 

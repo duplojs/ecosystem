@@ -7,7 +7,7 @@
  */
 import { createHttpClient } from "@duplojs/http/client";
 
-// Exemple réduit du contrat produit par `codeGeneratorPlugin`.
+// Exemple réduit de contrat statique des routes.
 export interface Routes {
 	readonly method: "GET";
 	readonly path: "/hello-world";

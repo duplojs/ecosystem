@@ -3,7 +3,6 @@ import { IgnoreByRouteStoreMetadata } from "@core/metadata";
 import { ResponseContract } from "@core/response";
 import type { RoutePath } from "@core/route";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import { IgnoreByCodeGeneratorMetadata } from "@plugin-codeGenerator/metadata";
 import { IgnoreByOpenApiGeneratorMetadata } from "./metadata";
 
 export function makeOpenApiRoute(
@@ -17,7 +16,6 @@ export function makeOpenApiRoute(
 			metadata: [
 				IgnoreByRouteStoreMetadata(),
 				IgnoreByOpenApiGeneratorMetadata(),
-				IgnoreByCodeGeneratorMetadata(),
 			],
 		},
 	)

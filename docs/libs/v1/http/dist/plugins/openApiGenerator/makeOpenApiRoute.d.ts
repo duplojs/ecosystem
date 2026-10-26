@@ -3,7 +3,7 @@ import { RoutePath } from '../../core/route';
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 export declare function makeOpenApiRoute(routePath: RoutePath, openApiPage: string): import('../../core/route').Route<{
     readonly method: "GET";
-    readonly metadata: readonly [import('../../core/metadata').Metadata<"ignore-by-route-store", unknown>, import('../../core/metadata').Metadata<"ignore-by-open-api-generator", unknown>, import('../../core/metadata').Metadata<"ignore-by-code-generator", unknown>];
+    readonly metadata: readonly [import('../../core/metadata').Metadata<"ignore-by-route-store", unknown>, import('../../core/metadata').Metadata<"ignore-by-open-api-generator", unknown>];
     readonly hooks: readonly [];
     readonly preflightSteps: readonly [];
     readonly paths: readonly [`/${string}`];

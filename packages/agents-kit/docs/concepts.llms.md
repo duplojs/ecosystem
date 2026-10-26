@@ -314,7 +314,7 @@ Interfaces HTTP côté serveur : réception et validation des requêtes, orchest
 
 ### [Créer une application HTTP](concepts/02-server/20-http/10-init.ts)
 
-Configuration d'un `Hub`, plugins et enregistrement des routes d'une application HTTP.
+Configuration d'un `Hub` et enregistrement des routes d'une application HTTP.
  
 ### [Créer une route HTTP](concepts/02-server/20-http/20-route.ts)
 
@@ -327,10 +327,6 @@ Vérifications dans les flux HTTP, réutilisation des traitements et adaptation 
 ### [Définir une politique de gestion de tokens](concepts/02-server/20-http/40-jwt.ts)
 
 Déclaration d'une politique unique pour créer et vérifier une famille de tokens.
- 
-### [Comment partager des ressources](concepts/02-server/20-http/50-codegen.ts)
-
-Génération du typage des routes et des `DataStructure` pour partager un contrat statique.
  
 ## Environnement
 

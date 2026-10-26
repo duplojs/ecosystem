@@ -28,6 +28,6 @@ Le store est global : lorsqu'une application contient plusieurs Hubs qui doivent
 
 ## Ajouter un plugin
 
-Brancher le plugin sur le Hub avant d'appeler le connecteur. Les paramètres et les effets relèvent du plugin choisi ; les rechercher depuis `docs/concepts.llms.md`. L'[exemple de génération](examples/generate-sdk.ts) montre `.plug(...)` et un plugin déclenché par le cycle de vie.
+Brancher le plugin sur le Hub avant d'appeler le connecteur. Les paramètres et les effets relèvent du plugin choisi ; les rechercher depuis `docs/concepts.llms.md`.
 
 Pour approfondir, rechercher l'initialisation HTTP dans le routeur conceptuel du package AgentKit.
