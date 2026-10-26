@@ -8,9 +8,9 @@ import type { Plugin } from "rolldown";
 import { routesFiles, type TypescriptInstance } from "../_utils/instance";
 import { runLoad, runOptions, runResolveId } from "../_utils/rolldown";
 
-vi.mock("@plugin-codeGenerator/byInference/createTypescriptInstance", () => ({ createTypescriptInstance: vi.fn() }));
-vi.mock("@plugin-codeGenerator/byInference/createContentRoutesFiles", () => ({ createContentRoutesFiles: vi.fn() }));
-vi.mock("@plugin-codeGenerator/byInference/generateRouteIndex", () => ({ generateRouteIndex: vi.fn() }));
+vi.mock("@plugin-codeGenerator/routesTypes/createTypescriptInstance", () => ({ createTypescriptInstance: vi.fn() }));
+vi.mock("@plugin-codeGenerator/routesTypes/createContentRoutesFiles", () => ({ createContentRoutesFiles: vi.fn() }));
+vi.mock("@plugin-codeGenerator/routesTypes/generateRouteIndex", () => ({ generateRouteIndex: vi.fn() }));
 
 describe("generateRoutesTypesRolldown", () => {
 	const root: string & DPath.Absolute = DCommon.cast("/project");
@@ -45,7 +45,7 @@ describe("generateRoutesTypesRolldown", () => {
 		});
 
 		type _Check = DCommon.ExpectType<typeof plugin, Plugin, "strict">;
-		expect(plugin.name).toBe("@duplojs/http/codeGenerator:routesTypesByInference");
+		expect(plugin.name).toBe("@duplojs/http/codeGenerator:routesTypes");
 		expect(runResolveId(plugin, routePath)).toBeUndefined();
 		expect(runLoad(plugin, routePath)).toBeNull();
 	});

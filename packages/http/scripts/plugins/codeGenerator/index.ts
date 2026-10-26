@@ -1,9 +1,10 @@
 export * from "./aggregateStepContract";
-export * from "./routesTypes";
 export * from "./createSubStructureBuildedContext";
 export * from "./findIdentifiedStructureInSteps";
 export * from "./metadata";
 export * from "./plugin";
 export * from "./routeToStructure";
+export * from "./routesTypes";
+export * from "./slices";
 export type * from "./types";
 export * from "./typescriptTransformer";

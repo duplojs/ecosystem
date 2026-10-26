@@ -5,6 +5,8 @@ import * as DCommon from "@duplojs/lang/common";
 
 export default defineConfig({
 	treeshake: true,
+	external: [/^@duplojs\//],
+	tsconfig: "../core/tsconfig.json",
 	plugins: [
 		generateRoutesTypesRolldown({
 			tsconfig: DCommon.cast("../core/tsconfig.json"),
@@ -21,7 +23,7 @@ export default defineConfig({
 		}),
 	],
 	output: {
-		dir: "./type.generate",
+		dir: "./routesTypes.generate",
 		cleanDir: true,
 	},
 });

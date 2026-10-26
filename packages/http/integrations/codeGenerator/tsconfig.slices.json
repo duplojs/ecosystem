@@ -1,0 +1,9 @@
+{
+	"extends": "../../tsconfig.app.json",
+	"compilerOptions": {
+		"paths": {},
+		"types": [],
+		"lib": ["ESNext", "DOM"]
+	},
+	"include": ["slices.generate/**/*.ts"]
+}

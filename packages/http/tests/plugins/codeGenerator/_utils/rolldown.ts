@@ -7,11 +7,11 @@ export function runOptions(plugin: Plugin, options: InputOptions = {}) {
 	return plugin.options.call({} as MinimalPluginContext, options);
 }
 
-export function runResolveId(plugin: Plugin, id: string) {
+export function runResolveId(plugin: Plugin, id: string, importer?: string) {
 	if (typeof plugin.resolveId !== "function") {
 		throw new Error("Expected a resolveId hook");
 	}
-	return plugin.resolveId.call({} as PluginContext, id, undefined, {
+	return plugin.resolveId.call({} as PluginContext, id, importer, {
 		kind: "import-statement",
 		isEntry: false,
 	});
