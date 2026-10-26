@@ -31,7 +31,7 @@ export namespace Client {
 		"CanRentBook",
 		readonly Book.Id[] & DArray.MaxElements<4>
 	>;
-	export const CanRentBookFlag = DModeling.createFlag<
+	const CanRentBookFlag = DModeling.createFlag<
 		CanRentBookFlag,
 		typeof Entity
 	>("CanRentBook");
@@ -40,7 +40,7 @@ export namespace Client {
 		"NoBookRentalSlotsAvailable",
 		undefined
 	>;
-	export const NoBookRentalSlotsAvailableFlag = DModeling.createFlag<
+	const NoBookRentalSlotsAvailableFlag = DModeling.createFlag<
 		NoBookRentalSlotsAvailableFlag,
 		typeof Entity
 	>("NoBookRentalSlotsAvailable");
