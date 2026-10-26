@@ -2,7 +2,9 @@ import type { AnyPath } from "./types";
 import * as DArray from "@scripts/array";
 import * as DString from "@scripts/string";
 
-export type PathMatcher = (path: AnyPath) => boolean;
+export type PathMatcher<
+	GenericPath extends AnyPath = AnyPath,
+> = (path: GenericPath) => boolean;
 
 const regexSpecialCharacters = /[\\^$.*+?()[\]{}|]/g;
 
