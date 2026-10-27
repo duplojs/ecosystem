@@ -1,7 +1,8 @@
 import { StepKind } from './kind';
 import { Request } from '../request';
-import { ClientErrorResponseCode, ResponseContract } from '../response';
+import { PredictedResponse } from '../response';
 import { Metadata } from '../metadata';
+import { ExtractStepOtherwiseParams } from '../types';
 import * as DCommon from "@duplojs/lang/common";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DObject from "@duplojs/lang/object";
@@ -16,7 +17,7 @@ export type ExtractShape<GenericRequest extends Request = Request> = Partial<Rec
 export type ExtractShapeCodecs = Partial<Record<Exclude<keyof ExtractShape, "body">, DDataStructure.Codecs>>;
 export interface ExtractStepDefinition {
     readonly shape: ExtractShape;
-    readonly responseContract?: ResponseContract.Contract<ClientErrorResponseCode, string, DDataStructure.Structure<undefined>>;
+    otherwise?(params: ExtractStepOtherwiseParams): PredictedResponse;
     readonly metadata: readonly Metadata[];
 }
 export declare const extractStepKind: DKind.Handler<DKind.Definition<"@DuplojsHttpCore/extract-step", unknown>>;

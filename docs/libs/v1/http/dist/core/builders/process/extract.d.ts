@@ -1,6 +1,6 @@
-import { Floor } from '../../types';
+import { Floor, ExtractOtherwise, ExtractStepOtherwiseParams } from '../../types';
 import { ExtractShape, ExtractStep } from '../../steps';
-import { ClientErrorResponseCode, ResponseContract } from '../../response';
+import { PredictedResponse } from '../../response';
 import { ProcessDefinition } from '../../process';
 import { Metadata } from '../../metadata';
 import type * as DCommon from "@duplojs/lang/common";
@@ -8,12 +8,12 @@ import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DObject from "@duplojs/lang/object";
 declare module "./builder" {
     interface ProcessBuilder<GenericDefinition extends ProcessDefinition = ProcessDefinition, GenericFloor extends Floor = {}> {
-        extract<GenericShape extends ExtractShape, GenericResponseContract extends (ResponseContract.Contract<ClientErrorResponseCode, string, DDataStructure.Structure<undefined>> | undefined) = never, const GenericMetadata extends readonly Metadata[] = readonly []>(shape: GenericShape, responseContract?: GenericResponseContract, ...metadata: GenericMetadata): ProcessBuilder<DObject.Assign<GenericDefinition, {
+        extract<GenericShape extends ExtractShape, GenericResponse extends PredictedResponse = never, const GenericMetadata extends readonly Metadata[] = readonly []>(shape: GenericShape, otherwise?: (params: ExtractStepOtherwiseParams<GenericFloor>) => GenericResponse, ...metadata: GenericMetadata): ProcessBuilder<DObject.Assign<GenericDefinition, {
             readonly steps: readonly [
                 ...GenericDefinition["steps"],
                 ExtractStep<{
                     readonly shape: GenericShape;
-                    readonly responseContract: DCommon.NeverCoalescing<GenericResponseContract, undefined>;
+                    readonly otherwise: DCommon.IsNever<GenericResponse> extends true ? undefined : ExtractOtherwise<GenericFloor, GenericResponse>;
                     readonly metadata: GenericMetadata;
                 }>
             ];

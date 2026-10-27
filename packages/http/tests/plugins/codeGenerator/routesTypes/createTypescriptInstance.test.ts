@@ -2,7 +2,7 @@ import { createTypescriptInstance } from "@plugin-codeGenerator";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
-import { API, Snapshot } from "@typescript/native-API/async";
+import { TypescriptNativeAPI } from "@duplojs/tools/typescript";
 import { fixturePath, type TypescriptInstance } from "../_utils/instance";
 
 describe("createTypescriptInstance", () => {
@@ -37,7 +37,7 @@ describe("createTypescriptInstance", () => {
 	});
 
 	it("rejects a path without a parent before creating a snapshot", async() => {
-		const createSnapshot = vi.spyOn(API.prototype, "createSnapshot");
+		const createSnapshot = vi.spyOn(TypescriptNativeAPI.API.prototype, "createSnapshot");
 		const result = await createTypescriptInstance({ tsconfigPath: DCommon.cast("/") });
 		const value = DEither.unwrapByInformationOrThrow(result, "invalidTsconfigPath");
 
@@ -46,8 +46,8 @@ describe("createTypescriptInstance", () => {
 	});
 
 	it("reports a snapshot without the configured project", async() => {
-		const getProject = vi.spyOn(Snapshot.prototype, "getConfiguredProject").mockReturnValue(undefined);
-		const createSnapshot = vi.spyOn(API.prototype, "createSnapshot");
+		const getProject = vi.spyOn(TypescriptNativeAPI.Snapshot.prototype, "getConfiguredProject").mockReturnValue(undefined);
+		const createSnapshot = vi.spyOn(TypescriptNativeAPI.API.prototype, "createSnapshot");
 
 		try {
 			const result = await createTypescriptInstance({ tsconfigPath: fixturePath("tsconfig.json") });
@@ -57,18 +57,18 @@ describe("createTypescriptInstance", () => {
 			expect(getProject).toHaveBeenCalledWith(fixturePath("tsconfig.json"));
 			expect(createSnapshot).toHaveBeenCalledWith({ openProjects: [fixturePath("tsconfig.json")] });
 		} finally {
-			await (createSnapshot.mock.contexts[0] as API | undefined)?.close();
+			await (createSnapshot.mock.contexts[0] as TypescriptNativeAPI.API | undefined)?.close();
 		}
 	});
 
 	it("propagates a snapshot creation failure", async() => {
 		const error = new Error("Cannot open project");
-		const createSnapshot = vi.spyOn(API.prototype, "createSnapshot").mockRejectedValue(error);
+		const createSnapshot = vi.spyOn(TypescriptNativeAPI.API.prototype, "createSnapshot").mockRejectedValue(error);
 
 		try {
 			await expect(createTypescriptInstance({ tsconfigPath: fixturePath("tsconfig.json") })).rejects.toBe(error);
 		} finally {
-			await (createSnapshot.mock.contexts[0] as API | undefined)?.close();
+			await (createSnapshot.mock.contexts[0] as TypescriptNativeAPI.API | undefined)?.close();
 		}
 	});
 });

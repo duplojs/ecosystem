@@ -1,4 +1,3 @@
-import { ResponseContract } from '../../core/response';
 import { RoutePath } from '../../core/route';
 import { CacheControlDirectives } from '../cacheController/types';
 import type * as DSFile from "@duplojs/server/file";
@@ -25,12 +24,11 @@ export declare function makeRouteFile(params: MakeRouteFileParams): import('../.
     readonly hooks: readonly [{
         readonly beforeSendResponse: ({ currentResponse, next }: import('../../core/route').RouteHookParamsAfter) => import('../../core/route').RouteHookNext;
     }];
-    readonly paths: readonly [`/${string}`] | DCommon.AnyTuple<`/${string}`>;
     readonly preflightSteps: readonly [];
+    readonly paths: readonly [`/${string}`] | DCommon.AnyTuple<`/${string}`>;
     readonly bodyController: null;
     readonly steps: readonly [import('../../core/steps').HandlerStep<{
-        readonly responseContract: [NoInfer<ResponseContract.Contract<"200", "resource.found", NoInfer<import('@duplojs/lang/dataStructure').TypeStructure<DSFile.FileInterface<DSFile.EntryPath>, readonly []>>>>, NoInfer<ResponseContract.Contract<"304", "resource.notModified", import('@duplojs/lang/dataStructure').TypeStructure<undefined, readonly []>>>];
-        theFunction(floor: {}, params: import('../../core/steps').HandlerStepFunctionParams<import('../../core/response').PredictedResponse<"200", "resource.found", DSFile.FileInterface<DSFile.EntryPath>> | import('../../core/response').PredictedResponse<"304", "resource.notModified", undefined>>): DCommon.MaybePromise<import('../../core/response').PredictedResponse<"200", "resource.found", DSFile.FileInterface<DSFile.EntryPath>> | import('../../core/response').PredictedResponse<"304", "resource.notModified", undefined>>;
+        theFunction(floor: {}, params: import('../../core/steps').HandlerStepFunctionParams): DCommon.MaybePromise<import('../../core/response').PredictedResponse<"304", "resource.notModified", undefined> | import('../../core/response').PredictedResponse<"200", "resource.found", DSFile.FileInterface<import('@duplojs/lang/path').AnyPath>>>;
         readonly metadata: readonly [];
     }>];
 }>;

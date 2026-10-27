@@ -48,7 +48,6 @@ describe("createStepFunctionBuilder", () => {
 		const result = await functionBuilder(
 			createCutStep({
 				theFunction: () => ({}) as never,
-				responseContract: [],
 				metadata: [],
 			}),
 			{

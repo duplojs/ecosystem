@@ -1,6 +1,6 @@
-import { ServerRouteResponse, ServerRoute, ServerRouteResponseFlux } from './serverRoute';
 import { PromiseRequestParams } from './promiseRequestParams';
-import { ServerRouteToClientRequestParams } from './clientRequestParams';
+import { RouteContractResponseDefault, RouteContract, RouteContractResponse, RouteContractResponseFlux, RouteContractResponseSSE, RouteContractResponseStream } from '../../core/index.ts';
+import { RouteContractToClientRequestParams } from './clientRequestParams';
 import type * as DCommon from "@duplojs/lang/common";
 export type ClientResponseBody = unknown;
 export interface ClientResponse<GenericHookParams extends Record<string, unknown> = Record<string, unknown>> {
@@ -20,7 +20,7 @@ export interface ClientResponse<GenericHookParams extends Record<string, unknown
 export interface ClientResponseHandler<GenericType extends string> {
     handlerType: GenericType;
 }
-export interface ClientStreamResponseHandler<GenericFlux extends ServerRouteResponseFlux = ServerRouteResponseFlux> extends AsyncIterable<GenericFlux, void>, ClientResponseHandler<"stream"> {
+export interface ClientStreamResponseHandler<GenericFlux extends RouteContractResponseFlux = RouteContractResponseFlux> extends AsyncIterable<GenericFlux, void>, ClientResponseHandler<"stream"> {
     closeStream(): void;
     onStream(event: "close", callback: (response: this) => DCommon.MaybePromise<void>): this;
     onStream(event: "error", callback: (error: unknown, response: this) => DCommon.MaybePromise<void>): this;
@@ -59,24 +59,24 @@ export interface NotPredictedClientStreamResponse<GenericHookParams extends Reco
 export interface NotPredictedClientEventsResponse<GenericHookParams extends Record<string, unknown> = Record<string, unknown>> extends NotPredictedClientResponse<GenericHookParams>, ClientEventsResponseHandler {
 }
 export type AllNotPredictedClientResponse<GenericHookParams extends Record<string, unknown> = Record<string, unknown>> = (NotPredictedClientResponse<GenericHookParams> | NotPredictedClientStreamResponse<GenericHookParams> | NotPredictedClientEventsResponse<GenericHookParams>);
-export type ServerRouteToClientResponse<GenericServerRoute extends ServerRoute = ServerRoute, GenericHookParams extends Record<string, unknown> = Record<string, unknown>> = GenericServerRoute extends any ? GenericServerRoute["responses"] extends infer InferredResponse ? InferredResponse extends ServerRouteResponse ? (DCommon.SimplifyTopLevel<{
+export type RouteContractToClientResponse<GenericRouteContract extends RouteContract = RouteContract, GenericHookParams extends Record<string, unknown> = Record<string, unknown>> = GenericRouteContract extends any ? GenericRouteContract["responses"] extends infer InferredResponse ? InferredResponse extends RouteContractResponse ? (DCommon.SimplifyTopLevel<{
     code: InferredResponse["code"];
     information: InferredResponse["information"];
-    body: DCommon.IsEqual<InferredResponse["body"], File> extends true ? undefined : DCommon.ToJson<InferredResponse["body"]>;
+    body: InferredResponse extends RouteContractResponseDefault ? InferredResponse["body"] extends infer InferredBodyValue ? InferredBodyValue extends File ? undefined : DCommon.ToJson<InferredBodyValue> : never : undefined;
     ok: boolean | null;
     headers: Headers;
     type: ResponseType;
     url: string;
     redirected: boolean;
     raw: globalThis.Response;
-    requestParams: DCommon.SimplifyTopLevel<ServerRouteToClientRequestParams<GenericServerRoute, GenericHookParams> & PromiseRequestParams<GenericHookParams>>;
+    requestParams: DCommon.SimplifyTopLevel<RouteContractToClientRequestParams<GenericRouteContract, GenericHookParams> & PromiseRequestParams<GenericHookParams>>;
     predicted: boolean;
     fromCache?: boolean;
-}> & (DCommon.IsEqual<InferredResponse["events"], unknown> extends true ? unknown : InferredResponse["events"] extends object ? ClientEventsResponseHandler<{
+}> & (InferredResponse extends RouteContractResponseSSE ? ClientEventsResponseHandler<{
     [EventName in keyof InferredResponse["events"]]: EventName extends string ? {
         event: EventName;
         data: DCommon.ToJson<InferredResponse["events"][EventName]>;
         id?: string;
         retry?: number;
     } : never;
-}[keyof InferredResponse["events"]]> : unknown) & (DCommon.IsEqual<InferredResponse["flux"], unknown> extends true ? unknown : InferredResponse["flux"] extends ServerRouteResponseFlux ? ClientStreamResponseHandler<InferredResponse["flux"]> : never)) extends infer InferredResult extends ClientResponse ? InferredResult : never : never : never : never;
+}[keyof InferredResponse["events"]]> : unknown) & (InferredResponse extends RouteContractResponseStream ? ClientStreamResponseHandler<InferredResponse["flux"]> : unknown)) extends infer InferredResult extends ClientResponse ? InferredResult : never : never : never : never;
