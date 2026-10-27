@@ -39,7 +39,11 @@ describe("generateSlicesRolldown", () => {
 	it("exposes a typed plugin with an initially empty virtual filesystem", () => {
 		const plugin = generateSlicesRolldown({ slices: [] });
 
-		type _Check = DCommon.ExpectType<typeof plugin, Plugin, "strict">;
+		type _Check = DCommon.ExpectType<
+			typeof plugin,
+			Plugin,
+			"strict"
+		>;
 		expect(plugin.name).toBe("@duplojs/http/codeGenerator:slices");
 		expect(runResolveId(plugin, "/project/index.ts")).toBeNull();
 		expect(runResolveId(plugin, "/project/index.ts", "/project/consumer.ts")).toBeUndefined();

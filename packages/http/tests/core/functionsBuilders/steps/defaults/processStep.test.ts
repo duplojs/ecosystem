@@ -1,4 +1,4 @@
-import { ResponseContract, useProcessBuilder, useRouteBuilder, Request, defaultHandlerStepFunctionBuilder, defaultProcessStepFunctionBuilder, PredictedResponse } from "@core";
+import { useProcessBuilder, useRouteBuilder, Request, defaultHandlerStepFunctionBuilder, defaultProcessStepFunctionBuilder, PredictedResponse } from "@core";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import { createBodyReader } from "@test-utils/bodyReader";
 import { useTestRouteFunctionBuilder } from "@test-utils/useTestRouteFunctionBuilder";
@@ -18,8 +18,7 @@ describe("process function builder", () => {
 		const route = useRouteBuilder("GET", "/users", { hooks: [{ afterSendResponse: spyResponse }] })
 			.exec(process, { imports: ["origin"] })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.number()),
-				(floor, { response }) => response("good", floor.origin),
+				(floor, { response }) => response.ok("good", floor.origin),
 			);
 
 		await expect(
@@ -40,8 +39,7 @@ describe("process function builder", () => {
 		const route = useRouteBuilder("GET", "/users", { hooks: [{ afterSendResponse: spyResponse }] })
 			.exec(process, { imports: ["origin"] })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.number()),
-				(floor, { response }) => response("good", floor.origin),
+				(floor, { response }) => response.ok("good", floor.origin),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -73,14 +71,13 @@ describe("process function builder", () => {
 	it("route pickup process value", async() => {
 		const process = useProcessBuilder()
 			.extract({ origin: DDataStructure.string() })
-			.cut([], ({ origin }, { output }) => output({ newOrigin: origin }))
+			.cut(({ origin }, { output }) => output({ newOrigin: origin }))
 			.exports(["newOrigin"]);
 
 		const route = useRouteBuilder("GET", "/users", { hooks: [{ afterSendResponse: spyResponse }] })
 			.exec(process, { imports: ["newOrigin"] })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				(floor, { response }) => response("good", floor.newOrigin),
+				(floor, { response }) => response.ok("good", floor.newOrigin),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -116,8 +113,7 @@ describe("process function builder", () => {
 		const route = useRouteBuilder("GET", "/users", { hooks: [{ afterSendResponse: spyResponse }] })
 			.exec(process)
 			.handler(
-				ResponseContract.noContent("good"),
-				(floor, { response }) => response("good"),
+				(floor, { response }) => response.noContent("good"),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);

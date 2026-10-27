@@ -1,4 +1,6 @@
-import { ResponseContract, useCheckerBuilder, useRouteBuilder, Request, Response, createPresetChecker, PredictedResponse } from "@core";
+import { useTestStepFunctionBuilder } from "@test-utils/useTestStepFunctionBuilder";
+import { createTestRequest } from "@test-utils/createTestRequest";
+import { createCheckerStep, createPresetCheckerStep, ResponseHelper, useCheckerBuilder, useRouteBuilder, Request, Response, createPresetChecker, PredictedResponse } from "@core";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import { createBodyReader } from "@test-utils/bodyReader";
 import { useTestRouteFunctionBuilder } from "@test-utils/useTestRouteFunctionBuilder";
@@ -25,12 +27,11 @@ describe("checker step function builder", () => {
 				{
 					input: ({ value }) => value,
 					result: "myResult",
-					otherwise: ResponseContract.notFound("contract.otherwise"),
+					otherwise: ({ response }) => response.notFound("contract.otherwise"),
 				},
 			)
 			.handler(
-				ResponseContract.noContent("good"),
-				(floor, { response }) => response("good"),
+				(floor, { response }) => response.noContent("good"),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -72,13 +73,12 @@ describe("checker step function builder", () => {
 				{
 					input: ({ value }) => value,
 					result: "myResult",
-					otherwise: ResponseContract.notFound("contract.otherwise"),
+					otherwise: ({ response }) => response.notFound("contract.otherwise"),
 					indexing: "checkerValue",
 				},
 			)
 			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				({ checkerValue }, { response }) => response("good", checkerValue),
+				({ checkerValue }, { response }) => response.ok("good", checkerValue),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -120,13 +120,12 @@ describe("checker step function builder", () => {
 				{
 					input: ({ value }) => value,
 					result: "myResult",
-					otherwise: ResponseContract.notFound("contract.otherwise"),
+					otherwise: ({ response }) => response.notFound("contract.otherwise"),
 					indexing: "checkerValue",
 				},
 			)
 			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				({ checkerValue }, { response }) => response("good", checkerValue.option1),
+				({ checkerValue }, { response }) => response.ok("good", checkerValue.option1),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -168,7 +167,7 @@ describe("checker step function builder", () => {
 				{
 					input: ({ value }) => value,
 					result: "myResult",
-					otherwise: ResponseContract.notFound("contract.otherwise"),
+					otherwise: ({ response }) => response.notFound("contract.otherwise"),
 					indexing: "checkerValue",
 					options: {
 						option1: "overrideOption1",
@@ -176,8 +175,7 @@ describe("checker step function builder", () => {
 				},
 			)
 			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				({ checkerValue }, { response }) => response("good", checkerValue.option1),
+				({ checkerValue }, { response }) => response.ok("good", checkerValue.option1),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -219,14 +217,13 @@ describe("checker step function builder", () => {
 				{
 					input: ({ value }) => value,
 					result: ["myResult"],
-					otherwise: ResponseContract.notFound("contract.otherwise"),
+					otherwise: ({ response }) => response.notFound("contract.otherwise"),
 					indexing: "checkerValue",
 					options: ({ value }) => ({ option1: value }),
 				},
 			)
 			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				({ checkerValue }, { response }) => response("good", checkerValue.option1),
+				({ checkerValue }, { response }) => response.ok("good", checkerValue.option1),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -270,12 +267,11 @@ describe("checker step function builder", () => {
 				{
 					input: ({ value }) => value,
 					result: "myResult",
-					otherwise: ResponseContract.notFound("contract.otherwise"),
+					otherwise: ({ response }) => response.notFound("contract.otherwise"),
 				},
 			)
 			.handler(
-				ResponseContract.noContent("good"),
-				(floor, { response }) => response("good"),
+				(floor, { response }) => response.noContent("good"),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -314,7 +310,7 @@ describe("checker step function builder", () => {
 			checker,
 			{
 				result: "myResult",
-				otherwise: ResponseContract.notFound("contract.otherwise"),
+				otherwise: ({ response }) => response.notFound("contract.otherwise"),
 			},
 		);
 
@@ -325,8 +321,7 @@ describe("checker step function builder", () => {
 				({ value }) => value,
 			)
 			.handler(
-				ResponseContract.noContent("good"),
-				(floor, { response }) => response("good"),
+				(floor, { response }) => response.noContent("good"),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -351,5 +346,81 @@ describe("checker step function builder", () => {
 				currentResponse: new PredictedResponse("404", "contract.otherwise", undefined),
 			}),
 		);
+	});
+	it("rewrites preset input before executing the checker and preserves the indexed value", async() => {
+		const checkerFunction = vi.fn((input: string, { output }) => output("found", input));
+		const checker = useCheckerBuilder().handler(checkerFunction);
+		const rewrite = vi.fn((input: number) => `id:${input}`);
+		const preset = createPresetChecker(checker, {
+			result: "found",
+			otherwise: ({ response }) => response.notFound("missing"),
+		}).rewriteInput(rewrite).indexing("checked");
+		const built = await useTestStepFunctionBuilder(createPresetCheckerStep({
+			presetChecker: preset,
+			input: () => 42,
+			metadata: [],
+		}));
+		const floor = { kept: true };
+		const result = await built.buildedFunction(createTestRequest(), floor);
+		expect(rewrite).toHaveBeenCalledExactlyOnceWith(42);
+		expect(checkerFunction).toHaveBeenCalledWith("id:42", expect.any(Object));
+		expect(result).toStrictEqual({
+			kept: true,
+			checked: "id:42",
+		});
+		expect(floor).toStrictEqual({ kept: true });
+	});
+
+	it("passes direct preset input unchanged and calls otherwise with the rejected result", async() => {
+		const checker = useCheckerBuilder().handler((input: { id: number }, { output }) => output("missing", input));
+		const otherwise = vi.fn(() => ResponseHelper.notFound("missing", { reason: "absent" }));
+		const preset = createPresetChecker(checker, {
+			result: [],
+			otherwise,
+		});
+		const input = { id: 42 };
+		const built = await useTestStepFunctionBuilder(createPresetCheckerStep({
+			presetChecker: preset,
+			input: () => input,
+			metadata: [],
+		}));
+		const result = await built.buildedFunction(createTestRequest(), {});
+		expect(otherwise).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({
+			response: ResponseHelper,
+			result: expect.objectContaining({
+				information: "missing",
+				value: input,
+			}),
+		}));
+		expect(result).toBe(otherwise.mock.results[0]?.value);
+	});
+
+	it("passes the floor and rejected checker result to otherwise", async() => {
+		const checker = useCheckerBuilder().handler((input: string, { output }) => output("missing", input));
+		const otherwise = vi.fn(({ response, floor, result }) => response.badRequest("invalid", {
+			value: result.value,
+			context: floor.context,
+		}));
+		const step = createCheckerStep({
+			checker,
+			input: () => "value",
+			result: [],
+			otherwise,
+			metadata: [],
+		});
+		const built = await useTestStepFunctionBuilder(step);
+		const floor = { context: "kept" };
+		const result = await built.buildedFunction(createTestRequest(), floor);
+		expect(otherwise).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({
+			floor,
+			result: expect.objectContaining({
+				information: "missing",
+				value: "value",
+			}),
+		}));
+		expect(result).toStrictEqual(new PredictedResponse("400", "invalid", {
+			value: "value",
+			context: "kept",
+		}));
 	});
 });

@@ -1,4 +1,4 @@
-import { buildRouteFunction, createRouteFunctionBuilder, defaultExtractContract } from "@core";
+import { buildRouteFunction, createRouteFunctionBuilder, defaultExtractOtherwise } from "@core";
 import * as DEither from "@duplojs/lang/either";
 import { testRoute } from "@test-utils/route";
 
@@ -36,7 +36,7 @@ describe("buildStepFunction", () => {
 				stepFunctionBuilders: [],
 				routeFunctionBuilders: [routeFunctionBuilders],
 				globalHooksRouteLifeCycle: [],
-				defaultExtractContract,
+				defaultExtractOtherwise,
 				defaultCodecs: {},
 			},
 		);
@@ -55,7 +55,7 @@ describe("buildStepFunction", () => {
 				stepFunctionBuilders: [],
 				routeFunctionBuilders: [routeFunctionBuilders],
 				globalHooksRouteLifeCycle: [],
-				defaultExtractContract,
+				defaultExtractOtherwise,
 				defaultCodecs: {},
 			},
 		);

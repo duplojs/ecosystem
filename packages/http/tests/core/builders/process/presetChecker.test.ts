@@ -1,4 +1,4 @@
-import { extractStepKind, ResponseContract, stepKind, useCheckerBuilder, type Request, type ExtractStep, createPresetChecker, presetCheckerStepKind, type PresetCheckerStep, useProcessBuilder, type ProcessBuilder, IgnoreByRouteStoreMetadata, type Metadata } from "@core";
+import { extractStepKind, stepKind, useCheckerBuilder, type Request, type ExtractStep, createPresetChecker, presetCheckerStepKind, type PresetCheckerStep, useProcessBuilder, type ProcessBuilder, IgnoreByRouteStoreMetadata, type Metadata } from "@core";
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 
@@ -13,7 +13,7 @@ describe("process builder preset checker method", () => {
 			checker,
 			{
 				result: "ok",
-				otherwise: ResponseContract.badRequest("test"),
+				otherwise: ({ response }) => response.badRequest("test"),
 			},
 		);
 
@@ -68,7 +68,7 @@ describe("process builder preset checker method", () => {
 							readonly shape: {
 								body: DDataStructure.TypeStructure<string, readonly []>;
 							};
-							readonly responseContract: undefined;
+							readonly otherwise: undefined;
 							readonly metadata: readonly [];
 						}>,
 						PresetCheckerStep<{
@@ -95,7 +95,7 @@ describe("process builder preset checker method", () => {
 			checker,
 			{
 				result: "ok",
-				otherwise: ResponseContract.badRequest("test"),
+				otherwise: ({ response }) => response.badRequest("test"),
 				indexing: "superValue",
 			},
 		);
@@ -142,7 +142,7 @@ describe("process builder preset checker method", () => {
 							readonly shape: {
 								body: DDataStructure.TypeStructure<string, readonly []>;
 							};
-							readonly responseContract: undefined;
+							readonly otherwise: undefined;
 							readonly metadata: readonly [];
 						}>,
 						PresetCheckerStep<{

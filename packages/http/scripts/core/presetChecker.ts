@@ -63,31 +63,54 @@ export interface PresetChecker<
 
 export function createPresetChecker<
 	GenericChecker extends Checker,
+	const GenericResultInformation extends DCommon.MaybeArray<
+		Awaited<GetCheckerResult<GenericChecker>>["information"]
+	>,
 	const GenericDefinition extends {
-		result: DCommon.MaybeArray<Awaited<GetCheckerResult<GenericChecker>>["information"]>;
-		indexing?: string;
+		readonly indexing?: string;
 		rewriteInput?(input: unknown): GetCheckerInput<GenericChecker>;
-		options?: GetCheckerOptions<GenericChecker>;
+		readonly options?: GetCheckerOptions<GenericChecker>;
 		otherwise(
 			params: PresetCheckerOtherwiseParams<
 				Exclude<
 					Awaited<GetCheckerResult<GenericChecker>>,
-					{ information: DArray.Unwrap<GenericDefinition["result"]> }
+					{ information: DArray.Unwrap<GenericResultInformation> }
 				>
 			>
 		): PredictedResponse;
 	},
 >(
 	checker: GenericChecker,
-	{ otherwise, ...definition }: GenericDefinition,
+	{ otherwise, ...definition }: (
+		& GenericDefinition
+		& {
+			readonly result: GenericResultInformation;
+		}
+	),
 ): PresetChecker<
 	DObject.Assign<
 		GenericDefinition,
 		{
+			readonly result: GenericResultInformation;
 			readonly checker: GenericChecker;
 		}
 	>
-> {
+>;
+
+export function createPresetChecker(
+	checker: Checker,
+	{ otherwise, ...definition }: (
+		& {
+			readonly indexing?: string;
+			rewriteInput?(input: unknown): undefined;
+			readonly options?: Record<string, unknown>;
+			otherwise(
+				params: PresetCheckerOtherwiseParams
+			): PredictedResponse;
+			readonly result: DCommon.MaybeArray<string>;
+		}
+	),
+) {
 	return DCommon.pipe(
 		{
 			definition: {

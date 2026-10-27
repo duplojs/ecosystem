@@ -44,7 +44,11 @@ describe("generateRoutesTypesRolldown", () => {
 			pattern: "src/**/*.ts",
 		});
 
-		type _Check = DCommon.ExpectType<typeof plugin, Plugin, "strict">;
+		type _Check = DCommon.ExpectType<
+			typeof plugin,
+			Plugin,
+			"strict"
+		>;
 		expect(plugin.name).toBe("@duplojs/http/codeGenerator:routesTypes");
 		expect(runResolveId(plugin, routePath)).toBeUndefined();
 		expect(runLoad(plugin, routePath)).toBeNull();

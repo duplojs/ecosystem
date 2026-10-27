@@ -1,4 +1,4 @@
-import { createHub, HookResponse, launchHookBeforeBuildRoute, launchHookServer, Request, Response, type RequestInitializationData, ResponseContract, useRouteBuilder, type ResponseCode } from "@core";
+import { createHub, HookResponse, launchHookBeforeBuildRoute, launchHookServer, Request, Response, type RequestInitializationData, useRouteBuilder, type ResponseCode } from "@core";
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
 import { corsPlugin } from "@plugin-cors";
@@ -8,18 +8,15 @@ import { createBodyReader } from "@test-utils/bodyReader";
 export const basicRoutes = [
 	useRouteBuilder("GET", "/users")
 		.handler(
-			ResponseContract.noContent("list-users"),
-			(__, { response }) => response("list-users"),
+			(__, { response }) => response.noContent("list-users"),
 		),
 	useRouteBuilder("POST", "/users")
 		.handler(
-			ResponseContract.noContent("create-user"),
-			(__, { response }) => response("create-user"),
+			(__, { response }) => response.noContent("create-user"),
 		),
 	useRouteBuilder("PUT", "/users")
 		.handler(
-			ResponseContract.noContent("update-user"),
-			(__, { response }) => response("update-user"),
+			(__, { response }) => response.noContent("update-user"),
 		),
 ] as const;
 
@@ -152,8 +149,7 @@ describe("cors plugin", () => {
 		const ignoredRoute = useRouteBuilder("GET", "/ignored", {
 			metadata: [IgnoreRouteCorsMetadata()],
 		}).handler(
-			ResponseContract.noContent("ignored"),
-			(__, { response }) => response("ignored"),
+			(__, { response }) => response.noContent("ignored"),
 		);
 
 		const routeAfterHook = await launchHookBeforeBuildRoute(

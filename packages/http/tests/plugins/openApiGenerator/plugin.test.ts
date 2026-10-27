@@ -1,14 +1,20 @@
-import { createHub, launchHookServer, ResponseContract, useRouteBuilder } from "@core";
+import { createHub, launchHookServer, useRouteBuilder } from "@core";
 import { setEnvironment, TESTImplementation } from "@duplojs/server";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
-import { openApiGeneratorPlugin } from "@plugin-openApiGenerator";
+import { openApiGeneratorPlugin, OpenApiEndpointContractMetadata } from "@plugin-openApiGenerator";
 import * as DCommon from "@duplojs/lang/common";
 import * as DPath from "@duplojs/lang/path";
 
 describe("plugin implementation", () => {
 	setEnvironment("TEST");
-	const spyWriteTextFile = vi.fn((path: string, content: string) => Promise.resolve(DEither.right("file-system-write-text-file")));
+	const spyWriteTextFile = vi.fn(
+		(path: string, content: string) => Promise.resolve(
+			DEither.right(
+				"file-system-write-text-file",
+			),
+		),
+	);
 	TESTImplementation.set("writeTextFile", spyWriteTextFile);
 
 	beforeEach(() => {
@@ -26,14 +32,15 @@ describe("plugin implementation", () => {
 				age: DDataStructure.number(),
 			}),
 		})
-		.cut(
-			ResponseContract.conflict("the-conflict"),
-			(__, { response }) => response("the-conflict"),
-		)
-		.handler(
-			ResponseContract.ok("success", DDataStructure.string()),
-			(__, { response }) => response("success", ""),
-		);
+		.cut((__, { response }) => response.conflict("the-conflict"), OpenApiEndpointContractMetadata({
+			code: "409",
+			information: "the-conflict",
+		}))
+		.handler((__, { response }) => response.ok("success", ""), OpenApiEndpointContractMetadata({
+			code: "200",
+			information: "success",
+			body: DDataStructure.string(),
+		}));
 
 	it("generate OpenApi file", async() => {
 		const hub = createHub({ environment: "DEV" })

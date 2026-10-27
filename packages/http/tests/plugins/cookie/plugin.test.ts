@@ -1,4 +1,4 @@
-import { createHub, launchHookBeforeBuildRoute, Request, Response, ResponseContract, useRouteBuilder } from "@core";
+import { createHub, launchHookBeforeBuildRoute, Request, Response, useRouteBuilder } from "@core";
 import { cookiePlugin } from "@plugin-cookie";
 import { IgnoreRouteCookieMetadata } from "@plugin-cookie/metadata";
 import { createBodyReader } from "@test-utils/bodyReader";
@@ -46,8 +46,7 @@ describe("cookie plugin", () => {
 			);
 		const route = useRouteBuilder("GET", "/test")
 			.handler(
-				ResponseContract.noContent("test"),
-				(__, { response }) => response("test"),
+				(__, { response }) => response.noContent("test"),
 			);
 
 		const routeAfterHook = await launchHookBeforeBuildRoute(
@@ -89,8 +88,7 @@ describe("cookie plugin", () => {
 		const ignoredRoute = useRouteBuilder("GET", "/ignored", {
 			metadata: [IgnoreRouteCookieMetadata()],
 		}).handler(
-			ResponseContract.noContent("ignored"),
-			(__, { response }) => response("ignored"),
+			(__, { response }) => response.noContent("ignored"),
 		);
 
 		const routeAfterHook = await launchHookBeforeBuildRoute(

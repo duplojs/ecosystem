@@ -51,7 +51,7 @@ describe("process builder export method", () => {
 							[extractStepKind.runTimeKey]: null,
 							[stepKind.runTimeKey]: null,
 							definition: {
-								responseContract: undefined,
+								otherwise: undefined,
 								shape: {
 									query: expect.objectContaining({
 										[DDataStructure.typeStructureKind.runTimeKey]: null,
@@ -81,7 +81,7 @@ describe("process builder export method", () => {
 									query: DDataStructure.TypeStructure<number, readonly []>;
 									body: DDataStructure.TypeStructure<string, readonly []>;
 								};
-								readonly responseContract: undefined;
+								readonly otherwise: undefined;
 								readonly metadata: readonly [];
 							}>,
 						];
@@ -113,7 +113,7 @@ describe("process builder export method", () => {
 							[extractStepKind.runTimeKey]: null,
 							[stepKind.runTimeKey]: null,
 							definition: {
-								responseContract: undefined,
+								otherwise: undefined,
 								shape: {
 									query: expect.objectContaining({
 										[DDataStructure.typeStructureKind.runTimeKey]: null,
@@ -143,7 +143,7 @@ describe("process builder export method", () => {
 									query: DDataStructure.TypeStructure<number, readonly []>;
 									body: DDataStructure.TypeStructure<string, readonly []>;
 								};
-								readonly responseContract: undefined;
+								readonly otherwise: undefined;
 								readonly metadata: readonly [];
 							}>,
 						];

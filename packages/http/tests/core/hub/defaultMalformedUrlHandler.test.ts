@@ -1,20 +1,12 @@
-import { defaultMalformedUrlHandler } from "@core";
+import { defaultMalformedUrlHandler, ResponseHelper, PredictedResponse } from "@core";
+import { createTestRequest } from "@test-utils/createTestRequest";
 
-it("defaultMalformedUrlHandler", () => {
-	expect(
-		defaultMalformedUrlHandler
-			.definition
-			.theFunction(
-				{},
-				{
-					response: (...args: never) => args,
-					request: {
-						url: "/%E0%A4%DArray?value=%E0%A4",
-					},
-				} as any,
-			),
-	).toStrictEqual([
-		"malformed-url",
-		undefined,
-	]);
+describe("defaultMalformedUrlHandler", () => {
+	it("builds the system response using the response helpers", () => {
+		const result = defaultMalformedUrlHandler.definition.theFunction({}, {
+			response: ResponseHelper,
+			request: createTestRequest({ path: "/path/to/a" }),
+		});
+		expect(result).toStrictEqual(new PredictedResponse("400", "malformed-url", undefined));
+	});
 });

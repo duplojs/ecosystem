@@ -120,7 +120,7 @@ export namespace ResponseHelper {
 		GenericInformation extends string = string,
 	> {
 		onStart<
-			GenericMessageValue extends unknown,
+			GenericMessageValue extends unknown = never,
 			GenericEvents extends ServerSentEvents.DefinitionShape = {},
 		>(
 			startStream: (
@@ -155,7 +155,7 @@ export namespace ResponseHelper {
 		GenericInformation extends string = string,
 	> {
 		onStart<
-			GenericFlux extends unknown,
+			GenericFlux extends unknown = never,
 		>(
 			startStream: (
 				params: Stream.StartSendingParams<GenericFlux>,

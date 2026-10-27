@@ -16,7 +16,11 @@ describe("createTypescriptInstance", () => {
 		const instance = DEither.unwrapByInformationOrThrow(result, "success");
 
 		try {
-			type _Check = DCommon.ExpectType<typeof instance, TypescriptInstance, "strict">;
+			type _Check = DCommon.ExpectType<
+				typeof instance,
+				TypescriptInstance,
+				"strict"
+			>;
 			type _WorkDirectory = DCommon.ExpectType<
 				typeof instance.workDirectory,
 				string & DPath.Path & DPath.Absolute,

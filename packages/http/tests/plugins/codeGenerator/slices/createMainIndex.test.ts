@@ -30,7 +30,11 @@ describe("createMainIndex", () => {
 		const close = vi.spyOn(TypescriptNativeAPI.API.prototype, "close");
 		const resultPromise = createMainIndex(input);
 
-		type _CheckPromise = DCommon.ExpectType<typeof resultPromise, Promise<string>, "strict">;
+		type _CheckPromise = DCommon.ExpectType<
+			typeof resultPromise,
+			Promise<string>,
+			"strict"
+		>;
 		const result = await resultPromise;
 
 		expect(result).toBe(expected);

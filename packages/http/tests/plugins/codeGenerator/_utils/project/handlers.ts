@@ -1,11 +1,9 @@
-import { ResponseContract, useRouteBuilder } from "@duplojs/http";
+import { useRouteBuilder } from "@duplojs/http";
 
 useRouteBuilder("GET", "/users").handler(
-	ResponseContract.noContent("users"),
-	(__, { response }) => response("users"),
+	(__, { response }) => response.noContent("users"),
 );
 
 useRouteBuilder("POST", "/users").handler(
-	ResponseContract.noContent("created"),
-	(__, { response }) => response("created"),
+	(__, { response }) => response.noContent("created"),
 );

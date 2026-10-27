@@ -40,6 +40,7 @@ exports[`plugin implementation > generate OpenApi file 1`] = `
         },
         "responses": {
           "200": {
+            "description": "success",
             "headers": {
               "information": {
                 "schema": {
@@ -58,6 +59,7 @@ exports[`plugin implementation > generate OpenApi file 1`] = `
             }
           },
           "409": {
+            "description": "the-conflict",
             "headers": {
               "information": {
                 "schema": {
@@ -69,6 +71,7 @@ exports[`plugin implementation > generate OpenApi file 1`] = `
             }
           },
           "422": {
+            "description": "extract-error",
             "headers": {
               "information": {
                 "schema": {
@@ -161,6 +164,7 @@ exports[`plugin implementation > generate OpenApi file with type apiKey ok secur
         },
         "responses": {
           "200": {
+            "description": "success",
             "headers": {
               "information": {
                 "schema": {
@@ -179,6 +183,7 @@ exports[`plugin implementation > generate OpenApi file with type apiKey ok secur
             }
           },
           "409": {
+            "description": "the-conflict",
             "headers": {
               "information": {
                 "schema": {
@@ -190,6 +195,7 @@ exports[`plugin implementation > generate OpenApi file with type apiKey ok secur
             }
           },
           "422": {
+            "description": "extract-error",
             "headers": {
               "information": {
                 "schema": {
@@ -294,6 +300,7 @@ exports[`plugin implementation > generate OpenApi file with type bearer ok secur
         },
         "responses": {
           "200": {
+            "description": "success",
             "headers": {
               "information": {
                 "schema": {
@@ -312,6 +319,7 @@ exports[`plugin implementation > generate OpenApi file with type bearer ok secur
             }
           },
           "409": {
+            "description": "the-conflict",
             "headers": {
               "information": {
                 "schema": {
@@ -323,6 +331,7 @@ exports[`plugin implementation > generate OpenApi file with type bearer ok secur
             }
           },
           "422": {
+            "description": "extract-error",
             "headers": {
               "information": {
                 "schema": {

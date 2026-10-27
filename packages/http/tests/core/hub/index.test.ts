@@ -1,4 +1,5 @@
-import { type HookRouteLifeCycle, defaultBodyController, createHub, defaultCheckerStepFunctionBuilder, defaultExtractContract, defaultNotfoundHandler, defaultRouteFunctionBuilder, hubKind, Request, ResponseContract, type HookHubLifeCycle, TextBodyController, controlBodyAsText, defaultMalformedUrlHandler, defaultEmptyReaderImplementation, defaultExtractShapeCodecs } from "@core";
+import { createTestRequest } from "@test-utils/createTestRequest";
+import { ResponseHelper, PredictedResponse, type DefaultExtractOtherwise, type HookRouteLifeCycle, defaultBodyController, createHub, defaultCheckerStepFunctionBuilder, defaultExtractOtherwise, defaultNotfoundHandler, defaultRouteFunctionBuilder, hubKind, Request, type HookHubLifeCycle, TextBodyController, controlBodyAsText, defaultMalformedUrlHandler, defaultEmptyReaderImplementation, defaultExtractShapeCodecs } from "@core";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import { testRoute } from "@test-utils/route";
 
@@ -7,7 +8,7 @@ describe("hub", () => {
 		[hubKind.runTimeKey]: null,
 		classRequest: Request,
 		config: { environment: "DEV" },
-		defaultExtractContract,
+		defaultExtractOtherwise,
 		hooksHubLifeCycle: [],
 		hooksRouteLifeCycle: [],
 		notfoundHandler: defaultNotfoundHandler,
@@ -227,71 +228,39 @@ describe("hub", () => {
 	});
 
 	it("hub set not found handler", async() => {
-		const contract = ResponseContract.notFound("test");
-
-		const hub = createHub({
-			environment: "DEV",
-		})
-			.setNotfoundHandler(
-				contract,
-				({ response }) => response("test"),
-			);
-
-		expect({ ...hub }).toStrictEqual({
-			...baseHub,
-			notfoundHandler: expect.objectContaining({
-				definition: expect.objectContaining({
-					responseContract: contract,
-				}),
-			}),
+		const hub = createHub({ environment: "DEV" })
+			.setNotfoundHandler(({ response }) => response.notFound("custom-not-found", "missing"));
+		const result = await hub.notfoundHandler.definition.theFunction({}, {
+			response: ResponseHelper,
+			request: createTestRequest(),
 		});
-
-		const spyNotfound = vi.fn(() => true as never);
-		const result = await hub.notfoundHandler.definition.theFunction({}, { response: spyNotfound } as never);
-
-		expect(result).toBe(true);
-		expect(spyNotfound).toHaveBeenCalledWith("test");
+		expect(result).toStrictEqual(new PredictedResponse("404", "custom-not-found", "missing"));
 	});
 
 	it("hub set malformed url handler", async() => {
-		const contract = ResponseContract.badRequest("malformed");
-
-		const hub = createHub({
-			environment: "DEV",
-		})
-			.setMalformedUrlHandler(
-				contract,
-				({ response }) => response("malformed"),
-			);
-
-		expect({ ...hub }).toStrictEqual({
-			...baseHub,
-			malformedUrlHandler: expect.objectContaining({
-				definition: expect.objectContaining({
-					responseContract: contract,
-				}),
-			}),
+		const hub = createHub({ environment: "DEV" })
+			.setMalformedUrlHandler(({ response }) => response.badRequest("custom-malformed"));
+		const result = await hub.malformedUrlHandler.definition.theFunction({}, {
+			response: ResponseHelper,
+			request: createTestRequest(),
 		});
-
-		const spyMalformed = vi.fn(() => true as never);
-		const result = await hub.malformedUrlHandler.definition.theFunction({}, { response: spyMalformed } as never);
-
-		expect(result).toBe(true);
-		expect(spyMalformed).toHaveBeenCalledWith("malformed");
+		expect(result).toStrictEqual(new PredictedResponse("400", "custom-malformed", undefined));
 	});
 
-	it("hub set default extract contract", () => {
-		const contract = ResponseContract.notFound("test");
-
-		const hub = createHub({
+	it("hub stores and executes the default extract otherwise", () => {
+		const otherwise: DefaultExtractOtherwise = ({ response, dataStructureError }) => response.notFound(
+			"custom-extract",
+			dataStructureError.message,
+		);
+		const hub = createHub({ environment: "DEV" }).setDefaultExtractOtherwise(otherwise);
+		expect(hub.defaultExtractOtherwise).toBe(otherwise);
+		expect(hub.defaultExtractOtherwise({
+			response: ResponseHelper,
+			dataStructureError: new Error("invalid"),
+			floor: {},
 			environment: "DEV",
-		})
-			.setDefaultExtractContract(contract);
-
-		expect({ ...hub }).toStrictEqual({
-			...baseHub,
-			defaultExtractContract: contract,
-		});
+		}))
+			.toStrictEqual(new PredictedResponse("404", "custom-extract", "invalid"));
 	});
 
 	it("add body reader", () => {

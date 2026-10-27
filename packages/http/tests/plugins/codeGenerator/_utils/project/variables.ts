@@ -1,6 +1,5 @@
-import { ResponseContract, useRouteBuilder } from "@duplojs/http";
+import { useRouteBuilder } from "@duplojs/http";
 
 export const usersRoute = useRouteBuilder("GET", "/users").handler(
-	ResponseContract.noContent("users"),
-	(__, { response }) => response("users"),
+	(__, { response }) => response.noContent("users"),
 );
