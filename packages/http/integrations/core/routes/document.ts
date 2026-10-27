@@ -1,4 +1,4 @@
-import { controlBodyAsFormData, ResponseContract, useRouteBuilder } from "@duplojs/http";
+import { controlBodyAsFormData, useRouteBuilder } from "@duplojs/http";
 import * as DSFile from "@duplojs/server/file";
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -21,7 +21,6 @@ useRouteBuilder("POST", "/documents", {
 		},
 	})
 	.handler(
-		ResponseContract.noContent("file.receive"),
 		async(floor, { response }) => {
 			const [myFile] = DTuple.from(floor.myFile);
 			DCommon.asserts(
@@ -29,17 +28,16 @@ useRouteBuilder("POST", "/documents", {
 				DEither.isRight,
 			);
 
-			return response("file.receive");
+			return response.noContent("file.receive");
 		},
 	);
 
 useRouteBuilder("GET", "/documents/*")
 	.handler(
-		ResponseContract.ok("file.send", DSDataStructure.file()),
-		(__, { response }) => response(
+		(__, { response }) => response.ok(
 			"file.send",
 			DSFile.createFileInterface(
-				DCommon.cast("files/fakeFiles/superTextFile.txt"),
+				DPath.declarePath("files/fakeFiles/superTextFile.txt"),
 			),
 		),
 	);

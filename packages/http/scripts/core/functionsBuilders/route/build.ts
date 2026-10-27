@@ -3,8 +3,7 @@ import * as DGenerator from "@duplojs/lang/generator";
 import { buildStepFunction, type createStepFunctionBuilder } from "../steps";
 import { type RouteFunctionBuilderParams, type BuildRouteNotSupportEither, type createRouteFunctionBuilder } from "./create";
 import { type HookRouteLifeCycle, type Route } from "@core/route";
-import { type DefaultExtractOtherwise } from "@core/hub/defaultExtractOtherwise";
-import { type Environment } from "@core/types";
+import { type Environment, type ExtractOtherwise } from "@core/types";
 import { type ExtractShapeCodecs } from "@core/steps";
 
 export interface BuildRouteFunctionParams {
@@ -12,7 +11,7 @@ export interface BuildRouteFunctionParams {
 	readonly globalHooksRouteLifeCycle: readonly HookRouteLifeCycle[];
 	readonly stepFunctionBuilders: readonly ReturnType<typeof createStepFunctionBuilder>[];
 	readonly environment: Environment;
-	readonly defaultExtractOtherwise: DefaultExtractOtherwise;
+	readonly defaultExtractOtherwise: ExtractOtherwise;
 	readonly defaultCodecs: ExtractShapeCodecs;
 }
 

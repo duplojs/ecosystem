@@ -1,6 +1,6 @@
 import { createTestRequest } from "@test-utils/createTestRequest";
 import { useTestStepFunctionBuilder } from "@test-utils/useTestStepFunctionBuilder";
-import { createExtractStep, type DefaultExtractOtherwise, useRouteBuilder, Request, PredictedResponse } from "@core";
+import { createExtractStep, type ExtractOtherwise, useRouteBuilder, Request, PredictedResponse, ResponseHelper } from "@core";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DPath from "@duplojs/lang/path";
 import { setEnvironment, TESTImplementation } from "@duplojs/server";
@@ -180,7 +180,7 @@ describe("extract step function builder", () => {
 				currentResponse: new PredictedResponse(
 					"422",
 					"extract-error",
-					undefined,
+					expect.any(DDataStructure.Error),
 				)
 					.setHeader("extract-key", "request.origin"),
 			}),
@@ -380,7 +380,7 @@ describe("extract step function builder", () => {
 	it("passes a body reading error to the global otherwise and preserves its response", async() => {
 		const error = new Error("cannot read body");
 		const floor = { context: "kept" };
-		const otherwise = vi.fn<DefaultExtractOtherwise>(
+		const otherwise = vi.fn<ExtractOtherwise>(
 			({ response, dataStructureError }) => response.badRequest("read-failed", dataStructureError.message),
 		);
 		const step = createExtractStep({
@@ -393,11 +393,11 @@ describe("extract step function builder", () => {
 		});
 		const request = createTestRequest({ bodyReader: createBodyReader(() => error) });
 		const result = await built.buildedFunction(request, floor);
-		expect(otherwise).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({
+		expect(otherwise).toHaveBeenCalledExactlyOnceWith({
+			response: ResponseHelper,
 			floor,
 			dataStructureError: error,
-			environment: "PROD",
-		}));
+		});
 		expect(result).toBe(otherwise.mock.results[0]?.value);
 		expect(result).toStrictEqual(
 			new PredictedResponse("400", "read-failed", "cannot read body")
@@ -406,8 +406,8 @@ describe("extract step function builder", () => {
 	});
 
 	it("prefers a local otherwise over the global callback and stops further extraction", async() => {
-		const globalOtherwise = vi.fn<DefaultExtractOtherwise>(({ response }) => response.notFound("global"));
-		const localOtherwise = vi.fn<DefaultExtractOtherwise>(
+		const globalOtherwise = vi.fn<ExtractOtherwise>(({ response }) => response.notFound("global"));
+		const localOtherwise = vi.fn<ExtractOtherwise>(
 			({ response, floor }) => response.forbidden("local", floor.context),
 		);
 		const reader = vi.fn(() => "should not be read");
@@ -436,7 +436,7 @@ describe("extract step function builder", () => {
 	});
 
 	it("passes the progressively populated floor to otherwise", async() => {
-		const otherwise = vi.fn<DefaultExtractOtherwise>(({ response }) => response.badRequest("invalid"));
+		const otherwise = vi.fn<ExtractOtherwise>(({ response }) => response.badRequest("invalid"));
 		const step = createExtractStep({
 			shape: {
 				params: {

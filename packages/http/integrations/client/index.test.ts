@@ -140,7 +140,7 @@ describe("client", async() => {
 				| {
 					code: "422";
 					information: "extract-error";
-					body: undefined;
+					body: DCommon.ToJson<Error> | undefined;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -214,7 +214,7 @@ describe("client", async() => {
 				| {
 					code: "422";
 					information: "extract-error";
-					body: undefined;
+					body: DCommon.ToJson<Error> | undefined;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -291,7 +291,7 @@ describe("client", async() => {
 				| {
 					code: "422";
 					information: "extract-error";
-					body: undefined;
+					body: DCommon.ToJson<Error> | undefined;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -353,6 +353,16 @@ describe("client", async() => {
 		);
 	});
 
+	it("preserves a downloaded text file on the raw response", async() => {
+		const result = await httpClient.get("/documents/test").iWantInformationOrThrow("file.send");
+
+		expect(result.code).toBe("200");
+		expect(result.headers.get("content-disposition")).toContain("attachment;");
+		expect(result.body).toBeUndefined();
+		expect(result.raw.bodyUsed).toBe(false);
+		expect(await result.raw.text()).toBe("this is super file with super content.");
+	});
+
 	describe("server sent events", () => {
 		it("stream and retry 2 time", async() => {
 			const spyClientMessage = vi.fn();
@@ -404,7 +414,7 @@ describe("client", async() => {
 						}
 						| {
 							event: "message";
-							data: { readonly test: string };
+							data: { test: string };
 							id?: string | undefined;
 							retry?: number | undefined;
 						}

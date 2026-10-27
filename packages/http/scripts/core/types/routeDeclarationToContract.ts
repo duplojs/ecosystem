@@ -1,25 +1,12 @@
 import { type RouteSteps, type RoutePreFlightSteps, type Route, type RoutePath } from "@core/route";
-import { type ServerSentEventsPredictedResponse, type Response, type StreamPredictedResponse, type StreamTextPredictedResponse, type PredictedResponse } from "@core/response";
+import { type ServerSentEventsPredictedResponse, type Response, type StreamPredictedResponse, type StreamTextPredictedResponse } from "@core/response";
 import { type PresetCheckerStep, type CheckerStep, type CutStep, type HandlerStep, type ProcessStep, type ExtractStep, type ExtractShape } from "@core/steps";
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
-import { type defaultExtractOtherwise } from "@core/hub";
 import { type FormDataBodyController } from "@core/request";
 import type * as DSFile from "@duplojs/server/file";
 import type * as DString from "@duplojs/lang/string";
-
-export interface OverrideDefaultExtractResponse {
-
-}
-
-export type DefaultExtractResponse = OverrideDefaultExtractResponse extends infer InferredValue
-	? "override" extends keyof InferredValue
-		? DCommon.NeverCoalescing<
-			Extract<InferredValue["override"], PredictedResponse>,
-			ReturnType<typeof defaultExtractOtherwise>
-		>
-		: ReturnType<typeof defaultExtractOtherwise>
-	: never;
+import { type DefaultOtherwiseExtractResponse } from "./defaultOtherwiseExtractResponse";
 
 type TreatResponse<
 	GenericResponse extends unknown,
@@ -27,7 +14,9 @@ type TreatResponse<
 	? {
 		readonly code: InferredCode;
 		readonly information: InferredInformation;
-		readonly body: InferredBody;
+		readonly body: InferredBody extends DSFile.FileInterface
+			? File
+			: InferredBody;
 	}
 	: never;
 
@@ -113,17 +102,7 @@ export interface RouteStepDeclarationToContract<
 								readonly information: InferredInformation;
 								readonly flux: string;
 							}
-							: InferredValue extends Response<
-								infer InferredCode,
-								infer InferredInformation,
-								infer InferredBody
-							>
-								? {
-									readonly code: InferredCode;
-									readonly information: InferredInformation;
-									readonly body: InferredBody;
-								}
-								: never
+							: TreatResponse<InferredValue>
 				: never;
 		}
 		: never;
@@ -147,7 +126,7 @@ export interface RouteStepDeclarationToContract<
 			>;
 			readonly responses: GenericRouteStep["definition"]["otherwise"] extends DCommon.AnyFunction
 				? TreatResponse<Awaited<ReturnType<GenericRouteStep["definition"]["otherwise"]>>>
-				: TreatResponse<DefaultExtractResponse>;
+				: TreatResponse<DefaultOtherwiseExtractResponse>;
 		}
 		: never;
 }

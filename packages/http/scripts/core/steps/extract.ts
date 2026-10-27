@@ -7,8 +7,7 @@ import { type Request } from "@core/request";
 import { type PredictedResponse } from "@core/response";
 import { type Metadata } from "@core/metadata";
 import type * as DKind from "@duplojs/lang/kind";
-import { type ResponseHelper } from "@core/response/helpers";
-import { type Floor } from "@core/types";
+import { type ExtractStepOtherwiseParams } from "@core/types";
 
 export interface DisabledExtractKeysCustom {
 
@@ -57,14 +56,6 @@ export type ExtractShapeCodecs = Partial<
 		DDataStructure.Codecs
 	>
 >;
-
-export interface ExtractStepOtherwiseParams<
-	GenericFloor extends Floor = Floor,
-> {
-	response: ResponseHelper.Methods400;
-	floor: GenericFloor;
-	dataStructureError: DDataStructure.Error | Error;
-}
 
 export interface ExtractStepDefinition {
 	readonly shape: ExtractShape;

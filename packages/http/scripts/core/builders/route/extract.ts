@@ -1,5 +1,5 @@
 import { type RouteDefinition } from "@core/route";
-import { createExtractStep, type ExtractStepOtherwiseParams, type ExtractShape, type ExtractStep } from "@core/steps";
+import { createExtractStep, type ExtractShape, type ExtractStep } from "@core/steps";
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DObject from "@duplojs/lang/object";
@@ -7,7 +7,7 @@ import { routeBuilderHandler } from "./builder";
 import { type PredictedResponse } from "@core/response";
 import { type Request } from "@core/request";
 import { type Metadata } from "@core/metadata";
-import { type ExtractParamsKeyFromPath, type Floor } from "@core/types";
+import { type ExtractParamsKeyFromPath, type Floor, type ExtractOtherwise, type ExtractStepOtherwiseParams } from "@core/types";
 
 type HandleParamsInference<
 	GenericShape extends ExtractShape,
@@ -54,7 +54,7 @@ declare module "./builder" {
 								readonly shape: GenericShape;
 								readonly otherwise: DCommon.IsNever<GenericResponse> extends true
 									? undefined
-									: (param: ExtractStepOtherwiseParams<GenericFloor>) => GenericResponse;
+									: ExtractOtherwise<GenericFloor, GenericResponse>;
 								readonly metadata: GenericMetadata;
 							}
 						>,

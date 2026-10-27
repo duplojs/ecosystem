@@ -1,5 +1,5 @@
-import { type Floor } from "@core/types";
-import { createExtractStep, type ExtractStepOtherwiseParams, type ExtractShape, type ExtractStep } from "@core/steps";
+import { type Floor, type ExtractOtherwise, type ExtractStepOtherwiseParams } from "@core/types";
+import { createExtractStep, type ExtractShape, type ExtractStep } from "@core/steps";
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DObject from "@duplojs/lang/object";
@@ -34,7 +34,7 @@ declare module "./builder" {
 								readonly shape: GenericShape;
 								readonly otherwise: DCommon.IsNever<GenericResponse> extends true
 									? undefined
-									: (params: ExtractStepOtherwiseParams<GenericFloor>) => GenericResponse;
+									: ExtractOtherwise<GenericFloor, GenericResponse>;
 								readonly metadata: GenericMetadata;
 							}
 						>,

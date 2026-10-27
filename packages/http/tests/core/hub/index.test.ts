@@ -1,5 +1,5 @@
 import { createTestRequest } from "@test-utils/createTestRequest";
-import { ResponseHelper, PredictedResponse, type DefaultExtractOtherwise, type HookRouteLifeCycle, defaultBodyController, createHub, defaultCheckerStepFunctionBuilder, defaultExtractOtherwise, defaultNotfoundHandler, defaultRouteFunctionBuilder, hubKind, Request, type HookHubLifeCycle, TextBodyController, controlBodyAsText, defaultMalformedUrlHandler, defaultEmptyReaderImplementation, defaultExtractShapeCodecs } from "@core";
+import { ResponseHelper, PredictedResponse, type ExtractOtherwise, type HookRouteLifeCycle, defaultBodyController, createHub, defaultCheckerStepFunctionBuilder, defaultExtractOtherwise, defaultNotfoundHandler, defaultRouteFunctionBuilder, hubKind, Request, type HookHubLifeCycle, TextBodyController, controlBodyAsText, defaultMalformedUrlHandler, defaultEmptyReaderImplementation, defaultExtractShapeCodecs } from "@core";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import { testRoute } from "@test-utils/route";
 
@@ -248,7 +248,7 @@ describe("hub", () => {
 	});
 
 	it("hub stores and executes the default extract otherwise", () => {
-		const otherwise: DefaultExtractOtherwise = ({ response, dataStructureError }) => response.notFound(
+		const otherwise: ExtractOtherwise = ({ response, dataStructureError }) => response.notFound(
 			"custom-extract",
 			dataStructureError.message,
 		);
@@ -258,7 +258,6 @@ describe("hub", () => {
 			response: ResponseHelper,
 			dataStructureError: new Error("invalid"),
 			floor: {},
-			environment: "DEV",
 		}))
 			.toStrictEqual(new PredictedResponse("404", "custom-extract", "invalid"));
 	});

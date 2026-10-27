@@ -34,6 +34,7 @@ describe("codeGenerator", () => {
 
 		expect(outputStat.isDirectory).toBe(true);
 		expect(content).toContain("export type Routes = ");
+		expect(content).not.toContain("ResponseContract");
 		expect(content).toMatchSnapshot();
 
 		assertTypeScriptProject(DPath.createAbsoluteOrThrow(`${import.meta.dirname}/tsconfig.generatedRoutes.json`));
@@ -51,15 +52,6 @@ describe("codeGenerator", () => {
 		expect(sdk).toHaveProperty("Domains.User.Id");
 		expect(sdk).toHaveProperty("Domains.User.Entity");
 		expect(DEither.isRight(await DSFile.exists(declarationsPath))).toBe(true);
-		const consumerPath = DPath.resolveFrom(outputFolder, [DPath.declarePath("consumer.ts")]);
-		DEither.unwrapByInformationOrThrow(
-			await DSFile.writeTextFile(consumerPath, `
-import type { Domains } from './index.js';
-export type UserId = Domains.User.Id;
-export type UserEntity = Domains.User.Entity;
-`),
-			"file-system-write-text-file",
-		);
 		assertTypeScriptProject(DPath.createAbsoluteOrThrow(`${import.meta.dirname}/tsconfig.slices.json`));
 	}, 45_000);
 });

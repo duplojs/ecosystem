@@ -1,4 +1,4 @@
-import { ResponseContract, useRouteBuilder } from "@duplojs/http";
+import { useRouteBuilder } from "@duplojs/http";
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 
@@ -9,9 +9,7 @@ useRouteBuilder("GET", "/stream")
 		},
 	})
 	.handler(
-		ResponseContract.stream("monSuperStream", DDataStructure.number()),
-		({ value }, { streamResponse }) => streamResponse(
-			"monSuperStream",
+		({ value }, { response }) => response.stream("monSuperStream").onStart<number>(
 			async({ send }) => {
 				await send(1);
 
@@ -45,9 +43,7 @@ useRouteBuilder("POST", "/stream-text")
 		},
 	})
 	.handler(
-		ResponseContract.streamText("monSuperStream"),
-		({ value }, { streamTextResponse }) => streamTextResponse(
-			"monSuperStream",
+		({ value }, { response }) => response.streamText("monSuperStream").onStart(
 			async({ send }) => {
 				await send("super");
 

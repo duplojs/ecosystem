@@ -9,8 +9,8 @@ import { type HandlerStepFunctionParams, type HandlerStep, createHandlerStep, ty
 import { type BodyController, type BodyReaderImplementation, Request } from "@core/request";
 import { type PredictedResponses } from "@core/response";
 import { defaultNotfoundHandler } from "./defaultNotfoundHandler";
-import { type Environment } from "@core/types";
-import { defaultExtractOtherwise, type DefaultExtractOtherwise } from "./defaultExtractOtherwise";
+import { type DefaultOtherwiseExtractResponse, type Floor, type Environment, type ExtractOtherwise } from "@core/types";
+import { defaultExtractOtherwise } from "./defaultExtractOtherwise";
 import { type createStepFunctionBuilder } from "@core/functionsBuilders/steps";
 import { type createRouteFunctionBuilder } from "@core/functionsBuilders/route";
 import { defaultBodyController } from "./defaultBodyController";
@@ -69,7 +69,10 @@ export class Hub<
 
 	public notfoundHandler: HandlerStep = defaultNotfoundHandler;
 
-	public defaultExtractOtherwise: DefaultExtractOtherwise = defaultExtractOtherwise;
+	public defaultExtractOtherwise: ExtractOtherwise<
+		Floor,
+		DefaultOtherwiseExtractResponse
+	> = defaultExtractOtherwise;
 
 	public defaultBodyController: BodyController = defaultBodyController;
 

@@ -2,14 +2,13 @@ import * as DEither from "@duplojs/lang/either";
 import * as DGenerator from "@duplojs/lang/generator";
 import { type Steps } from "../../steps/types";
 import { type BuildStepNotSupportEither, type StepFunctionBuilderParams, type createStepFunctionBuilder } from "./create";
-import { type Environment } from "@core/types";
-import { type DefaultExtractOtherwise } from "@core/hub/defaultExtractOtherwise";
+import { type Environment, type ExtractOtherwise } from "@core/types";
 import { type ExtractShapeCodecs } from "@core/steps";
 
 export interface BuildStepFunctionParams {
 	readonly stepFunctionBuilders: readonly ReturnType<typeof createStepFunctionBuilder>[];
 	readonly environment: Environment;
-	readonly defaultExtractOtherwise: DefaultExtractOtherwise;
+	readonly defaultExtractOtherwise: ExtractOtherwise;
 	readonly defaultCodecs: ExtractShapeCodecs;
 }
 

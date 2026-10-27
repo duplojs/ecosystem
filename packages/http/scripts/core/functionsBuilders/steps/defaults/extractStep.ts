@@ -14,7 +14,7 @@ type Extractor = (request: Request, floor: Floor) => DCommon.MaybePromise<Predic
 
 export const defaultExtractStepFunctionBuilder = createStepFunctionBuilder(
 	extractStepKind.has,
-	(step, { success, environment, defaultExtractOtherwise, defaultCodecs }) => {
+	(step, { success, defaultExtractOtherwise, defaultCodecs }) => {
 		const {
 			shape,
 			otherwise: stepOtherwise,
@@ -38,7 +38,6 @@ export const defaultExtractStepFunctionBuilder = createStepFunctionBuilder(
 					response: ResponseHelper,
 					floor,
 					dataStructureError: DEither.unwrapLeft(result),
-					environment,
 				}))
 				: {
 					...floor,
