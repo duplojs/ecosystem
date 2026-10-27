@@ -140,7 +140,7 @@ describe("client", async() => {
 				| {
 					code: "422";
 					information: "extract-error";
-					body: DCommon.ToJson<Error> | undefined;
+					body: string;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -214,7 +214,7 @@ describe("client", async() => {
 				| {
 					code: "422";
 					information: "extract-error";
-					body: DCommon.ToJson<Error> | undefined;
+					body: string;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -291,7 +291,7 @@ describe("client", async() => {
 				| {
 					code: "422";
 					information: "extract-error";
-					body: DCommon.ToJson<Error> | undefined;
+					body: string;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;

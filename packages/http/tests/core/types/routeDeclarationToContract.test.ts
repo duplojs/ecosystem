@@ -136,7 +136,7 @@ describe("RouteDeclarationToContract", () => {
 			| {
 				readonly code: "422";
 				readonly information: "extract-error";
-				readonly body: Error;
+				readonly body: string;
 			}
 			| {
 				readonly code: "201";

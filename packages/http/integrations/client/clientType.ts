@@ -33,7 +33,7 @@ export type Routes = | {
 		| {
 			readonly code: "422";
 			readonly information: "extract-error";
-			readonly body: Error | undefined;
+			readonly body: string;
 		}
 		| {
 			readonly code: "200";
@@ -49,7 +49,7 @@ export type Routes = | {
 		| {
 			readonly code: "422";
 			readonly information: "extract-error";
-			readonly body: Error | undefined;
+			readonly body: string;
 		}
 		| {
 			readonly code: "200";
@@ -65,7 +65,7 @@ export type Routes = | {
 		| {
 			readonly code: "422";
 			readonly information: "extract-error";
-			readonly body: Error | undefined;
+			readonly body: string;
 		}
 		| {
 			readonly code: "200";
@@ -81,7 +81,7 @@ export type Routes = | {
 		| {
 			readonly code: "422";
 			readonly information: "extract-error";
-			readonly body: Error | undefined;
+			readonly body: string;
 		}
 		| {
 			readonly code: "200";
@@ -97,7 +97,7 @@ export type Routes = | {
 		| {
 			readonly code: "422";
 			readonly information: "extract-error";
-			readonly body: Error | undefined;
+			readonly body: string;
 		}
 		| {
 			readonly code: "204";
@@ -113,7 +113,7 @@ export type Routes = | {
 		| {
 			readonly code: "422";
 			readonly information: "extract-error";
-			readonly body: Error | undefined;
+			readonly body: string;
 		}
 		| {
 			readonly code: "204";
@@ -142,7 +142,7 @@ export type Routes = | {
 		| {
 			readonly code: "422";
 			readonly information: "extract-error";
-			readonly body: Error | undefined;
+			readonly body: string;
 		}
 		| {
 			readonly code: "204";
@@ -163,7 +163,7 @@ export type Routes = | {
 		| {
 			readonly code: "422";
 			readonly information: "extract-error";
-			readonly body: Error | undefined;
+			readonly body: string;
 		}
 		| {
 			readonly code: "200";
@@ -190,7 +190,7 @@ export type ProductionRejectionRoutes =
 			| {
 				readonly code: "422";
 				readonly information: "extract-error";
-				readonly body: Error;
+				readonly body: string;
 			}
 			| {
 				readonly code: "204";

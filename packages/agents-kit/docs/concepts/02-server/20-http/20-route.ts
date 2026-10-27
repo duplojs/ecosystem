@@ -65,7 +65,7 @@ type _CheckResponses = DCommon.ExpectType<
 	| {
 		readonly code: "422";
 		readonly information: "extract-error";
-		readonly body: Error;
+		readonly body: string;
 	},
 	"strict"
 >;

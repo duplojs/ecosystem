@@ -14,9 +14,13 @@ type TreatResponse<
 	? {
 		readonly code: InferredCode;
 		readonly information: InferredInformation;
-		readonly body: InferredBody extends DSFile.FileInterface
-			? File
-			: InferredBody;
+		readonly body: DCommon.Replace<
+			InferredBody extends DSFile.FileInterface
+				? File
+				: InferredBody,
+			[Error, string],
+			"extends"
+		>;
 	}
 	: never;
 
@@ -198,7 +202,7 @@ export type RouteDeclarationToContract<
 											Extract<
 												DCommon.Replace<
 													InferredIntersectionValues["body"],
-													[DSFile.FileInterface, File],
+													| [DSFile.FileInterface, File],
 													"extends"
 												>,
 												Record<string, DCommon.EligibleFormDataValue>

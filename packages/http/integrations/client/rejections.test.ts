@@ -39,7 +39,7 @@ describe("client rejections in production", async() => {
 
 		type _Body = DCommon.ExpectType<
 			typeof result.body,
-			DCommon.ToJson<Error>,
+			string,
 			"strict"
 		>;
 		expect(result.code).toBe("422");

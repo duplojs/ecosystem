@@ -127,9 +127,11 @@ export type RouteContractToClientResponse<
 					code: InferredResponse["code"];
 					information: InferredResponse["information"];
 					body: InferredResponse extends RouteContractResponseDefault
-						? DCommon.IsEqual<InferredResponse["body"], File> extends true
-							? undefined
-							: DCommon.ToJson<InferredResponse["body"]>
+						? InferredResponse["body"] extends infer InferredBodyValue
+							? InferredBodyValue extends File
+								? undefined
+								: DCommon.ToJson<InferredBodyValue>
+							: never
 						: undefined;
 					ok: boolean | null;
 					headers: Headers;
