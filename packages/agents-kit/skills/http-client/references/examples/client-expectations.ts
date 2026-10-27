@@ -3,7 +3,7 @@
  *
  * Les sélecteurs imposent un choix pour chaque cas du contrat de la requête.
  */
-import * as DHttpClient from "@duplojs/http/client";
+import { createHttpClient } from "@duplojs/http/client";
 import * as DEither from "@duplojs/lang/either";
 import type * as DCommon from "@duplojs/lang/common";
 
@@ -21,7 +21,7 @@ interface Routes {
 	};
 }
 
-const client = DHttpClient.createHttpClient<Routes>({
+const client = createHttpClient<Routes>({
 	baseUrl: "https://duplo-api.example.com",
 	// Le mode Predicted reste actif pour cette API DuploJS.
 });

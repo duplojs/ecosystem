@@ -19,7 +19,7 @@ node --input-type=module -e 'import { fileURLToPath } from "node:url"; console.l
 
 ## Retrouver le contrat et configurer le client
 
-Importer `@duplojs/http/client` sous le namespace `DHttpClient`. `createHttpClient<Routes>` reçoit le contrat des méthodes, chemins, entrées et réponses de l'API. Ce contrat peut être généré, écrit à la main ou composé ; le client fonctionne aussi avec un serveur externe à DuploJS.
+Importer les symboles nommés depuis `@duplojs/http/client`. `createHttpClient<Routes>` utilise le type des routes pour vérifier les requêtes et les réponses attendues. Le client peut appeler une API DuploJS ou un serveur externe.
 
 Retrouver les routes consommées et le client existant avant d'en créer un. Pour créer le client ou modifier son contrat et sa configuration, lire [Contrat et configuration](references/configuration.md). L'[exemple d'API externe](references/examples/external-client.ts) montre un contrat écrit à la main et la sélection par code.
 

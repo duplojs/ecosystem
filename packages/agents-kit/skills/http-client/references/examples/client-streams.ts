@@ -3,7 +3,7 @@
  *
  * La sélection de la réponse précède la lecture progressive du flux.
  */
-import * as DHttpClient from "@duplojs/http/client";
+import { createHttpClient } from "@duplojs/http/client";
 import * as DEither from "@duplojs/lang/either";
 import type * as DCommon from "@duplojs/lang/common";
 
@@ -28,7 +28,7 @@ type Routes = {
 	};
 };
 
-const client = DHttpClient.createHttpClient<Routes>({
+const client = createHttpClient<Routes>({
 	baseUrl: "https://duplo-api.example.com",
 });
 

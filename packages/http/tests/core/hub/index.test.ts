@@ -248,18 +248,19 @@ describe("hub", () => {
 	});
 
 	it("hub stores and executes the default extract otherwise", () => {
-		const otherwise: ExtractOtherwise = ({ response, dataStructureError }) => response.notFound(
-			"custom-extract",
-			dataStructureError.message,
-		);
+		const error = new Error("invalid");
+		const otherwise = (({ response, dataStructureError }) => response.unprocessableContent(
+			"extract-error",
+			dataStructureError,
+		)) satisfies ExtractOtherwise;
 		const hub = createHub({ environment: "DEV" }).setDefaultExtractOtherwise(otherwise);
 		expect(hub.defaultExtractOtherwise).toBe(otherwise);
 		expect(hub.defaultExtractOtherwise({
 			response: ResponseHelper,
-			dataStructureError: new Error("invalid"),
+			dataStructureError: error,
 			floor: {},
 		}))
-			.toStrictEqual(new PredictedResponse("404", "custom-extract", "invalid"));
+			.toStrictEqual(new PredictedResponse("422", "extract-error", error));
 	});
 
 	it("add body reader", () => {

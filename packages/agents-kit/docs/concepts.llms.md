@@ -310,7 +310,7 @@ Contraintes `Path`, `Absolute` et `Segment` pour valider, extraire et résoudre 
  
 ## HTTP
 
-Interfaces HTTP côté serveur : réception et validation des requêtes, orchestration des traitements et contrats de réponse typés partageables avec les clients.
+Développement d’API HTTP avec DuploJS, de la définition des routes au démarrage du serveur.
 
 ### [Créer une application HTTP](concepts/02-server/20-http/10-init.ts)
 
@@ -318,7 +318,7 @@ Configuration d'un `Hub` et enregistrement des routes d'une application HTTP.
  
 ### [Créer une route HTTP](concepts/02-server/20-http/20-route.ts)
 
-Construction du flux d’une route : entrées validées, contexte de traitement et réponses contextualisées.
+Définir les entrées d'une route, préparer les données du traitement et produire sa réponse HTTP.
  
 ### [Faire une routine de vérification](concepts/02-server/20-http/30-routine.ts)
 
@@ -327,6 +327,10 @@ Vérifications dans les flux HTTP, réutilisation des traitements et adaptation 
 ### [Définir une politique de gestion de tokens](concepts/02-server/20-http/40-jwt.ts)
 
 Déclaration d'une politique unique pour créer et vérifier une famille de tokens.
+ 
+### [Générer la documentation OpenAPI d'une API HTTP.](concepts/02-server/20-http/50-open-api.ts)
+
+Décrire les réponses des routes et exposer leur documentation.
  
 ## Environnement
 
@@ -363,9 +367,7 @@ Communication typée avec des API HTTP.
 
 ### [Initialiser un client HTTP](concepts/03-client/10-http/10-init.ts)
 
-Création d'un client à partir du contrat statique des routes, configuration
-globale et conservation du typage des requêtes et réponses exposées par le
-serveur.
+Configuration d'un client HTTP typé et des paramètres communs aux requêtes.
  
 ### [Effectuer une requête HTTP](concepts/03-client/10-http/20-request.ts)
 

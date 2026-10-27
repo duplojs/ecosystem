@@ -3,7 +3,7 @@
  *
  * Le contrat est écrit à la main ; les réponses n'ont aucun header DuploJS.
  */
-import * as DHttpClient from "@duplojs/http/client";
+import { createHttpClient } from "@duplojs/http/client";
 import * as DEither from "@duplojs/lang/either";
 import type * as DCommon from "@duplojs/lang/common";
 
@@ -30,7 +30,7 @@ interface ExternalRoutes {
 	};
 }
 
-export const externalClient = DHttpClient.createHttpClient<ExternalRoutes>({
+export const externalClient = createHttpClient<ExternalRoutes>({
 	baseUrl: "https://api.example.com",
 	// L'API ne fournit pas le marqueur de réponses prévues.
 	disabledPredictedMode: true,

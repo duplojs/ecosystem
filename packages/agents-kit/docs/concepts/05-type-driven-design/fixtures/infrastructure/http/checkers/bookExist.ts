@@ -1,4 +1,4 @@
-import { createPresetChecker, ResponseContract, useCheckerBuilder } from "@duplojs/http";
+import { createPresetChecker, useCheckerBuilder } from "@duplojs/http";
 import * as DEither from "@duplojs/lang/either";
 import { type Book } from "../../../business/domains";
 import { bookRepository } from "../../ports";
@@ -15,5 +15,5 @@ export const bookExist = useCheckerBuilder()
 
 export const iWantBookExist = createPresetChecker(bookExist, {
 	result: "book.find",
-	otherwise: ResponseContract.notFound("book.notfound"),
+	otherwise: ({ response }) => response.notFound("book.notfound"),
 });

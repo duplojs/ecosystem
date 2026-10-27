@@ -3,7 +3,7 @@
  *
  * Le preflight exporte une fonction qui crée des routes avec authentification.
  */
-import { ResponseContract, useCheckerBuilder, usePreflightBuilder, useProcessBuilder } from "@duplojs/http";
+import { useCheckerBuilder, usePreflightBuilder, useProcessBuilder } from "@duplojs/http";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import { type User } from "./contracts";
@@ -31,7 +31,7 @@ export const authenticationProcess = useProcessBuilder()
 	.check(tokenChecker, {
 		input: ({ authorization }) => authorization,
 		result: "token.valid",
-		otherwise: ResponseContract.unauthorized("authentication.invalid"),
+		otherwise: ({ response }) => response.unauthorized("authentication.invalid"),
 		indexing: "user",
 	})
 	// authorization reste interne au process ; seul user est exposé.

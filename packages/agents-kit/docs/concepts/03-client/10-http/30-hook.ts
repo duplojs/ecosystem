@@ -30,7 +30,7 @@ export type Routes = {
 	readonly responses: {
 		readonly code: "422";
 		readonly information: "extract-error";
-		readonly body: undefined;
+		readonly body: Error;
 	} | {
 		readonly code: "204";
 		readonly information: "user.created";

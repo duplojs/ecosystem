@@ -1,6 +1,6 @@
 ---
 name: duplojs-http-server
-description: "Créer ou modifier des routes et un serveur HTTP DuploJS : Hub, entrées validées, réponses contractuelles, traitements réutilisables."
+description: "Créer ou modifier une API HTTP DuploJS : routes, validation des requêtes, vérifications réutilisables et configuration du serveur."
 ---
 
 # Serveur HTTP DuploJS
@@ -25,8 +25,7 @@ Une route enchaîne des étapes qui enrichissent un contexte typé, le **floor**
 
 1. Déclarer les entrées avec `.extract` et les data structures du contrat. L'extraction les valide avant de poursuivre.
 2. Préparer les préconditions et traiter les refus dans les étapes précédant le handler. Un `.cut` convient à une adaptation propre au scénario courant ; reprendre les traitements réutilisables existants lorsqu'ils portent la même responsabilité.
-3. Déclarer chaque réponse avec un `ResponseContract` : statut, `information` discriminante et schéma du body éventuel.
-4. Terminer le chemin de réussite avec `.handler` et son outil `response`.
+3. Terminer avec `.handler`. Son callback retourne la réponse HTTP avec l'outil `response` disponible dans son second argument.
 
 Pour créer une route ou modifier ses extractions et étapes, lire [Routes et floor](references/routes-and-floor.md). La [route minimale](references/examples/minimal-route.ts) montre validation et réponse sans dépendance applicative ; la [route de modification](references/examples/rename-user-route.ts) adapte un résultat applicatif en amont du handler.
 
@@ -34,7 +33,7 @@ Pour créer une route ou modifier ses extractions et étapes, lire [Routes et fl
 
 La route est un point d'entrée d'infrastructure : elle adapte les données validées aux capacités de l'application, appelle les traitements prévus et traduit leurs résultats vers HTTP. Elle peut établir une précondition avec une qualification du domaine. L'orchestration métier et les transitions restent dans leurs couches ; ne pas les réimplémenter dans les steps.
 
-Traiter les résultats attendus avec les outils `Either` et les réponses contractuelles. Les fonctions réutilisables conservent leurs échecs typés ; une réponse HTTP relève du flux HTTP qui les consomme.
+Traduire les résultats attendus en réponses HTTP avec les outils `Either`. Les fonctions réutilisables conservent leurs échecs typés ; la route choisit la réponse à envoyer au client.
 
 Si la tâche raccorde un domaine existant ou modifie une responsabilité métier, appliquer le skill `duplojs-modeling` lorsqu'il est installé, ou lire `docs/concepts/05-type-driven-design/01-architecture/10-boundaries.md`.
 
@@ -59,4 +58,4 @@ Si la tâche touche le démarrage ou l'enregistrement des routes, lire [Initiali
 
 ## Vérifier le flux exposé
 
-Exécuter le typage et les vérifications du projet. Vérifier que la route est effectivement enregistrée, qu'une entrée invalide est refusée et que chaque issue concernée produit le statut, l'information et le body déclarés. Vérifier aussi qu'un refus arrête les étapes dépendantes.
+Exécuter le typage et les vérifications du projet. Vérifier que la route est effectivement enregistrée, qu'une entrée invalide est refusée et que chaque issue concernée produit le statut, l'information et le body attendus. Vérifier aussi qu'un refus arrête les étapes dépendantes.
