@@ -1,8 +1,6 @@
 import { useRouteBuilder } from "@core/builders";
 import { IgnoreByRouteStoreMetadata } from "@core/metadata";
-import { ResponseContract } from "@core/response";
 import type { RoutePath } from "@core/route";
-import * as DDataStructure from "@duplojs/lang/dataStructure";
 import { IgnoreByOpenApiGeneratorMetadata } from "./metadata";
 
 export function makeOpenApiRoute(
@@ -20,8 +18,7 @@ export function makeOpenApiRoute(
 		},
 	)
 		.handler(
-			ResponseContract.ok("swaggerUi", DDataStructure.string()),
-			(__, { response }) => response("swaggerUi", openApiPage)
+			(__, { response }) => response.ok("swaggerUi", openApiPage)
 				.setHeader("content-type", "text/html"),
 		);
 }

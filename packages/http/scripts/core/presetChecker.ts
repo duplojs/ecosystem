@@ -1,9 +1,18 @@
 import * as DCommon from "@duplojs/lang/common";
 import type * as DObject from "@duplojs/lang/object";
 import { createKind } from "./kind";
-import { type GetCheckerInput, type Checker, type GetCheckerOptions, type GetCheckerResult } from "./checker";
-import { type ClientErrorResponseCode, type ResponseContract } from "./response";
+import { type GetCheckerInput, type Checker, type GetCheckerOptions, type GetCheckerResult, type CheckerFunctionOutput } from "./checker";
+import { type PredictedResponse } from "./response";
 import type * as DKind from "@duplojs/lang/kind";
+import { type ResponseHelper } from "./response/helpers";
+import type * as DArray from "@duplojs/lang/array";
+
+export interface PresetCheckerOtherwiseParams<
+	GenericResult extends CheckerFunctionOutput = CheckerFunctionOutput,
+> {
+	response: ResponseHelper.Methods400;
+	result: GenericResult;
+}
 
 export interface PresetCheckerDefinition {
 	readonly checker: Checker;
@@ -11,7 +20,7 @@ export interface PresetCheckerDefinition {
 	readonly indexing?: string;
 	rewriteInput?(input: unknown): unknown;
 	readonly options?: Record<string, unknown>;
-	readonly responseContract: ResponseContract.Contract<ClientErrorResponseCode>;
+	otherwise(params: PresetCheckerOtherwiseParams): PredictedResponse;
 }
 
 export const presetCheckerKind = createKind("preset-checker");
@@ -59,17 +68,23 @@ export function createPresetChecker<
 		indexing?: string;
 		rewriteInput?(input: unknown): GetCheckerInput<GenericChecker>;
 		options?: GetCheckerOptions<GenericChecker>;
-		otherwise: ResponseContract.Contract<ClientErrorResponseCode>;
+		otherwise(
+			params: PresetCheckerOtherwiseParams<
+				Exclude<
+					Awaited<GetCheckerResult<GenericChecker>>,
+					{ information: DArray.Unwrap<GenericDefinition["result"]> }
+				>
+			>
+		): PredictedResponse;
 	},
 >(
 	checker: GenericChecker,
 	{ otherwise, ...definition }: GenericDefinition,
 ): PresetChecker<
 	DObject.Assign<
-		Omit<GenericDefinition, "otherwise">,
+		GenericDefinition,
 		{
 			readonly checker: GenericChecker;
-			readonly responseContract: GenericDefinition["otherwise"];
 		}
 	>
 > {
@@ -78,7 +93,7 @@ export function createPresetChecker<
 			definition: {
 				...definition,
 				checker,
-				responseContract: otherwise,
+				otherwise,
 
 			},
 			indexing(indexing) {

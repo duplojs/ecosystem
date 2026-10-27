@@ -4,7 +4,7 @@ import { type BuildedRoute, type HookRouteLifeCycle, type Route } from "@core/ro
 import { type Environment } from "@core/types";
 import { type BuildStepSuccessEither, type BuildStepNotSupportEither } from "../steps";
 import { type Steps } from "@core/steps";
-import { type ResponseContract } from "@core/response";
+import { type DefaultExtractOtherwise } from "@core/hub/defaultExtractOtherwise";
 
 export type BuildRouteSuccessEither = DEither.Right<"buildSuccess", BuildedRoute>;
 
@@ -26,7 +26,7 @@ export interface RouteFunctionBuilderParams {
 		result: BuildedRoute
 	): BuildRouteSuccessEither;
 
-	readonly defaultExtractContract: ResponseContract.Contract;
+	readonly defaultExtractOtherwise: DefaultExtractOtherwise;
 }
 
 export function createRouteFunctionBuilder(

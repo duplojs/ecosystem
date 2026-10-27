@@ -5,7 +5,6 @@ import * as DDataStructure from "@scripts/dataStructure";
 import * as DObject from "@scripts/object";
 import { createKind } from "../kind";
 import { type NewType, type NewTypeMap } from "../newType";
-import { entityKind } from "../entity";
 
 declare module "@scripts/dataStructure" {
 	interface StructuresStore {

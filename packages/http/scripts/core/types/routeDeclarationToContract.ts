@@ -1,23 +1,34 @@
-import { type RouteSteps, type Route, type RoutePath } from "@core/route";
-import { type ServerSentEventsPredictedResponse, type Response, type StreamPredictedResponse, type StreamTextPredictedResponse, type ResponseContract } from "@core/response";
+import { type RouteSteps, type RoutePreFlightSteps, type Route, type RoutePath } from "@core/route";
+import { type ServerSentEventsPredictedResponse, type Response, type StreamPredictedResponse, type StreamTextPredictedResponse, type PredictedResponse } from "@core/response";
 import { type PresetCheckerStep, type CheckerStep, type CutStep, type HandlerStep, type ProcessStep, type ExtractStep, type ExtractShape } from "@core/steps";
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
-import { type defaultExtractContract } from "@core/hub";
+import { type defaultExtractOtherwise } from "@core/hub";
 import { type FormDataBodyController } from "@core/request";
 import type * as DSFile from "@duplojs/server/file";
+import type * as DString from "@duplojs/lang/string";
 
-export interface OverrideDefaultExtractEndpointContract {
+export interface OverrideDefaultExtractResponse {
 
 }
 
-export type DefaultExtractEndpointContract = OverrideDefaultExtractEndpointContract extends infer InferredValue
+export type DefaultExtractResponse = OverrideDefaultExtractResponse extends infer InferredValue
 	? "override" extends keyof InferredValue
 		? DCommon.NeverCoalescing<
-			Extract<InferredValue["override"], ResponseContract.Contract>,
-			typeof defaultExtractContract
+			Extract<InferredValue["override"], PredictedResponse>,
+			ReturnType<typeof defaultExtractOtherwise>
 		>
-		: typeof defaultExtractContract
+		: ReturnType<typeof defaultExtractOtherwise>
+	: never;
+
+type TreatResponse<
+	GenericResponse extends unknown,
+> = GenericResponse extends Response<infer InferredCode, infer InferredInformation, infer InferredBody>
+	? {
+		readonly code: InferredCode;
+		readonly information: InferredInformation;
+		readonly body: InferredBody;
+	}
 	: never;
 
 type TreatExtractShape<
@@ -33,7 +44,7 @@ type TreatExtractShape<
 		: never;
 
 export interface RouteStepDeclarationToContract<
-	GenericRouteStep extends RouteSteps = RouteSteps,
+	GenericRouteStep extends RouteSteps | RoutePreFlightSteps = RouteSteps,
 > {
 	checkerStep: GenericRouteStep extends CheckerStep
 		? {
@@ -41,11 +52,7 @@ export interface RouteStepDeclarationToContract<
 			readonly params: unknown;
 			readonly query: unknown;
 			readonly body: unknown;
-			readonly responses: {
-				readonly code: GenericRouteStep["definition"]["responseContract"]["code"];
-				readonly information: GenericRouteStep["definition"]["responseContract"]["information"];
-				readonly body: undefined;
-			};
+			readonly responses: TreatResponse<Awaited<ReturnType<GenericRouteStep["definition"]["otherwise"]>>>;
 		}
 		: never;
 	presetCheckerStep: GenericRouteStep extends PresetCheckerStep
@@ -54,11 +61,9 @@ export interface RouteStepDeclarationToContract<
 			readonly params: unknown;
 			readonly query: unknown;
 			readonly body: unknown;
-			readonly responses: {
-				readonly code: GenericRouteStep["definition"]["presetChecker"]["definition"]["responseContract"]["code"];
-				readonly information: GenericRouteStep["definition"]["presetChecker"]["definition"]["responseContract"]["information"];
-				readonly body: undefined;
-			};
+			readonly responses: TreatResponse<
+				Awaited<ReturnType<GenericRouteStep["definition"]["presetChecker"]["definition"]["otherwise"]>>
+			>;
 		}
 		: never;
 	cutStep: GenericRouteStep extends CutStep
@@ -67,15 +72,7 @@ export interface RouteStepDeclarationToContract<
 			readonly params: unknown;
 			readonly query: unknown;
 			readonly body: unknown;
-			readonly responses: Awaited<ReturnType<GenericRouteStep["definition"]["theFunction"]>> extends infer InferredValue
-				? InferredValue extends Response<infer InferredCode, infer InferredInformation, infer InferredBody>
-					? {
-						readonly code: InferredCode;
-						readonly information: InferredInformation;
-						readonly body: InferredBody;
-					}
-					: never
-				: never;
+			readonly responses: TreatResponse<Awaited<ReturnType<GenericRouteStep["definition"]["theFunction"]>>>;
 		}
 		: never;
 	processStep: GenericRouteStep extends ProcessStep
@@ -148,26 +145,18 @@ export interface RouteStepDeclarationToContract<
 				TreatExtractShape<GenericRouteStep["definition"]["shape"]["body"]>,
 				unknown
 			>;
-			readonly responses: GenericRouteStep["definition"]["responseContract"] extends ResponseContract.Contract
-				? {
-					readonly code: GenericRouteStep["definition"]["responseContract"]["code"];
-					readonly information: GenericRouteStep["definition"]["responseContract"]["information"];
-					readonly body: undefined;
-				}
-				: {
-					readonly code: DefaultExtractEndpointContract["code"];
-					readonly information: DefaultExtractEndpointContract["information"];
-					readonly body: undefined;
-				};
+			readonly responses: GenericRouteStep["definition"]["otherwise"] extends DCommon.AnyFunction
+				? TreatResponse<Awaited<ReturnType<GenericRouteStep["definition"]["otherwise"]>>>
+				: TreatResponse<DefaultExtractResponse>;
 		}
 		: never;
 }
 
 type RefineStepRouteType<
-	GenericRouteSteps extends readonly RouteSteps[],
+	GenericRouteSteps extends readonly (RouteSteps | RoutePreFlightSteps)[],
 > = Exclude<keyof GenericRouteSteps, keyof any[]> extends infer InferredKeys extends keyof GenericRouteSteps
 	? {
-		[Prop in InferredKeys]: GenericRouteSteps[Prop] extends RouteSteps
+		[Prop in InferredKeys]: GenericRouteSteps[Prop] extends RouteSteps | RoutePreFlightSteps
 			? RouteStepDeclarationToContract<GenericRouteSteps[Prop]> extends infer InferredResult extends object
 				? InferredResult[keyof InferredResult]
 				: never
@@ -184,16 +173,25 @@ type ExpectShape = Record<
 	unknown
 >;
 
+type TreatRoutePath<
+	GenericPath extends RoutePath,
+> = DString.Split<GenericPath, "*"> extends infer InferredResult extends readonly string[]
+	? DString.Join<InferredResult, string>
+	: never;
+
 export type RouteDeclarationToContract<
 	GenericRoute extends Route,
 > = GenericRoute extends any
-	? RefineStepRouteType<GenericRoute["definition"]["steps"]> extends infer InferredValues extends ExpectShape
+	? RefineStepRouteType<readonly [
+		...GenericRoute["definition"]["preflightSteps"],
+		...GenericRoute["definition"]["steps"],
+	]> extends infer InferredValues extends ExpectShape
 		? DCommon.UnionToIntersection<InferredValues> extends infer InferredIntersectionValues extends ExpectShape
 			? GenericRoute["definition"]["paths"][number] extends infer InferredPath
 				? InferredPath extends RoutePath
 					? DCommon.SimplifyTopLevel<
 						& {
-							readonly path: InferredPath;
+							readonly path: TreatRoutePath<InferredPath>;
 							readonly method: GenericRoute["definition"]["method"];
 							readonly responses: InferredValues["responses"];
 						}

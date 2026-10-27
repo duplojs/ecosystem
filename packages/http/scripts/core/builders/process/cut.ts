@@ -1,11 +1,10 @@
 import { type Floor } from "@core/types";
-import { type ResponseContract } from "@core/response";
+import { type PredictedResponse } from "@core/response";
+import { type ProcessDefinition } from "@core/process";
 import { type CutStepFunctionOutput, type CutStep, type CutStepFunctionParams, createCutStep, type cutStepOutputKind } from "@core/steps";
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DObject from "@duplojs/lang/object";
-import type * as DArray from "@duplojs/lang/array";
 import { processBuilder } from "./builder";
-import { type ProcessDefinition } from "@core/process";
 import { type Metadata } from "@core/metadata";
 import type * as DKind from "@duplojs/lang/kind";
 
@@ -15,22 +14,15 @@ declare module "./builder" {
 		GenericFloor extends Floor = {},
 	> {
 		cut<
-			const GenericResponseContract extends (
-				| ResponseContract.Contract
-				| readonly ResponseContract.Contract[]
+			GenericOutput extends (
+				| CutStepFunctionOutput
+				| PredictedResponse
 			),
-			GenericResponse extends ResponseContract.Convert<
-				DArray.Coalescing<GenericResponseContract>[number]
-			>,
-			GenericOutput extends CutStepFunctionOutput | GenericResponse,
 			const GenericMetadata extends readonly Metadata[] = readonly [],
 		>(
-			responseContract: GenericResponseContract,
 			theFunction: (
 				floor: GenericFloor,
-				param: CutStepFunctionParams<
-					GenericResponse
-				>,
+				params: CutStepFunctionParams,
 			) => DCommon.MaybePromise<GenericOutput>,
 			...metadata: GenericMetadata
 		): ProcessBuilder<
@@ -41,12 +33,9 @@ declare module "./builder" {
 						...GenericDefinition["steps"],
 						CutStep<
 							{
-								readonly responseContract: GenericResponseContract;
 								theFunction(
 									floor: GenericFloor,
-									param: CutStepFunctionParams<
-										GenericResponse
-									>
+									param: CutStepFunctionParams
 								): DCommon.MaybePromise<GenericOutput>;
 								readonly metadata: GenericMetadata;
 							}
@@ -54,9 +43,8 @@ declare module "./builder" {
 					];
 				}
 			>,
-			DCommon.IsEqual<
-				Extract<GenericOutput, CutStepFunctionOutput>,
-				never
+			DCommon.IsNever<
+				Extract<GenericOutput, CutStepFunctionOutput>
 			> extends true
 				? GenericFloor
 				: (
@@ -75,7 +63,6 @@ processBuilder.set(
 	"cut",
 	({
 		args: [
-			responseContract,
 			theFunction,
 			...metadata
 		],
@@ -86,7 +73,6 @@ processBuilder.set(
 		steps: [
 			...accumulator.steps,
 			createCutStep({
-				responseContract,
 				theFunction,
 				metadata,
 			}),

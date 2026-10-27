@@ -1,13 +1,11 @@
-import { checkerStepKind, cutStepKind, extractStepKind, handlerStepKind, presetCheckerStepKind, processStepKind, stepIdentifier, type Steps } from "@core/steps";
+import { extractStepKind, processStepKind, stepIdentifier, type Steps } from "@core/steps";
 import * as DArray from "@duplojs/lang/array";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DObject from "@duplojs/lang/object";
-import * as DPattern from "@duplojs/lang/pattern";
-import type { ResponseContract } from "@core/response";
-import type { EntrypointKey } from "./types";
-import { IgnoreByOpenApiGeneratorMetadata } from "./metadata";
+import type { EntrypointKey, OpenApiEndpointContract } from "./types";
+import { defaultExtractEndpointContractMetadata, IgnoreByOpenApiGeneratorMetadata, OpenApiEndpointContractMetadata } from "./metadata";
 import * as DCommon from "@duplojs/lang/common";
-import * as DKind from "@duplojs/lang/kind";
+import { type Metadata } from "@core/metadata";
 
 export type EntrypointReduceResult = Record<
 	EntrypointKey,
@@ -16,16 +14,17 @@ export type EntrypointReduceResult = Record<
 
 export interface AggregateStepsResult {
 	entrypointContract: EntrypointReduceResult;
-	endpointContract: readonly ResponseContract.Contracts[];
+	endpointContract: readonly OpenApiEndpointContract[];
 }
 
 export interface AggregateStepsParams {
-	readonly defaultExtractContract: ResponseContract.Contract;
+	readonly metadata?: readonly Metadata[];
+	readonly defaultExtractMetadata?: ReturnType<typeof OpenApiEndpointContractMetadata>;
 }
 
 export function aggregateStepContract(
 	steps: readonly Steps[],
-	params: AggregateStepsParams,
+	params: AggregateStepsParams = {},
 ): AggregateStepsResult {
 	const filteredStep = DArray.filter(
 		steps,
@@ -47,7 +46,10 @@ export function aggregateStepContract(
 		DArray.map(
 			(element) => aggregateStepContract(
 				element.definition.process.definition.steps,
-				params,
+				{
+					...params,
+					metadata: element.definition.process.definition.metadata,
+				},
 			),
 		),
 		DObject.to({
@@ -127,30 +129,19 @@ export function aggregateStepContract(
 
 	const endpointContract = DCommon.pipe(
 		filteredStep,
-		DArray.flatMap(
-			(step) => DPattern.match(step)
-				.when(
-					processStepKind.has,
-					() => [],
-				)
-				.when(
-					extractStepKind.has,
-					({ definition }) => definition.responseContract ?? params.defaultExtractContract,
-				)
-				.when(
-					presetCheckerStepKind.has,
-					({ definition }) => definition.presetChecker.definition.responseContract,
-				)
-				.when(
-					DKind.hasSome([
-						checkerStepKind,
-						cutStepKind,
-						handlerStepKind,
-					]),
-					({ definition }) => definition.responseContract,
-				)
-				.exhaustive(),
+		DArray.flatMap((step) => (
+			extractStepKind.has(step)
+			&& !DArray.find(step.definition.metadata, OpenApiEndpointContractMetadata.is)
+				? [...step.definition.metadata, params.defaultExtractMetadata ?? defaultExtractEndpointContractMetadata]
+				: step.definition.metadata
+		)),
+		DArray.concat(params.metadata ?? []),
+		DArray.filter(
+			(metadata): metadata is ReturnType<typeof OpenApiEndpointContractMetadata> => (
+				OpenApiEndpointContractMetadata.is(metadata)
+			),
 		),
+		DArray.flatMap((metadata) => DArray.coalescing(OpenApiEndpointContractMetadata.getValue(metadata))),
 		DArray.concat(processContracts.endpointContract),
 	);
 

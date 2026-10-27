@@ -1,12 +1,9 @@
-import { ResponseContract } from "@core/response";
 import { createHandlerStep } from "@core/steps";
-import * as DDataStructure from "@duplojs/lang/dataStructure";
 
 export const defaultNotfoundHandler = createHandlerStep({
-	responseContract: ResponseContract.notFound("notfound-route", DDataStructure.string()),
-	theFunction: (floor, { request, response }) => response(
+	theFunction: (floor, { request, response }) => response.notFound(
 		"notfound-route",
-		`${request.method}:${request.path}` as never,
+		`${request.method}:${request.path}`,
 	),
 	metadata: [],
 });

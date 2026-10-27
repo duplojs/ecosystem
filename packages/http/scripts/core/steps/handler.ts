@@ -2,83 +2,15 @@ import { createKind } from "@core/kind";
 import * as DCommon from "@duplojs/lang/common";
 import { type StepKind, stepKind } from "./kind";
 import { type Floor } from "@core/types";
-import { type ServerSentEventsPredictedResponse, type PredictedResponse, type ResponseContract, type PredictedResponses, type StreamPredictedResponse, type StreamTextPredictedResponse } from "@core/response";
-import { type StepFunctionParams } from "./types";
+import { type PredictedResponses } from "@core/response";
 import { type Metadata } from "@core/metadata";
 import type * as DKind from "@duplojs/lang/kind";
+import { type ResponseHelper } from "@core/response/helpers";
+import { type Request } from "@core/request";
 
-export interface HandlerStepFunctionParamsServerSentEventsResponse<
-	GenericResponse extends ServerSentEventsPredictedResponse,
-> {
-	serverSentEventsResponse<
-		GenericInformation extends GenericResponse["information"],
-		GenericFilteredResponse extends Extract<
-			GenericResponse,
-			{ information: GenericInformation }
-		>,
-	>(
-		information: GenericInformation,
-		startSendingEvents: GenericFilteredResponse["startSendingEvents"],
-	): GenericFilteredResponse;
-}
-
-interface HandlerStepFunctionParamsStreamResponse<
-	GenericResponse extends StreamPredictedResponse,
-> {
-	streamResponse<
-		GenericInformation extends GenericResponse["information"],
-		GenericFilteredResponse extends Extract<
-			GenericResponse,
-			{ information: GenericInformation }
-		>,
-	>(
-		information: GenericInformation,
-		startStream: GenericFilteredResponse["startStream"],
-	): GenericFilteredResponse;
-}
-
-interface HandlerStepFunctionParamsStreamTextResponse<
-	GenericResponse extends StreamTextPredictedResponse,
-> {
-	streamTextResponse<
-		GenericInformation extends GenericResponse["information"],
-		GenericFilteredResponse extends Extract<
-			GenericResponse,
-			{ information: GenericInformation }
-		>,
-	>(
-		information: GenericInformation,
-		startStream: GenericFilteredResponse["startStream"],
-	): GenericFilteredResponse;
-}
-
-export interface HandlerStepFunctionParams<
-	GenericResponse extends PredictedResponses = PredictedResponses,
-> extends StepFunctionParams<
-		Extract<
-			GenericResponse,
-			PredictedResponse
-		>
-	>,
-	HandlerStepFunctionParamsServerSentEventsResponse<
-		Extract<
-			GenericResponse,
-			ServerSentEventsPredictedResponse
-		>
-	>,
-	HandlerStepFunctionParamsStreamResponse<
-		Extract<
-			GenericResponse,
-			StreamPredictedResponse
-		>
-	>,
-	HandlerStepFunctionParamsStreamTextResponse<
-		Extract<
-			GenericResponse,
-			StreamTextPredictedResponse
-		>
-	> {
-
+export interface HandlerStepFunctionParams {
+	readonly request: Request;
+	readonly response: DCommon.SimplifyTopLevel<typeof ResponseHelper>;
 }
 
 export interface HandlerStepDefinition {
@@ -86,7 +18,6 @@ export interface HandlerStepDefinition {
 		floor: Floor,
 		params: HandlerStepFunctionParams
 	): DCommon.MaybePromise<PredictedResponses>;
-	readonly responseContract: DCommon.MaybeArray<ResponseContract.Contracts>;
 	readonly metadata: readonly Metadata[];
 }
 
@@ -98,7 +29,7 @@ export interface HandlerStep<
 		& DKind.Kind<typeof handlerStepKind>
 		& StepKind
 	> {
-	definition: GenericDefinition;
+	readonly definition: GenericDefinition;
 }
 
 export function createHandlerStep<

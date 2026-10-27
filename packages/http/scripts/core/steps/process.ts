@@ -20,7 +20,7 @@ export interface ProcessStep<
 	& DKind.Kind<typeof processStepKind>
 	& StepKind
 	> {
-	definition: GenericDefinition;
+	readonly definition: GenericDefinition;
 }
 
 export function createProcessStep<

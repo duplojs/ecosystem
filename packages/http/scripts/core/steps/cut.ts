@@ -2,10 +2,11 @@ import { createKind } from "@core/kind";
 import * as DCommon from "@duplojs/lang/common";
 import { type StepKind, stepKind } from "./kind";
 import { type Floor } from "@core/types";
-import { type StepFunctionParams } from "./types";
-import { type PredictedResponse, type ResponseContract } from "@core/response";
+import { type PredictedResponse } from "@core/response";
 import { type Metadata } from "@core/metadata";
 import type * as DKind from "@duplojs/lang/kind";
+import { type Request } from "@core/request";
+import { type ResponseHelper } from "@core/response/helpers";
 
 export const cutStepOutputKind = createKind("cut-output");
 
@@ -15,9 +16,9 @@ export interface CutStepFunctionOutput<
 
 }
 
-export interface CutStepFunctionParams<
-	GenericResponse extends PredictedResponse = PredictedResponse,
-> extends StepFunctionParams<GenericResponse> {
+export interface CutStepFunctionParams {
+	readonly request: Request;
+	readonly response: ResponseHelper.Methods400;
 	output<
 		GenericData extends Record<string, unknown> = never,
 	>(
@@ -32,7 +33,6 @@ export interface CutStepDefinition {
 		floor: Floor,
 		params: CutStepFunctionParams
 	): DCommon.MaybePromise<CutStepFunctionOutput | PredictedResponse>;
-	readonly responseContract: DCommon.MaybeArray<ResponseContract.Contract>;
 	readonly metadata: readonly Metadata[];
 }
 
@@ -44,7 +44,7 @@ export interface CutStep<
 		& DKind.Kind<typeof cutStepKind>
 		& StepKind
 	> {
-	definition: GenericDefinition;
+	readonly definition: GenericDefinition;
 }
 
 export function createCutStep<

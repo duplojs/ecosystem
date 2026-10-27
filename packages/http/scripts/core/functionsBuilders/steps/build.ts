@@ -3,13 +3,13 @@ import * as DGenerator from "@duplojs/lang/generator";
 import { type Steps } from "../../steps/types";
 import { type BuildStepNotSupportEither, type StepFunctionBuilderParams, type createStepFunctionBuilder } from "./create";
 import { type Environment } from "@core/types";
-import { type ResponseContract } from "@core/response";
+import { type DefaultExtractOtherwise } from "@core/hub/defaultExtractOtherwise";
 import { type ExtractShapeCodecs } from "@core/steps";
 
 export interface BuildStepFunctionParams {
 	readonly stepFunctionBuilders: readonly ReturnType<typeof createStepFunctionBuilder>[];
 	readonly environment: Environment;
-	readonly defaultExtractContract: ResponseContract.Contract;
+	readonly defaultExtractOtherwise: DefaultExtractOtherwise;
 	readonly defaultCodecs: ExtractShapeCodecs;
 }
 
@@ -25,7 +25,7 @@ export function buildStepFunction(
 			return buildStepFunction(step, params);
 		},
 		environment: params.environment,
-		defaultExtractContract: params.defaultExtractContract,
+		defaultExtractOtherwise: params.defaultExtractOtherwise,
 		defaultCodecs: params.defaultCodecs,
 	};
 

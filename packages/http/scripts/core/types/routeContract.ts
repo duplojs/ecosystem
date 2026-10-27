@@ -1,5 +1,4 @@
 import { type RoutePath } from "@core/route";
-import type * as DKind from "@duplojs/lang/kind";
 import type * as DChrono from "@duplojs/lang/chrono";
 import type * as DCommon from "@duplojs/lang/common";
 

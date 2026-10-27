@@ -3,7 +3,7 @@ import * as DGenerator from "@duplojs/lang/generator";
 import { buildStepFunction, type createStepFunctionBuilder } from "../steps";
 import { type RouteFunctionBuilderParams, type BuildRouteNotSupportEither, type createRouteFunctionBuilder } from "./create";
 import { type HookRouteLifeCycle, type Route } from "@core/route";
-import { type ResponseContract } from "@core/response";
+import { type DefaultExtractOtherwise } from "@core/hub/defaultExtractOtherwise";
 import { type Environment } from "@core/types";
 import { type ExtractShapeCodecs } from "@core/steps";
 
@@ -12,7 +12,7 @@ export interface BuildRouteFunctionParams {
 	readonly globalHooksRouteLifeCycle: readonly HookRouteLifeCycle[];
 	readonly stepFunctionBuilders: readonly ReturnType<typeof createStepFunctionBuilder>[];
 	readonly environment: Environment;
-	readonly defaultExtractContract: ResponseContract.Contract;
+	readonly defaultExtractOtherwise: DefaultExtractOtherwise;
 	readonly defaultCodecs: ExtractShapeCodecs;
 }
 
@@ -29,7 +29,7 @@ export function buildRouteFunction(
 		},
 		environment: params.environment,
 		globalHooksRouteLifeCycle: params.globalHooksRouteLifeCycle,
-		defaultExtractContract: params.defaultExtractContract,
+		defaultExtractOtherwise: params.defaultExtractOtherwise,
 	};
 
 	return DGenerator.asyncReduce(

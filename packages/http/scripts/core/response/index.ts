@@ -4,7 +4,7 @@ import { type StreamPredictedResponse } from "./streamPredicted";
 import { type StreamTextPredictedResponse } from "./streamTextPredicted";
 
 export * from "./base";
-export * from "./contract";
+export * from "./helpers";
 export * from "./hook";
 export * from "./predicted";
 export * from "./serverSentEventsPredicted";
