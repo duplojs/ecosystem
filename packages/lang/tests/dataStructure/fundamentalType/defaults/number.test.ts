@@ -1,15 +1,16 @@
-import { DDataStructure, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
 
 describe("TheNumber", () => {
 	it("accepts number values", () => {
 		const result = DDataStructure.TheNumber.executeCheck(12);
 
-		type _CheckFundamentalType = ExpectType<
+		type _CheckFundamentalType = DCommon.ExpectType<
 			typeof DDataStructure.TheNumber,
 			DDataStructure.TheNumber,
 			"strict"
 		>;
-		type _CheckFundamentalValue = ExpectType<
+		type _CheckFundamentalValue = DCommon.ExpectType<
 			DDataStructure.FundamentalTypeValue<typeof DDataStructure.TheNumber>,
 			number,
 			"strict"

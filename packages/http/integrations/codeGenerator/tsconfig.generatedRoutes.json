@@ -1,0 +1,7 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"types": ["node", "@duplojs/http/cookie"]
+	},
+	"include": ["routesTypes.generate/**/*.ts"]
+}

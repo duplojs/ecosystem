@@ -1,4 +1,5 @@
-import { DString, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("minCharacters", () => {
 	it("should validate a string longer than the minimum", () => {
@@ -10,12 +11,12 @@ describe("minCharacters", () => {
 
 	it("should narrow the string inside a pipe when callback", () => {
 		const source = "hello" as string;
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
-			when(
+			DCommon.when(
 				DString.minCharacters(3),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						string & DString.MinCharacters<3>,
 						"strict"
@@ -33,13 +34,13 @@ describe("minCharacters", () => {
 		const source = "hello" as string;
 
 		if (DString.minCharacters(source, 3)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				string & DString.MinCharacters<3>,
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				string,
 				"strict"
@@ -56,7 +57,7 @@ describe("minCharacters", () => {
 			| (string & DString.MaxCharacters<5>);
 
 		if (DString.minCharacters(source, 3)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				| (string & DString.MinCharacters<5>)
 				| (string & DString.MinCharacters<2> & DString.MinCharacters<3>)
@@ -65,7 +66,7 @@ describe("minCharacters", () => {
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				| (string & DString.MinCharacters<2>)
 				| (string & DString.MaxCharacters<2>)

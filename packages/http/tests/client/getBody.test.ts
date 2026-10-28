@@ -31,11 +31,61 @@ describe("getBody", () => {
 		expect(text).toHaveBeenCalledTimes(1);
 	});
 
-	it("parses blob for other content-types", async() => {
+	it("returns undefined for unsupported content-types", async() => {
 		const response = {
 			headers: new Headers({ "content-type": "application/octet-stream" }),
 		} as unknown as Response;
 
 		await expect(getBody(response)).resolves.toBe(undefined);
+	});
+
+	it.each([
+		{
+			contentType: "text/plain",
+			disposition: "attachment; filename=\"download.txt\"",
+		},
+		{
+			contentType: "application/json",
+			disposition: "attachment; filename=\"download.json\"",
+		},
+		{
+			contentType: "application/octet-stream",
+			disposition: "attachment; filename=\"download.bin\"",
+		},
+		{
+			contentType: "text/plain",
+			disposition: "attachment",
+		},
+		{
+			contentType: "text/plain",
+			disposition: "ATTACHMENT; filename=\"download.txt\"",
+		},
+		{
+			contentType: "text/plain",
+			disposition: "attachment ; filename=\"download.txt\"",
+		},
+	])("preserves the raw body for $contentType with $disposition", async({ contentType, disposition }) => {
+		const response = new Response("download contents", {
+			headers: {
+				"content-type": contentType,
+				"content-disposition": disposition,
+			},
+		});
+
+		await expect(getBody(response)).resolves.toBeUndefined();
+		expect(response.bodyUsed).toBe(false);
+		await expect(response.text()).resolves.toBe("download contents");
+	});
+
+	it("reads inline text even when its filename contains attachment", async() => {
+		const response = new Response("inline contents", {
+			headers: {
+				"content-type": "text/plain",
+				"content-disposition": "inline; filename=\"attachment.txt\"",
+			},
+		});
+
+		await expect(getBody(response)).resolves.toBe("inline contents");
+		expect(response.bodyUsed).toBe(true);
 	});
 });

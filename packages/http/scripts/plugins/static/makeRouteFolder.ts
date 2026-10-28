@@ -6,12 +6,10 @@ import * as DString from "@duplojs/lang/string";
 
 import { useRouteBuilder } from "@core/builders";
 import { IgnoreByRouteStoreMetadata } from "@core/metadata";
-import { ResponseContract } from "@core/response";
 import type { RoutePath } from "@core/route";
 import { createCacheControllerHooks } from "@plugin-cacheController/hooks";
 import { type CacheControlDirectives } from "@plugin-cacheController/types";
 import * as DTuple from "@duplojs/lang/tuple";
-import * as DSDataStructure from "@duplojs/server/dataStructure";
 import * as DPath from "@duplojs/lang/path";
 
 interface MakeRouteFolderParams {
@@ -68,16 +66,11 @@ export function makeRouteFolder(params: MakeRouteFolderParams) {
 		},
 	)
 		.handler(
-			[
-				ResponseContract.ok("resource.found", DSDataStructure.file()),
-				ResponseContract.notFound("resource.notfound"),
-				ResponseContract.notModified("resource.notModified"),
-			],
 			async(__, { request, response }) => {
 				const resultResourcePath = preparePath(request.path);
 
 				if (DEither.isLeft(resultResourcePath)) {
-					return response("resource.notfound");
+					return response.notFound("resource.notfound");
 				}
 
 				const resourcePath = DEither.unwrapRight(resultResourcePath);
@@ -85,13 +78,13 @@ export function makeRouteFolder(params: MakeRouteFolderParams) {
 				const resultStat = await DSFile.stat(resourcePath);
 
 				if (DEither.isLeft(resultStat)) {
-					return response("resource.notfound");
+					return response.notFound("resource.notfound");
 				}
 
 				const stat = DEither.unwrapRight(resultStat);
 
 				if (stat.isDirectory && !params.directoryFallBackFile) {
-					return response("resource.notfound");
+					return response.notFound("resource.notfound");
 				}
 
 				const resource = DSFile.createFileInterface(
@@ -105,13 +98,13 @@ export function makeRouteFolder(params: MakeRouteFolderParams) {
 					: await resource.stat();
 
 				if (DEither.isLeft(resultResourceStat)) {
-					return response("resource.notfound");
+					return response.notFound("resource.notfound");
 				}
 
 				const resourceStat = DEither.unwrapRight(resultResourceStat);
 
 				if (!resourceStat.isFile) {
-					return response("resource.notfound");
+					return response.notFound("resource.notfound");
 				}
 
 				if (
@@ -120,14 +113,14 @@ export function makeRouteFolder(params: MakeRouteFolderParams) {
 					&& resourceStat.modifiedAt
 					&& new Date(request.headers["if-modified-since"]).getTime() >= resourceStat.modifiedAt.getTime()
 				) {
-					return response("resource.notModified")
+					return response.notModified("resource.notModified")
 						.setHeader("last-modified", resourceStat.modifiedAt.toISOString());
 				}
 
 				return resourceStat.modifiedAt
-					? response("resource.found", resource)
+					? response.ok("resource.found", resource)
 						.setHeader("last-modified", resourceStat.modifiedAt.toISOString())
-					: response("resource.found", resource);
+					: response.ok("resource.found", resource);
 			},
 		);
 }

@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("timeout", () => {
 	it("resolves after the requested delay", async() => {
@@ -6,7 +7,7 @@ describe("timeout", () => {
 
 		const result = DCommon.timeout(10);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<void>,
 			"strict"

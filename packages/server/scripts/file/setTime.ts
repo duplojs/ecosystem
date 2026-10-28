@@ -9,12 +9,12 @@ interface SetTimeParams {
 	modifiedTime: DChrono.TheDate;
 }
 
-class SetTimeErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-set-time-not-found", Error) {}
-class SetTimeErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-set-time-permission-denied", Error) {}
-class SetTimeErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-set-time-not-directory", Error) {}
-class SetTimeErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-set-time-read-only", Error) {}
-class SetTimeErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-set-time-invalid-argument", Error) {}
-class SetTimeError extends DCommon.DuploJSError.parentClass("file-system-set-time-error", Error) {}
+export class SetTimeErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-set-time-not-found", Error) {}
+export class SetTimeErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-set-time-permission-denied", Error) {}
+export class SetTimeErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-set-time-not-directory", Error) {}
+export class SetTimeErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-set-time-read-only", Error) {}
+export class SetTimeErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-set-time-invalid-argument", Error) {}
+export class SetTimeError extends DCommon.DuploJSError.parentClass("file-system-set-time-error", Error) {}
 
 export type SetTimeErrors = (
 	| SetTimeErrorNotFound
@@ -83,7 +83,7 @@ function handleDenoSetTimeError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		setTime(
-			path: string & DPath.Path,
+			path: DPath.AnyPath,
 			params: SetTimeParams
 		): Promise<SetTimeResult>;
 	}
@@ -113,23 +113,23 @@ const setTimeImplementation = implementFunction(
 export function setTime(
 	params: SetTimeParams,
 ): (
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 ) => Promise<SetTimeResult>;
 
 export function setTime(
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 	params: SetTimeParams,
 ): Promise<SetTimeResult>;
 
 export function setTime(
 	...args:
 		| [params: SetTimeParams]
-		| [path: string & DPath.Path, params: SetTimeParams]
+		| [path: DPath.AnyPath, params: SetTimeParams]
 ) {
 	if (args.length === 1) {
 		const [params] = args;
 
-		return (path: string & DPath.Path) => setTimeImplementation(
+		return (path: DPath.AnyPath) => setTimeImplementation(
 			path,
 			params,
 		);

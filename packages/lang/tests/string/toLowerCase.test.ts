@@ -1,4 +1,5 @@
-import { DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("toLowerCase", () => {
 	it("should convert string to lower case", () => {
@@ -6,7 +7,7 @@ describe("toLowerCase", () => {
 
 		expect(result).toBe("hello");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"hello",
 			"strict"
@@ -17,7 +18,7 @@ describe("toLowerCase", () => {
 		const sourceMin = "HELLO" as string & DString.MinCharacters<3>;
 		const resultMin = DString.toLowerCase(sourceMin);
 
-		type _CheckMinResult = ExpectType<
+		type _CheckMinResult = DCommon.ExpectType<
 			typeof resultMin,
 			Lowercase<string> & DString.MinCharacters<3>,
 			"strict"
@@ -26,7 +27,7 @@ describe("toLowerCase", () => {
 		const sourceMax = "HELLO" as string & DString.MaxCharacters<5>;
 		const resultMax = DString.toLowerCase(sourceMax);
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			Lowercase<string>,
 			"strict"
@@ -35,7 +36,7 @@ describe("toLowerCase", () => {
 		const sourceLength = "HELLO" as string & DString.LengthEqual<5>;
 		const resultLength = DString.toLowerCase(sourceLength);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			Lowercase<string> & DString.MinCharacters<5>,
 			"strict"

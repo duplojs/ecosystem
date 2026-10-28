@@ -4,9 +4,9 @@ import dts from "unplugin-dts/rolldown";
 export default defineConfig({
 	input: "scripts/index.ts",
 	external: [
-		/^@duplojs\/lang(?:\/.*)?$/,
-		/^@duplojs\/server(?:\/.*)?$/,
+		/^@duplojs\//,
 		"typescript",
+		/^@typescript\//,
 	],
 	platform: "neutral",
 	tsconfig: "tsconfig.build.json",

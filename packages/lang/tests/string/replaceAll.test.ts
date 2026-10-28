@@ -1,4 +1,5 @@
-import { DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("replaceAll", () => {
 	it("should replace all matching strings", () => {
@@ -6,7 +7,7 @@ describe("replaceAll", () => {
 
 		expect(result).toBe("hi hi");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -14,7 +15,7 @@ describe("replaceAll", () => {
 	});
 
 	it("should replace all matching strings in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"hello hello",
 			DString.replaceAll("hello", "hi"),
 		);
@@ -43,13 +44,13 @@ describe("replaceAll", () => {
 			(params) => {
 				calls.push(params);
 
-				type _CheckSelf = ExpectType<
+				type _CheckSelf = DCommon.ExpectType<
 					typeof params.self,
 					"price: 12 EUR, tax: 3 EUR",
 					"strict"
 				>;
 
-				type _CheckNamedGroups = ExpectType<
+				type _CheckNamedGroups = DCommon.ExpectType<
 					typeof params.namedGroups,
 					Record<string, string | undefined>,
 					"strict"

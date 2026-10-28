@@ -188,7 +188,7 @@ describe("route builder process method", () => {
 							readonly shape: {
 								body: DDataStructure.TypeStructure<string, readonly []>;
 							};
-							readonly responseContract: undefined;
+							readonly otherwise: undefined;
 							readonly metadata: readonly [];
 						}>,
 						ProcessStep<{

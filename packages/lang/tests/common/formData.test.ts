@@ -1,4 +1,6 @@
-import { DChrono, DCommon, type ExpectType, pipe } from "@scripts";
+
+import * as DChrono from "@scripts/chrono";
+import * as DCommon from "@scripts/common";
 
 describe("formData", () => {
 	it("creates a form data instance with flattened entries from nested values", () => {
@@ -20,7 +22,7 @@ describe("formData", () => {
 		};
 		const result = DCommon.createFormData(input);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DCommon.TheFormData<typeof input>,
 			"strict"
@@ -85,7 +87,7 @@ describe("formData", () => {
 	});
 
 	it("can be used in a pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			{
 				name: "Jane",
 			},

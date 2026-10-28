@@ -1,4 +1,6 @@
-import { DDataStructure, DModeling, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DModeling from "@scripts/modeling";
 
 describe("createEntityNamespace", () => {
 	it("creates consistently prefixed modeling helpers", () => {
@@ -6,12 +8,12 @@ describe("createEntityNamespace", () => {
 		const name = namespace.createNewType("Name", DDataStructure.string());
 		const entity = namespace.createEntity(() => ({ name }));
 
-		type _CheckName = ExpectType<
+		type _CheckName = DCommon.ExpectType<
 			typeof name,
 			DModeling.NewTypeStructure<"UserName", string, readonly []>,
 			"strict"
 		>;
-		type _CheckEntity = ExpectType<
+		type _CheckEntity = DCommon.ExpectType<
 			typeof entity,
 			DModeling.EntityStructure<
 				"User",

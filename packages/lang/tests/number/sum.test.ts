@@ -1,4 +1,5 @@
-import { DNumber, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DNumber from "@scripts/number";
 
 describe("sum", () => {
 	it("should return the sum of numbers", () => {
@@ -6,7 +7,7 @@ describe("sum", () => {
 
 		expect(result).toBe(4);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -18,7 +19,7 @@ describe("sum", () => {
 	});
 
 	it("should return the sum inside a pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[3, -1, 2],
 			DNumber.sum,
 			(value) => value * 2,

@@ -1,4 +1,5 @@
-import { DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("sortCompare", () => {
 	it("should compare strings with numeric collation", () => {
@@ -6,7 +7,7 @@ describe("sortCompare", () => {
 
 		expect(result).toBeLessThan(0);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -14,7 +15,7 @@ describe("sortCompare", () => {
 	});
 
 	it("should compare strings in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"item-10",
 			DString.sortCompare("item-2"),
 		);

@@ -3,15 +3,15 @@ import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
 
-class EnsureFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-ensure-file-permission-denied", Error) {}
-class EnsureFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-ensure-file-is-directory", Error) {}
-class EnsureFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-ensure-file-not-directory", Error) {}
-class EnsureFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-ensure-file-no-space", Error) {}
-class EnsureFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-ensure-file-read-only", Error) {}
-class EnsureFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-ensure-file-invalid-argument", Error) {}
-class EnsureFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-ensure-file-too-many-open-files", Error) {}
-class EnsureFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-ensure-file-busy", Error) {}
-class EnsureFileError extends DCommon.DuploJSError.parentClass("file-system-ensure-file-error", Error) {}
+export class EnsureFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-ensure-file-permission-denied", Error) {}
+export class EnsureFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-ensure-file-is-directory", Error) {}
+export class EnsureFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-ensure-file-not-directory", Error) {}
+export class EnsureFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-ensure-file-no-space", Error) {}
+export class EnsureFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-ensure-file-read-only", Error) {}
+export class EnsureFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-ensure-file-invalid-argument", Error) {}
+export class EnsureFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-ensure-file-too-many-open-files", Error) {}
+export class EnsureFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-ensure-file-busy", Error) {}
+export class EnsureFileError extends DCommon.DuploJSError.parentClass("file-system-ensure-file-error", Error) {}
 
 export type EnsureFileErrors = (
 	| EnsureFileErrorPermissionDenied
@@ -92,7 +92,7 @@ function handleDenoEnsureFileError(error: Error) {
 }
 declare module "@scripts/implementor" {
 	interface ServerFunction {
-		ensureFile(path: string & DPath.Path): Promise<EnsureFileResult>;
+		ensureFile(path: DPath.AnyPath): Promise<EnsureFileResult>;
 	}
 }
 

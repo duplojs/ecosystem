@@ -8,14 +8,14 @@ Voir [le checker de recherche d'utilisateur](examples/user-checker.ts). Sa capac
 
 - `input` : calcul de l'argument depuis le floor courant ;
 - `result` : information du résultat permettant de continuer ;
-- `otherwise` : contrat de réponse si le résultat attendu n'est pas obtenu ;
+- `otherwise` : callback retournant la réponse si le résultat attendu n'est pas obtenu ; il reçoit `response`, le `floor` courant et le `result` excluant les issues sélectionnées ;
 - `indexing` : clé sous laquelle ajouter la valeur retenue au floor, si elle doit être réutilisée.
 
-L'[exemple de lecture](examples/user-route.ts) interprète ainsi un checker pour une route. Le résultat sélectionné est garanti aux étapes suivantes ; l'autre résultat termine le flux avec la réponse déclarée.
+L'[exemple de lecture](examples/user-route.ts) interprète ainsi un checker pour une route. Le résultat sélectionné est garanti aux étapes suivantes ; l'autre résultat termine le flux avec la réponse retournée par `otherwise`.
 
 ## Preset : réutiliser l'interprétation HTTP
 
-Quand une opération attend toujours le même résultat et produit la même réponse sinon, nommer cette politique avec `createPresetChecker`. Le checker reste réutilisable avec d'autres interprétations ; le preset fixe son usage récurrent.
+Quand une opération attend toujours le même résultat et produit la même réponse sinon, nommer cette politique avec `createPresetChecker`. Le checker reste réutilisable avec d'autres interprétations ; le preset fixe son usage récurrent. Son callback `otherwise` reçoit `response` et le `result` non retenu, sans floor appelant.
 
 Appliquer ensuite `.presetCheck(...)`, fournir l'input depuis le floor et choisir une indexation locale avec `.indexing(...)`. L'[exemple de modification](examples/rename-user-route.ts) réutilise le preset défini dans [le module du checker](examples/user-checker.ts).
 

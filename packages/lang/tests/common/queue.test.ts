@@ -1,9 +1,11 @@
-import { DCommon, DEither, type EscapeVoid, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("queue", () => {
 	it("executes queued tasks in FIFO order with concurrency one", async() => {
 		const queue = DCommon.createQueue({ concurrency: 1 });
-		const blocker = DCommon.createExternalPromise<EscapeVoid>();
+		const blocker = DCommon.createExternalPromise<DCommon.EscapeVoid>();
 		const order: string[] = [];
 
 		const firstTask = queue.add(() => {
@@ -36,7 +38,7 @@ describe("queue", () => {
 		await expect(thirdTask).resolves.toBe("third");
 		expect(order).toStrictEqual(["first-start", "first-end", "second", "third"]);
 
-		type _CheckSecondTask = ExpectType<
+		type _CheckSecondTask = DCommon.ExpectType<
 			typeof secondTask,
 			Promise<
 				| "second"
@@ -48,7 +50,7 @@ describe("queue", () => {
 
 	it("falls back to concurrency one when concurrency is lower than one", async() => {
 		const queue = DCommon.createQueue({ concurrency: 0 });
-		const blocker = DCommon.createExternalPromise<EscapeVoid>();
+		const blocker = DCommon.createExternalPromise<DCommon.EscapeVoid>();
 		let secondStarted = false;
 
 		const firstTask = queue.add(() => blocker.promise.then(() => 1 as const));

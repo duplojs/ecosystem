@@ -1,4 +1,5 @@
-import { DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("isRight", () => {
 	it("should identify right values and reject other inputs", () => {
@@ -16,7 +17,7 @@ describe("isRight", () => {
 		);
 
 		if (DEither.isRight(input)) {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				DEither.Success<42>,
 				"strict"

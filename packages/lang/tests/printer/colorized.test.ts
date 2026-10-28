@@ -1,19 +1,20 @@
-import { DPrinter, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPrinter from "@scripts/printer";
 
 describe("colorized", () => {
 	it("colorizes text with direct and curried calls", () => {
 		const directResult = DPrinter.colorized("value", "red");
-		const curriedResult = pipe(
+		const curriedResult = DCommon.pipe(
 			"value",
 			DPrinter.colorized("red"),
 		);
 
-		type _CheckDirectResult = ExpectType<
+		type _CheckDirectResult = DCommon.ExpectType<
 			typeof directResult,
 			string,
 			"strict"
 		>;
-		type _CheckCurriedResult = ExpectType<
+		type _CheckCurriedResult = DCommon.ExpectType<
 			typeof curriedResult,
 			string,
 			"strict"

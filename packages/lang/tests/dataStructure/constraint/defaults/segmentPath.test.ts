@@ -1,15 +1,17 @@
-import { DDataStructure, type DPath, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DPath from "@scripts/path";
 
 describe("SegmentPathConstraint", () => {
 	it("creates a synchronous segment path constraint", () => {
 		const constraint = DDataStructure.SegmentPathConstraint();
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.SegmentPathConstraint,
 			"strict"
 		>;
-		type _CheckConstraintValue = ExpectType<
+		type _CheckConstraintValue = DCommon.ExpectType<
 			DDataStructure.ConstraintValue<typeof constraint>,
 			DPath.Segment,
 			"strict"

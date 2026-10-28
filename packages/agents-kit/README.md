@@ -30,8 +30,8 @@ pnpm exec duplojs-agents-kit install test --type codex
 
 Two independently installable skills cover HTTP:
 
-- `http-server` (`duplojs-http-server`) guides server setup, routes, reusable flows, and contract and schema generation.
-- `http-client` (`duplojs-http-client`) guides typed calls to DuploJS or external APIs, response expectations, hooks, Predicted mode, SSE, and streams. It accepts generated or handwritten route types.
+- `http-server` (`duplojs-http-server`) guides server setup, routes, and reusable flows.
+- `http-client` (`duplojs-http-client`) guides typed calls to DuploJS or external APIs, response expectations, hooks, Predicted mode, SSE, and streams.
 
 The `server` skill (`duplojs-server`) guides filesystem operations, typed I/O errors, file and folder structures, environment configuration, and process capabilities through `@duplojs/server`. It prioritizes the package's runtime abstractions and distinguishes the process working directory from the module directory.
 

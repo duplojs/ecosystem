@@ -1,4 +1,4 @@
-import { ResponseContract, useRouteBuilder } from "@duplojs/http";
+import { useRouteBuilder } from "@duplojs/http";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 
 useRouteBuilder("GET", "/cookie-check")
@@ -8,13 +8,7 @@ useRouteBuilder("GET", "/cookie-check")
 		},
 	})
 	.handler(
-		ResponseContract.ok(
-			"cookie.checked",
-			DDataStructure.object({
-				session: DDataStructure.string(),
-			}),
-		),
-		({ session }, { response }) => response(
+		({ session }, { response }) => response.ok(
 			"cookie.checked",
 			{
 				session,
@@ -28,6 +22,5 @@ useRouteBuilder("GET", "/cookie-check")
 
 useRouteBuilder("GET", "/cookie-drop")
 	.handler(
-		ResponseContract.noContent("cookie.dropped"),
-		(__, { response }) => response("cookie.dropped").dropCookie("session"),
+		(__, { response }) => response.noContent("cookie.dropped").dropCookie("session"),
 	);

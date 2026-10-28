@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("getDayOfMonth", () => {
 	it("getDayOfMonth returns day of month in UTC", () => {
@@ -8,7 +9,7 @@ describe("getDayOfMonth", () => {
 
 		expect(result).toBe(15);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -23,7 +24,7 @@ describe("getDayOfMonth", () => {
 
 		expect(result).toBe(31);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -37,7 +38,7 @@ describe("getDayOfMonth", () => {
 
 		expect(result).toBe(25);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -45,14 +46,14 @@ describe("getDayOfMonth", () => {
 	});
 
 	it("use in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2021-01-15"),
 			DChrono.getDayOfMonth,
 		);
 
 		expect(result).toBe(15);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -60,14 +61,14 @@ describe("getDayOfMonth", () => {
 	});
 
 	it("use in pipe with timezone", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2021-01-01"),
 			(date) => DChrono.getDayOfMonth(date, "America/New_York"),
 		);
 
 		expect(result).toBe(31);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

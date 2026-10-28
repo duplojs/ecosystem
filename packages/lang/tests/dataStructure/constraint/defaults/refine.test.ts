@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, DNumber, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DNumber from "@scripts/number";
 
 describe("RefineConstraint", () => {
 	it("creates a synchronous refine constraint", () => {
@@ -49,7 +52,7 @@ describe("RefineConstraint", () => {
 			),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.Structure<
 				number,

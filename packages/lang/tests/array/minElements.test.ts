@@ -1,4 +1,5 @@
-import { DArray, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("minElements", () => {
 	it("should validate an array longer than the minimum", () => {
@@ -8,12 +9,12 @@ describe("minElements", () => {
 
 	it("should narrow the array inside a pipe when callback", () => {
 		const source = ["a", "b", "c"] as string[];
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
-			when(
+			DCommon.when(
 				DArray.minElements(3),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						string[] & DArray.MinElements<3>,
 						"strict"
@@ -31,13 +32,13 @@ describe("minElements", () => {
 		const source = ["a", "b", "c"] as string[];
 
 		if (DArray.minElements(source, 3)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				string[] & DArray.MinElements<3>,
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				string[],
 				"strict"
@@ -54,7 +55,7 @@ describe("minElements", () => {
 			| (bigint[] & DArray.MaxElements<5>);
 
 		if (DArray.minElements(source, 3)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				| (number[] & DArray.MinElements<5>)
 				| (string[] & DArray.MinElements<2> & DArray.MinElements<3>)
@@ -63,7 +64,7 @@ describe("minElements", () => {
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				| (string[] & DArray.MinElements<2>)
 				| (symbol[] & DArray.MaxElements<2>)

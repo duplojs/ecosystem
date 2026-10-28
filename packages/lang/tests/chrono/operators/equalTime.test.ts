@@ -1,4 +1,5 @@
-import { DChrono, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("equalTime", () => {
 	it("returns true for equal times", () => {
@@ -29,14 +30,14 @@ describe("equalTime", () => {
 	});
 
 	it("supports pipe usage", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createTime(2, "second"),
 			DChrono.equalTime("time2000+"),
 		);
 
 		expect(result).toBe(true);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			boolean,
 			"strict"

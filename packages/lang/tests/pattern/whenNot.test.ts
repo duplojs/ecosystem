@@ -1,4 +1,5 @@
-import { DPattern, equal, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPattern from "@scripts/pattern";
 
 describe("pattern whenNot", () => {
 	it("match", () => {
@@ -10,7 +11,7 @@ describe("pattern whenNot", () => {
 
 		expect(result).toStrictEqual(DPattern.result("laravel"));
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			"duplojs" | DPattern.PatternResult<"laravel">,
 			"strict"
@@ -26,7 +27,7 @@ describe("pattern whenNot", () => {
 
 		expect(result).toBe("duplojs");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			"duplojs" | DPattern.PatternResult<"laravel">,
 			"strict"
@@ -34,12 +35,12 @@ describe("pattern whenNot", () => {
 	});
 
 	it("wraps unmatched input into pattern result", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"duplojs" as "duplojs" | "laravel",
 			DPattern.whenNot(
 				(value) => value === "duplojs",
 				(value) => {
-					type checkValue = ExpectType<
+					type checkValue = DCommon.ExpectType<
 						typeof value,
 						"laravel",
 						"strict"
@@ -52,9 +53,9 @@ describe("pattern whenNot", () => {
 				},
 			),
 			DPattern.when(
-				equal("duplojs"),
+				DCommon.equal("duplojs"),
 				(value) => {
-					type checkValue = ExpectType<
+					type checkValue = DCommon.ExpectType<
 						typeof value,
 						"duplojs",
 						"strict"
@@ -74,7 +75,7 @@ describe("pattern whenNot", () => {
 			matched: false,
 		});
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			{
 				framework: "duplojs";

@@ -1,4 +1,5 @@
-import { DEither, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("unwrapOtherwise", () => {
 	it("should unwrap right values without calling otherwise", () => {
@@ -13,7 +14,7 @@ describe("unwrapOtherwise", () => {
 		expect(result).toBe(42);
 		expect(otherwise).not.toHaveBeenCalled();
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			42 | "fallback",
 			"strict"
@@ -38,12 +39,12 @@ describe("unwrapOtherwise", () => {
 		expect(leftOtherwise).toHaveBeenCalledOnce();
 		expect(plainOtherwise).toHaveBeenCalledOnce();
 
-		type _CheckLeftResult = ExpectType<
+		type _CheckLeftResult = DCommon.ExpectType<
 			typeof leftResult,
 			"left fallback",
 			"strict"
 		>;
-		type _CheckPlainResult = ExpectType<
+		type _CheckPlainResult = DCommon.ExpectType<
 			typeof plainResult,
 			"plain fallback",
 			"strict"
@@ -57,7 +58,7 @@ describe("unwrapOtherwise", () => {
 				: DEither.success(42)
 		);
 		const otherwise = vi.fn(() => "fallback" as const);
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.unwrapOtherwise(otherwise),
 		);
@@ -65,7 +66,7 @@ describe("unwrapOtherwise", () => {
 		expect(result).toBe("fallback");
 		expect(otherwise).toHaveBeenCalledOnce();
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			42 | "fallback",
 			"strict"

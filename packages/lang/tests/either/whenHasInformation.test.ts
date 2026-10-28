@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, DModeling, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DModeling from "@scripts/modeling";
 
 describe("whenHasInformation", () => {
 	it("should map values matching one information", () => {
@@ -19,7 +22,7 @@ describe("whenHasInformation", () => {
 
 		expect(result).toBe(84);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			84 | DEither.Error<"message">,
 			"strict"
@@ -33,7 +36,7 @@ describe("whenHasInformation", () => {
 				: DEither.success(42)
 		);
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.whenHasInformation(
 				["success", "error"],
@@ -43,7 +46,7 @@ describe("whenHasInformation", () => {
 
 		expect(result).toBe("message");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			`${42 | "message"}`,
 			"strict"
@@ -72,7 +75,7 @@ describe("whenHasInformation", () => {
 			structure.decodeMap(codecs, 42),
 			"map-success",
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					number & DModeling.NewType<"nested-number">,
 					"strict"
@@ -82,7 +85,7 @@ describe("whenHasInformation", () => {
 			},
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| "mapped"
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>

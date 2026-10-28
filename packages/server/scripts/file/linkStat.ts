@@ -6,12 +6,12 @@ import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import type { StatInfo } from "./stat";
 import type { Stats } from "node:fs";
 
-class LinkStatErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-link-stat-not-found", Error) {}
-class LinkStatErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-link-stat-permission-denied", Error) {}
-class LinkStatErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-link-stat-not-directory", Error) {}
-class LinkStatErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-link-stat-too-many-open-files", Error) {}
-class LinkStatErrorBusy extends DCommon.DuploJSError.parentClass("file-system-link-stat-busy", Error) {}
-class LinkStatError extends DCommon.DuploJSError.parentClass("file-system-link-stat-error", Error) {}
+export class LinkStatErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-link-stat-not-found", Error) {}
+export class LinkStatErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-link-stat-permission-denied", Error) {}
+export class LinkStatErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-link-stat-not-directory", Error) {}
+export class LinkStatErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-link-stat-too-many-open-files", Error) {}
+export class LinkStatErrorBusy extends DCommon.DuploJSError.parentClass("file-system-link-stat-busy", Error) {}
+export class LinkStatError extends DCommon.DuploJSError.parentClass("file-system-link-stat-error", Error) {}
 
 export type LinkStatErrors = (
 	| LinkStatErrorNotFound
@@ -154,7 +154,7 @@ function createStatInfoWithDeno(source: Deno.FileInfo): StatInfo {
 
 declare module "@scripts/implementor" {
 	interface ServerFunction {
-		linkStat(path: string & DPath.Path): Promise<LinkStatResult>;
+		linkStat(path: DPath.AnyPath): Promise<LinkStatResult>;
 	}
 }
 

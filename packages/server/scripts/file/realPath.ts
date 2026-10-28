@@ -3,11 +3,11 @@ import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 
-class RealPathErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-real-path-not-found", Error) {}
-class RealPathErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-real-path-permission-denied", Error) {}
-class RealPathErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-real-path-not-directory", Error) {}
-class RealPathErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-real-path-too-many-open-files", Error) {}
-class RealPathError extends DCommon.DuploJSError.parentClass("file-system-real-path-error", Error) {}
+export class RealPathErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-real-path-not-found", Error) {}
+export class RealPathErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-real-path-permission-denied", Error) {}
+export class RealPathErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-real-path-not-directory", Error) {}
+export class RealPathErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-real-path-too-many-open-files", Error) {}
+export class RealPathError extends DCommon.DuploJSError.parentClass("file-system-real-path-error", Error) {}
 
 export type RealPathErrors = (
 	| RealPathErrorNotFound
@@ -74,7 +74,7 @@ function handleDenoRealPathError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		realPath(
-			path: string & DPath.Path,
+			path: DPath.AnyPath,
 		): Promise<RealPathResult>;
 	}
 }

@@ -1,4 +1,7 @@
-import { DDataStructure, type DCommon, type DKind, type ExpectType } from "@scripts";
+
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DCommon from "@scripts/common";
+import type * as DKind from "@scripts/kind";
 
 describe("createType", () => {
 	it("checks the fundamental type before delegating to the type implementation", () => {
@@ -60,12 +63,12 @@ describe("createType", () => {
 
 		const type = TestType();
 
-		type _CheckType = ExpectType<
+		type _CheckType = DCommon.ExpectType<
 			typeof type,
 			TestType,
 			"strict"
 		>;
-		type _CheckTypeValue = ExpectType<
+		type _CheckTypeValue = DCommon.ExpectType<
 			DDataStructure.TypeValue<typeof type>,
 			"valid",
 			"strict"
@@ -188,7 +191,7 @@ describe("createType", () => {
 		const type = TestType();
 		const clonedType = type.clone();
 
-		type _CheckClonedType = ExpectType<
+		type _CheckClonedType = DCommon.ExpectType<
 			typeof clonedType,
 			TestType,
 			"strict"
@@ -229,7 +232,7 @@ describe("createType", () => {
 		const type = TestType();
 		const sameType = type.setMessage("Direct message");
 
-		type _CheckSameType = ExpectType<
+		type _CheckSameType = DCommon.ExpectType<
 			typeof sameType,
 			TestType,
 			"strict"
@@ -240,7 +243,7 @@ describe("createType", () => {
 
 		const clonedType = type.addMessage("Cloned message");
 
-		type _CheckClonedType = ExpectType<
+		type _CheckClonedType = DCommon.ExpectType<
 			typeof clonedType,
 			TestType,
 			"strict"

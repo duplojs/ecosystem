@@ -1,4 +1,4 @@
-import { DChrono } from "@scripts";
+import * as DChrono from "@scripts/chrono";
 
 describe("createOrThrow", () => {
 	it("creates from timestamp", () => {

@@ -1,4 +1,4 @@
-import { DDataStructure } from "@scripts";
+import * as DDataStructure from "@scripts/dataStructure";
 
 describe("createErrorHandler", () => {
 	it("creates a promise error for asynchronous data structures used through synchronous APIs", () => {

@@ -1,4 +1,5 @@
-import { DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("test", () => {
 	it("should test a string against a regexp", () => {
@@ -6,7 +7,7 @@ describe("test", () => {
 
 		expect(result).toBe(true);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			boolean,
 			"strict"
@@ -14,7 +15,7 @@ describe("test", () => {
 	});
 
 	it("should test a string against a regexp in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"user-42",
 			DString.test(/^user-\d+$/),
 		);

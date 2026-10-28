@@ -1,4 +1,5 @@
-import { DKind, type ExpectType, pipe, when } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DKind from "@scripts/kind";
 
 describe("has", () => {
 	it("checks that an input has every requested kind", () => {
@@ -20,7 +21,7 @@ describe("has", () => {
 		const input: typeof both | typeof first | typeof plain = both;
 
 		if (DKind.has(input, [firstKind, secondKind])) {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				typeof both,
 				"strict"
@@ -37,12 +38,12 @@ describe("has", () => {
 		const both = secondKind.addTo(first, "two");
 		const input: typeof both | typeof first = both;
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
-			when(
+			DCommon.when(
 				DKind.has([firstKind, secondKind]),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						typeof both,
 						"strict"

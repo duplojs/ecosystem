@@ -7,15 +7,15 @@ interface RemoveDirectoryParams {
 	recursive?: boolean;
 }
 
-class RemoveErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-remove-not-found", Error) {}
-class RemoveErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-remove-permission-denied", Error) {}
-class RemoveErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-remove-is-directory", Error) {}
-class RemoveErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-remove-not-directory", Error) {}
-class RemoveErrorDirectoryNotEmpty extends DCommon.DuploJSError.parentClass("file-system-remove-directory-not-empty", Error) {}
-class RemoveErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-remove-read-only", Error) {}
-class RemoveErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-remove-invalid-argument", Error) {}
-class RemoveErrorBusy extends DCommon.DuploJSError.parentClass("file-system-remove-busy", Error) {}
-class RemoveError extends DCommon.DuploJSError.parentClass("file-system-remove-error", Error) {}
+export class RemoveErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-remove-not-found", Error) {}
+export class RemoveErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-remove-permission-denied", Error) {}
+export class RemoveErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-remove-is-directory", Error) {}
+export class RemoveErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-remove-not-directory", Error) {}
+export class RemoveErrorDirectoryNotEmpty extends DCommon.DuploJSError.parentClass("file-system-remove-directory-not-empty", Error) {}
+export class RemoveErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-remove-read-only", Error) {}
+export class RemoveErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-remove-invalid-argument", Error) {}
+export class RemoveErrorBusy extends DCommon.DuploJSError.parentClass("file-system-remove-busy", Error) {}
+export class RemoveError extends DCommon.DuploJSError.parentClass("file-system-remove-error", Error) {}
 
 export type RemoveErrors = (
 	| RemoveErrorNotFound
@@ -97,7 +97,7 @@ function handleDenoRemoveError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		remove(
-			path: string & DPath.Path,
+			path: DPath.AnyPath,
 			params?: RemoveDirectoryParams
 		): Promise<RemoveResult>;
 	}

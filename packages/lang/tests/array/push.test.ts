@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("push", () => {
 	it("should push values without mutating the source", () => {
@@ -8,7 +9,7 @@ describe("push", () => {
 		expect(result).toEqual([1, 2, "a", true]);
 		expect(source).toEqual([1, 2]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly (number | "a" | boolean)[] & DArray.MinElements<3>,
 			"strict"
@@ -16,7 +17,7 @@ describe("push", () => {
 	});
 
 	it("should push a value in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, 2] as const,
 			DArray.push("a"),
 		);
@@ -32,7 +33,7 @@ describe("push", () => {
 
 		expect(result).toEqual([1, 2, 3, "x"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly (number | "x")[] & DArray.MinElements<1> & DArray.MaxElements<1>)
 			| (readonly (number | "x")[] & DArray.MinElements<4> & DArray.MaxElements<4>),
@@ -44,7 +45,7 @@ describe("push", () => {
 		const sourceMax = [1, 2] as number[] & DArray.MaxElements<2>;
 		const resultMax = DArray.push(sourceMax, "a" as string);
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			readonly (number | string)[] & DArray.MaxElements<3>,
 			"strict"
@@ -53,7 +54,7 @@ describe("push", () => {
 		const sourceLength = [1, 2] as number[] & DArray.LengthEqual<2>;
 		const resultLength = DArray.push(sourceLength, "a" as string);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			readonly (number | string)[] & DArray.MinElements<3> & DArray.MaxElements<3>,
 			"strict"

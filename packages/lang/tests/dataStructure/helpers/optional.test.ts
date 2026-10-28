@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, type DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DString from "@scripts/string";
 
 describe("optional", () => {
 	it("keeps structure constraints when adding undefined to a non-union structure", () => {
@@ -6,7 +9,7 @@ describe("optional", () => {
 			DDataStructure.string([DDataStructure.email()]),
 		);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.UnionStructure<
 				| string & DString.Email
@@ -15,7 +18,7 @@ describe("optional", () => {
 			>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			| string & DString.Email
 			| undefined,
@@ -41,7 +44,7 @@ describe("optional", () => {
 			]),
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string | undefined,
 			"strict"
@@ -61,12 +64,12 @@ describe("optional", () => {
 			),
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string | undefined,
 			"strict"
 		>;
-		type _CheckConstraints = ExpectType<
+		type _CheckConstraints = DCommon.ExpectType<
 			typeof structure.definition.constraints,
 			readonly [],
 			"strict"
@@ -85,7 +88,7 @@ describe("optional", () => {
 		).addConstraint(
 			DDataStructure.refine(
 				(data): data is string => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						string | undefined,
 						"strict"
@@ -96,7 +99,7 @@ describe("optional", () => {
 			),
 		);
 
-		type _CheckConstraints = ExpectType<
+		type _CheckConstraints = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.Structure<
 				string | undefined,
@@ -106,7 +109,7 @@ describe("optional", () => {
 			>,
 			"strict"
 		>;
-		type _CheckValue = ExpectType<
+		type _CheckValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string,
 			"strict"

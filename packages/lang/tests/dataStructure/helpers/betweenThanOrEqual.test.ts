@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, type DNumber, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DNumber from "@scripts/number";
 
 describe("betweenThanOrEqual", () => {
 	it("creates and applies an inclusive range constraint", () => {
@@ -7,12 +10,12 @@ describe("betweenThanOrEqual", () => {
 		const success = structure.check(1);
 		const failure = structure.check(0);
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.BetweenThanOrEqualConstraint<1, 3>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			number & DNumber.GreaterThanOrEqual<1> & DNumber.LessThanOrEqual<3>,
 			"strict"

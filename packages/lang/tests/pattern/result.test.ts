@@ -1,4 +1,6 @@
-import { type ExpectType, DPattern, DKind } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DPattern from "@scripts/pattern";
+import * as DKind from "@scripts/kind";
 
 describe("Pattern result", () => {
 	it("stores value with pattern result kind", () => {
@@ -9,7 +11,7 @@ describe("Pattern result", () => {
 			[`${DKind.keyKindPrefix}@DuplojsLangPattern/result`]: input,
 		});
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof patternResult,
 			DPattern.PatternResult<typeof input>,
 			"strict"
@@ -27,7 +29,7 @@ describe("Pattern result", () => {
 		const unionPattern: DPattern.PatternResult<typeof sample> | typeof notPattern = patternResult;
 
 		if (DPattern.isResult(unionPattern)) {
-			type check = ExpectType<
+			type check = DCommon.ExpectType<
 				typeof unionPattern,
 				DPattern.PatternResult<typeof sample>,
 				"strict"
@@ -37,7 +39,7 @@ describe("Pattern result", () => {
 		const unionNotPattern: DPattern.PatternResult<typeof sample> | typeof notPattern = notPattern;
 
 		if (!DPattern.isResult(unionNotPattern)) {
-			type check = ExpectType<
+			type check = DCommon.ExpectType<
 				typeof unionNotPattern,
 				typeof notPattern,
 				"strict"

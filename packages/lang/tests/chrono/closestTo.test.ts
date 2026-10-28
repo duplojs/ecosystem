@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("closestTo", () => {
 	it("returns closest date without tie breaker", () => {
@@ -20,7 +21,7 @@ describe("closestTo", () => {
 			DChrono.toTimestamp(DChrono.createDate("2024-01-05")),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate | undefined,
 			"strict"
@@ -139,7 +140,7 @@ describe("closestTo", () => {
 			{ tieBreaker: "favorFuture" },
 		);
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			dates,
 			selectClosest,
 		);

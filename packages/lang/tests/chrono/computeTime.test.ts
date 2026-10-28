@@ -1,4 +1,5 @@
-import { DChrono, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("computeTime", () => {
 	it("converts TheTime to requested unit with classic call", () => {
@@ -7,7 +8,7 @@ describe("computeTime", () => {
 
 		expect(result).toBe(7);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -32,14 +33,14 @@ describe("computeTime", () => {
 	});
 
 	it("works in pipe with curried overload", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createTime(7_200_000, "millisecond"),
 			DChrono.computeTime("hour"),
 		);
 
 		expect(result).toBeCloseTo(2);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

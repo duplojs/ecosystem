@@ -1,6 +1,6 @@
-import { MissingBuilderMethodsError, builderKind, createBuilder, type Builder } from "@scripts";
+import * as DCommon from "@scripts/common";
 
-interface PersonBuilder extends Builder<{
+interface PersonBuilder extends DCommon.Builder<{
 	name?: string;
 	age: number;
 }> {
@@ -16,7 +16,7 @@ interface PersonBuilder extends Builder<{
 
 describe("builder", () => {
 	it("createBuilder", () => {
-		const personBuilder = createBuilder<PersonBuilder>("person-builder-test");
+		const personBuilder = DCommon.createBuilder<PersonBuilder>("person-builder-test");
 
 		personBuilder
 			.set("setName", (params) => {
@@ -42,7 +42,7 @@ describe("builder", () => {
 			age: 0,
 		});
 
-		expect(builderKind.has(builder)).toBe(true);
+		expect(DCommon.builderKind.has(builder)).toBe(true);
 
 		expect(builder.build()).toStrictEqual({
 			age: 0,
@@ -70,7 +70,7 @@ describe("builder", () => {
 		expect(builder.getName()).toStrictEqual(undefined);
 		expect(builder.setName("math").getName()).toStrictEqual("math");
 
-		expect(builderKind.getValue(builder)).toStrictEqual({ age: 0 });
-		expect(() => builder.makeError()).toThrow(MissingBuilderMethodsError);
+		expect(DCommon.builderKind.getValue(builder)).toStrictEqual({ age: 0 });
+		expect(() => builder.makeError()).toThrow(DCommon.MissingBuilderMethodsError);
 	});
 });

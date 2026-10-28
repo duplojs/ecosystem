@@ -3,7 +3,7 @@
  *
  * Un preset fixe le résultat attendu et la réponse d'absence du checker.
  */
-import { createPresetChecker, ResponseContract, useCheckerBuilder } from "@duplojs/http";
+import { createPresetChecker, useCheckerBuilder } from "@duplojs/http";
 import * as DEither from "@duplojs/lang/either";
 import { type User } from "./contracts";
 
@@ -22,5 +22,5 @@ export const userExist = useCheckerBuilder()
 
 export const iWantUserExist = createPresetChecker(userExist, {
 	result: "user.found",
-	otherwise: ResponseContract.notFound("user.notFound"),
+	otherwise: ({ response }) => response.notFound("user.notFound"),
 });

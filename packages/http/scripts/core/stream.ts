@@ -51,9 +51,9 @@ export namespace Stream {
 				const params: StartSendingParams = {
 					send: async(...args) => {
 						if (isClose) {
-							return Promise.resolve();
+							return;
 						} else if (isAbort) {
-							return Promise.resolve();
+							return;
 						}
 
 						for (let index = 0; index < args.length; index++) {

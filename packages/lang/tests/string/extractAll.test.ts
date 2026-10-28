@@ -1,4 +1,6 @@
-import { DArray, DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
+import * as DString from "@scripts/string";
 
 describe("extractAll", () => {
 	it("should extract every match with groups", () => {
@@ -24,7 +26,7 @@ describe("extractAll", () => {
 			},
 		]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Generator<DString.ExtractOutput<"price: 12 EUR, tax: 3 USD">>,
 			"strict"
@@ -32,7 +34,7 @@ describe("extractAll", () => {
 	});
 
 	it("should extract matches in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"user-42-role-7",
 			DString.extractAll(/\d+/g),
 			DArray.from,

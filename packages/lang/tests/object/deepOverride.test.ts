@@ -1,4 +1,8 @@
-import { type DArray, type DCommon, DModeling, type DNumber, DObject, pipe, type ExpectType } from "@scripts";
+import type * as DArray from "@scripts/array";
+import * as DCommon from "@scripts/common";
+import * as DModeling from "@scripts/modeling";
+import type * as DNumber from "@scripts/number";
+import * as DObject from "@scripts/object";
 
 describe("deepOverride", () => {
 	it("should deeply override defined values", () => {
@@ -26,7 +30,7 @@ describe("deepOverride", () => {
 		expect(result).not.toBe(source);
 		expect(result.metadata).not.toBe(source.metadata);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			{
 				name: string;
@@ -281,7 +285,7 @@ describe("deepOverride", () => {
 		expect(result.value).toBe(constrainedOverride);
 		expect(unconstrainedResult.value).toBe(-1);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof unconstrainedResult,
 			typeof source,
 			"strict"
@@ -351,7 +355,7 @@ describe("deepOverride", () => {
 		expect(DModeling.entityKind.has(result)).toBe(true);
 		expect(DModeling.entityKind.getValue(result)).toBe("user");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			typeof source,
 			"strict"
@@ -413,7 +417,7 @@ describe("deepOverride", () => {
 				enabled: false,
 			},
 		};
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
 			DObject.deepOverride({ metadata: { version: 2 } }),
 		);
@@ -425,7 +429,7 @@ describe("deepOverride", () => {
 			},
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			typeof source,
 			"strict"

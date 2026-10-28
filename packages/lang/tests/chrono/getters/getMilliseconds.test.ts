@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("getMilliseconds", () => {
 	it("getMilliseconds returns milliseconds", () => {
@@ -13,7 +14,7 @@ describe("getMilliseconds", () => {
 
 		expect(result).toBe(123);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -31,7 +32,7 @@ describe("getMilliseconds", () => {
 
 		expect(result).toBe(0);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -50,7 +51,7 @@ describe("getMilliseconds", () => {
 
 		expect(result).toBe(999);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -58,7 +59,7 @@ describe("getMilliseconds", () => {
 	});
 
 	it("use in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2021-01-01", {
 				hour: "12",
 				minute: "30",
@@ -70,7 +71,7 @@ describe("getMilliseconds", () => {
 
 		expect(result).toBe(123);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

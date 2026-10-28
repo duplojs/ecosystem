@@ -1,4 +1,5 @@
-import { DObject, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DObject from "@scripts/object";
 
 describe("assign", () => {
 	it("should assign values to an object", () => {
@@ -19,7 +20,7 @@ describe("assign", () => {
 			enabled: true,
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			{
 				name: string;
@@ -31,7 +32,7 @@ describe("assign", () => {
 	});
 
 	it("should assign values in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			{
 				name: "Duplo",
 				count: 1,

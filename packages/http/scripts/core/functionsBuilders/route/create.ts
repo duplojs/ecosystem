@@ -1,10 +1,9 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import { type BuildedRoute, type HookRouteLifeCycle, type Route } from "@core/route";
-import { type Environment } from "@core/types";
+import { type Environment, type ExtractOtherwise } from "@core/types";
 import { type BuildStepSuccessEither, type BuildStepNotSupportEither } from "../steps";
 import { type Steps } from "@core/steps";
-import { type ResponseContract } from "@core/response";
 
 export type BuildRouteSuccessEither = DEither.Right<"buildSuccess", BuildedRoute>;
 
@@ -26,7 +25,7 @@ export interface RouteFunctionBuilderParams {
 		result: BuildedRoute
 	): BuildRouteSuccessEither;
 
-	readonly defaultExtractContract: ResponseContract.Contract;
+	readonly defaultExtractOtherwise: ExtractOtherwise;
 }
 
 export function createRouteFunctionBuilder(

@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, DModeling, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DModeling from "@scripts/modeling";
 
 describe("unwrapSelection", () => {
 	it("should unwrap selected information and keep unselected values", () => {
@@ -18,7 +21,7 @@ describe("unwrapSelection", () => {
 
 		expect(result).toBe(42);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			42 | DEither.Error<"message">,
 			"strict"
@@ -32,7 +35,7 @@ describe("unwrapSelection", () => {
 				: DEither.success(42)
 		);
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.unwrapSelection({
 				success: false,
@@ -42,7 +45,7 @@ describe("unwrapSelection", () => {
 
 		expect(result).toBe("message");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"message" | DEither.Success<42>,
 			"strict"
@@ -82,7 +85,7 @@ describe("unwrapSelection", () => {
 
 		expect(result).toBe("Jane");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (string & DModeling.NewType<"user-name">)
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>

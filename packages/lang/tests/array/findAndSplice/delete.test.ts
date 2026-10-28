@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("findAndSpliceDelete", () => {
 	it("should delete values from the first match without mutating the source", () => {
@@ -15,7 +16,7 @@ describe("findAndSpliceDelete", () => {
 		expect(result).toEqual(["a", "ccc"]);
 		expect(source).toEqual(["a", "bb", "ccc"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			(readonly string[] & DArray.MaxElements<3>) | undefined,
 			"strict"
@@ -23,7 +24,7 @@ describe("findAndSpliceDelete", () => {
 	});
 
 	it("should delete values from the first match in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["a", "bb", "ccc"] as const,
 			DArray.findAndSpliceDelete((value) => value === "bb", 1),
 		);
@@ -45,7 +46,7 @@ describe("findAndSpliceDelete", () => {
 
 		expect(result).toEqual([1, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly number[] & DArray.MaxElements<0>)
 			| (readonly number[] & DArray.MaxElements<3>)
@@ -58,7 +59,7 @@ describe("findAndSpliceDelete", () => {
 		const sourceMin = ["a", "bb", "ccc"] as string[] & DArray.MinElements<3>;
 		const resultMin = DArray.findAndSpliceDelete(sourceMin, () => true, 1);
 
-		type _CheckMinResult = ExpectType<
+		type _CheckMinResult = DCommon.ExpectType<
 			typeof resultMin,
 			readonly string[] | undefined,
 			"strict"
@@ -67,7 +68,7 @@ describe("findAndSpliceDelete", () => {
 		const sourceLength = ["a", "bb", "ccc"] as string[] & DArray.LengthEqual<3>;
 		const resultLength = DArray.findAndSpliceDelete(sourceLength, () => true, 1);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			(readonly string[] & DArray.MaxElements<3>) | undefined,
 			"strict"

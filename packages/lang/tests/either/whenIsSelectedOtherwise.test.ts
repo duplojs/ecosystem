@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, DModeling, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DModeling from "@scripts/modeling";
 
 describe("whenIsSelectedOtherwise", () => {
 	it("should call the selected callback and type the otherwise value", () => {
@@ -19,7 +22,7 @@ describe("whenIsSelectedOtherwise", () => {
 				return 84;
 			},
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					DEither.Error<"message">,
 					"strict"
@@ -31,7 +34,7 @@ describe("whenIsSelectedOtherwise", () => {
 
 		expect(result).toBe(84);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			84 | DEither.Error<"message">,
 			"strict"
@@ -40,7 +43,7 @@ describe("whenIsSelectedOtherwise", () => {
 
 	it("should call otherwise for unselected information in pipe", () => {
 		const input = DEither.error("message");
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.whenIsSelectedOtherwise(
 				{
@@ -69,7 +72,7 @@ describe("whenIsSelectedOtherwise", () => {
 				"map-error": false,
 			},
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					string & DModeling.NewType<"user-name">,
 					"strict"
@@ -78,7 +81,7 @@ describe("whenIsSelectedOtherwise", () => {
 				return "selected" as const;
 			},
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 					| DEither.Left<"map-error", DDataStructure.Error>,
@@ -91,7 +94,7 @@ describe("whenIsSelectedOtherwise", () => {
 
 		expect(result).toBe("selected");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"selected" | "otherwise",
 			"strict"

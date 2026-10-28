@@ -3,24 +3,25 @@
  *
  * Les sélecteurs imposent un choix pour chaque cas du contrat de la requête.
  */
-import * as DHttpClient from "@duplojs/http/client";
+import { createHttpClient } from "@duplojs/http/client";
 import * as DEither from "@duplojs/lang/either";
 import type * as DCommon from "@duplojs/lang/common";
 
 interface Routes {
-	method: "GET";
-	path: "/profile";
-	responses: {
-		code: "200";
-		information: "profile.found";
-		body: { name: string };
+	readonly method: "GET";
+	readonly path: "/profile";
+	readonly responses: {
+		readonly code: "200";
+		readonly information: "profile.found";
+		readonly body: { name: string };
 	} | {
-		code: "401";
-		information: "auth.required";
+		readonly code: "401";
+		readonly information: "auth.required";
+		readonly body: undefined;
 	};
 }
 
-const client = DHttpClient.createHttpClient<Routes>({
+const client = createHttpClient<Routes>({
 	baseUrl: "https://duplo-api.example.com",
 	// Le mode Predicted reste actif pour cette API DuploJS.
 });

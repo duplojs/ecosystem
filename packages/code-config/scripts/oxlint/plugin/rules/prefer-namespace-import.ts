@@ -42,6 +42,7 @@ export const preferNamespaceImport: Rule.RuleModule = {
 		)?.paths ?? {};
 
 		const importsByPath = new Map<string, number>();
+		const namespaceImportsToRewrite = new Map<Extract<(typeof sourceCode.ast.body)[number], { type: "ImportDeclaration" }>, string>();
 		const reports: (Omit<Rule.ReportDescriptorOptions, "fix"> & {
 			node: Parameters<typeof sourceCode.getScope>[0];
 			messageId: string;
@@ -49,13 +50,9 @@ export const preferNamespaceImport: Rule.RuleModule = {
 		})[] = [];
 		const namespacesByPath = new Map<string, {
 			name: string;
-			typeOnly: boolean;
+			declaration: Extract<(typeof sourceCode.ast.body)[number], { type: "ImportDeclaration" }>;
 			variable: ReturnType<typeof sourceCode.getDeclaredVariables>[number] | undefined;
 		}[]>();
-
-		const getImportKind = (node: unknown) => (
-			(node as { importKind?: "type" | "value" }).importKind
-		);
 
 		return {
 			Program(node) {
@@ -79,7 +76,7 @@ export const preferNamespaceImport: Rule.RuleModule = {
 							...(namespacesByPath.get(path) ?? []),
 							{
 								name: specifier.local.name,
-								typeOnly: getImportKind(statement) === "type",
+								declaration: statement,
 								variable: sourceCode.getDeclaredVariables(specifier)[0],
 							},
 						]);
@@ -114,18 +111,9 @@ export const preferNamespaceImport: Rule.RuleModule = {
 					return;
 				}
 
-				const hasDefaultImport = node.specifiers.some(
-					(specifier) => specifier.type === "ImportDefaultSpecifier",
-				);
-				const onlyTypes = getImportKind(node) === "type" || (
-					!hasDefaultImport
-					&& named.every((specifier) => getImportKind(specifier) === "type")
-				);
-
 				const reusableNamespace = !namespaceSpecifier
 					? namespacesByPath.get(path)?.find((item) => (
 						item.name === namespace
-						&& (!item.typeOnly || onlyTypes)
 					))
 					: undefined;
 
@@ -233,16 +221,17 @@ export const preferNamespaceImport: Rule.RuleModule = {
 						: (fixer) => {
 							const fixes: Rule.Fix[] = [];
 
-							if (namespaceSpecifier) {
-								fixes.push(
-									fixer.replaceText(
-										namespaceSpecifier.local,
-										namespace,
-									),
-								);
-							} else if (reusableNamespace) {
+							if (reusableNamespace) {
 								if (node.specifiers.length === named.length) {
-									fixes.push(fixer.remove(node));
+									const lineStart = sourceCode.text.lastIndexOf("\n", node.range![0] - 1) + 1;
+									const prefix = sourceCode.text.slice(lineStart, node.range![0]);
+									const trailing = sourceCode.text.slice(node.range![1]).match(/^[\t ]*(?:\r?\n|$)/);
+
+									fixes.push(fixer.removeRange(
+										/^[\t ]*$/.test(prefix) && trailing
+											? [lineStart, node.range![1] + trailing[0].length]
+											: node.range!,
+									));
 								} else {
 									const comma = sourceCode.getTokenBefore(openingBrace!);
 
@@ -255,24 +244,9 @@ export const preferNamespaceImport: Rule.RuleModule = {
 										closingBrace!.range[1],
 									]));
 								}
-							} else {
-								fixes.push(fixer.replaceTextRange(
-									[
-										openingBrace!.range[0],
-										closingBrace!.range[1],
-									],
-									`* as ${namespace}`,
-								));
-
-								if (onlyTypes && getImportKind(node) !== "type") {
-									fixes.push(
-										fixer.insertTextAfter(
-											sourceCode.getFirstToken(node)!,
-											" type",
-										),
-									);
-								}
 							}
+
+							namespaceImportsToRewrite.set(reusableNamespace?.declaration ?? node, namespace);
 
 							for (const { identifier, member } of references) {
 								const parent = (identifier as typeof identifier & {
@@ -298,9 +272,29 @@ export const preferNamespaceImport: Rule.RuleModule = {
 			"Program:exit"() {
 				// Import edits and their references can span other imports. Group the
 				// fixes so Oxlint can apply them together without overlapping reports.
-				const fixAll = (fixer: Parameters<Rule.ReportFixer>[0]) => reports.flatMap(
-					(report) => report.fix?.(fixer) ?? [],
-				);
+				const fixAll = (fixer: Parameters<Rule.ReportFixer>[0]) => {
+					namespaceImportsToRewrite.clear();
+					const fixes = reports.flatMap((report) => report.fix?.(fixer) ?? []);
+
+					for (const [declaration, namespace] of namespaceImportsToRewrite) {
+						const defaultSpecifier = declaration.specifiers.find(
+							(specifier) => specifier.type === "ImportDefaultSpecifier",
+						);
+						const comments = sourceCode.getCommentsInside(declaration)
+							.filter((comment) => comment.range![1] < declaration.source.range![0])
+							.map((comment) => `${sourceCode.text.slice(...comment.range!)}${comment.type === "Line" ? "\n" : " "}`)
+							.join("");
+						const defaultImport = defaultSpecifier ? `${sourceCode.getText(defaultSpecifier)}, ` : "";
+						const suffix = sourceCode.text.slice(declaration.source.range![1], declaration.range![1]);
+
+						fixes.push(fixer.replaceText(
+							declaration,
+							`import ${comments}${defaultImport}* as ${namespace} from ${sourceCode.getText(declaration.source)}${suffix}`,
+						));
+					}
+
+					return fixes;
+				};
 
 				for (const report of reports) {
 					context.report({

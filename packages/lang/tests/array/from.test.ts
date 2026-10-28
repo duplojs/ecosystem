@@ -1,4 +1,5 @@
-import { DArray, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("from", () => {
 	it("should create an array from an iterable", () => {
@@ -6,7 +7,7 @@ describe("from", () => {
 
 		expect(result).toEqual(["a", "b"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly string[],
 			"strict"
@@ -32,7 +33,7 @@ describe("from", () => {
 
 		const result = DArray.from(createAsyncIterable());
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<readonly ("a" | "b")[]>,
 			"strict"

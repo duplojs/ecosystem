@@ -1,15 +1,17 @@
-import { DDataStructure, type DNumber, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DNumber from "@scripts/number";
 
 describe("BetweenThanConstraint", () => {
 	it("creates a synchronous between than constraint", () => {
 		const constraint = DDataStructure.BetweenThanConstraint(1, 3);
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.BetweenThanConstraint<1, 3>,
 			"strict"
 		>;
-		type _CheckConstraintValue = ExpectType<
+		type _CheckConstraintValue = DCommon.ExpectType<
 			DDataStructure.ConstraintValue<typeof constraint>,
 			DNumber.GreaterThan<1> & DNumber.LessThan<3>,
 			"strict"

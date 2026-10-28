@@ -1,9 +1,9 @@
 import { RouteDefinition } from '../../route';
 import { ExtractShape, ExtractStep } from '../../steps';
-import { ClientErrorResponseCode, ResponseContract } from '../../response';
+import { PredictedResponse } from '../../response';
 import { Request } from '../../request';
 import { Metadata } from '../../metadata';
-import { ExtractParamsKeyFromPath, Floor } from '../../types';
+import { ExtractParamsKeyFromPath, Floor, ExtractOtherwise, ExtractStepOtherwiseParams } from '../../types';
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DObject from "@duplojs/lang/object";
@@ -12,12 +12,12 @@ type HandleParamsInference<GenericShape extends ExtractShape, GenericPath extend
 });
 declare module "./builder" {
     interface RouteBuilder<GenericDefinition extends RouteDefinition = RouteDefinition, GenericFloor extends Floor = {}> {
-        extract<GenericShape extends ExtractShape<Request>, GenericResponseContract extends (ResponseContract.Contract<ClientErrorResponseCode, string, DDataStructure.Structure<undefined>> | undefined) = never, const GenericMetadata extends readonly Metadata[] = readonly []>(shape: HandleParamsInference<GenericShape, GenericDefinition["paths"][number]>, responseContract?: GenericResponseContract, ...metadata: GenericMetadata): RouteBuilder<DObject.Assign<GenericDefinition, {
+        extract<GenericShape extends ExtractShape<Request>, GenericResponse extends PredictedResponse = never, const GenericMetadata extends readonly Metadata[] = readonly []>(shape: HandleParamsInference<GenericShape, GenericDefinition["paths"][number]>, otherwise?: (param: ExtractStepOtherwiseParams<GenericFloor>) => GenericResponse, ...metadata: GenericMetadata): RouteBuilder<DObject.Assign<GenericDefinition, {
             readonly steps: readonly [
                 ...GenericDefinition["steps"],
                 ExtractStep<{
                     readonly shape: GenericShape;
-                    readonly responseContract: DCommon.NeverCoalescing<GenericResponseContract, undefined>;
+                    readonly otherwise: DCommon.IsNever<GenericResponse> extends true ? undefined : ExtractOtherwise<GenericFloor, GenericResponse>;
                     readonly metadata: GenericMetadata;
                 }>
             ];

@@ -11,7 +11,7 @@ export class InvalidInstructionsMarkersError extends DCommon.DuploJSError.parent
 export function synchronizeInstructions(
 	content: string,
 	instructions: string,
-	packagePath: string & DPath.Path,
+	packagePath: DPath.AnyPath,
 ) {
 	const resolvedInstructions = DString.replaceAll(instructions, "{{packagePath}}", () => packagePath);
 	const block = `${startMarker}\n${resolvedInstructions}\n${stopMarker}`;

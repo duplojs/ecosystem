@@ -1,4 +1,7 @@
-import { DCommon, DKind, DObject, type ExpectType } from "@scripts";
+
+import type * as DCommon from "@scripts/common";
+import * as DKind from "@scripts/kind";
+import * as DObject from "@scripts/object";
 
 describe("keys", () => {
 	it("should list public object keys", () => {
@@ -21,7 +24,7 @@ describe("keys", () => {
 			version: 1,
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly ("name" | "version")[],
 			"strict"

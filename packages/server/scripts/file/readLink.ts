@@ -3,12 +3,12 @@ import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
 
-class ReadLinkErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-link-not-found", Error) {}
-class ReadLinkErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-link-permission-denied", Error) {}
-class ReadLinkErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-read-link-invalid-argument", Error) {}
-class ReadLinkErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-read-link-not-directory", Error) {}
-class ReadLinkErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-read-link-too-many-open-files", Error) {}
-class ReadLinkError extends DCommon.DuploJSError.parentClass("file-system-read-link-error", Error) {}
+export class ReadLinkErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-link-not-found", Error) {}
+export class ReadLinkErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-link-permission-denied", Error) {}
+export class ReadLinkErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-read-link-invalid-argument", Error) {}
+export class ReadLinkErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-read-link-not-directory", Error) {}
+export class ReadLinkErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-read-link-too-many-open-files", Error) {}
+export class ReadLinkError extends DCommon.DuploJSError.parentClass("file-system-read-link-error", Error) {}
 
 export type ReadLinkErrors = (
 	| ReadLinkErrorNotFound
@@ -79,7 +79,7 @@ function handleDenoReadLinkError(error: Error) {
 
 declare module "@scripts/implementor" {
 	interface ServerFunction {
-		readLink(path: string & DPath.Path): Promise<ReadLinkResult>;
+		readLink(path: DPath.AnyPath): Promise<ReadLinkResult>;
 	}
 }
 

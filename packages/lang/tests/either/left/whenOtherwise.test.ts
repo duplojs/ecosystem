@@ -1,4 +1,5 @@
-import { DEither, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("whenIsLeftOtherwise", () => {
 	it("should call the left callback for left values", () => {
@@ -15,7 +16,7 @@ describe("whenIsLeftOtherwise", () => {
 				return "MESSAGE";
 			},
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					DEither.Success<21>,
 					"strict"
@@ -27,7 +28,7 @@ describe("whenIsLeftOtherwise", () => {
 
 		expect(result).toBe("MESSAGE");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"MESSAGE" | DEither.Success<21>,
 			"strict"
@@ -36,7 +37,7 @@ describe("whenIsLeftOtherwise", () => {
 
 	it("should call the otherwise callback for non left values in pipe", () => {
 		const input = DEither.success(42);
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.whenIsLeftOtherwise(
 				(value) => value,
@@ -46,7 +47,7 @@ describe("whenIsLeftOtherwise", () => {
 
 		expect(result).toBe(42);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			42,
 			"strict"

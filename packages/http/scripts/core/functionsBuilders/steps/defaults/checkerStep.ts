@@ -3,8 +3,8 @@ import { createStepFunctionBuilder } from "../create";
 import { checkerStepKind, presetCheckerStepKind } from "@core/steps";
 import * as DCommon from "@duplojs/lang/common";
 import * as DPattern from "@duplojs/lang/pattern";
+import { ResponseHelper } from "@core/response";
 import { type Floor } from "@core/types";
-import { PredictedResponse } from "@core/response";
 
 export const defaultCheckerStepFunctionBuilder = createStepFunctionBuilder(
 	(element) => checkerStepKind.has(element) || presetCheckerStepKind.has(element),
@@ -13,7 +13,7 @@ export const defaultCheckerStepFunctionBuilder = createStepFunctionBuilder(
 			checkerOptions,
 			checkerFunction,
 			input,
-			responseContract,
+			otherwise,
 			stepResult,
 			indexing,
 			stepOptions,
@@ -25,7 +25,7 @@ export const defaultCheckerStepFunctionBuilder = createStepFunctionBuilder(
 					checkerOptions: definition.checker.definition.options,
 					checkerFunction: definition.checker.definition.theFunction,
 					input: definition.input,
-					responseContract: definition.responseContract,
+					otherwise: definition.otherwise,
 					stepResult: definition.result,
 					indexing: definition.indexing,
 					stepOptions: definition.options,
@@ -36,8 +36,16 @@ export const defaultCheckerStepFunctionBuilder = createStepFunctionBuilder(
 				({ definition }) => ({
 					checkerOptions: definition.presetChecker.definition.checker.definition.options,
 					checkerFunction: definition.presetChecker.definition.checker.definition.theFunction,
-					input: definition.input,
-					responseContract: definition.presetChecker.definition.responseContract,
+					input: DCommon.justExec(() => {
+						const rewriteInput = definition.presetChecker.definition.rewriteInput;
+
+						return rewriteInput
+							? (floor: Floor) => rewriteInput(
+								definition.input(floor),
+							)
+							: definition.input;
+					}),
+					otherwise: definition.presetChecker.definition.otherwise,
 					stepResult: definition.presetChecker.definition.result,
 					indexing: definition.presetChecker.definition.indexing,
 					stepOptions: definition.presetChecker.definition.options,
@@ -70,57 +78,47 @@ export const defaultCheckerStepFunctionBuilder = createStepFunctionBuilder(
 			stepResult,
 			DPattern.when(
 				DCommon.isType("string"),
-				(expectedInformation) => ((information: string) => information === expectedInformation),
+				(expectedInformation) => (
+					(information: string) => information === expectedInformation
+				),
 			),
-			DPattern.otherwise(
-				(expectedInformation) => ((information: string) => expectedInformation.includes(information)),
+			DPattern.when(
+				DCommon.isType("array"),
+				(expectedInformation) => (
+					(information: string) => expectedInformation.includes(information)
+				),
 			),
+			DPattern.exhaustive,
 		);
 
-		function getResponse() {
-			return new PredictedResponse(
-				responseContract.code,
-				responseContract.information,
-				undefined,
-			);
-		}
-
-		function treatResult(
-			output: ReturnType<CheckerFunctionParams["output"]>,
-			floor: Floor,
-		) {
-			if (!expectedResult(output.information)) {
-				return getResponse();
-			}
-
-			if (indexing) {
-				return {
-					...floor,
-					[indexing]: output.value,
-				};
-			}
-
-			return floor;
-		}
-
 		return success({
-			buildedFunction: (_request, floor) => {
-				const result = checkerFunction(
+			buildedFunction: (_request, floor) => DCommon.callThen(
+				checkerFunction(
 					input(floor),
 					{
 						options: getOptions(floor),
 						output,
 					},
-				);
+				),
+				(output) => {
+					if (!expectedResult(output.information)) {
+						return otherwise({
+							response: ResponseHelper,
+							floor,
+							result: output,
+						});
+					}
 
-				if (result instanceof Promise) {
-					return result.then(
-						(awaitedResult) => treatResult(awaitedResult, floor),
-					);
-				}
+					if (indexing) {
+						return {
+							...floor,
+							[indexing]: output.value,
+						};
+					}
 
-				return treatResult(result, floor);
-			},
+					return floor;
+				},
+			),
 			hooksRouteLifeCycle: [],
 		});
 	},

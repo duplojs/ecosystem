@@ -1,4 +1,6 @@
-import { DTuple, type DArray, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DTuple from "@scripts/tuple";
+import type * as DArray from "@scripts/array";
 
 describe("from", () => {
 	it("should return the source array", () => {
@@ -8,7 +10,7 @@ describe("from", () => {
 		expect(result).toBe(source);
 		expect(result).toEqual(["a", "b", "c"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string[],
 			"strict"
@@ -22,7 +24,7 @@ describe("from", () => {
 		expect(result).toBe(source);
 		expect(result).toEqual([1, 2, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly [number, number, number],
 			"strict"
@@ -36,7 +38,7 @@ describe("from", () => {
 		expect(result).toBe(source);
 		expect(result).toEqual(["a", "b"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly [string, string, ...string[]],
 			"strict"
@@ -50,7 +52,7 @@ describe("from", () => {
 		expect(result).toBe(source);
 		expect(result).toEqual(["a", "b"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string[] & DArray.MaxElements<2>,
 			"strict"
@@ -64,7 +66,7 @@ describe("from", () => {
 		expect(result).toBe(source);
 		expect(result).toEqual([1, 2, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly [number, number, number] & DArray.MaxElements<3>,
 			"strict"
@@ -78,7 +80,7 @@ describe("from", () => {
 		expect(result).toBe(source);
 		expect(result).toEqual([1, 2, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly [number, number, number] & DArray.MaxElements<3> & DArray.MaxElements<5>,
 			"strict"
@@ -92,7 +94,7 @@ describe("from", () => {
 		expect(result).toBe(source);
 		expect(result).toEqual(["a", "b", "c"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly [string, string, ...string[]] & DArray.MaxElements<5>,
 			"strict"
@@ -106,7 +108,7 @@ describe("from", () => {
 		expect(result).toBe(source);
 		expect(result).toEqual(["a", "b"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly [string, string, ...string[]] & DArray.MaxElements<2>,
 			"strict"
@@ -120,7 +122,7 @@ describe("from", () => {
 		expect(result).toBe(source);
 		expect(result).toEqual(["a", "b"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly ["a" | "b", "a" | "b"],
 			"strict"

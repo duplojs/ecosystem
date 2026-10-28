@@ -1,15 +1,17 @@
-import { DDataStructure, type DNumber, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DNumber from "@scripts/number";
 
 describe("GreaterThanConstraint", () => {
 	it("creates a synchronous greater than constraint", () => {
 		const constraint = DDataStructure.GreaterThanConstraint(3);
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.GreaterThanConstraint<3>,
 			"strict"
 		>;
-		type _CheckConstraintValue = ExpectType<
+		type _CheckConstraintValue = DCommon.ExpectType<
 			DDataStructure.ConstraintValue<typeof constraint>,
 			DNumber.GreaterThan<3>,
 			"strict"

@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("findLast", () => {
 	it("should find the last matching value with callback params", () => {
@@ -13,7 +14,7 @@ describe("findLast", () => {
 
 		expect(result).toBe("ccc");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"a" | "bb" | "ccc" | undefined,
 			"strict"
@@ -21,7 +22,7 @@ describe("findLast", () => {
 	});
 
 	it("should find the last matching value in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, 2, 3, 4] as const,
 			DArray.findLast((value) => value > 2),
 		);
@@ -37,7 +38,7 @@ describe("findLast", () => {
 
 		expect(result).toBe("b");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"a" | "b" | undefined,
 			"strict"

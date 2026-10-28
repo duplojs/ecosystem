@@ -1,4 +1,5 @@
-import { DArray, pipe } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("notIncludes", () => {
 	it("should validate missing value", () => {
@@ -7,7 +8,7 @@ describe("notIncludes", () => {
 	});
 
 	it("should validate missing value in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["draft", "published"] as const,
 			DArray.notIncludes("draft"),
 		);

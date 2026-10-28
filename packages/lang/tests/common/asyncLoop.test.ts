@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("asyncLoop", () => {
 	it("awaits every loop step until exit", async() => {
@@ -13,7 +14,7 @@ describe("asyncLoop", () => {
 			return Promise.resolve(params.next((params.previousOutput ?? 0) + 1));
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<string>,
 			"strict"

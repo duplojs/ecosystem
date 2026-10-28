@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("find", () => {
 	it("should find a value with callback params", () => {
@@ -13,7 +14,7 @@ describe("find", () => {
 
 		expect(result).toBe("a");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"a" | "bb" | "ccc" | undefined,
 			"strict"
@@ -21,7 +22,7 @@ describe("find", () => {
 	});
 
 	it("should find a value in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, 2, 3, 4] as const,
 			DArray.find((value) => value > 2),
 		);
@@ -37,7 +38,7 @@ describe("find", () => {
 
 		expect(result).toBe("a");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"a" | "b" | undefined,
 			"strict"

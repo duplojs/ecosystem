@@ -1,4 +1,6 @@
-import { DDataStructure, DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
 
 describe("required", () => {
 	it("makes every object property required", () => {
@@ -19,7 +21,7 @@ describe("required", () => {
 			age: 30,
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly name: string;
@@ -52,7 +54,7 @@ describe("required", () => {
 			}),
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly name: string;
@@ -86,7 +88,7 @@ describe("required", () => {
 			}),
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly alone: string;
@@ -127,7 +129,7 @@ describe("required", () => {
 			}),
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly name: string;
@@ -179,7 +181,7 @@ describe("required", () => {
 		).addConstraint(
 			DDataStructure.refine(
 				(data): data is AdultUser => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						RequiredUser,
 						"strict"
@@ -190,7 +192,7 @@ describe("required", () => {
 			),
 		);
 
-		type _CheckConstraints = ExpectType<
+		type _CheckConstraints = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.Structure<
 				{
@@ -211,7 +213,7 @@ describe("required", () => {
 			>,
 			"strict"
 		>;
-		type _CheckValue = ExpectType<
+		type _CheckValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			RequiredUser & AdultUser,
 			"strict"

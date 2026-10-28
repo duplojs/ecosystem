@@ -4,9 +4,10 @@ import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DObject from "@duplojs/lang/object";
 import { type StepKind, stepKind } from "./kind";
 import { type Request } from "@core/request";
-import { type ClientErrorResponseCode, type ResponseContract } from "@core/response";
+import { type PredictedResponse } from "@core/response";
 import { type Metadata } from "@core/metadata";
 import type * as DKind from "@duplojs/lang/kind";
+import { type ExtractStepOtherwiseParams } from "@core/types";
 
 export interface DisabledExtractKeysCustom {
 
@@ -58,11 +59,7 @@ export type ExtractShapeCodecs = Partial<
 
 export interface ExtractStepDefinition {
 	readonly shape: ExtractShape;
-	readonly responseContract?: ResponseContract.Contract<
-		ClientErrorResponseCode,
-		string,
-		DDataStructure.Structure<undefined>
-	>;
+	otherwise?(params: ExtractStepOtherwiseParams): PredictedResponse;
 	readonly metadata: readonly Metadata[];
 }
 
@@ -71,8 +68,8 @@ export const extractStepKind = createKind("extract-step");
 export interface ExtractStep<
 	GenericDefinition extends ExtractStepDefinition = ExtractStepDefinition,
 > extends DCommon.Forward<
-	& DKind.Kind<typeof extractStepKind>
-	& StepKind
+		& DKind.Kind<typeof extractStepKind>
+		& StepKind
 	> {
 	readonly definition: GenericDefinition;
 }

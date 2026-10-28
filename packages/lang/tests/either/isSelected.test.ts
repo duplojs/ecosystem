@@ -1,4 +1,5 @@
-import { DEither, pipe, type ExpectType, when } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("isSelected", () => {
 	it("should identify selected either values and narrow direct inputs", () => {
@@ -12,7 +13,7 @@ describe("isSelected", () => {
 			success: true,
 			error: false,
 		})) {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				DEither.Success<42>,
 				"strict"
@@ -20,7 +21,7 @@ describe("isSelected", () => {
 
 			expect(DEither.unwrapRight(input)).toBe(42);
 		} else {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				DEither.Error<"message">,
 				"strict"
@@ -45,15 +46,15 @@ describe("isSelected", () => {
 				: DEither.error("message")
 		);
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
-			when(
+			DCommon.when(
 				DEither.isSelected({
 					success: true,
 					error: false,
 				}),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						DEither.Success<42>,
 						"strict"
@@ -66,7 +67,7 @@ describe("isSelected", () => {
 
 		expect(result).toBe(84);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			84 | DEither.Error<"message">,
 			"strict"
@@ -87,7 +88,7 @@ describe("isSelected", () => {
 			error: false,
 			other: false,
 		});
-		pipe(
+		DCommon.pipe(
 			input,
 			// @ts-expect-error selector must handle every either information
 			DEither.isSelected({

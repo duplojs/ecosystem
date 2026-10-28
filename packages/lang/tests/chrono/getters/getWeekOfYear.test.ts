@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("getWeekOfYear", () => {
 	it("getWeekOfYear returns week 53 for January 1st 2021", () => {
@@ -8,7 +9,7 @@ describe("getWeekOfYear", () => {
 
 		expect(result).toBe(53);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -22,7 +23,7 @@ describe("getWeekOfYear", () => {
 
 		expect(result).toBe(1);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -36,7 +37,7 @@ describe("getWeekOfYear", () => {
 
 		expect(result).toBe(1);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -50,7 +51,7 @@ describe("getWeekOfYear", () => {
 
 		expect(result).toBe(52);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -64,7 +65,7 @@ describe("getWeekOfYear", () => {
 
 		expect(result).toBe(24);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -78,7 +79,7 @@ describe("getWeekOfYear", () => {
 
 		expect(result).toBe(53);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -93,7 +94,7 @@ describe("getWeekOfYear", () => {
 
 		expect(result).toBe(53);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -101,14 +102,14 @@ describe("getWeekOfYear", () => {
 	});
 
 	it("use in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2021-01-04"),
 			DChrono.getWeekOfYear,
 		);
 
 		expect(result).toBe(1);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -116,14 +117,14 @@ describe("getWeekOfYear", () => {
 	});
 
 	it("use in pipe with timezone", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2021-01-04"),
 			(date) => DChrono.getWeekOfYear(date, "America/New_York"),
 		);
 
 		expect(result).toBe(53);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

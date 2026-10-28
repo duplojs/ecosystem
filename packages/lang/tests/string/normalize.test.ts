@@ -1,4 +1,5 @@
-import { DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("normalize", () => {
 	it("should normalize a string", () => {
@@ -6,7 +7,7 @@ describe("normalize", () => {
 
 		expect(result).toBe("e\u0301");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -14,7 +15,7 @@ describe("normalize", () => {
 	});
 
 	it("should normalize a string in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"\u00E9",
 			DString.normalize("NFD"),
 		);

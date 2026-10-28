@@ -2,10 +2,11 @@ import type * as DCommon from "@duplojs/lang/common";
 import * as DObject from "@duplojs/lang/object";
 import * as DGenerator from "@duplojs/lang/generator";
 import { createKind } from "./kind";
-import { type ClientRequestInitParams, type ServerRoute, type ServerRouteToClientRequestParams, type ServerRouteToClientResponse, type ClientRequestParamsHeaders, type ClientRequestParams, type Hooks, type RequestHook, type ResponseHook, type InformationHook, type CodeHook, type ResponseTypeHook, type ExpectedResponseHook, type NotPredictedResponseHook, type ErrorHook, type GetServerRoutePath, type AllClientResponse, type BeforeRetryServerEventHook, type CloseServerEventHook, type ErrorServerEventHook, type StartServerEventHook, type ReceiveEventServerEventHook, type ClientCacheInitialValues, type ClientCacheStore, type CloseStreamHook, type ReceiveDataStreamHook, type ErrorStreamHook, type StartStreamHook } from "./types";
+import { type ClientRequestInitParams, type ClientRequestParamsHeaders, type ClientRequestParams, type Hooks, type RequestHook, type ResponseHook, type InformationHook, type CodeHook, type ResponseTypeHook, type ExpectedResponseHook, type NotPredictedResponseHook, type ErrorHook, type AllClientResponse, type BeforeRetryServerEventHook, type CloseServerEventHook, type ErrorServerEventHook, type StartServerEventHook, type ReceiveEventServerEventHook, type ClientCacheInitialValues, type ClientCacheStore, type CloseStreamHook, type ReceiveDataStreamHook, type ErrorStreamHook, type StartStreamHook, type RouteContractToClientResponse, type RouteContractToClientRequestParams } from "./types";
 import { PromiseRequest } from "./promiseRequest";
 import { autoCreateCacheKey } from "./clientCache";
 import type * as DKind from "@duplojs/lang/kind";
+import { type RoutePath, type RouteContract } from "@core";
 
 export const httpClientKind = createKind("http-client");
 
@@ -15,11 +16,22 @@ type MaybeRequestParams<
 	? [params?: GenericRequestParams]
 	: [params: GenericRequestParams];
 
+type GetRouteContractPath<
+	GenericRouteContract extends RouteContract,
+	GenericPath extends GenericRouteContract["path"],
+> = GenericRouteContract extends RouteContract
+	? DCommon.IsNever<
+		Extract<GenericPath, GenericRouteContract["path"]>
+	> extends true
+		? never
+		: GenericRouteContract["path"]
+	: never;
+
 type HttpClientRequestMethod<
-	GenericServerRoute extends ServerRoute,
+	GenericRouteContract extends RouteContract,
 	GenericHookParams extends Record<string, unknown>,
 	GenericMethod extends string,
-> = DCommon.IsEqual<GenericServerRoute, ServerRoute> extends true
+> = DCommon.IsEqual<GenericRouteContract, RouteContract> extends true
 	? (
 		path: string,
 		params?: DCommon.SimplifyTopLevel<
@@ -33,9 +45,9 @@ type HttpClientRequestMethod<
 		AllClientResponse<GenericHookParams>
 	>
 	: <
-		GenericPath extends Extract<GenericServerRoute, { method: GenericMethod }>["path"],
-		GenericMatchedPath extends GetServerRoutePath<
-			Extract<GenericServerRoute, { method: GenericMethod }>,
+		GenericPath extends Extract<GenericRouteContract, { method: GenericMethod }>["path"],
+		GenericMatchedPath extends GetRouteContractPath<
+			Extract<GenericRouteContract, { method: GenericMethod }>,
 			GenericPath
 		>,
 	>(
@@ -43,9 +55,9 @@ type HttpClientRequestMethod<
 		...args: MaybeRequestParams<
 			DCommon.SimplifyTopLevel<
 				Omit<
-					ServerRouteToClientRequestParams<
+					RouteContractToClientRequestParams<
 						Extract<
-							GenericServerRoute,
+							GenericRouteContract,
 							{
 								method: GenericMethod;
 								path: GenericMatchedPath | GenericPath;
@@ -59,9 +71,9 @@ type HttpClientRequestMethod<
 		>
 	) => PromiseRequest<
 		GenericHookParams,
-		ServerRouteToClientResponse<
+		RouteContractToClientResponse<
 			Extract<
-				GenericServerRoute,
+				GenericRouteContract,
 				{
 					method: GenericMethod;
 					path: GenericMatchedPath;
@@ -81,7 +93,7 @@ export interface HttpClientConfig {
 	readonly clientCacheInitialValues?: ClientCacheInitialValues;
 }
 export interface HttpClient<
-	GenericServerRoute extends ServerRoute = ServerRoute,
+	GenericRouteContract extends RouteContract = RouteContract,
 	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
 > extends DKind.Kind<typeof httpClientKind> {
 	readonly config: HttpClientConfig;
@@ -124,23 +136,23 @@ export interface HttpClient<
 	addStartStreamHook(hook: StartStreamHook<GenericHookParams>): void;
 
 	request<
-		GenericClientRequestParams extends ServerRouteToClientRequestParams<
-			GenericServerRoute,
+		GenericClientRequestParams extends RouteContractToClientRequestParams<
+			GenericRouteContract,
 			GenericHookParams
 		>,
-		GenericMatchedPath extends GetServerRoutePath<
-			Extract<GenericServerRoute, { method: GenericClientRequestParams["method"] }>,
+		GenericMatchedPath extends GetRouteContractPath<
+			Extract<GenericRouteContract, { method: GenericClientRequestParams["method"] }>,
 			GenericClientRequestParams["path"]
 		>,
 	>(
 		params: GenericClientRequestParams
 	): PromiseRequest<
 		GenericHookParams,
-		DCommon.IsEqual<GenericServerRoute, ServerRoute> extends true
+		DCommon.IsEqual<GenericRouteContract, RouteContract> extends true
 			? AllClientResponse<GenericHookParams>
-			: ServerRouteToClientResponse<
+			: RouteContractToClientResponse<
 				Extract<
-					GenericServerRoute,
+					GenericRouteContract,
 					{
 						method: GenericClientRequestParams["method"];
 						path: GenericMatchedPath;
@@ -151,31 +163,31 @@ export interface HttpClient<
 	>;
 
 	get: HttpClientRequestMethod<
-		GenericServerRoute,
+		GenericRouteContract,
 		GenericHookParams,
 		"GET"
 	>;
 
 	post: HttpClientRequestMethod<
-		GenericServerRoute,
+		GenericRouteContract,
 		GenericHookParams,
 		"POST"
 	>;
 
 	put: HttpClientRequestMethod<
-		GenericServerRoute,
+		GenericRouteContract,
 		GenericHookParams,
 		"PUT"
 	>;
 
 	patch: HttpClientRequestMethod<
-		GenericServerRoute,
+		GenericRouteContract,
 		GenericHookParams,
 		"PATCH"
 	>;
 
 	delete: HttpClientRequestMethod<
-		GenericServerRoute,
+		GenericRouteContract,
 		GenericHookParams,
 		"DELETE"
 	>;
@@ -193,12 +205,12 @@ export interface CreateHttpClientParams {
 }
 
 export function createHttpClient<
-	GenericServerRoute extends ServerRoute = ServerRoute,
+	GenericRouteContract extends RouteContract = RouteContract,
 	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
 >(
 	clientParams: CreateHttpClientParams,
 ): HttpClient<
-	GenericServerRoute,
+	GenericRouteContract,
 	GenericHookParams
 > {
 	const cacheStore: ClientCacheStore = new Map(
@@ -366,27 +378,27 @@ export function createHttpClient<
 						: params.clientCache,
 				});
 			},
-			get: ((path: string, params?: object) => self.request({
+			get: ((path: RoutePath, params?: object) => self.request({
 				method: "GET",
 				path,
 				...params,
 			})) as never,
-			post: ((path: string, params?: object) => self.request({
+			post: ((path: RoutePath, params?: object) => self.request({
 				method: "POST",
 				path,
 				...params,
 			})) as never,
-			put: ((path: string, params?: object) => self.request({
+			put: ((path: RoutePath, params?: object) => self.request({
 				method: "PUT",
 				path,
 				...params,
 			})) as never,
-			patch: ((path: string, params?: object) => self.request({
+			patch: ((path: RoutePath, params?: object) => self.request({
 				method: "PATCH",
 				path,
 				...params,
 			})) as never,
-			delete: ((path: string, params?: object) => self.request({
+			delete: ((path: RoutePath, params?: object) => self.request({
 				method: "DELETE",
 				path,
 				...params,

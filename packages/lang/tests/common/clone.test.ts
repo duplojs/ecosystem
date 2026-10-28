@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("clone", () => {
 	it("returns primitive and falsy values directly", () => {
@@ -16,7 +17,7 @@ describe("clone", () => {
 		};
 		const result = DCommon.clone(input);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			{
 				name: string;

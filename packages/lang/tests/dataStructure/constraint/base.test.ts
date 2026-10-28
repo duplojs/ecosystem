@@ -1,11 +1,13 @@
-import { DDataStructure, type DCommon, type DKind, type ExpectType } from "@scripts";
-import type { ConstraintDefinition } from "@scripts/dataStructure";
+
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DCommon from "@scripts/common";
+import type * as DKind from "@scripts/kind";
 
 declare module "@scripts/dataStructure" {
 	interface Constraint<
 		GenericInput extends unknown = unknown,
 		GenericChecked extends GenericInput = GenericInput,
-		GenericDefinition extends ConstraintDefinition = ConstraintDefinition,
+		GenericDefinition extends DDataStructure.ConstraintDefinition = DDataStructure.ConstraintDefinition,
 	> {
 		getPrototypeOverrideLabel?(prefix: string): `${string}:${string}`;
 		testedValue?: string;
@@ -52,12 +54,12 @@ describe("createConstraint", () => {
 
 		const constraint = TestConstraint();
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			TestConstraint,
 			"strict"
 		>;
-		type _CheckConstraintValue = ExpectType<
+		type _CheckConstraintValue = DCommon.ExpectType<
 			DDataStructure.ConstraintValue<typeof constraint>,
 			{ readonly minLength: 3 },
 			"strict"
@@ -118,7 +120,7 @@ describe("createConstraint", () => {
 		const constraint = TestConstraint();
 		const clonedConstraint = constraint.clone();
 
-		type _CheckClonedConstraint = ExpectType<
+		type _CheckClonedConstraint = DCommon.ExpectType<
 			typeof clonedConstraint,
 			TestConstraint,
 			"strict"
@@ -160,7 +162,7 @@ describe("createConstraint", () => {
 		const constraint = TestConstraint();
 		const sameConstraint = constraint.setMessage("Direct message");
 
-		type _CheckSameConstraint = ExpectType<
+		type _CheckSameConstraint = DCommon.ExpectType<
 			typeof sameConstraint,
 			TestConstraint,
 			"strict"
@@ -171,7 +173,7 @@ describe("createConstraint", () => {
 
 		const clonedConstraint = constraint.addMessage("Cloned message");
 
-		type _CheckClonedConstraint = ExpectType<
+		type _CheckClonedConstraint = DCommon.ExpectType<
 			typeof clonedConstraint,
 			TestConstraint,
 			"strict"
@@ -291,7 +293,7 @@ describe("createConstraint", () => {
 			expect(result).toBe("message:base");
 			expect(constraint.testedValue).toBe("test");
 
-			type _CheckResult = ExpectType<
+			type _CheckResult = DCommon.ExpectType<
 				typeof result,
 				`${string}:${string}`,
 				"strict"

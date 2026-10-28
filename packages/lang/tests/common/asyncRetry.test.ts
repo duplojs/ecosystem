@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("asyncRetry", () => {
 	afterEach(() => {
@@ -13,7 +14,7 @@ describe("asyncRetry", () => {
 			{ maxRetry: 5 },
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<number>,
 			"strict"
@@ -73,7 +74,7 @@ describe("asyncRetry", () => {
 
 		const result = retry("value", "suffix");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<`${string}-${string}-${number}`>,
 			"strict"

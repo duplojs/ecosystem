@@ -1,4 +1,5 @@
-import { DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("rightPipe", () => {
 	it("should pipe right values and wrap the final plain output into success", () => {
@@ -16,7 +17,7 @@ describe("rightPipe", () => {
 
 		expect(result).toStrictEqual(DEither.success(42));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.Success<42>,
 			"strict"
@@ -83,7 +84,7 @@ describe("rightPipe", () => {
 		expect(second).toBe(produced);
 		expect(spy).not.toHaveBeenCalled();
 
-		type _CheckSecond = ExpectType<
+		type _CheckSecond = DCommon.ExpectType<
 			typeof second,
 			DEither.Error<"produced"> | DEither.Success<number>,
 			"strict"

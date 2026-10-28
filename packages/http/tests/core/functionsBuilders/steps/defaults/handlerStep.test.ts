@@ -1,468 +1,88 @@
-import { ResponseContract, useRouteBuilder, Request, Response, PredictedResponse, type ServerSentEventsPredictedResponse, type StreamPredictedResponse, type StreamTextPredictedResponse } from "@core";
-import * as DDataStructure from "@duplojs/lang/dataStructure";
-import { useTestRouteFunctionBuilder } from "@test-utils/useTestRouteFunctionBuilder";
-import { createBodyReader } from "@test-utils/bodyReader";
-import * as DCommon from "@duplojs/lang/common";
+import { createHandlerStep, PredictedResponse, type HandlerStepDefinition, type ServerSentEvents, type Stream } from "@core";
+import { createTestRequest } from "@test-utils/createTestRequest";
+import { useTestStepFunctionBuilder } from "@test-utils/useTestStepFunctionBuilder";
 
 describe("handler step function builder", () => {
-	const spyResponse = vi.fn();
+	async function build(theFunction: HandlerStepDefinition["theFunction"]) {
+		return useTestStepFunctionBuilder(createHandlerStep({
+			theFunction,
+			metadata: [],
+		}));
+	}
 
-	beforeEach(() => {
-		spyResponse.mockClear();
-		vi.spyOn(console, "error").mockClear();
-	});
-
-	it("response from handler", async() => {
-		const route = useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
-			.extract({ params: { value: DDataStructure.string() } })
-			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				(floor, { response }) => response("good", floor.value),
-			);
-
-		const buildedRoute = await useTestRouteFunctionBuilder(route);
-
-		await buildedRoute(
-			new Request({
-				headers: {},
-				host: "",
-				matchedPath: "",
-				method: "",
-				origin: "",
-				path: "",
-				params: { value: "test" },
-				query: {},
-				url: "",
-				bodyReader: createBodyReader(),
-			}),
-		);
-
-		expect(spyResponse).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentResponse: new PredictedResponse("200", "good", "test"),
-			}),
-		);
-	});
-
-	it("missing contract error", async() => {
-		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.handler(
-				ResponseContract.noContent("good"),
-				(floor, { response }) => response("wrongInfo" as any),
-			);
-
-		const buildedRoute = await useTestRouteFunctionBuilder(route);
-
-		await buildedRoute(
-			new Request({
-				headers: {},
-				host: "",
-				matchedPath: "",
-				method: "",
-				origin: "",
-				path: "",
-				params: {},
-				query: {},
-				url: "",
-				bodyReader: createBodyReader(),
-			}),
-		);
-
-		expect(spyResponse).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentResponse: new Response("500", "server-error", new ResponseContract.Error("wrongInfo", "Contract not found.")),
-			}),
-		);
-	});
-
-	it("contract error", async() => {
-		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.handler(
-				[ResponseContract.ok("good", DDataStructure.string([DDataStructure.maxCharacters(3)]))],
-				(floor, { response }) => response("good", DCommon.shameOnYou("1234")),
-			);
-
-		const buildedRoute = await useTestRouteFunctionBuilder(route);
-
-		await buildedRoute(
-			new Request({
-				headers: {},
-				host: "",
-				matchedPath: "",
-				method: "",
-				origin: "",
-				path: "",
-				params: {},
-				query: {},
-				url: "",
-				bodyReader: createBodyReader(),
-			}),
-		);
-
-		expect(spyResponse).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentResponse: new Response(
-					"500",
-					"server-error",
-					new ResponseContract.Error(
-						"good",
-						expect.any(DDataStructure.Error),
-					),
-				),
-			}),
-		);
-	});
-
-	it("serverSentEventsResponse from handler", async() => {
-		const response = await new Promise<ServerSentEventsPredictedResponse>((resolve) => {
-			const route = useRouteBuilder("GET", "/test", {
-				hooks: [
-					{
-						afterSendResponse: ({ currentResponse, next }) => {
-							void resolve(currentResponse as never);
-							return next();
-						},
-					},
-				],
-			})
-				.handler(
-					ResponseContract.serverSentEvents("good", DDataStructure.string(), { ping: DDataStructure.object({ value: DDataStructure.number() }) }),
-					(floor, { serverSentEventsResponse }) => serverSentEventsResponse("good", async({ send }) => {
-						await send("ping", { value: 2 });
-						await send("message", "test2");
-					}),
-				);
-
-			void useTestRouteFunctionBuilder(route)
-				.then(
-					(buildedRoute) => buildedRoute(
-						new Request({
-							headers: {},
-							host: "",
-							matchedPath: "",
-							method: "",
-							origin: "",
-							path: "",
-							params: {},
-							query: {},
-							url: "",
-							bodyReader: createBodyReader(),
-						}),
-					),
-				);
+	it("passes the floor and request and preserves the returned response", async() => {
+		const request = createTestRequest();
+		const floor = {
+			value: {
+				id: 42,
+				extra: "preserved",
+			},
+		};
+		const built = await build((input, { response, request: receivedRequest }) => {
+			expect(input).toBe(floor);
+			expect(receivedRequest).toBe(request);
+			return response.ok("inferred", floor.value).setHeader("x-test", "kept");
 		});
-
-		const spySend = vi.fn();
-
-		await response.startSendingEvents({ send: spySend } as never);
-
-		expect(spySend).toHaveBeenCalledTimes(2);
-		expect(spySend).toHaveBeenNthCalledWith(1, "ping", { value: 2 }, undefined);
-		expect(spySend).toHaveBeenNthCalledWith(2, "message", "test2", undefined);
+		const result = await built.buildedFunction(request, floor);
+		expect(result).toStrictEqual(new PredictedResponse("200", "inferred", floor.value).setHeader("x-test", "kept"));
+		expect(result.body).toBe(floor.value);
+		expect(built.hooksRouteLifeCycle).toStrictEqual([]);
 	});
 
-	it("serverSentEventsResponse wrong contract information", async() => {
-		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.handler(
-				ResponseContract.serverSentEvents("good", DDataStructure.string()),
-				(floor, { serverSentEventsResponse }) => serverSentEventsResponse("wrongInfo" as any, () => {}),
-			);
-
-		const buildedRoute = await useTestRouteFunctionBuilder(route);
-
-		await buildedRoute(
-			new Request({
-				headers: {},
-				host: "",
-				matchedPath: "",
-				method: "",
-				origin: "",
-				path: "",
-				params: {},
-				query: {},
-				url: "",
-				bodyReader: createBodyReader(),
-			}),
-		);
-
-		expect(spyResponse).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentResponse: new Response("500", "server-error", new ResponseContract.Error("wrongInfo", "Contract not found.")),
-			}),
-		);
+	it("awaits an asynchronous response", async() => {
+		const expected = new PredictedResponse("201", "created", { id: 42 });
+		const built = await build(() => Promise.resolve(expected));
+		expect(await built.buildedFunction(createTestRequest(), {})).toBe(expected);
 	});
 
-	it("serverSentEventsResponse wrong contract event and wrong data", async() => {
-		const response = await new Promise<ServerSentEventsPredictedResponse>((resolve) => {
-			const route = useRouteBuilder("GET", "/test", {
-				hooks: [
-					{
-						afterSendResponse: ({ currentResponse, next }) => {
-							void resolve(currentResponse as never);
-							return next();
-						},
-					},
-				],
-			})
-				.handler(
-					ResponseContract.serverSentEvents("good", DDataStructure.string(), { theMessage: DDataStructure.number() }),
-					(floor, { serverSentEventsResponse }) => serverSentEventsResponse("good", async({ send }) => {
-						await send("wrong" as any, "test1");
-						await send("theMessage", "test1" as any);
-					}),
-				);
-
-			void useTestRouteFunctionBuilder(route)
-				.then(
-					(buildedRoute) => buildedRoute(
-						new Request({
-							headers: {},
-							host: "",
-							matchedPath: "",
-							method: "",
-							origin: "",
-							path: "",
-							params: {},
-							query: {},
-							url: "",
-							bodyReader: createBodyReader(),
-						}),
-					),
-				);
-		});
-
-		const spySend = vi.fn();
-		const spyError = vi.spyOn(console, "error");
-		spyError.mockImplementation(() => {});
-		await expect(response.startSendingEvents({ send: spySend } as never));
-
-		expect(spySend).toHaveBeenCalledTimes(0);
-		expect(spyError).toHaveBeenCalledTimes(2);
-		expect(spyError).toHaveBeenNthCalledWith(
-			1,
-			new ResponseContract.Error("good", "Event 'wrong' not found."),
-		);
-		expect(spyError).toHaveBeenNthCalledWith(
-			2,
-			new ResponseContract.Error(
-				"good",
-				expect.any(DDataStructure.Error),
+	it("preserves the SSE callback and sends declared events directly", async() => {
+		const send = vi.fn(() => Promise.resolve());
+		const onStart = async(params: ServerSentEvents.StartSendingParams<{
+			message: string;
+			ping: { id: number };
+		}>) => {
+			await params.send("ping", { id: 42 });
+			await params.send("message", "hello", { id: "2" });
+		};
+		const built = await build(
+			(floor, { response }) => response.serverSentEvents(
+				"events",
+			).onStart<string, { ping: { id: number } }>(
+				onStart,
 			),
 		);
+		const result = await built.buildedFunction(createTestRequest(), {});
+		expect(result).toHaveProperty("startSendingEvents", onStart);
+		await onStart({ send } as never);
+		expect(send).toHaveBeenNthCalledWith(1, "ping", { id: 42 });
+		expect(send).toHaveBeenNthCalledWith(2, "message", "hello", { id: "2" });
 	});
 
-	it("streamResponse from handler", async() => {
-		const response = await new Promise<StreamPredictedResponse>((resolve) => {
-			const route = useRouteBuilder("GET", "/test", {
-				hooks: [
-					{
-						afterSendResponse: ({ currentResponse, next }) => {
-							void resolve(currentResponse as never);
-							return next();
-						},
-					},
-				],
-			})
-				.handler(
-					ResponseContract.stream("good", DDataStructure.object({ value: DDataStructure.number() })),
-					(floor, { streamResponse }) => streamResponse("good", async({ send }) => {
-						await send({ value: 2 });
-						await send({ value: 3 });
-					}),
-				);
-
-			void useTestRouteFunctionBuilder(route)
-				.then(
-					(buildedRoute) => buildedRoute(
-						new Request({
-							headers: {},
-							host: "",
-							matchedPath: "",
-							method: "",
-							origin: "",
-							path: "",
-							params: {},
-							query: {},
-							url: "",
-							bodyReader: createBodyReader(),
-						}),
-					),
-				);
-		});
-
-		const spySend = vi.fn();
-
-		await response.startStream({ send: spySend } as never);
-
-		expect(spySend).toHaveBeenCalledTimes(2);
-		expect(spySend).toHaveBeenNthCalledWith(1, { value: 2 });
-		expect(spySend).toHaveBeenNthCalledWith(2, { value: 3 });
+	it("preserves the stream callback without preparing or validating chunks", async() => {
+		const send = vi.fn(() => Promise.resolve());
+		const chunk = {
+			value: 42,
+			extra: true,
+		};
+		const onStart = async(params: Stream.StartSendingParams<typeof chunk>) => {
+			await params.send(chunk);
+		};
+		const built = await build((floor, { response }) => response.stream("binary").onStart(onStart));
+		const result = await built.buildedFunction(createTestRequest(), {});
+		expect(result).toHaveProperty("startStream", onStart);
+		await onStart({ send } as never);
+		expect(send).toHaveBeenCalledExactlyOnceWith(chunk);
 	});
 
-	it("streamResponse wrong contract information", async() => {
-		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.handler(
-				ResponseContract.stream("good", DDataStructure.string()),
-				(floor, { streamResponse }) => streamResponse("wrongInfo" as any, () => {}),
-			);
-
-		const buildedRoute = await useTestRouteFunctionBuilder(route);
-
-		await buildedRoute(
-			new Request({
-				headers: {},
-				host: "",
-				matchedPath: "",
-				method: "",
-				origin: "",
-				path: "",
-				params: {},
-				query: {},
-				url: "",
-				bodyReader: createBodyReader(),
-			}),
-		);
-
-		expect(spyResponse).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentResponse: new Response("500", "server-error", new ResponseContract.Error("wrongInfo", "Contract not found.")),
-			}),
-		);
-	});
-
-	it("streamResponse wrong contract data", async() => {
-		const response = await new Promise<StreamPredictedResponse>((resolve) => {
-			const route = useRouteBuilder("GET", "/test", {
-				hooks: [
-					{
-						afterSendResponse: ({ currentResponse, next }) => {
-							void resolve(currentResponse as never);
-							return next();
-						},
-					},
-				],
-			})
-				.handler(
-					ResponseContract.stream("good", DDataStructure.number()),
-					(floor, { streamResponse }) => streamResponse("good", async({ send }) => {
-						await send("wrong" as any);
-						await send(2);
-					}),
-				);
-
-			void useTestRouteFunctionBuilder(route)
-				.then(
-					(buildedRoute) => buildedRoute(
-						new Request({
-							headers: {},
-							host: "",
-							matchedPath: "",
-							method: "",
-							origin: "",
-							path: "",
-							params: {},
-							query: {},
-							url: "",
-							bodyReader: createBodyReader(),
-						}),
-					),
-				);
-		});
-
-		const spySend = vi.fn();
-		const spyError = vi.spyOn(console, "error");
-		spyError.mockImplementation(() => {});
-
-		await response.startStream({ send: spySend } as never);
-
-		expect(spySend).toHaveBeenCalledTimes(1);
-		expect(spySend).toHaveBeenNthCalledWith(1, 2);
-		expect(spyError).toHaveBeenCalledTimes(1);
-		expect(spyError).toHaveBeenNthCalledWith(
-			1,
-			new ResponseContract.Error(
-				"good",
-				expect.any(DDataStructure.Error),
-			),
-		);
-	});
-
-	it("streamTextResponse from handler", async() => {
-		const response = await new Promise<StreamTextPredictedResponse>((resolve) => {
-			const route = useRouteBuilder("GET", "/test", {
-				hooks: [
-					{
-						afterSendResponse: ({ currentResponse, next }) => {
-							void resolve(currentResponse as never);
-							return next();
-						},
-					},
-				],
-			})
-				.handler(
-					ResponseContract.streamText("good"),
-					(floor, { streamTextResponse }) => streamTextResponse("good", async({ send }) => {
-						await send("test1");
-						await send("test2");
-					}),
-				);
-
-			void useTestRouteFunctionBuilder(route)
-				.then(
-					(buildedRoute) => buildedRoute(
-						new Request({
-							headers: {},
-							host: "",
-							matchedPath: "",
-							method: "",
-							origin: "",
-							path: "",
-							params: {},
-							query: {},
-							url: "",
-							bodyReader: createBodyReader(),
-						}),
-					),
-				);
-		});
-
-		const spySend = vi.fn();
-
-		await response.startStream({ send: spySend } as never);
-
-		expect(spySend).toHaveBeenCalledTimes(2);
-		expect(spySend).toHaveBeenNthCalledWith(1, "test1");
-		expect(spySend).toHaveBeenNthCalledWith(2, "test2");
-	});
-
-	it("streamTextResponse wrong contract information", async() => {
-		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.handler(
-				ResponseContract.streamText("good"),
-				(floor, { streamTextResponse }) => streamTextResponse("wrongInfo" as any, () => {}),
-			);
-
-		const buildedRoute = await useTestRouteFunctionBuilder(route);
-
-		await buildedRoute(
-			new Request({
-				headers: {},
-				host: "",
-				matchedPath: "",
-				method: "",
-				origin: "",
-				path: "",
-				params: {},
-				query: {},
-				url: "",
-				bodyReader: createBodyReader(),
-			}),
-		);
-
-		expect(spyResponse).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentResponse: new Response("500", "server-error", new ResponseContract.Error("wrongInfo", "Contract not found.")),
-			}),
-		);
+	it("preserves the text stream callback", async() => {
+		const send = vi.fn(() => Promise.resolve());
+		const onStart = async(params: Stream.StartSendingParams<string>) => {
+			await params.send("first", "second");
+		};
+		const built = await build((floor, { response }) => response.streamText("text").onStart(onStart));
+		const result = await built.buildedFunction(createTestRequest(), {});
+		expect(result).toHaveProperty("startStream", onStart);
+		await onStart({ send } as never);
+		expect(send).toHaveBeenCalledExactlyOnceWith("first", "second");
 	});
 });

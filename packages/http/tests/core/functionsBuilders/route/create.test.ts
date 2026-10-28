@@ -1,4 +1,4 @@
-import { createRoute, createRouteFunctionBuilder, type Route, defaultExtractContract } from "@core";
+import { createRoute, createRouteFunctionBuilder, type Route, defaultExtractOtherwise } from "@core";
 import type * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import { testRoute } from "@test-utils/route";
@@ -31,7 +31,7 @@ describe("createFunctionBuilder", () => {
 				buildStep: () => void undefined as never,
 				environment: "DEV",
 				globalHooksRouteLifeCycle: [],
-				defaultExtractContract,
+				defaultExtractOtherwise,
 			},
 		);
 
@@ -55,7 +55,7 @@ describe("createFunctionBuilder", () => {
 				buildStep: () => void undefined as never,
 				environment: "DEV",
 				globalHooksRouteLifeCycle: [],
-				defaultExtractContract,
+				defaultExtractOtherwise,
 			},
 		);
 

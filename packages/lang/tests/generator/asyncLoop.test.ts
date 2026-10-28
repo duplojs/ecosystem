@@ -1,4 +1,6 @@
-import { DArray, DGenerator, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
+import * as DGenerator from "@scripts/generator";
 
 type AsyncLoopUntilDoneOutput = Promise<
 	| DGenerator.LoopOutputNextResult<number>
@@ -26,7 +28,7 @@ describe("asyncLoop", () => {
 
 		await expect(DArray.from(result)).resolves.toStrictEqual([1, 2, 3, "done"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			AsyncGenerator<number | string, unknown, unknown>,
 			"strict"
@@ -50,7 +52,7 @@ describe("asyncLoop", () => {
 
 		await expect(DArray.from(result)).resolves.toStrictEqual([0, 2, 4]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			AsyncGenerator<number, unknown, unknown>,
 			"strict"

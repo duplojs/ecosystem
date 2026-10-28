@@ -4,10 +4,10 @@ import type * as DCommon from "@duplojs/lang/common";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DObject from "@duplojs/lang/object";
 import { routeBuilderHandler } from "./builder";
-import { type ClientErrorResponseCode, type ResponseContract } from "@core/response";
+import { type PredictedResponse } from "@core/response";
 import { type Request } from "@core/request";
 import { type Metadata } from "@core/metadata";
-import { type ExtractParamsKeyFromPath, type Floor } from "@core/types";
+import { type ExtractParamsKeyFromPath, type Floor, type ExtractOtherwise, type ExtractStepOtherwiseParams } from "@core/types";
 
 type HandleParamsInference<
 	GenericShape extends ExtractShape,
@@ -32,17 +32,16 @@ declare module "./builder" {
 	> {
 		extract<
 			GenericShape extends ExtractShape<Request>,
-			GenericResponseContract extends (
-				| ResponseContract.Contract<ClientErrorResponseCode, string, DDataStructure.Structure<undefined>>
-				| undefined
-			) = never,
+			GenericResponse extends PredictedResponse = never,
 			const GenericMetadata extends readonly Metadata[] = readonly [],
 		>(
 			shape: HandleParamsInference<
 				GenericShape,
 				GenericDefinition["paths"][number]
 			>,
-			responseContract?: GenericResponseContract,
+			otherwise?: (
+				param: ExtractStepOtherwiseParams<GenericFloor>,
+			) => GenericResponse,
 			...metadata: GenericMetadata,
 		): RouteBuilder<
 			DObject.Assign<
@@ -53,7 +52,9 @@ declare module "./builder" {
 						ExtractStep<
 							{
 								readonly shape: GenericShape;
-								readonly responseContract: DCommon.NeverCoalescing<GenericResponseContract, undefined>;
+								readonly otherwise: DCommon.IsNever<GenericResponse> extends true
+									? undefined
+									: ExtractOtherwise<GenericFloor, GenericResponse>;
 								readonly metadata: GenericMetadata;
 							}
 						>,
@@ -90,7 +91,7 @@ routeBuilderHandler.set(
 	({
 		args: [
 			shape,
-			responseContract,
+			otherwise,
 			...metadata
 		],
 		accumulator,
@@ -101,7 +102,7 @@ routeBuilderHandler.set(
 			...accumulator.steps,
 			createExtractStep({
 				shape,
-				responseContract,
+				otherwise,
 				metadata,
 			}),
 		],

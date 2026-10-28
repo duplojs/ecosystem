@@ -1,11 +1,11 @@
-import type { ExpectType } from "@scripts/common";
+import type * as DCommon from "@scripts/common";
 import * as DPath from "@scripts/path";
 
 describe("createMatcher", () => {
 	it("returns a path matcher constrained by Path", () => {
 		const matcher = DPath.createMatcher("*.ts");
 
-		type _CheckMatcher = ExpectType<
+		type _CheckMatcher = DCommon.ExpectType<
 			typeof matcher,
 			DPath.PathMatcher,
 			"strict"

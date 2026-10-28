@@ -1,4 +1,5 @@
-import { type ExpectType, DChrono } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("yesterday", () => {
 	it("yesterday returns timestamp of yesterday", () => {
@@ -13,7 +14,7 @@ describe("yesterday", () => {
 		expect(timestamp).toBeGreaterThanOrEqual(before - 1000);
 		expect(timestamp).toBeLessThanOrEqual(after + 1000);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"

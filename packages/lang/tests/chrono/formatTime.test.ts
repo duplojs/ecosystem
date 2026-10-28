@@ -1,4 +1,5 @@
-import { type ExpectType, DChrono, pipe } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("formatTime", () => {
 	it("formats a time using all supported tokens", () => {
@@ -7,7 +8,7 @@ describe("formatTime", () => {
 
 		expect(result).toBe("01 02 03:04:05.006");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -23,7 +24,7 @@ describe("formatTime", () => {
 
 	it("formats with the curried signature in a pipe", () => {
 		const theTime = DChrono.createTimeOrThrow(788_645_006);
-		const result = pipe(
+		const result = DCommon.pipe(
 			theTime,
 			DChrono.formatTime("HH:mm"),
 		);

@@ -3,3 +3,12 @@ interface Console {
 }
 
 declare let console: Console;
+
+interface File {
+
+}
+
+declare let File: {
+	prototype: File;
+	new(): File;
+};

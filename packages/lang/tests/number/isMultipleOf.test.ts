@@ -1,4 +1,5 @@
-import { DNumber, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DNumber from "@scripts/number";
 
 describe("isMultipleOf", () => {
 	it("should validate a multiple", () => {
@@ -17,7 +18,7 @@ describe("isMultipleOf", () => {
 		const source = 6 as number;
 
 		if (DNumber.isMultipleOf(source, 3)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				number & DNumber.MultipleOf<3>,
 				"strict"
@@ -29,7 +30,7 @@ describe("isMultipleOf", () => {
 		const source = 6 as 6 | 7;
 
 		if (DNumber.isMultipleOf(source, 3)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				(6 | 7) & DNumber.MultipleOf<3>,
 				"strict"
@@ -38,12 +39,12 @@ describe("isMultipleOf", () => {
 	});
 
 	it("should narrow a number inside a pipe when callback", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			6 as number,
-			when(
+			DCommon.when(
 				DNumber.isMultipleOf(3),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						number & DNumber.MultipleOf<3>,
 						"strict"

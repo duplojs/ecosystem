@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType, pipe } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("asserts", () => {
 	it("narrows the input when the predicate accepts it", () => {
@@ -9,7 +10,7 @@ describe("asserts", () => {
 			(value): value is string => typeof value === "string",
 		);
 
-		type _CheckInput = ExpectType<
+		type _CheckInput = DCommon.ExpectType<
 			typeof input,
 			string,
 			"strict"

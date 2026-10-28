@@ -3,16 +3,16 @@ import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
 
-class AppendFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-append-file-not-found", Error) {}
-class AppendFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-append-file-permission-denied", Error) {}
-class AppendFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-append-file-is-directory", Error) {}
-class AppendFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-append-file-not-directory", Error) {}
-class AppendFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-append-file-no-space", Error) {}
-class AppendFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-append-file-read-only", Error) {}
-class AppendFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-append-file-invalid-argument", Error) {}
-class AppendFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-append-file-too-many-open-files", Error) {}
-class AppendFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-append-file-busy", Error) {}
-class AppendFileError extends DCommon.DuploJSError.parentClass("file-system-append-file-error", Error) {}
+export class AppendFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-append-file-not-found", Error) {}
+export class AppendFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-append-file-permission-denied", Error) {}
+export class AppendFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-append-file-is-directory", Error) {}
+export class AppendFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-append-file-not-directory", Error) {}
+export class AppendFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-append-file-no-space", Error) {}
+export class AppendFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-append-file-read-only", Error) {}
+export class AppendFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-append-file-invalid-argument", Error) {}
+export class AppendFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-append-file-too-many-open-files", Error) {}
+export class AppendFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-append-file-busy", Error) {}
+export class AppendFileError extends DCommon.DuploJSError.parentClass("file-system-append-file-error", Error) {}
 
 export type AppendFileErrors = (
 	| AppendFileErrorNotFound
@@ -98,7 +98,7 @@ function handleDenoAppendFileError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		appendFile(
-			path: string & DPath.Path,
+			path: DPath.AnyPath,
 			data: Uint8Array,
 		): Promise<AppendFileResult>;
 	}
@@ -126,23 +126,23 @@ const appendFileImplementation = implementFunction(
 export function appendFile(
 	data: Uint8Array,
 ): (
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 ) => Promise<AppendFileResult>;
 
 export function appendFile(
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 	data: Uint8Array,
 ): Promise<AppendFileResult>;
 
 export function appendFile(
 	...args:
 		| [data: Uint8Array]
-		| [path: string & DPath.Path, data: Uint8Array]
+		| [path: DPath.AnyPath, data: Uint8Array]
 ) {
 	if (args.length === 1) {
 		const [data] = args;
 
-		return (path: string & DPath.Path) => appendFileImplementation(
+		return (path: DPath.AnyPath) => appendFileImplementation(
 			path,
 			data,
 		);

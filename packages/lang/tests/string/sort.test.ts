@@ -1,4 +1,6 @@
-import { DString, type DArray, type ExpectType, pipe } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
+import type * as DArray from "@scripts/array";
 
 describe("sort", () => {
 	it("should sort strings in ascending order without mutating the source", () => {
@@ -12,7 +14,7 @@ describe("sort", () => {
 		expect(result).toEqual(["a", "b", "c"]);
 		expect(source).toEqual(["b", "a", "c"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string[] & DArray.LengthEqual<3> & DArray.MinElements<3> & DArray.MaxElements<3>,
 			"strict"
@@ -24,7 +26,7 @@ describe("sort", () => {
 	});
 
 	it("should sort strings in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["b", "a", "c"] as const,
 			DString.sort("ASC"),
 		);

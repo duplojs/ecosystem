@@ -1,11 +1,12 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("justExec", () => {
 	it("executes the callback and returns its output", () => {
 		const callback = vi.fn(() => "value" as const);
 		const result = DCommon.justExec(callback);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"value",
 			"strict"

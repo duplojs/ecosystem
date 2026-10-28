@@ -1,4 +1,6 @@
-import { DEither, DInvocation, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
+import * as DInvocation from "@scripts/invocation";
 
 describe("throttling", () => {
 	afterEach(() => {
@@ -24,7 +26,7 @@ describe("throttling", () => {
 		await expect(secondResult).resolves.toStrictEqual(DEither.left("throttling-reject", undefined));
 		await expect(thirdResult).resolves.toStrictEqual("accepted-third");
 
-		type _CheckSecondResult = ExpectType<
+		type _CheckSecondResult = DCommon.ExpectType<
 			typeof secondResult,
 			Promise<
 				| `accepted-${string}`

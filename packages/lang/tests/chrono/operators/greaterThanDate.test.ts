@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("greaterThan", () => {
 	const threshold = DChrono.createDate("2024-01-05");
@@ -11,7 +12,7 @@ describe("greaterThan", () => {
 
 		expect(result).toBe(true);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			boolean,
 			"strict"
@@ -27,7 +28,7 @@ describe("greaterThan", () => {
 	});
 
 	it("une in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2024-01-10"),
 			DChrono.greaterThanDate(threshold),
 		);

@@ -1,4 +1,5 @@
-import { DTuple, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DTuple from "@scripts/tuple";
 
 describe("map", () => {
 	it("should map tuple values with callback params", () => {
@@ -15,7 +16,7 @@ describe("map", () => {
 
 		expect(result).toEqual(["0:1", "1:2", "2:3"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly [
 				`${number}:${number}`,
@@ -27,14 +28,14 @@ describe("map", () => {
 	});
 
 	it("should map tuple values in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, 2, 3] as const,
 			DTuple.map((value) => `${value}`),
 		);
 
 		expect(result).toEqual(["1", "2", "3"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly [string, string, string],
 			"strict"
@@ -47,7 +48,7 @@ describe("map", () => {
 
 		expect(result).toEqual([1, 2]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly [number, ...number[]],
 			"strict"

@@ -1,4 +1,5 @@
-import { DEither, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("whenIsRightOtherwise", () => {
 	it("should call the right callback for right values", () => {
@@ -15,7 +16,7 @@ describe("whenIsRightOtherwise", () => {
 				return 42;
 			},
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					DEither.Error<"message">,
 					"strict"
@@ -27,7 +28,7 @@ describe("whenIsRightOtherwise", () => {
 
 		expect(result).toBe(42);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			42 | DEither.Error<"message">,
 			"strict"
@@ -36,7 +37,7 @@ describe("whenIsRightOtherwise", () => {
 
 	it("should call the otherwise callback for non right values in pipe", () => {
 		const input = DEither.error("message");
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.whenIsRightOtherwise(
 				(value) => value,
@@ -46,7 +47,7 @@ describe("whenIsRightOtherwise", () => {
 
 		expect(result).toBe("message");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"message",
 			"strict"

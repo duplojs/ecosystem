@@ -3,11 +3,11 @@
  *
  * Un preset résout la ressource ; un cut traite l'issue propre à la modification.
  */
-import { ResponseContract, useRouteBuilder } from "@duplojs/http";
+import { useRouteBuilder } from "@duplojs/http";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import type * as DCommon from "@duplojs/lang/common";
-import { renameUserBody, userStructure, type RenameUserBody, type User } from "./contracts";
+import { renameUserBody, type RenameUserBody, type User } from "./contracts";
 import { iWantUserExist } from "./user-checker";
 
 // Use case résolu dans l'infrastructure ; il porte la règle de modification.
@@ -25,18 +25,16 @@ export const renameUserRoute = useRouteBuilder("PATCH", "/users/{userId}")
 	})
 	.presetCheck(iWantUserExist.indexing("user"), ({ userId }) => userId)
 	.cut(
-		ResponseContract.conflict("user.renameDenied"),
 		async({ user, body }, { response, output }) => {
 			const result = await renameUser(user, body);
 
 			return DEither.matchInformation(result, {
 				"user-renamed": (updatedUser) => output({ updatedUser }),
-				"rename-denied": () => response("user.renameDenied"),
+				"rename-denied": () => response.conflict("user.renameDenied"),
 			});
 		},
 	)
 	.handler(
-		ResponseContract.ok("user.renamed", userStructure),
 		(floor, { response }) => {
 			type _CheckFloor = DCommon.ExpectType<
 				typeof floor,
@@ -49,6 +47,6 @@ export const renameUserRoute = useRouteBuilder("PATCH", "/users/{userId}")
 				"strict"
 			>;
 
-			return response("user.renamed", floor.updatedUser);
+			return response.ok("user.renamed", floor.updatedUser);
 		},
 	);

@@ -1,4 +1,4 @@
-import { buildStepFunction, type BuildStepFunctionParams, defaultCheckerStepFunctionBuilder, defaultCutStepFunctionBuilder, defaultExtractContract, defaultExtractStepFunctionBuilder, defaultHandlerStepFunctionBuilder, type Steps } from "@core";
+import { buildStepFunction, type BuildStepFunctionParams, defaultCheckerStepFunctionBuilder, defaultCutStepFunctionBuilder, defaultExtractOtherwise, defaultExtractStepFunctionBuilder, defaultHandlerStepFunctionBuilder, type Steps } from "@core";
 import * as DEither from "@duplojs/lang/either";
 
 export async function useTestStepFunctionBuilder(
@@ -15,7 +15,7 @@ export async function useTestStepFunctionBuilder(
 				defaultExtractStepFunctionBuilder,
 				defaultHandlerStepFunctionBuilder,
 			],
-			defaultExtractContract: defaultExtractContract,
+			defaultExtractOtherwise: defaultExtractOtherwise,
 			defaultCodecs: {},
 			...params,
 		},

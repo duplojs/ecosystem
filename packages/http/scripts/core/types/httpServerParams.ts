@@ -9,5 +9,5 @@ export interface HttpServerParams {
 	readonly informationHeaderKey: string;
 	readonly predictedHeaderKey: string;
 	readonly fromHookHeaderKey: string;
-	readonly uploadFolder: string & DPath.Path;
+	readonly uploadFolder: DPath.AnyPath;
 }

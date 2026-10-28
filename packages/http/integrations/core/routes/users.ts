@@ -1,16 +1,8 @@
-import { ResponseContract, useRouteBuilder } from "@duplojs/http";
+import { useRouteBuilder } from "@duplojs/http";
 import { createCacheControllerHooks } from "@duplojs/http/cacheController";
 import * as DCommon from "@duplojs/lang/common";
-import type * as DChrono from "@duplojs/lang/chrono";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-
-interface User {
-	readonly id: number;
-	readonly name: string;
-	readonly age: number;
-	readonly friends?: readonly User[];
-	readonly createdAt?: DChrono.TheDate;
-}
+import { type User } from "@routes/types";
 
 const user: DDataStructure.Structure<User> = DDataStructure.object({
 	id: DDataStructure.number().setIdentifier("UserId"),
@@ -34,14 +26,13 @@ useRouteBuilder("GET", "/users", {
 	],
 })
 	.handler(
-		ResponseContract.ok("users.findMany", DDataStructure.array(user)),
-		(floor, { response }) => response("users.findMany", [
+		(floor, { response }) => response.ok("users.findMany", DCommon.forward<readonly User[]>([
 			{
 				id: 23,
 				name: "",
 				age: 28,
 			},
-		]),
+		])),
 	);
 
 useRouteBuilder("GET", "/users/{userId}")
@@ -51,12 +42,11 @@ useRouteBuilder("GET", "/users/{userId}")
 		},
 	})
 	.handler(
-		ResponseContract.ok("users.find", user),
-		(floor, { response }) => response("users.find", {
+		(floor, { response }) => response.ok("users.find", DCommon.forward<User>({
 			id: floor.userId,
 			name: "",
 			age: 28,
-		}),
+		})),
 	);
 
 useRouteBuilder("POST", "/users")
@@ -64,8 +54,7 @@ useRouteBuilder("POST", "/users")
 		body: user,
 	})
 	.handler(
-		ResponseContract.ok("users.create", user),
-		(floor, { response }) => response("users.create", floor.body),
+		(floor, { response }) => response.ok("users.create", floor.body),
 	);
 
 useRouteBuilder("DELETE", "/users")
@@ -75,6 +64,5 @@ useRouteBuilder("DELETE", "/users")
 		},
 	})
 	.handler(
-		ResponseContract.noContent("users.deleted"),
-		(__, { response }) => response("users.deleted"),
+		(__, { response }) => response.noContent("users.deleted"),
 	);

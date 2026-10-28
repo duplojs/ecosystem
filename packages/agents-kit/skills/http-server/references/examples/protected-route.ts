@@ -3,14 +3,13 @@
  *
  * Comparer son application commune par preflight et son exécution locale.
  */
-import { ResponseContract, useRouteBuilder } from "@duplojs/http";
+import { useRouteBuilder } from "@duplojs/http";
 import type * as DCommon from "@duplojs/lang/common";
 import { authenticationProcess, useAuthenticatedRouteBuilder } from "./authentication";
-import { userStructure, type User } from "./contracts";
+import { type User } from "./contracts";
 
 export const profileRoute = useAuthenticatedRouteBuilder("GET", "/profile")
 	.handler(
-		ResponseContract.ok("profile.read", userStructure),
 		(floor, { response }) => {
 			type _CheckFloor = DCommon.ExpectType<
 				typeof floor,
@@ -18,7 +17,7 @@ export const profileRoute = useAuthenticatedRouteBuilder("GET", "/profile")
 				"strict"
 			>;
 
-			return response("profile.read", floor.user);
+			return response.ok("profile.read", floor.user);
 		},
 	);
 
@@ -26,6 +25,5 @@ export const profileRoute = useAuthenticatedRouteBuilder("GET", "/profile")
 export const explicitAuthenticationRoute = useRouteBuilder("GET", "/session")
 	.exec(authenticationProcess, { imports: ["user"] })
 	.handler(
-		ResponseContract.ok("session.read", userStructure),
-		({ user }, { response }) => response("session.read", user),
+		({ user }, { response }) => response.ok("session.read", user),
 	);

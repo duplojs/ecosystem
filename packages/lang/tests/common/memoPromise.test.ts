@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("memoPromise", () => {
 	it("calls the getter once and memoizes the resolved value", async() => {
@@ -12,7 +13,7 @@ describe("memoPromise", () => {
 		const first = memoized.value;
 		const second = memoized.value;
 
-		type _CheckValue = ExpectType<
+		type _CheckValue = DCommon.ExpectType<
 			typeof memoized.value,
 			"value" | Promise<"value">,
 			"strict"

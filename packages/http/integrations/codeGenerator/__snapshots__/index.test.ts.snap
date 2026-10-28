@@ -1,272 +1,365 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`codeGenerator > correct generate file 1`] = `
-"import * as DChrono from "@duplojs/lang/chrono";
-
-import * as DArray from "@duplojs/lang/array";
-
-import * as DCommon from "@duplojs/lang/common";
-
-export type UserId = number;
-
-export type UserName = string;
-
-export type User = {
-    readonly id: UserId;
-    readonly name: UserName;
-    readonly age: number;
-    readonly friends?: undefined | readonly User[];
-    readonly createdAt?: undefined | DChrono.TheDate;
-};
-
-export type Routes = {
-    readonly method: "GET";
-    readonly path: "/users";
-    readonly responses: {
-        readonly code: "200";
-        readonly information: "users.findMany";
-        readonly body: readonly User[];
+exports[`codeGenerator > generates route declarations through the Rolldown inference plugin 1`] = `
+"import * as DCommon from "@duplojs/lang/common";
+import * as DDataStructure from "@duplojs/lang/dataStructure";
+import * as DChrono from "@duplojs/lang/chrono";
+import * as DSFile from "@duplojs/server/file";
+import * as DPath from "@duplojs/lang/path";
+//#region ../core/routes/types/user.d.ts
+interface User {
+  readonly id: number;
+  readonly name: string;
+  readonly age: number;
+  readonly friends?: readonly User[];
+  readonly createdAt?: DChrono.TheDate;
+}
+//#endregion
+//#region ../core/routes/users.d.ts
+declare const __duploRoute_2_6: import("@duplojs/http").Route<{
+  readonly method: "GET";
+  readonly paths: readonly ["/users"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [{
+    readonly beforeSendResponse: ({ currentResponse, next }: import("@duplojs/http").RouteHookParamsAfter) => import("@duplojs/http").RouteHookNext;
+  }];
+  readonly metadata: readonly [];
+  readonly bodyController: null;
+  readonly steps: readonly [import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {}, params: import("@duplojs/http").HandlerStepFunctionParams): DCommon.MaybePromise<import("@duplojs/http").PredictedResponse<"200", "users.findMany", readonly User[]>>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_2_6 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_2_6>;
+declare const __duploRoute_2_7: import("@duplojs/http").Route<{
+  readonly method: "GET";
+  readonly paths: readonly ["/users/{userId}"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [];
+  readonly metadata: readonly [];
+  readonly bodyController: null;
+  readonly steps: readonly [import("@duplojs/http").ExtractStep<{
+    readonly shape: {
+      params: {
+        userId: NoInfer<DDataStructure.TypeStructure<number, readonly []>>;
+      };
     };
-} | {
-    readonly method: "GET";
-    readonly path: "/users/{userId}";
-    readonly params: {
-        readonly userId: number;
+    readonly otherwise: undefined;
+    readonly metadata: readonly [];
+  }>, import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {
+      userId: number;
+    }, params: import("@duplojs/http").HandlerStepFunctionParams): DCommon.MaybePromise<import("@duplojs/http").PredictedResponse<"200", "users.find", User>>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_2_7 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_2_7>;
+declare const __duploRoute_2_8: import("@duplojs/http").Route<{
+  readonly method: "POST";
+  readonly paths: readonly ["/users"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [];
+  readonly metadata: readonly [];
+  readonly bodyController: null;
+  readonly steps: readonly [import("@duplojs/http").ExtractStep<{
+    readonly shape: {
+      body: DDataStructure.Structure<User, DDataStructure.StructureDefinition<readonly DDataStructure.Constraint<unknown, User, DDataStructure.ConstraintDefinition>[]>>;
     };
-    readonly responses: {
-        readonly code: "422";
-        readonly information: "extract-error";
-        readonly body?: undefined;
-    } | {
-        readonly code: "200";
-        readonly information: "users.find";
-        readonly body: User;
+    readonly otherwise: undefined;
+    readonly metadata: readonly [];
+  }>, import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {
+      body: User;
+    }, params: import("@duplojs/http").HandlerStepFunctionParams): DCommon.MaybePromise<import("@duplojs/http").PredictedResponse<"200", "users.create", User>>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_2_8 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_2_8>;
+declare const __duploRoute_2_9: import("@duplojs/http").Route<{
+  readonly method: "DELETE";
+  readonly paths: readonly ["/users"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [];
+  readonly metadata: readonly [];
+  readonly bodyController: null;
+  readonly steps: readonly [import("@duplojs/http").ExtractStep<{
+    readonly shape: {
+      body: {
+        id: NoInfer<DDataStructure.TypeStructure<number, readonly []>>;
+      };
     };
-} | {
-    readonly method: "POST";
-    readonly path: "/users";
-    readonly body: {
-        readonly id: UserId;
-        readonly name: UserName;
-        readonly age: number;
-        readonly friends?: undefined | readonly User[];
-        readonly createdAt?: undefined | DChrono.TheDate;
+    readonly otherwise: undefined;
+    readonly metadata: readonly [];
+  }>, import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {
+      id: number;
+    }, params: import("@duplojs/http").HandlerStepFunctionParams): DCommon.MaybePromise<import("@duplojs/http").PredictedResponse<"204", "users.deleted", undefined>>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_2_9 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_2_9>;
+//#endregion
+//#region ../core/routes/document.d.ts
+declare const __duploRoute_3_8: import("@duplojs/http").Route<{
+  readonly method: "POST";
+  readonly paths: readonly ["/documents"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [];
+  readonly metadata: readonly [];
+  readonly bodyController: import("@duplojs/http").BodyController<"formData", import("@duplojs/http").FormDataBodyReaderParams>;
+  readonly steps: readonly [import("@duplojs/http").ExtractStep<{
+    readonly shape: {
+      body: {
+        bool: NoInfer<DDataStructure.TypeStructure<boolean, readonly []>>;
+        myFile: NoInfer<DDataStructure.ArrayStructure<readonly DSFile.FileInterface<DPath.AnyPath>[], readonly [DDataStructure.ArrayLengthEqualConstraint<1>]>>;
+        name: NoInfer<DDataStructure.TypeStructure<string, readonly []>>;
+      };
     };
-    readonly responses: {
-        readonly code: "422";
-        readonly information: "extract-error";
-        readonly body?: undefined;
-    } | {
-        readonly code: "200";
-        readonly information: "users.create";
-        readonly body: User;
+    readonly otherwise: undefined;
+    readonly metadata: readonly [];
+  }>, import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {
+      bool: boolean;
+      myFile: readonly DSFile.FileInterface<DPath.AnyPath>[] & import("@duplojs/lang/array").LengthEqual<1>;
+      name: string;
+    }, params: import("@duplojs/http").HandlerStepFunctionParams): DCommon.MaybePromise<import("@duplojs/http").PredictedResponse<"204", "file.receive", undefined>>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_3_8 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_3_8>;
+declare const __duploRoute_3_9: import("@duplojs/http").Route<{
+  readonly method: "GET";
+  readonly paths: readonly ["/documents/*"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [];
+  readonly metadata: readonly [];
+  readonly bodyController: null;
+  readonly steps: readonly [import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {}, params: import("@duplojs/http").HandlerStepFunctionParams): DCommon.MaybePromise<import("@duplojs/http").PredictedResponse<"200", "file.send", DSFile.FileInterface<"files/fakeFiles/superTextFile.txt" & DPath.Path>>>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_3_9 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_3_9>;
+//#endregion
+//#region ../core/routes/serverSentEvent.d.ts
+declare const __duploRoute_4_3: import("@duplojs/http").Route<{
+  readonly method: "GET";
+  readonly paths: readonly ["/sse"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [];
+  readonly metadata: readonly [];
+  readonly bodyController: null;
+  readonly steps: readonly [import("@duplojs/http").ExtractStep<{
+    readonly shape: {
+      query: {
+        close: DDataStructure.UnionStructure<boolean | undefined, readonly []>;
+      };
     };
-} | {
-    readonly method: "DELETE";
-    readonly path: "/users";
-    readonly body: {
-        readonly id: number;
+    readonly otherwise: undefined;
+    readonly metadata: readonly [];
+  }>, import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {
+      close: boolean | undefined;
+    }, params: import("@duplojs/http").HandlerStepFunctionParams): DCommon.MaybePromise<import("@duplojs/http").PredictedResponse<"204", "close", undefined> | import("@duplojs/http").ServerSentEventsPredictedResponse<"200", "super-sse", {
+      message: {
+        test: string;
+      };
+    } & {
+      other: string;
+    }>>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_4_3 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_4_3>;
+//#endregion
+//#region ../core/routes/cookie.d.ts
+declare const __duploRoute_5_2: import("@duplojs/http").Route<{
+  readonly method: "GET";
+  readonly paths: readonly ["/cookie-check"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [];
+  readonly metadata: readonly [];
+  readonly bodyController: null;
+  readonly steps: readonly [import("@duplojs/http").ExtractStep<{
+    readonly shape: {
+      cookies: {
+        session: NoInfer<DDataStructure.TypeStructure<string, readonly []>>;
+      };
     };
-    readonly responses: {
-        readonly code: "422";
-        readonly information: "extract-error";
-        readonly body?: undefined;
-    } | {
-        readonly code: "204";
-        readonly information: "users.deleted";
-        readonly body?: undefined;
+    readonly otherwise: undefined;
+    readonly metadata: readonly [];
+  }>, import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {
+      session: string;
+    }, params: import("@duplojs/http").HandlerStepFunctionParams): import("@duplojs/lang").MaybePromise<import("@duplojs/http").PredictedResponse<"200", "cookie.checked", {
+      readonly session: string;
+    }>>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_5_2 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_5_2>;
+declare const __duploRoute_5_3: import("@duplojs/http").Route<{
+  readonly method: "GET";
+  readonly paths: readonly ["/cookie-drop"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [];
+  readonly metadata: readonly [];
+  readonly bodyController: null;
+  readonly steps: readonly [import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {}, params: import("@duplojs/http").HandlerStepFunctionParams): import("@duplojs/lang").MaybePromise<import("@duplojs/http").PredictedResponse<"204", "cookie.dropped", undefined>>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_5_3 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_5_3>;
+//#endregion
+//#region ../core/routes/stream.d.ts
+declare const __duploRoute_6_3: import("@duplojs/http").Route<{
+  readonly method: "GET";
+  readonly paths: readonly ["/stream"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [];
+  readonly metadata: readonly [];
+  readonly bodyController: null;
+  readonly steps: readonly [import("@duplojs/http").ExtractStep<{
+    readonly shape: {
+      query: {
+        value: NoInfer<DDataStructure.TypeStructure<number, readonly []>>;
+      };
     };
-} | {
-    readonly method: "POST";
-    readonly path: "/documents";
-    readonly body: DCommon.TheFormData<{
-        readonly bool: boolean;
-        readonly myFile: readonly File[] & DArray.LengthEqual<1>;
-        readonly name: string;
+    readonly otherwise: undefined;
+    readonly metadata: readonly [];
+  }>, import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {
+      value: number;
+    }, params: import("@duplojs/http").HandlerStepFunctionParams): DCommon.MaybePromise<import("@duplojs/http").StreamPredictedResponse<"200", "monSuperStream", number>>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_6_3 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_6_3>;
+declare const __duploRoute_6_4: import("@duplojs/http").Route<{
+  readonly method: "POST";
+  readonly paths: readonly ["/stream-text"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [];
+  readonly metadata: readonly [];
+  readonly bodyController: null;
+  readonly steps: readonly [import("@duplojs/http").ExtractStep<{
+    readonly shape: {
+      body: {
+        value: NoInfer<DDataStructure.TypeStructure<string, readonly []>>;
+      };
+    };
+    readonly otherwise: undefined;
+    readonly metadata: readonly [];
+  }>, import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {
+      value: string;
+    }, params: import("@duplojs/http").HandlerStepFunctionParams): DCommon.MaybePromise<import("@duplojs/http").StreamTextPredictedResponse<"200", "monSuperStream">>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_6_4 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_6_4>;
+//#endregion
+//#region ../core/routes/rejection.d.ts
+declare const __duploRoute_7_2: import("@duplojs/http").Route<{
+  readonly method: "POST";
+  readonly paths: readonly ["/rejections/extract"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [];
+  readonly metadata: readonly [];
+  readonly bodyController: null;
+  readonly steps: readonly [import("@duplojs/http").ExtractStep<{
+    readonly shape: {
+      body: {
+        id: NoInfer<DDataStructure.TypeStructure<number, readonly []>>;
+      };
+    };
+    readonly otherwise: undefined;
+    readonly metadata: readonly [];
+  }>, import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {
+      id: number;
+    }, params: import("@duplojs/http").HandlerStepFunctionParams): import("@duplojs/lang").MaybePromise<import("@duplojs/http").PredictedResponse<"204", "handled", undefined>>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_7_2 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_7_2>;
+declare const __duploRoute_7_4: import("@duplojs/http").Route<{
+  readonly method: "GET";
+  readonly paths: readonly ["/rejections/checker"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [];
+  readonly metadata: readonly [];
+  readonly bodyController: null;
+  readonly steps: readonly [import("@duplojs/http").CheckerStep<{
+    readonly checker: import("@duplojs/http").Checker<{
+      theFunction(input: boolean, params: import("@duplojs/http").CheckerFunctionParams<undefined>): import("@duplojs/lang").MaybePromise<import("@duplojs/http").CheckerFunctionOutput<"allowed", undefined> | import("@duplojs/http").CheckerFunctionOutput<"denied", string>>;
+      options: undefined;
     }>;
-    readonly responses: {
-        readonly code: "422";
-        readonly information: "extract-error";
-        readonly body?: undefined;
-    } | {
-        readonly code: "204";
-        readonly information: "file.receive";
-        readonly body?: undefined;
-    };
-} | {
-    readonly method: "GET";
-    readonly path: \`/documents/\${string}\`;
-    readonly responses: {
-        readonly code: "200";
-        readonly information: "file.send";
-        readonly body: File;
-    };
-} | {
-    readonly method: "GET";
-    readonly path: "/sse";
-    readonly query: {
-        readonly close?: undefined | boolean;
-    };
-    readonly responses: {
-        readonly code: "422";
-        readonly information: "extract-error";
-        readonly body?: undefined;
-    } | {
-        readonly code: "200";
-        readonly information: "super-sse";
-        readonly body?: undefined;
-        readonly events: {
-            readonly other: string;
-            readonly message: {
-                readonly test: string;
-            };
-        };
-    } | {
-        readonly code: "204";
-        readonly information: "close";
-        readonly body?: undefined;
-    };
-} | {
-    readonly method: "GET";
-    readonly path: "/cookie-check";
-    readonly responses: {
-        readonly code: "422";
-        readonly information: "extract-error";
-        readonly body?: undefined;
-    } | {
-        readonly code: "200";
-        readonly information: "cookie.checked";
-        readonly body: {
-            readonly session: string;
-        };
-    };
-} | {
-    readonly method: "GET";
-    readonly path: "/cookie-drop";
-    readonly responses: {
-        readonly code: "204";
-        readonly information: "cookie.dropped";
-        readonly body?: undefined;
-    };
-} | {
-    readonly method: "GET";
-    readonly path: "/stream";
-    readonly query: {
-        readonly value: number;
-    };
-    readonly responses: {
-        readonly code: "422";
-        readonly information: "extract-error";
-        readonly body?: undefined;
-    } | {
-        readonly code: "200";
-        readonly information: "monSuperStream";
-        readonly body?: undefined;
-        readonly flux: Uint8Array<ArrayBuffer>;
-    };
-} | {
-    readonly method: "POST";
-    readonly path: "/stream-text";
-    readonly body: {
-        readonly value: string;
-    };
-    readonly responses: {
-        readonly code: "422";
-        readonly information: "extract-error";
-        readonly body?: undefined;
-    } | {
-        readonly code: "200";
-        readonly information: "monSuperStream";
-        readonly body?: undefined;
-        readonly flux: string;
-    };
-} | {
-    readonly method: "GET";
-    readonly path: "/static-file";
-    readonly responses: {
-        readonly code: "200";
-        readonly information: "resource.found";
-        readonly body: File;
-    } | {
-        readonly code: "304";
-        readonly information: "resource.notModified";
-        readonly body?: undefined;
-    };
-} | {
-    readonly method: "GET";
-    readonly path: \`/static-folder/\${string}\`;
-    readonly responses: {
-        readonly code: "200";
-        readonly information: "resource.found";
-        readonly body: File;
-    } | {
-        readonly code: "404";
-        readonly information: "resource.notfound";
-        readonly body?: undefined;
-    } | {
-        readonly code: "304";
-        readonly information: "resource.notModified";
-        readonly body?: undefined;
-    };
-};"
-`;
-
-exports[`codeGenerator > correct generate file 2`] = `
-"export * from "./userIdStructure";
-export * from "./userNameStructure";
-export * from "./userStructure";"
-`;
-
-exports[`codeGenerator > correct generate file 3`] = `
-"import * as DChrono from "@duplojs/lang/chrono";
-
-export type UserId = number;
-
-export type UserName = string;
-
-export type User = {
-    readonly id: UserId;
-    readonly name: UserName;
-    readonly age: number;
-    readonly friends?: undefined | readonly User[];
-    readonly createdAt?: undefined | DChrono.TheDate;
-};
-
-export type $userStructure = User;"
-`;
-
-exports[`codeGenerator > correct generate file 4`] = `
-"import * as DDataStructure from "@duplojs/lang/dataStructure";
-
-import { userIdStructure } from "./userIdStructure";
-
-import { userNameStructure } from "./userNameStructure";
-
-import { $userStructure } from "./types";
-
-export const userStructure: DDataStructure.Structure<$userStructure> = DDataStructure.ObjectStructure({
-    id: userIdStructure,
-    name: userNameStructure,
-    age: DDataStructure.TypeStructure(DDataStructure.NumberType(), []),
-    friends: DDataStructure.UnionStructure([
-        DDataStructure.TypeStructure(DDataStructure.UndefinedType(), []),
-        DDataStructure.ArrayStructure(DDataStructure.LazyStructure(() => userStructure, []), [])
-    ], []),
-    createdAt: DDataStructure.UnionStructure([
-        DDataStructure.TypeStructure(DDataStructure.UndefinedType(), []),
-        DDataStructure.TypeStructure(DDataStructure.DateType(), [])
-    ], [])
-}, []);"
-`;
-
-exports[`codeGenerator > correct generate file 5`] = `
-"import * as DDataStructure from "@duplojs/lang/dataStructure";
-
-export const userIdStructure = DDataStructure.TypeStructure(DDataStructure.NumberType(), []);"
-`;
-
-exports[`codeGenerator > correct generate file 6`] = `
-"import * as DDataStructure from "@duplojs/lang/dataStructure";
-
-export const userNameStructure = DDataStructure.TypeStructure(DDataStructure.StringType(), []);"
+    readonly result: "allowed";
+    readonly indexing: undefined;
+    input(floor: {}): boolean;
+    readonly options: undefined;
+    otherwise(params: import("@duplojs/http").CheckerStepOtherwiseParams<{}, import("@duplojs/http").CheckerFunctionOutput<"denied", string>>): import("@duplojs/http").PredictedResponse<"403", "checker-rejected", {
+      readonly reason: string;
+    }>;
+    readonly metadata: readonly [];
+  }>, import("@duplojs/http").CutStep<{
+    theFunction(floor: {}, param: import("@duplojs/http").CutStepFunctionParams): Promise<never>;
+    readonly metadata: readonly [];
+  }>, import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {}, params: import("@duplojs/http").HandlerStepFunctionParams): import("@duplojs/lang").MaybePromise<import("@duplojs/http").PredictedResponse<"204", "handled", undefined>>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_7_4 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_7_4>;
+declare const __duploRoute_7_7: import("@duplojs/http").Route<{
+  readonly method: "GET";
+  readonly paths: readonly ["/rejections/process"];
+  readonly preflightSteps: readonly [];
+  readonly hooks: readonly [];
+  readonly metadata: readonly [];
+  readonly bodyController: null;
+  readonly steps: readonly [import("@duplojs/http").ProcessStep<{
+    readonly process: import("@duplojs/http").Process<{
+      readonly options: undefined;
+      readonly hooks: readonly [];
+      readonly metadata: readonly [];
+      readonly steps: readonly [import("@duplojs/http").ProcessStep<{
+        readonly process: import("@duplojs/http").Process<{
+          readonly options: undefined;
+          readonly hooks: readonly [];
+          readonly metadata: readonly [];
+          readonly steps: readonly [import("@duplojs/http").CutStep<{
+            theFunction(floor: {}, param: import("@duplojs/http").CutStepFunctionParams): import("@duplojs/lang").MaybePromise<import("@duplojs/http").PredictedResponse<"409", "process-rejected", {
+              readonly reason: "nested";
+            }>>;
+            readonly metadata: readonly [];
+          }>];
+        }>;
+        readonly options: undefined;
+        readonly imports: undefined;
+        readonly metadata: readonly [];
+      }>, import("@duplojs/http").CutStep<{
+        theFunction(floor: {}, param: import("@duplojs/http").CutStepFunctionParams): Promise<never>;
+        readonly metadata: readonly [];
+      }>];
+    }>;
+    readonly options: undefined;
+    readonly imports: undefined;
+    readonly metadata: readonly [];
+  }>, import("@duplojs/http").CutStep<{
+    theFunction(floor: {}, param: import("@duplojs/http").CutStepFunctionParams): Promise<never>;
+    readonly metadata: readonly [];
+  }>, import("@duplojs/http").HandlerStep<{
+    theFunction(floor: {}, params: import("@duplojs/http").HandlerStepFunctionParams): import("@duplojs/lang").MaybePromise<import("@duplojs/http").PredictedResponse<"204", "handled", undefined>>;
+    readonly metadata: readonly [];
+  }>];
+}>;
+type __duploRoute_7_7 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_7_7>;
+//#endregion
+//#region ../core/routes.d.ts
+export type Routes = __duploRoute_2_6 | __duploRoute_2_7 | __duploRoute_2_8 | __duploRoute_2_9 | __duploRoute_3_8 | __duploRoute_3_9 | __duploRoute_4_3 | __duploRoute_5_2 | __duploRoute_5_3 | __duploRoute_6_3 | __duploRoute_6_4 | __duploRoute_7_2 | __duploRoute_7_4 | __duploRoute_7_7;
+//#endregion
+export {};"
 `;

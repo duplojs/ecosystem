@@ -1,29 +1,16 @@
 /**
  * @title Initialiser un client HTTP
  *
- * Création d'un client à partir du contrat statique des routes, configuration
- * globale et conservation du typage des requêtes et réponses exposées par le
- * serveur.
+ * Configuration d'un client HTTP typé et des paramètres communs aux requêtes.
  */
 import { createHttpClient } from "@duplojs/http/client";
+import { type RouteDeclarationToContract } from "@duplojs/http";
+import * as DCommon from "@duplojs/lang/common";
+import { type usersRoute } from "../../02-server/20-http/20-route";
 
-// Exemple réduit du contrat produit par `codeGeneratorPlugin`.
-export interface Routes {
-	method: "GET";
-	path: "/hello-world";
-	query: {
-		name: string;
-	};
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
-	} | {
-		code: "200";
-		information: "helloWorld.send";
-		body: string;
-	};
-}
+// L'import de type ne charge pas les déclarations de routes au runtime.
+// Les réponses incluent les retours du handler et les refus des étapes.
+export type Routes = RouteDeclarationToContract<typeof usersRoute>;
 
 // `baseUrl` suffit pour créer un client.
 // Les autres options configurent le comportement global.
@@ -42,14 +29,15 @@ client.addDefaultHeader(
 // Le contrat limite les paths, paramètres et réponses disponibles.
 const response = await client
 	.get(
-		"/hello-world",
+		"/users",
 		{
 			query: {
-				name: "William",
+				page: DCommon.cast(1),
+				quantityPerPage: DCommon.cast(5),
 			},
 		},
 	)
-	.iWantInformationOrThrow("helloWorld.send");
+	.iWantInformationOrThrow("users.findMany");
 
 void response.body;
 void response.code;

@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType, pipe } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("transformer", () => {
 	it("applies the target method when present", () => {
@@ -12,7 +13,7 @@ describe("transformer", () => {
 			"toNative",
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			{ done: true },
 			"strict"
@@ -71,7 +72,7 @@ describe("transformer", () => {
 
 	it("creates reusable transformers", () => {
 		const toNative = DCommon.createTransformer("toNative");
-		const result = pipe(
+		const result = DCommon.pipe(
 			{
 				toNative() {
 					return 42 as const;
@@ -80,7 +81,7 @@ describe("transformer", () => {
 			toNative,
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			42,
 			"strict"

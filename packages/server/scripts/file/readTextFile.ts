@@ -3,13 +3,13 @@ import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 
-class ReadTextFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-text-file-not-found", Error) {}
-class ReadTextFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-text-file-permission-denied", Error) {}
-class ReadTextFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-read-text-file-is-directory", Error) {}
-class ReadTextFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-read-text-file-not-directory", Error) {}
-class ReadTextFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-read-text-file-too-many-open-files", Error) {}
-class ReadTextFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-read-text-file-busy", Error) {}
-class ReadTextFileError extends DCommon.DuploJSError.parentClass("file-system-read-text-file-error", Error) {}
+export class ReadTextFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-text-file-not-found", Error) {}
+export class ReadTextFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-text-file-permission-denied", Error) {}
+export class ReadTextFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-read-text-file-is-directory", Error) {}
+export class ReadTextFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-read-text-file-not-directory", Error) {}
+export class ReadTextFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-read-text-file-too-many-open-files", Error) {}
+export class ReadTextFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-read-text-file-busy", Error) {}
+export class ReadTextFileError extends DCommon.DuploJSError.parentClass("file-system-read-text-file-error", Error) {}
 
 export type ReadTextFileErrors = (
 	| ReadTextFileErrorNotFound
@@ -85,7 +85,7 @@ function handleDenoReadTextFileError(error: Error) {
 
 declare module "@scripts/implementor" {
 	interface ServerFunction {
-		readTextFile(path: string & DPath.Path): Promise<ReadTextFileResult>;
+		readTextFile(path: DPath.AnyPath): Promise<ReadTextFileResult>;
 	}
 }
 

@@ -1,13 +1,13 @@
 import { Route } from '../../core/route';
-import { ResponseContract } from '../../core/response';
 import { DataStructureToJsonSchema } from '@duplojs/tools';
 import { EndpointResponse, EntrypointParameter } from './types';
+import { OpenApiEndpointContractMetadata } from './metadata';
 import * as DArray from "@duplojs/lang/array";
 export type ResultSchemaContext = Map<string, Record<string, DataStructureToJsonSchema.JsonSchema>>;
 export interface RouteToOpenApiParams {
+    readonly defaultExtractMetadata?: ReturnType<typeof OpenApiEndpointContractMetadata>;
     readonly contextToJsonSchemaFactory: DataStructureToJsonSchema.MapContext;
     readonly resultSchemaContext: ResultSchemaContext;
-    readonly defaultExtractContract: ResponseContract.Contract;
 }
 export declare function routeToOpenApi(route: Route, params: RouteToOpenApiParams): never[] | (readonly {
     path: `/${string}`;

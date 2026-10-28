@@ -16,6 +16,9 @@
   "bugs": {
     "url": "https://github.com/duplojs/ecosystem/issues"
   },
+  "bin": {
+    "duplojs-http": "./dist/bin/index.mjs"
+  },
   "scripts": {
     "build": "./.commands/build.sh",
     "test:types": "./.commands/test-types.sh",

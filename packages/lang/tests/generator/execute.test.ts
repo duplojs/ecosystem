@@ -1,4 +1,5 @@
-import { DGenerator, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DGenerator from "@scripts/generator";
 
 describe("execute", () => {
 	it("consumes a sync iterable", () => {
@@ -9,7 +10,7 @@ describe("execute", () => {
 
 		expect(collected).toStrictEqual(["a", "b"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			void,
 			"strict"
@@ -29,7 +30,7 @@ describe("execute", () => {
 
 		expect(collected).toStrictEqual([1, 2]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<void>,
 			"strict"
@@ -39,7 +40,7 @@ describe("execute", () => {
 	it("consumes values in pipe", () => {
 		const collected: number[] = [];
 
-		pipe(
+		DCommon.pipe(
 			[1, 2],
 			DGenerator.map((item) => collected.push(item * 2)),
 			DGenerator.execute,

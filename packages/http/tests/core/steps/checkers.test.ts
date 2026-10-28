@@ -1,4 +1,4 @@
-import { checkerStepKind, createCheckerStep, stepKind } from "@core";
+import { ResponseHelper, checkerStepKind, createCheckerStep, stepKind } from "@core";
 import { testChecker } from "@test-utils/checker";
 
 describe("checkerStep", () => {
@@ -8,7 +8,7 @@ describe("checkerStep", () => {
 				checker: testChecker,
 				result: "result",
 				input: () => ({}),
-				responseContract: {} as any,
+				otherwise: () => ResponseHelper.badRequest("rejected"),
 				metadata: [],
 			}),
 		).toStrictEqual({
@@ -18,7 +18,7 @@ describe("checkerStep", () => {
 				checker: testChecker,
 				result: "result",
 				input: expect.any(Function),
-				responseContract: {} as any,
+				otherwise: expect.any(Function),
 				metadata: [],
 			},
 		});

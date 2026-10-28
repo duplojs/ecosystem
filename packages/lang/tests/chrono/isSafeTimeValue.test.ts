@@ -1,4 +1,5 @@
-import { type ExpectType, DChrono } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("isSafeTimeValue", () => {
 	it("returns true for safe integers inside bounds", () => {
@@ -8,7 +9,7 @@ describe("isSafeTimeValue", () => {
 		expect(DChrono.isSafeTimeValue(DChrono.minTimeValue + 1)).toBe(true);
 		expect(DChrono.isSafeTimeValue(DChrono.maxTimeValue - 1)).toBe(true);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			boolean,
 			"strict"

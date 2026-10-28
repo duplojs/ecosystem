@@ -4,9 +4,7 @@ import dts from "unplugin-dts/rolldown";
 const defaultConfig = {
 	treeshake: false,
 	external: [
-		/^@duplojs\/lang/,
-		/^@duplojs\/server/,
-		/^@duplojs\/tools/,
+		/^@duplojs\//,
 		/^node:/,
 	],
 	output: [

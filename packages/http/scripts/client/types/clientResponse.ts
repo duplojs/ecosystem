@@ -1,7 +1,7 @@
-import { type ServerRouteResponse, type ServerRoute, type ServerRouteResponseFlux } from "./serverRoute";
 import type * as DCommon from "@duplojs/lang/common";
 import { type PromiseRequestParams } from "./promiseRequestParams";
-import { type ServerRouteToClientRequestParams } from "./clientRequestParams";
+import { type RouteContractResponseDefault, type RouteContract, type RouteContractResponse, type RouteContractResponseFlux, type RouteContractResponseSSE, type RouteContractResponseStream } from "@core";
+import { type RouteContractToClientRequestParams } from "./clientRequestParams";
 
 export type ClientResponseBody = unknown;
 
@@ -29,7 +29,7 @@ export interface ClientResponseHandler<
 }
 
 export interface ClientStreamResponseHandler<
-	GenericFlux extends ServerRouteResponseFlux = ServerRouteResponseFlux,
+	GenericFlux extends RouteContractResponseFlux = RouteContractResponseFlux,
 > extends AsyncIterable<GenericFlux, void>, ClientResponseHandler<"stream"> {
 	closeStream(): void;
 	onStream(event: "close", callback: (response: this) => DCommon.MaybePromise<void>): this;
@@ -116,19 +116,23 @@ export type AllNotPredictedClientResponse<
 	| NotPredictedClientEventsResponse<GenericHookParams>
 );
 
-export type ServerRouteToClientResponse<
-	GenericServerRoute extends ServerRoute = ServerRoute,
+export type RouteContractToClientResponse<
+	GenericRouteContract extends RouteContract = RouteContract,
 	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
-> = GenericServerRoute extends any
-	? GenericServerRoute["responses"] extends infer InferredResponse
-		? InferredResponse extends ServerRouteResponse
+> = GenericRouteContract extends any
+	? GenericRouteContract["responses"] extends infer InferredResponse
+		? InferredResponse extends RouteContractResponse
 			? (
 				DCommon.SimplifyTopLevel<{
 					code: InferredResponse["code"];
 					information: InferredResponse["information"];
-					body: DCommon.IsEqual<InferredResponse["body"], File> extends true
-						? undefined
-						: DCommon.ToJson<InferredResponse["body"]>;
+					body: InferredResponse extends RouteContractResponseDefault
+						? InferredResponse["body"] extends infer InferredBodyValue
+							? InferredBodyValue extends File
+								? undefined
+								: DCommon.ToJson<InferredBodyValue>
+							: never
+						: undefined;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -136,8 +140,8 @@ export type ServerRouteToClientResponse<
 					redirected: boolean;
 					raw: globalThis.Response;
 					requestParams: DCommon.SimplifyTopLevel<
-						& ServerRouteToClientRequestParams<
-							GenericServerRoute,
+						& RouteContractToClientRequestParams<
+							GenericRouteContract,
 							GenericHookParams
 						>
 						& PromiseRequestParams<GenericHookParams>
@@ -146,10 +150,9 @@ export type ServerRouteToClientResponse<
 					fromCache?: boolean;
 				}>
 				& (
-					DCommon.IsEqual<InferredResponse["events"], unknown> extends true
-						? unknown
-						: InferredResponse["events"] extends object
-							? ClientEventsResponseHandler<{
+					InferredResponse extends RouteContractResponseSSE
+						? ClientEventsResponseHandler<
+							{
 								[EventName in keyof InferredResponse["events"]]: EventName extends string
 									? {
 										event: EventName;
@@ -158,15 +161,14 @@ export type ServerRouteToClientResponse<
 										retry?: number;
 									}
 									: never
-							}[keyof InferredResponse["events"]]>
-							: unknown
+							}[keyof InferredResponse["events"]]
+						>
+						: unknown
 				)
 				& (
-					DCommon.IsEqual<InferredResponse["flux"], unknown> extends true
-						? unknown
-						: InferredResponse["flux"] extends ServerRouteResponseFlux
-							? ClientStreamResponseHandler<InferredResponse["flux"]>
-							: never
+					InferredResponse extends RouteContractResponseStream
+						? ClientStreamResponseHandler<InferredResponse["flux"]>
+						: unknown
 				)
 			) extends infer InferredResult extends ClientResponse
 				? InferredResult

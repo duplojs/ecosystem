@@ -1,14 +1,12 @@
 import { type CutStepFunctionParams, cutStepKind, cutStepOutputKind } from "@core/steps";
 import { createStepFunctionBuilder } from "../create";
-import * as DArray from "@duplojs/lang/array";
-import * as DEither from "@duplojs/lang/either";
-import { PredictedResponse, ResponseContract } from "@core/response";
+import { PredictedResponse, ResponseHelper } from "@core/response";
+import * as DCommon from "@duplojs/lang/common";
 
 export const defaultCutStepFunctionBuilder = createStepFunctionBuilder(
 	cutStepKind.has,
 	(step, { success }) => {
 		const {
-			responseContract,
 			theFunction: cutFunction,
 		} = step.definition;
 
@@ -19,66 +17,27 @@ export const defaultCutStepFunctionBuilder = createStepFunctionBuilder(
 			data ?? {} as never,
 		);
 
-		const preparedContractResponse = DArray.reduce(
-			DArray.coalescing(responseContract),
-			DArray.reduceFrom<Record<string, ResponseContract.Contract>>({}),
-			({ element, lastValue, nextWithObject }) => nextWithObject(
-				lastValue,
-				{
-					[element.information]: element,
-				},
-			),
-		);
-
-		const response: CutStepFunctionParams["response"] = (
-			information,
-			body,
-		) => {
-			const currentContract = preparedContractResponse[information];
-
-			if (!currentContract) {
-				throw new ResponseContract.Error(information, "Contract not found.");
-			}
-
-			return new PredictedResponse(
-				currentContract.code,
-				currentContract.information,
-				body,
-			) as never;
-		};
-
 		return success({
-			buildedFunction: async(request, floor) => {
-				const cutResult = await cutFunction(
+			buildedFunction: async(request, floor) => DCommon.callThen(
+				cutFunction(
 					floor,
 					{
 						request,
 						output,
-						response,
+						response: ResponseHelper,
 					},
-				);
-
-				if (cutResult instanceof PredictedResponse) {
-					const currentContract = preparedContractResponse[cutResult.information]!;
-					const resultBody = await currentContract.body.asyncCheck(
-						cutResult.body,
-					);
-
-					if (DEither.isLeft(resultBody)) {
-						throw new ResponseContract.Error(
-							cutResult.information,
-							DEither.unwrapLeft(resultBody),
-						);
+				),
+				(result) => {
+					if (result instanceof PredictedResponse) {
+						return result;
 					}
 
-					return cutResult;
-				}
-
-				return {
-					...floor,
-					...cutStepOutputKind.getValue(cutResult),
-				};
-			},
+					return {
+						...floor,
+						...cutStepOutputKind.getValue(result),
+					};
+				},
+			),
 			hooksRouteLifeCycle: [],
 		});
 	},

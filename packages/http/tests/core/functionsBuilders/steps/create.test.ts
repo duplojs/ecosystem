@@ -1,4 +1,4 @@
-import { createCutStep, createExtractStep, createStepFunctionBuilder, defaultExtractContract, type ExtractStep, extractStepKind } from "@core";
+import { createCutStep, createExtractStep, createStepFunctionBuilder, defaultExtractOtherwise, type ExtractStep, extractStepKind } from "@core";
 import type * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 
@@ -35,7 +35,7 @@ describe("createStepFunctionBuilder", () => {
 				success: (element) => DEither.right("buildSuccess", element),
 				buildStep: () => void undefined as never,
 				environment: "DEV",
-				defaultExtractContract,
+				defaultExtractOtherwise,
 				defaultCodecs: {},
 			},
 		);
@@ -48,14 +48,13 @@ describe("createStepFunctionBuilder", () => {
 		const result = await functionBuilder(
 			createCutStep({
 				theFunction: () => ({}) as never,
-				responseContract: [],
 				metadata: [],
 			}),
 			{
 				success: (element) => DEither.right("buildSuccess", element),
 				buildStep: () => void undefined as never,
 				environment: "DEV",
-				defaultExtractContract,
+				defaultExtractOtherwise,
 				defaultCodecs: {},
 			},
 		);

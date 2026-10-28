@@ -1,4 +1,9 @@
-import { DCommon, DDataStructure, DEither, DModeling, type DString, pipe, when, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DModeling from "@scripts/modeling";
+import type * as DString from "@scripts/string";
 
 describe("objectTag", () => {
 	it("create object tag from interface", () => {
@@ -23,7 +28,7 @@ describe("objectTag", () => {
 			},
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof taggedObject,
 			| TaggedObjectOne
 			| TaggedObjectTwo,
@@ -120,7 +125,7 @@ describe("objectTag", () => {
 		) as Success | Failure;
 
 		if (DModeling.hasTagValue(input, "success")) {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				Success,
 				"strict"
@@ -128,7 +133,7 @@ describe("objectTag", () => {
 
 			expect(input.value).toBe(42);
 		} else {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				Failure,
 				"strict"
@@ -154,12 +159,12 @@ describe("objectTag", () => {
 			},
 		) as Success | Failure;
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
-			when(
+			DCommon.when(
 				DModeling.hasTagValue(["success"]),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						Success,
 						"strict"
@@ -193,12 +198,12 @@ describe("objectTag", () => {
 			},
 		);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DModeling.TaggedObjectStructure<UserCreated>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			UserCreated,
 			"strict"
@@ -222,7 +227,7 @@ describe("objectTag", () => {
 			DEither.right("check-success", value),
 		);
 
-		type check1 = ExpectType<
+		type check1 = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof taggedObjectUserCreatedFromInterface>,
 			UserCreated,
 			"strict"
@@ -241,7 +246,7 @@ describe("objectTag", () => {
 			DEither.right("check-success", value),
 		);
 
-		type check2 = ExpectType<
+		type check2 = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof taggedObjectUserCreatedFromInference>,
 			(
 				& DModeling.ObjectTag<"user-created">

@@ -1,4 +1,6 @@
-import { ResponseContract, useRouteBuilder, Request, PredictedResponse } from "@core";
+import { createTestRequest } from "@test-utils/createTestRequest";
+import { useTestStepFunctionBuilder } from "@test-utils/useTestStepFunctionBuilder";
+import { createExtractStep, type ExtractOtherwise, useRouteBuilder, Request, PredictedResponse, ResponseHelper } from "@core";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DPath from "@duplojs/lang/path";
 import { setEnvironment, TESTImplementation } from "@duplojs/server";
@@ -19,8 +21,7 @@ describe("extract step function builder", () => {
 		const route = useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ params: { value: DDataStructure.string() } })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				(floor, { response }) => response("good", floor.value),
+				(floor, { response }) => response.ok("good", floor.value),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -51,8 +52,7 @@ describe("extract step function builder", () => {
 		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ origin: DDataStructure.string() })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				(floor, { response }) => response("good", floor.origin),
+				(floor, { response }) => response.ok("good", floor.origin),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -83,8 +83,7 @@ describe("extract step function builder", () => {
 		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ origin: DDataStructure.number() })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.number()),
-				(floor, { response }) => response("good", floor.origin),
+				(floor, { response }) => response.ok("good", floor.origin),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -120,8 +119,7 @@ describe("extract step function builder", () => {
 		const route = useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ params: { value: DDataStructure.string() } })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				(floor, { response }) => response("good", floor.value),
+				(floor, { response }) => response.ok("good", floor.value),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -157,8 +155,7 @@ describe("extract step function builder", () => {
 		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ origin: DDataStructure.number() })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.number()),
-				(floor, { response }) => response("good", floor.origin),
+				(floor, { response }) => response.ok("good", floor.origin),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route, { environment: "PROD" });
@@ -183,7 +180,7 @@ describe("extract step function builder", () => {
 				currentResponse: new PredictedResponse(
 					"422",
 					"extract-error",
-					undefined,
+					expect.any(DDataStructure.Error),
 				)
 					.setHeader("extract-key", "request.origin"),
 			}),
@@ -192,10 +189,9 @@ describe("extract step function builder", () => {
 
 	it("custom error extract", async() => {
 		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.extract({ origin: DDataStructure.number() }, ResponseContract.badRequest("test-custom"))
+			.extract({ origin: DDataStructure.number() }, ({ response }) => response.badRequest("test-custom"))
 			.handler(
-				ResponseContract.ok("good", DDataStructure.number()),
-				(floor, { response }) => response("good", floor.origin),
+				(floor, { response }) => response.ok("good", floor.origin),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route, { environment: "PROD" });
@@ -231,8 +227,7 @@ describe("extract step function builder", () => {
 		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ body: DDataStructure.number() })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.number()),
-				(floor, { response }) => response("good", floor.body),
+				(floor, { response }) => response.ok("good", floor.body),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route, { environment: "PROD" });
@@ -267,8 +262,7 @@ describe("extract step function builder", () => {
 		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ body: DDataStructure.number() })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.number()),
-				(floor, { response }) => response("good", floor.body),
+				(floor, { response }) => response.ok("good", floor.body),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route, { environment: "DEV" });
@@ -307,8 +301,7 @@ describe("extract step function builder", () => {
 		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ path: DSDataStructure.file([DSDataStructure.fileExist()]) })
 			.handler(
-				ResponseContract.ok("good", DSDataStructure.file()),
-				(floor, { response }) => response("good", floor.path),
+				(floor, { response }) => response.ok("good", floor.path),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route, {
@@ -351,8 +344,7 @@ describe("extract step function builder", () => {
 		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ body: DSDataStructure.file([DSDataStructure.fileExist()]) })
 			.handler(
-				ResponseContract.ok("good", DSDataStructure.file()),
-				(floor, { response }) => response("good", floor.body),
+				(floor, { response }) => response.ok("good", floor.body),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route, { environment: "DEV" });
@@ -383,5 +375,91 @@ describe("extract step function builder", () => {
 				),
 			}),
 		);
+	});
+
+	it("passes a body reading error to the global otherwise and preserves its response", async() => {
+		const error = new Error("cannot read body");
+		const floor = { context: "kept" };
+		const otherwise = vi.fn<ExtractOtherwise>(
+			({ response, dataStructureError }) => response.badRequest("read-failed", dataStructureError.message),
+		);
+		const step = createExtractStep({
+			shape: { body: DDataStructure.string() },
+			metadata: [],
+		});
+		const built = await useTestStepFunctionBuilder(step, {
+			defaultExtractOtherwise: otherwise,
+			environment: "PROD",
+		});
+		const request = createTestRequest({ bodyReader: createBodyReader(() => error) });
+		const result = await built.buildedFunction(request, floor);
+		expect(otherwise).toHaveBeenCalledExactlyOnceWith({
+			response: ResponseHelper,
+			floor,
+			dataStructureError: error,
+		});
+		expect(result).toBe(otherwise.mock.results[0]?.value);
+		expect(result).toStrictEqual(
+			new PredictedResponse("400", "read-failed", "cannot read body")
+				.setHeader("extract-key", "request.body"),
+		);
+	});
+
+	it("prefers a local otherwise over the global callback and stops further extraction", async() => {
+		const globalOtherwise = vi.fn<ExtractOtherwise>(({ response }) => response.notFound("global"));
+		const localOtherwise = vi.fn<ExtractOtherwise>(
+			({ response, floor }) => response.forbidden("local", floor.context),
+		);
+		const reader = vi.fn(() => "should not be read");
+		const step = createExtractStep({
+			shape: {
+				params: { id: DDataStructure.number() },
+				body: DDataStructure.string(),
+			},
+			otherwise: localOtherwise,
+			metadata: [],
+		});
+		const built = await useTestStepFunctionBuilder(step, { defaultExtractOtherwise: globalOtherwise });
+		const request = createTestRequest({
+			params: { id: "invalid" },
+			bodyReader: createBodyReader(reader),
+		});
+		const result = await built.buildedFunction(request, { context: "kept" });
+		expect(globalOtherwise).not.toHaveBeenCalled();
+		expect(reader).not.toHaveBeenCalled();
+		expect(localOtherwise).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({
+			dataStructureError: expect.any(DDataStructure.Error),
+		}));
+		expect(result).toStrictEqual(
+			new PredictedResponse("403", "local", "kept").setHeader("extract-key", "request.params.id"),
+		);
+	});
+
+	it("passes the progressively populated floor to otherwise", async() => {
+		const otherwise = vi.fn<ExtractOtherwise>(({ response }) => response.badRequest("invalid"));
+		const step = createExtractStep({
+			shape: {
+				params: {
+					first: DDataStructure.string(),
+					second: DDataStructure.number(),
+				},
+			},
+			otherwise,
+			metadata: [],
+		});
+		const built = await useTestStepFunctionBuilder(step);
+		const request = createTestRequest({
+			params: {
+				first: "accepted",
+				second: "invalid",
+			},
+		});
+		await built.buildedFunction(request, { kept: true });
+		expect(otherwise).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({
+			floor: {
+				kept: true,
+				first: "accepted",
+			},
+		}));
 	});
 });

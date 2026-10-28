@@ -3,7 +3,7 @@
  *
  * Vérifications dans les flux HTTP, réutilisation des traitements et adaptation de leurs résultats au contexte.
  */
-import { ResponseContract, createPresetChecker, useCheckerBuilder, usePreflightBuilder, useProcessBuilder, useRouteBuilder } from "@duplojs/http";
+import { createPresetChecker, useCheckerBuilder, usePreflightBuilder, useProcessBuilder, useRouteBuilder } from "@duplojs/http";
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -59,23 +59,21 @@ useRouteBuilder("POST", "/users/{userId}/confirm-email")
 		{
 			input: ({ userId }) => userId,
 			result: "user.find",
-			otherwise: ResponseContract.notFound("user.notfound"),
+			otherwise: ({ response }) => response.notFound("user.notfound"),
 			indexing: "user",
 		},
 	)
 	.cut(
-		ResponseContract.conflict("user.emailConfirmation.mismatch"),
 		({ user, email }, { response, output }) => {
 			if (user.email !== email) {
-				return response("user.emailConfirmation.mismatch");
+				return response.conflict("user.emailConfirmation.mismatch");
 			}
 
 			return output({ confirmedUser: user });
 		},
 	)
 	.handler(
-		ResponseContract.ok("user.emailConfirmed", userStructure),
-		({ confirmedUser }, { response }) => response("user.emailConfirmed", confirmedUser),
+		({ confirmedUser }, { response }) => response.ok("user.emailConfirmed", confirmedUser),
 	);
 
 // `check` interprète un checker pour un flux donné : input, résultat attendu,
@@ -91,13 +89,12 @@ useRouteBuilder("GET", "/users/{userId}")
 		{
 			input: ({ userId }) => userId,
 			result: "user.find",
-			otherwise: ResponseContract.notFound("user.notfound"),
+			otherwise: ({ response }) => response.notFound("user.notfound"),
 			indexing: "user",
 		},
 	)
 	.handler(
-		ResponseContract.ok("user.find", userStructure),
-		({ user }, { response }) => response("user.find", user),
+		({ user }, { response }) => response.ok("user.find", user),
 	);
 
 // Un preset nomme une interprétation récurrente du checker.
@@ -107,7 +104,7 @@ export const iWantUserExist = createPresetChecker(
 	userExist,
 	{
 		result: "user.find",
-		otherwise: ResponseContract.notFound("user.notfound"),
+		otherwise: ({ response }) => response.notFound("user.notfound"),
 	},
 );
 
@@ -123,8 +120,7 @@ useRouteBuilder("GET", "/users/{userId}")
 		({ userId }) => userId,
 	)
 	.handler(
-		ResponseContract.ok("user.find", userStructure),
-		({ user }, { response }) => response("user.find", user),
+		({ user }, { response }) => response.ok("user.find", user),
 	);
 
 // Un `process` réutilise une séquence complète de steps.
@@ -136,7 +132,6 @@ export const authenticationProcess = useProcessBuilder()
 		},
 	})
 	.cut(
-		ResponseContract.unauthorized("token.invalid"),
 		({ authorization }, { response, output }) => DCommon.pipe(
 			authorization,
 			checkToken,
@@ -144,7 +139,7 @@ export const authenticationProcess = useProcessBuilder()
 				(user) => output({
 					authenticatedUserId: user.id,
 				}),
-				() => response("token.invalid"),
+				() => response.unauthorized("token.invalid"),
 			),
 		),
 	)
@@ -153,7 +148,7 @@ export const authenticationProcess = useProcessBuilder()
 		{
 			input: DObject.getProperty("authenticatedUserId"),
 			result: "user.find",
-			otherwise: ResponseContract.notFound("token.user.notfound"),
+			otherwise: ({ response }) => response.notFound("token.user.notfound"),
 			indexing: "user",
 		},
 	)
@@ -168,8 +163,7 @@ useRouteBuilder("GET", "/some-action")
 		},
 	)
 	.handler(
-		ResponseContract.ok("some-information.send", userStructure),
-		({ user }, { response }) => response(
+		({ user }, { response }) => response.ok(
 			"some-information.send",
 			user,
 		),
@@ -187,8 +181,7 @@ export const useAuthenticatedRouteBuilder = usePreflightBuilder()
 
 useAuthenticatedRouteBuilder("GET", "/some-action")
 	.handler(
-		ResponseContract.ok("some-information.send", userStructure),
-		({ user }, { response }) => response(
+		({ user }, { response }) => response.ok(
 			"some-information.send",
 			user,
 		),

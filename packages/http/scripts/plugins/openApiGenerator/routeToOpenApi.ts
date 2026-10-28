@@ -1,23 +1,22 @@
 import type { Route } from "@core/route";
-import { aggregateStepContract } from "./aggregateStepContract";
+import { aggregateStepContract, type AggregateStepsParams } from "./aggregateStepContract";
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DObject from "@duplojs/lang/object";
 import * as DPattern from "@duplojs/lang/pattern";
 import * as DString from "@duplojs/lang/string";
-import { ResponseContract } from "@core/response";
 import { DataStructureToJsonSchema } from "@duplojs/tools";
 import { FormDataBodyController, type RequestMethods } from "@core/request";
 import type { EndpointResponse, EndpointResponseContent, EntrypointParameter, OpenApiMethod } from "./types";
-import { IgnoreByOpenApiGeneratorMetadata } from "./metadata";
+import { IgnoreByOpenApiGeneratorMetadata, type OpenApiEndpointContractMetadata } from "./metadata";
 
 export type ResultSchemaContext = Map<string, Record<string, DataStructureToJsonSchema.JsonSchema>>;
 
 export interface RouteToOpenApiParams {
+	readonly defaultExtractMetadata?: ReturnType<typeof OpenApiEndpointContractMetadata>;
 	readonly contextToJsonSchemaFactory: DataStructureToJsonSchema.MapContext;
 	readonly resultSchemaContext: ResultSchemaContext;
-	readonly defaultExtractContract: ResponseContract.Contract;
 }
 
 interface FactoryParams {
@@ -83,7 +82,8 @@ export function routeToOpenApi(
 			...route.definition.steps,
 		],
 		{
-			defaultExtractContract: params.defaultExtractContract,
+			metadata: route.definition.metadata,
+			defaultExtractMetadata: params.defaultExtractMetadata,
 		},
 	);
 
@@ -188,7 +188,8 @@ export function routeToOpenApi(
 				>
 			>({}),
 			({ lastValue, element: contract, nextWithObject, next }) => {
-				const { information, body, code } = contract;
+				const { information, code } = contract;
+				const description = contract.description ?? lastValue[code]?.description ?? information;
 
 				const headerInformation: DataStructureToJsonSchema.JsonSchema = {
 					const: information,
@@ -229,7 +230,7 @@ export function routeToOpenApi(
 					},
 				};
 
-				if (ResponseContract.serverSentEventsContractKind.has(contract)) {
+				if (contract.type === "serverSentEvents") {
 					const eventNameList = DObject.keys(contract.events);
 					const eventDataList = DObject.values(contract.events);
 					if (!DArray.minElements(eventNameList, 1) || !DArray.minElements(eventDataList, 1)) {
@@ -268,6 +269,7 @@ export function routeToOpenApi(
 						lastValue,
 						{
 							[code]: {
+								description,
 								headers,
 								content,
 							},
@@ -275,7 +277,7 @@ export function routeToOpenApi(
 					);
 				}
 
-				if (ResponseContract.streamContractKind.has(contract)) {
+				if (contract.type === "stream") {
 					const lastContent = lastValue[code]?.content;
 					const schema: DataStructureToJsonSchema.JsonSchema = {
 						type: "string",
@@ -299,6 +301,7 @@ export function routeToOpenApi(
 						lastValue,
 						{
 							[code]: {
+								description,
 								headers,
 								content,
 							},
@@ -306,7 +309,7 @@ export function routeToOpenApi(
 					);
 				}
 
-				if (ResponseContract.streamTextContractKind.has(contract)) {
+				if (contract.type === "streamText") {
 					const lastContent = lastValue[code]?.content;
 					const schema = factoryJsonSchema({
 						context: params.contextToJsonSchemaFactory,
@@ -331,6 +334,7 @@ export function routeToOpenApi(
 						lastValue,
 						{
 							[code]: {
+								description,
 								headers,
 								content,
 							},
@@ -338,66 +342,40 @@ export function routeToOpenApi(
 					);
 				}
 
+				const body = contract.body ?? DDataStructure.undefined();
 				const schemaResponse = factoryJsonSchema({
 					context: params.contextToJsonSchemaFactory,
 					resultSchemaContext: params.resultSchemaContext,
 					schema: body,
 				});
 
-				const content = DCommon.pipe(
-					body,
-					DPattern.when(
-						DDataStructure.isUndefinedStructure,
-						DCommon.justReturn(lastValue[code]?.content),
-					),
-					DPattern.otherwise(
-						(value) => {
-							if (
-								DDataStructure.typeStructureIdentifier(value, DDataStructure.stringTypeKind)
-								&& lastValue[code]?.content?.["text/plain"]
-							) {
-								return lastValue[code].content;
-							}
-
-							if (DDataStructure.typeStructureIdentifier(value, DDataStructure.stringTypeKind)) {
-								return {
-									...lastValue[code]?.content,
-									"text/plain": {
-										schema: schemaResponse,
-									},
-								};
-							}
-
-							if (
-								DDataStructure.structureIdentifier(value, DDataStructure.objectStructureKind)
-								&& lastValue[code]?.content?.["application/json"]
-							) {
-								return {
-									...lastValue[code]?.content,
-									"application/json": {
-										schema: {
-											anyOf: [
-												lastValue[code].content["application/json"].schema,
-												schemaResponse,
-											],
-										},
-									},
-								};
-							}
-
-							return {
-								"application/json": {
-									schema: schemaResponse,
-								},
-							};
+				const bodyTypes = DDataStructure.structureIdentifier(body, DDataStructure.unionStructureKind)
+					? body.definition.values.value
+					: [body];
+				const contentType = DArray.every(bodyTypes, DCommon.or([
+					DDataStructure.typeStructureIdentifier(DDataStructure.stringTypeKind),
+					DDataStructure.typeStructureIdentifier(DDataStructure.stringLiteralTypeKind),
+				]))
+					? "text/plain"
+					: "application/json";
+				const lastContent = lastValue[code]?.content;
+				const previousSchema = lastContent?.[contentType]?.schema;
+				const content = DDataStructure.isUndefinedStructure(body)
+					? lastContent
+					: {
+						...lastContent,
+						[contentType]: {
+							schema: previousSchema
+								? { anyOf: [previousSchema, schemaResponse] }
+								: schemaResponse,
 						},
-					),
-				);
+					};
 
 				return nextWithObject(
 					lastValue,
 					{
 						[code]: {
+							description,
 							headers,
 							content,
 						},

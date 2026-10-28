@@ -1,4 +1,5 @@
-import { DString, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("startsWith", () => {
 	it("should validate string start", () => {
@@ -8,12 +9,12 @@ describe("startsWith", () => {
 
 	it("should narrow a string start inside a pipe when callback", () => {
 		const source = "api-user" as "api-user" | "admin";
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
-			when(
+			DCommon.when(
 				DString.startsWith("api"),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						"api-user",
 						"strict"
@@ -31,13 +32,13 @@ describe("startsWith", () => {
 		const source = "api-user" as "api-user" | "admin";
 
 		if (DString.startsWith(source, "api")) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				"api-user",
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				"admin",
 				"strict"

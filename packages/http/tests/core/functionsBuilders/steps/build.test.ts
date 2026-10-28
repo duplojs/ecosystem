@@ -1,4 +1,4 @@
-import { buildStepFunction, createExtractStep, createStepFunctionBuilder, defaultExtractContract } from "@core";
+import { buildStepFunction, createExtractStep, createStepFunctionBuilder, defaultExtractOtherwise } from "@core";
 import * as DEither from "@duplojs/lang/either";
 
 describe("buildStepFunction", () => {
@@ -36,7 +36,7 @@ describe("buildStepFunction", () => {
 			{
 				environment: "DEV",
 				stepFunctionBuilders: [stepFunctionBuilders],
-				defaultExtractContract,
+				defaultExtractOtherwise,
 				defaultCodecs: {},
 			},
 		);
@@ -56,7 +56,7 @@ describe("buildStepFunction", () => {
 			{
 				environment: "DEV",
 				stepFunctionBuilders: [stepFunctionBuilders],
-				defaultExtractContract,
+				defaultExtractOtherwise,
 				defaultCodecs: {},
 			},
 		);

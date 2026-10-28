@@ -1,4 +1,6 @@
-import { DString, type DNumber, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
+import type * as DNumber from "@scripts/number";
 
 describe("length", () => {
 	it("should return string length", () => {
@@ -6,7 +8,7 @@ describe("length", () => {
 
 		expect(result).toBe(5);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number & DNumber.Positive,
 			"strict"

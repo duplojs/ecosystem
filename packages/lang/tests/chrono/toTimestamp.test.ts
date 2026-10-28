@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("toTimestamp", () => {
 	it("toTimestamp converts positive TheDate to number", () => {
@@ -6,7 +7,7 @@ describe("toTimestamp", () => {
 
 		expect(result).toBe(1609459200000);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -18,7 +19,7 @@ describe("toTimestamp", () => {
 
 		expect(result).toBe(-1000);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -30,7 +31,7 @@ describe("toTimestamp", () => {
 
 		expect(result).toBe(DChrono.maxTimestamp);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -42,7 +43,7 @@ describe("toTimestamp", () => {
 
 		expect(result).toBe(DChrono.minTimestamp);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -50,14 +51,14 @@ describe("toTimestamp", () => {
 	});
 
 	it("use in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDateOrThrow(1609459200000),
 			DChrono.toTimestamp,
 		);
 
 		expect(result).toBe(1609459200000);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

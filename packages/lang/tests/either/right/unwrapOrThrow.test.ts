@@ -1,4 +1,5 @@
-import { DEither, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("unwrapRightOrThrow", () => {
 	it("should unwrap right values", () => {
@@ -6,7 +7,7 @@ describe("unwrapRightOrThrow", () => {
 
 		expect(result).toBe(42);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			42,
 			"strict"
@@ -31,7 +32,7 @@ describe("unwrapRightOrThrow", () => {
 	});
 
 	it("should unwrap right values in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DEither.right("value", "data"),
 			DEither.unwrapRightOrThrow,
 		);

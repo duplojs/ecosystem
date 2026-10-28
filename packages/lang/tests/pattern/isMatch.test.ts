@@ -1,4 +1,6 @@
-import { DEither, DPattern, type ExpectType, pipe, when } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
+import * as DPattern from "@scripts/pattern";
 
 describe("isMatch", () => {
 	it("match string", () => {
@@ -72,7 +74,7 @@ describe("isMatch", () => {
 		expect(predicate).toBe(true);
 
 		if (predicate) {
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof input,
 				{
 					type: "one";
@@ -81,7 +83,7 @@ describe("isMatch", () => {
 				"strict"
 			>;
 		} else {
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof input,
 				{
 					type: "two";
@@ -104,9 +106,9 @@ describe("isMatch", () => {
 			prop2: number;
 		};
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
-			when(
+			DCommon.when(
 				DPattern.isMatch({ type: "one" }),
 				DEither.success,
 			),
@@ -114,7 +116,7 @@ describe("isMatch", () => {
 
 		expect(result).toStrictEqual(DEither.success(input));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			{
 				type: "two";

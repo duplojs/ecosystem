@@ -1,4 +1,5 @@
-import { DString, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("endsWith", () => {
 	it("should validate string end", () => {
@@ -8,12 +9,12 @@ describe("endsWith", () => {
 
 	it("should narrow a string end inside a pipe when callback", () => {
 		const source = "user-api" as "user-api" | "admin";
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
-			when(
+			DCommon.when(
 				DString.endsWith("api"),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						"user-api",
 						"strict"
@@ -31,13 +32,13 @@ describe("endsWith", () => {
 		const source = "user-api" as "user-api" | "admin";
 
 		if (DString.endsWith(source, "api")) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				"user-api",
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				"admin",
 				"strict"

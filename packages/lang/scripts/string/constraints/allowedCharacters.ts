@@ -28,11 +28,9 @@ export type ExtractAllowedCharacters<
 		keyof ReturnType<GenericConstraint[DCommon.ConstraintSymbol][AllowedCharactersConstraintName]>
 	) extends infer InferredResult extends CharactersRange
 		? DCommon.UnionToIntersection<
-			InferredResult extends any
-				? DCommon.IsNever<InferredResult> extends true
-					? AllowedCharacters
-					: AllowedCharacters<InferredResult>
-				: never
+			DCommon.IsNever<InferredResult> extends true
+				? AllowedCharacters
+				: AllowedCharacters<InferredResult>
 		>
 		: GenericDefault
 	: GenericDefault;

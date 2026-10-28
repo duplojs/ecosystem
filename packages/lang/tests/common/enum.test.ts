@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("enum", () => {
 	it("creates an enum object with helpers", () => {
@@ -7,7 +8,7 @@ describe("enum", () => {
 			"done",
 		] as const);
 
-		type _CheckValue = ExpectType<
+		type _CheckValue = DCommon.ExpectType<
 			DCommon.GetEnumValue<typeof status>,
 			"pending" | "done",
 			"strict"
@@ -28,7 +29,7 @@ describe("enum", () => {
 
 		const parse = (input: "pending" | "done" | "missing") => {
 			if (status.has(input)) {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					"pending" | "done",
 					"strict"
@@ -36,7 +37,7 @@ describe("enum", () => {
 
 				return input;
 			} else {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					"missing",
 					"strict"
@@ -57,7 +58,7 @@ describe("enum", () => {
 		] as const);
 		const result = status.contract<"pending" | "done">();
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			typeof status,
 			"strict"

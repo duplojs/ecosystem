@@ -1,4 +1,5 @@
-import { DArray, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("is", () => {
 	it("should validate an array", () => {
@@ -10,13 +11,13 @@ describe("is", () => {
 		const source = ["a"] as unknown;
 
 		if (DArray.is(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				readonly unknown[],
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				unknown,
 				"strict"
@@ -28,13 +29,13 @@ describe("is", () => {
 		const source = ["a"] as string | readonly ["a"] | number[];
 
 		if (DArray.is(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				readonly ["a"] | number[],
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				string,
 				"strict"

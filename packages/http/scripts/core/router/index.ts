@@ -50,7 +50,7 @@ export async function createRouter(hub: Hub): Promise<Router> {
 		globalHooksRouteLifeCycle: hooksRouteLifeCycle,
 		stepFunctionBuilders,
 		routeFunctionBuilders,
-		defaultExtractContract: hub.defaultExtractContract,
+		defaultExtractOtherwise: hub.defaultExtractOtherwise,
 		defaultCodecs: hub.defaultExtractShapeCodecs,
 	};
 

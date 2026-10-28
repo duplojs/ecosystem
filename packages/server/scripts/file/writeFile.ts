@@ -3,16 +3,16 @@ import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 
-class WriteFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-write-file-not-found", Error) {}
-class WriteFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-write-file-permission-denied", Error) {}
-class WriteFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-write-file-is-directory", Error) {}
-class WriteFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-write-file-not-directory", Error) {}
-class WriteFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-write-file-no-space", Error) {}
-class WriteFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-write-file-read-only", Error) {}
-class WriteFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-write-file-invalid-argument", Error) {}
-class WriteFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-write-file-too-many-open-files", Error) {}
-class WriteFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-write-file-busy", Error) {}
-class WriteFileError extends DCommon.DuploJSError.parentClass("file-system-write-file-error", Error) {}
+export class WriteFileErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-write-file-not-found", Error) {}
+export class WriteFileErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-write-file-permission-denied", Error) {}
+export class WriteFileErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-write-file-is-directory", Error) {}
+export class WriteFileErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-write-file-not-directory", Error) {}
+export class WriteFileErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-write-file-no-space", Error) {}
+export class WriteFileErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-write-file-read-only", Error) {}
+export class WriteFileErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-write-file-invalid-argument", Error) {}
+export class WriteFileErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-write-file-too-many-open-files", Error) {}
+export class WriteFileErrorBusy extends DCommon.DuploJSError.parentClass("file-system-write-file-busy", Error) {}
+export class WriteFileError extends DCommon.DuploJSError.parentClass("file-system-write-file-error", Error) {}
 
 export type WriteFileErrors = (
 	| WriteFileErrorNotFound
@@ -100,7 +100,7 @@ function handleDenoWriteFileError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		writeFile(
-			path: string & DPath.Path,
+			path: DPath.AnyPath,
 			data: Uint8Array,
 		): Promise<WriteFileResult>;
 	}
@@ -133,23 +133,23 @@ const writeFileImplementation = implementFunction(
 export function writeFile(
 	data: Uint8Array,
 ): (
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 ) => Promise<WriteFileResult>;
 
 export function writeFile(
-	path: string & DPath.Path,
+	path: DPath.AnyPath,
 	data: Uint8Array,
 ): Promise<WriteFileResult>;
 
 export function writeFile(
 	...args:
 		| [data: Uint8Array]
-		| [path: string & DPath.Path, data: Uint8Array]
+		| [path: DPath.AnyPath, data: Uint8Array]
 ) {
 	if (args.length === 1) {
 		const [data] = args;
 
-		return (path: string & DPath.Path) => writeFileImplementation(
+		return (path: DPath.AnyPath) => writeFileImplementation(
 			path,
 			data,
 		);

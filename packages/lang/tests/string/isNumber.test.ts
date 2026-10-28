@@ -1,4 +1,5 @@
-import { DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("isNumber", () => {
 	it("should validate number strings", () => {
@@ -24,13 +25,13 @@ describe("isNumber", () => {
 		const source = "12.5" as string;
 
 		if (DString.isNumber(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				string & DString.Number,
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				string,
 				"strict"
@@ -42,7 +43,7 @@ describe("isNumber", () => {
 		const source = "12.5" as const;
 
 		if (DString.isNumber(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				"12.5",
 				"strict"

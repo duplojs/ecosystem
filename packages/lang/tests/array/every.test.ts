@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("every", () => {
 	it("should validate every value with callback params", () => {
@@ -13,7 +14,7 @@ describe("every", () => {
 
 		expect(result).toBe(true);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			boolean,
 			"strict"
@@ -21,7 +22,7 @@ describe("every", () => {
 	});
 
 	it("should validate every value in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[2, 4, 6],
 			DArray.every((value) => value % 2 === 0),
 		);

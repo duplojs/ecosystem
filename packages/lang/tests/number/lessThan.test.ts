@@ -1,4 +1,5 @@
-import { DNumber, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DNumber from "@scripts/number";
 
 describe("lessThan", () => {
 	it("should validate a number less than the threshold", () => {
@@ -18,7 +19,7 @@ describe("lessThan", () => {
 		const source = 2 as 2 | 4;
 
 		if (DNumber.lessThan(source, 3)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				2,
 				"strict"
@@ -37,7 +38,7 @@ describe("lessThan", () => {
 			| (number & DNumber.GreaterThanOrEqual<3>);
 
 		if (DNumber.lessThan(source, 3)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				| (number & DNumber.LessThan<3>)
 				| (number & DNumber.LessThan<5> & DNumber.LessThan<3>)
@@ -50,12 +51,12 @@ describe("lessThan", () => {
 	});
 
 	it("should narrow a number inside a pipe when callback", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			2 as number,
-			when(
+			DCommon.when(
 				DNumber.lessThan(3),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						number & DNumber.LessThan<3>,
 						"strict"

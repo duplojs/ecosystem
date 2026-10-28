@@ -1,4 +1,5 @@
-import { DPattern, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPattern from "@scripts/pattern";
 
 describe("object", () => {
 	const input: {
@@ -20,7 +21,7 @@ describe("object", () => {
 				type: "one",
 			},
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					{
 						type: "one";
@@ -37,7 +38,7 @@ describe("object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | {
 				type: "two";
@@ -57,7 +58,7 @@ describe("object", () => {
 				name: "super nom",
 			},
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					{
 						type: "one";
@@ -74,7 +75,7 @@ describe("object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | typeof input,
 			"strict"
@@ -88,7 +89,7 @@ describe("object", () => {
 				promotion: 10,
 			},
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					{
 						type: "one" | "two";
@@ -105,7 +106,7 @@ describe("object", () => {
 
 		expect(result).toStrictEqual(input);
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | {
 				type: "one" | "two";
@@ -125,7 +126,7 @@ describe("object", () => {
 				promotion: undefined,
 			},
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					{
 						type: "one";
@@ -142,7 +143,7 @@ describe("object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | typeof input,
 			"strict"
@@ -158,7 +159,7 @@ describe("object", () => {
 				flags: "co",
 			},
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					{
 						type: "one";
@@ -175,7 +176,7 @@ describe("object", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			DPattern.PatternResult<"myValue"> | typeof input,
 			"strict"
@@ -227,7 +228,7 @@ describe("object", () => {
 					secondeChance: true,
 				},
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						SecondeChanceProduct,
 						"strict"
@@ -239,7 +240,7 @@ describe("object", () => {
 
 			expect(result).toStrictEqual(DPattern.result("myValue"));
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | MarketplaceProduct,
 				"strict"
@@ -253,7 +254,7 @@ describe("object", () => {
 					marketplace: true,
 				},
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						MarketplaceProduct,
 						"strict"
@@ -265,7 +266,7 @@ describe("object", () => {
 
 			expect(result).toStrictEqual(product);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue"> | SecondeChanceProduct,
 				"strict"
@@ -283,7 +284,7 @@ describe("object", () => {
 					},
 				},
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						{
 							discount: number;
@@ -304,7 +305,7 @@ describe("object", () => {
 
 			expect(result).toStrictEqual(DPattern.result("myValue"));
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue">
 				| MarketplaceProduct
@@ -322,7 +323,7 @@ describe("object", () => {
 					},
 				},
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						{
 							marketplace: true;
@@ -346,7 +347,7 @@ describe("object", () => {
 
 			expect(result).toStrictEqual(product);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				DPattern.PatternResult<"myValue">
 				| {
@@ -386,7 +387,7 @@ describe("object", () => {
 					secondeChance: true,
 				},
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 						typeof value,
 						never,
 						"strict"
@@ -398,7 +399,7 @@ describe("object", () => {
 
 			expect(result).toStrictEqual(product);
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				MarketplaceProduct
 				| SecondeChanceProduct,
@@ -407,12 +408,12 @@ describe("object", () => {
 		});
 
 		it("use in pipe", () => {
-			const result = pipe(
+			const result = DCommon.pipe(
 				product,
 				DPattern.match(
 					{ commercialOperation: { name: "blackFriday" } },
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							{
 								marketplace: true;
@@ -436,7 +437,7 @@ describe("object", () => {
 				DPattern.match(
 					{ marketplace: true },
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							{
 								commercialOperation?: {
@@ -460,7 +461,7 @@ describe("object", () => {
 				DPattern.match(
 					{ discount: 90 },
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							{
 								secondeChance: true;
@@ -484,7 +485,7 @@ describe("object", () => {
 				DPattern.match(
 					{ commercialOperation: { name: "summerDay" } },
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							{
 								name: string;
@@ -505,7 +506,7 @@ describe("object", () => {
 				DPattern.match(
 					{ secondeChance: true },
 					(value) => {
-						type Check = ExpectType<
+						type Check = DCommon.ExpectType<
 							typeof value,
 							{
 								commercialOperation?: {
@@ -529,7 +530,7 @@ describe("object", () => {
 
 			expect(result).toStrictEqual("first");
 
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof result,
 				"first" | "second" | "tread" | "quatre" | "last",
 				"strict"
@@ -548,7 +549,7 @@ describe("object", () => {
 			.with(
 				{ type: "one" },
 				(value) => {
-					type Check = ExpectType<
+					type Check = DCommon.ExpectType<
 					typeof value,
 					{
 						type: "one";
@@ -562,7 +563,7 @@ describe("object", () => {
 				},
 			)
 			.otherwise((rest) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof rest,
 					{
 						type: "two";

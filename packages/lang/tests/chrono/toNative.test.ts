@@ -1,4 +1,5 @@
-import { type ExpectType, DChrono } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("toNative", () => {
 	it("converts serialized TheDate to Date", () => {
@@ -7,7 +8,7 @@ describe("toNative", () => {
 		expect(result).toBeInstanceOf(Date);
 		expect(result.getTime()).toBe(1609459200000);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			Date,
 			"strict"
@@ -27,7 +28,7 @@ describe("toNative", () => {
 
 		expect(result).toBe(-123);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -40,7 +41,7 @@ describe("toNative", () => {
 
 		expect(result).toBe(2000);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

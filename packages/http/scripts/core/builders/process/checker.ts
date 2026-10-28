@@ -1,13 +1,12 @@
 import { type Floor } from "@core/types";
-import { createCheckerStep, type CheckerStep } from "@core/steps";
+import { type ProcessDefinition } from "@core/process";
+import { type CheckerStepOtherwiseParams, createCheckerStep, type CheckerStep } from "@core/steps";
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DObject from "@duplojs/lang/object";
-import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DArray from "@duplojs/lang/array";
 import { processBuilder } from "./builder";
-import { type GetCheckerResult, type Checker, type GetCheckerInput, type GetCheckerOptions } from "@core/checker";
-import { type ClientErrorResponseCode, type ResponseContract } from "@core/response";
-import { type ProcessDefinition } from "@core/process";
+import { type GetCheckerInput, type Checker, type GetCheckerResult, type GetCheckerOptions } from "@core/checker";
+import { type PredictedResponse } from "@core/response";
 import { type Metadata } from "@core/metadata";
 
 declare module "./builder" {
@@ -19,16 +18,9 @@ declare module "./builder" {
 			GenericChecker extends Checker,
 			GenericResultInformation extends DCommon.MaybeArray<Awaited<GetCheckerResult<GenericChecker>>["information"]>,
 			GenericInput extends GetCheckerInput<GenericChecker>,
-			GenericResponseContract extends ResponseContract.Contract<
-				ClientErrorResponseCode,
-				string,
-				DDataStructure.Structure<undefined>
-			>,
+			GenericResponse extends PredictedResponse,
 			GenericIndex extends string = never,
-			GenericOptions extends (
-				| GetCheckerOptions<GenericChecker>
-				| ((floor: GenericFloor) => Exclude<GetCheckerOptions<GenericChecker>, undefined>)
-			) = never,
+			GenericOptions extends Exclude<GetCheckerOptions<GenericChecker>, undefined> = never,
 			const GenericMetadata extends readonly Metadata[] = readonly [],
 		>(
 			checker: GenericChecker,
@@ -36,12 +28,23 @@ declare module "./builder" {
 				input(floor: GenericFloor): GenericInput;
 				readonly result: GenericResultInformation;
 				readonly indexing?: GenericIndex;
-				readonly options?: DCommon.FixDeepFunctionInfer<
-					| GenericChecker["definition"]["options"]
-					| ((floor: GenericFloor) => GenericChecker["definition"]["options"]),
-					GenericOptions
-				>;
-				readonly otherwise: GenericResponseContract;
+				readonly options?: (
+					| GenericOptions
+					| ((floor: GenericFloor) => GenericOptions)
+				);
+				otherwise(
+					params: CheckerStepOtherwiseParams<
+						GenericFloor,
+						Exclude<
+							Awaited<GetCheckerResult<GenericChecker>>,
+							{
+								information: DArray.Unwrap<
+									GenericResultInformation
+								>;
+							}
+						>
+					>
+				): GenericResponse;
 			},
 			...metadata: GenericMetadata
 		): ProcessBuilder<
@@ -56,11 +59,22 @@ declare module "./builder" {
 								readonly result: GenericResultInformation;
 								readonly indexing: DCommon.NeverCoalescing<GenericIndex, undefined>;
 								input(floor: GenericFloor): GenericInput;
-								readonly options: DCommon.NeverCoalescing<
-									Extract<GenericOptions, DCommon.AnyFunction | GenericChecker["definition"]["options"]>,
-									undefined
-								>;
-								readonly responseContract: GenericResponseContract;
+								readonly options: DCommon.IsNever<GenericOptions> extends true
+									? undefined
+									: (input: GenericFloor) => GenericOptions;
+								otherwise(
+									params: CheckerStepOtherwiseParams<
+										GenericFloor,
+										Exclude<
+											Awaited<GetCheckerResult<GenericChecker>>,
+											{
+												information: DArray.Unwrap<
+													GenericResultInformation
+												>;
+											}
+										>
+									>
+								): GenericResponse;
 								readonly metadata: GenericMetadata;
 							}
 						>,
@@ -73,9 +87,9 @@ declare module "./builder" {
 					[Prop in GenericIndex]: Extract<
 						Awaited<GetCheckerResult<GenericChecker>>,
 						{
-							information: DArray.Coalescing<
+							information: DArray.Unwrap<
 								GenericResultInformation
-							>[number];
+							>;
 						}
 					>["value"]
 				}
@@ -90,7 +104,8 @@ processBuilder.set(
 		args: [
 			checker,
 			{
-				otherwise: responseContract,
+				otherwise,
+				options,
 				...params
 			},
 			...metadata
@@ -103,7 +118,10 @@ processBuilder.set(
 			...accumulator.steps,
 			createCheckerStep({
 				...params,
-				responseContract,
+				otherwise,
+				options: typeof options === "object"
+					? () => options
+					: options,
 				checker,
 				metadata,
 			}),

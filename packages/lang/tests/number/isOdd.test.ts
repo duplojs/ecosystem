@@ -1,4 +1,5 @@
-import { DNumber, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DNumber from "@scripts/number";
 
 describe("isOdd", () => {
 	it("should validate an odd number", () => {
@@ -10,7 +11,7 @@ describe("isOdd", () => {
 		const source = 3 as number;
 
 		if (DNumber.isOdd(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				number & DNumber.Odd,
 				"strict"
@@ -22,7 +23,7 @@ describe("isOdd", () => {
 		const source = 3 as 2 | 3;
 
 		if (DNumber.isOdd(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				(2 | 3) & DNumber.Odd,
 				"strict"
@@ -31,12 +32,12 @@ describe("isOdd", () => {
 	});
 
 	it("should narrow a number inside a pipe when callback", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			3 as number,
-			when(
+			DCommon.when(
 				DNumber.isOdd,
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						number & DNumber.Odd,
 						"strict"

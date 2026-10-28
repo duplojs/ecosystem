@@ -3,10 +3,10 @@
  *
  * L'extraction et l'indexation du résultat enrichissent le floor du handler.
  */
-import { ResponseContract, useRouteBuilder } from "@duplojs/http";
+import { useRouteBuilder } from "@duplojs/http";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DCommon from "@duplojs/lang/common";
-import { userStructure, type User } from "./contracts";
+import { type User } from "./contracts";
 import { userExist } from "./user-checker";
 
 export const userRoute = useRouteBuilder("GET", "/users/{userId}")
@@ -18,11 +18,18 @@ export const userRoute = useRouteBuilder("GET", "/users/{userId}")
 	.check(userExist, {
 		input: ({ userId }) => userId,
 		result: "user.found",
-		otherwise: ResponseContract.notFound("user.notFound"),
+		otherwise: ({ response, result }) => {
+			type _CheckRejectedResult = DCommon.ExpectType<
+				typeof result.information,
+				"user.notFound",
+				"strict"
+			>;
+
+			return response.notFound("user.notFound");
+		},
 		indexing: "user",
 	})
 	.handler(
-		ResponseContract.ok("user.read", userStructure),
 		(floor, { response }) => {
 			type _CheckFloor = DCommon.ExpectType<
 				typeof floor,
@@ -33,6 +40,6 @@ export const userRoute = useRouteBuilder("GET", "/users/{userId}")
 				"strict"
 			>;
 
-			return response("user.read", floor.user);
+			return response.ok("user.read", floor.user);
 		},
 	);

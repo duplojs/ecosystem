@@ -1,4 +1,6 @@
-import { DEither, DInvocation, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
+import * as DInvocation from "@scripts/invocation";
 
 describe("debounce", () => {
 	afterEach(() => {
@@ -21,7 +23,7 @@ describe("debounce", () => {
 		await vi.advanceTimersByTimeAsync(10);
 		await expect(secondResult).resolves.toBe("accepted-second");
 
-		type _CheckFirstResult = ExpectType<
+		type _CheckFirstResult = DCommon.ExpectType<
 			typeof firstResult,
 			Promise<
 				| `accepted-${string}`

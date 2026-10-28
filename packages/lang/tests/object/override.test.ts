@@ -1,4 +1,5 @@
-import { DObject, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DObject from "@scripts/object";
 
 describe("override", () => {
 	it("should override defined values", () => {
@@ -17,7 +18,7 @@ describe("override", () => {
 			version: 2,
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			{
 				name: string;
@@ -64,7 +65,7 @@ describe("override", () => {
 		expect(result).toEqual(source);
 		expect(result).not.toBe(source);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			ObjectUnion,
 			"strict"
@@ -79,7 +80,7 @@ describe("override", () => {
 			name: "Duplo",
 			version: 1,
 		};
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
 			DObject.override({ version: 2 }),
 		);

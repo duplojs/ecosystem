@@ -1,4 +1,6 @@
-import { DDataStructure, DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
 
 describe("array", () => {
 	it("creates an array structure from an element structure", () => {
@@ -6,12 +8,12 @@ describe("array", () => {
 		const success = structure.check(["Jane", "John"]);
 		const failure = structure.check(["Jane", 12]);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.ArrayStructure<readonly string[], readonly []>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			readonly string[],
 			"strict"
@@ -46,7 +48,7 @@ describe("array", () => {
 			},
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly user: {
@@ -69,7 +71,7 @@ describe("array", () => {
 			[
 				DDataStructure.refine(
 					(data): data is readonly [string, ...string[]] => {
-						type check = ExpectType<
+						type check = DCommon.ExpectType<
 							typeof data,
 							readonly string[],
 							"strict"
@@ -85,7 +87,7 @@ describe("array", () => {
 		).addConstraint(
 			DDataStructure.refine(
 				(data): data is readonly [string, ...string[]] => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						readonly string[],
 						"strict"
@@ -96,7 +98,7 @@ describe("array", () => {
 			),
 		);
 
-		type _CheckDirectConstraints = ExpectType<
+		type _CheckDirectConstraints = DCommon.ExpectType<
 			typeof directStructure,
 			DDataStructure.ArrayStructure<
 				readonly string[],
@@ -104,12 +106,12 @@ describe("array", () => {
 			>,
 			"strict"
 		>;
-		type _CheckDirectValue = ExpectType<
+		type _CheckDirectValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof directStructure>,
 			readonly string[] & readonly [string, ...string[]],
 			"strict"
 		>;
-		type _CheckAddedConstraints = ExpectType<
+		type _CheckAddedConstraints = DCommon.ExpectType<
 			typeof addedStructure,
 			DDataStructure.Structure<
 				readonly string[],
@@ -119,7 +121,7 @@ describe("array", () => {
 			>,
 			"strict"
 		>;
-		type _CheckAddedValue = ExpectType<
+		type _CheckAddedValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof addedStructure>,
 			readonly string[] & readonly [string, ...string[]],
 			"strict"

@@ -1,4 +1,5 @@
-import { DEither, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("asyncSafeCallback", () => {
 	it("should wrap callback output into a success either", async() => {
@@ -6,7 +7,7 @@ describe("asyncSafeCallback", () => {
 
 		await expect(result).resolves.toStrictEqual(DEither.right("safe-callback-success", 42));
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<DEither.SafeCallbackSuccess<42> | DEither.SafeCallbackError>,
 			"strict"
@@ -22,12 +23,12 @@ describe("asyncSafeCallback", () => {
 		await expect(fromPromise).resolves.toStrictEqual(DEither.right("safe-callback-success", "done"));
 		await expect(preserved).resolves.toBe(either);
 
-		type _CheckFromPromise = ExpectType<
+		type _CheckFromPromise = DCommon.ExpectType<
 			typeof fromPromise,
 			Promise<DEither.SafeCallbackSuccess<string> | DEither.SafeCallbackError>,
 			"strict"
 		>;
-		type _CheckPreserved = ExpectType<
+		type _CheckPreserved = DCommon.ExpectType<
 			typeof preserved,
 			Promise<DEither.Error<"message"> | DEither.SafeCallbackError>,
 			"strict"
@@ -46,7 +47,7 @@ describe("asyncSafeCallback", () => {
 	});
 
 	it("should work in pipe", async() => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			() => 42,
 			DEither.asyncSafeCallback,
 		);

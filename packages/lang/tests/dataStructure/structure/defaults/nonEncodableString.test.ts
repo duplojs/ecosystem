@@ -1,5 +1,7 @@
 // oxlint-disable typescript/no-wrapper-object-types
-import { DDataStructure, DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
 
 describe("NonEncodableStringStructure", () => {
 	it("checks one literal string and narrows with is", async() => {
@@ -8,19 +10,19 @@ describe("NonEncodableStringStructure", () => {
 		const success = structure.check(input);
 		const asyncSuccess = await structure.asyncCheck(input);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			String,
 			"strict"
 		>;
-		type _CheckSuccess = ExpectType<
+		type _CheckSuccess = DCommon.ExpectType<
 			typeof success,
 			| DEither.Right<"check-success", String>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"check-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncSuccess = ExpectType<
+		type _CheckAsyncSuccess = DCommon.ExpectType<
 			typeof asyncSuccess,
 			| DEither.Right<"check-success", String>
 			| DEither.Left<"check-error", DDataStructure.Error>,
@@ -34,7 +36,7 @@ describe("NonEncodableStringStructure", () => {
 		expect(structure.is(input)).toBe(true);
 		expect(structure.isAsynchronous()).toBe(false);
 		if (structure.is(input)) {
-			type _CheckNarrowedInput = ExpectType<
+			type _CheckNarrowedInput = DCommon.ExpectType<
 				typeof input,
 				String,
 				"strict"
@@ -108,7 +110,7 @@ describe("NonEncodableStringStructure", () => {
 		const asyncDecoded = await structure.asyncDecode(codecs, "secret");
 		const parsed = structure.parse("secret", codecs);
 
-		type _CheckEncodedValue = ExpectType<
+		type _CheckEncodedValue = DCommon.ExpectType<
 			DDataStructure.EncodedValue<
 				DDataStructure.StructureValue<typeof structure>,
 				typeof codecs
@@ -116,27 +118,27 @@ describe("NonEncodableStringStructure", () => {
 			String,
 			"strict"
 		>;
-		type _CheckEncoded = ExpectType<
+		type _CheckEncoded = DCommon.ExpectType<
 			typeof encoded,
 			| DEither.Right<"encode-success", String>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncEncoded = ExpectType<
+		type _CheckAsyncEncoded = DCommon.ExpectType<
 			typeof asyncEncoded,
 			| DEither.Right<"encode-success", String>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckDecoded = ExpectType<
+		type _CheckDecoded = DCommon.ExpectType<
 			typeof decoded,
 			| DEither.Right<"decode-success", String>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncDecoded = ExpectType<
+		type _CheckAsyncDecoded = DCommon.ExpectType<
 			typeof asyncDecoded,
 			| DEither.Right<"decode-success", String>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
@@ -175,7 +177,7 @@ describe("NonEncodableStringStructure", () => {
 		const codecs = DDataStructure.createCodecs({ codec });
 		const encoded = structure.encode(codecs, checkedValue);
 
-		type _CheckEncoded = ExpectType<
+		type _CheckEncoded = DCommon.ExpectType<
 			typeof encoded,
 			| DEither.Right<
 				"encode-success",

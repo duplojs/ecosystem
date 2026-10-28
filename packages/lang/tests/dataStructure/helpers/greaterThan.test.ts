@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, type DNumber, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DNumber from "@scripts/number";
 
 describe("greaterThan", () => {
 	it("creates and applies a greater than constraint", () => {
@@ -7,12 +10,12 @@ describe("greaterThan", () => {
 		const success = structure.check(4);
 		const failure = structure.check(3);
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.GreaterThanConstraint<3>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			number & DNumber.GreaterThan<3>,
 			"strict"

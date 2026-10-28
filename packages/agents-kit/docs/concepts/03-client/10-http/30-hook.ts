@@ -6,35 +6,35 @@
 import { createHttpClient } from "@duplojs/http/client";
 
 export type Routes = {
-	method: "GET";
-	path: "/profile";
-	responses: {
-		code: "401";
-		information: "auth.required";
-		body?: undefined;
+	readonly method: "GET";
+	readonly path: "/profile";
+	readonly responses: {
+		readonly code: "401";
+		readonly information: "auth.required";
+		readonly body: undefined;
 	} | {
-		code: "200";
-		information: "profile.found";
-		body: {
-			name: string;
-			email: string;
+		readonly code: "200";
+		readonly information: "profile.found";
+		readonly body: {
+			readonly name: string;
+			readonly email: string;
 		};
 	};
 } | {
-	method: "POST";
-	path: "/users";
-	body: {
-		username: string;
-		age: number;
+	readonly method: "POST";
+	readonly path: "/users";
+	readonly body: {
+		readonly username: string;
+		readonly age: number;
 	};
-	responses: {
-		code: "422";
-		information: "extract-error";
-		body?: undefined;
+	readonly responses: {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body: Error;
 	} | {
-		code: "204";
-		information: "user.created";
-		body?: undefined;
+		readonly code: "204";
+		readonly information: "user.created";
+		readonly body: undefined;
 	};
 };
 

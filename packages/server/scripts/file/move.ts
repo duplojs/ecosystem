@@ -3,17 +3,17 @@ import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
 
-class MoveErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-move-not-found", Error) {}
-class MoveErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-move-permission-denied", Error) {}
-class MoveErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-move-already-exists", Error) {}
-class MoveErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-move-is-directory", Error) {}
-class MoveErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-move-not-directory", Error) {}
-class MoveErrorDirectoryNotEmpty extends DCommon.DuploJSError.parentClass("file-system-move-directory-not-empty", Error) {}
-class MoveErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-move-read-only", Error) {}
-class MoveErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-move-invalid-argument", Error) {}
-class MoveErrorBusy extends DCommon.DuploJSError.parentClass("file-system-move-busy", Error) {}
-class MoveErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-move-cross-device", Error) {}
-class MoveError extends DCommon.DuploJSError.parentClass("file-system-move-error", Error) {}
+export class MoveErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-move-not-found", Error) {}
+export class MoveErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-move-permission-denied", Error) {}
+export class MoveErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-move-already-exists", Error) {}
+export class MoveErrorIsDirectory extends DCommon.DuploJSError.parentClass("file-system-move-is-directory", Error) {}
+export class MoveErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-move-not-directory", Error) {}
+export class MoveErrorDirectoryNotEmpty extends DCommon.DuploJSError.parentClass("file-system-move-directory-not-empty", Error) {}
+export class MoveErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-move-read-only", Error) {}
+export class MoveErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-move-invalid-argument", Error) {}
+export class MoveErrorBusy extends DCommon.DuploJSError.parentClass("file-system-move-busy", Error) {}
+export class MoveErrorCrossDevice extends DCommon.DuploJSError.parentClass("file-system-move-cross-device", Error) {}
+export class MoveError extends DCommon.DuploJSError.parentClass("file-system-move-error", Error) {}
 
 export type MoveErrors = (
 	| MoveErrorNotFound
@@ -103,8 +103,8 @@ function handleDenoMoveError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		move(
-			fromPath: string & DPath.Path,
-			toPath: string & DPath.Path,
+			fromPath: DPath.AnyPath,
+			toPath: DPath.AnyPath,
 		): Promise<MoveResult>;
 	}
 }
@@ -128,25 +128,25 @@ const moveImplementation = implementFunction(
 );
 
 export function move(
-	toPath: string & DPath.Path,
+	toPath: DPath.AnyPath,
 ): (
-	fromPath: string & DPath.Path,
+	fromPath: DPath.AnyPath,
 ) => Promise<MoveResult>;
 
 export function move(
-	fromPath: string & DPath.Path,
-	toPath: string & DPath.Path,
+	fromPath: DPath.AnyPath,
+	toPath: DPath.AnyPath,
 ): Promise<MoveResult>;
 
 export function move(
 	...args:
-		| [toPath: string & DPath.Path]
-		| [fromPath: string & DPath.Path, toPath: string & DPath.Path]
+		| [toPath: DPath.AnyPath]
+		| [fromPath: DPath.AnyPath, toPath: DPath.AnyPath]
 ) {
 	if (args.length === 1) {
 		const [toPath] = args;
 
-		return (fromPath: string & DPath.Path) => moveImplementation(
+		return (fromPath: DPath.AnyPath) => moveImplementation(
 			fromPath,
 			toPath,
 		);

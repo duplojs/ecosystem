@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("select", () => {
 	it("should select mapped values and skip others", () => {
@@ -16,7 +17,7 @@ describe("select", () => {
 
 		expect(result).toEqual([1, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number[],
 			"strict"
@@ -24,7 +25,7 @@ describe("select", () => {
 	});
 
 	it("should select values in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["a", "bb"] as const,
 			DArray.select((params) => params.select(params.element.length)),
 		);

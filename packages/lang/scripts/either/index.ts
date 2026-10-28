@@ -25,3 +25,4 @@ export * from "./unwrapOr";
 export * from "./unwrapOtherwise";
 export * from "./keepAsRightByInformation";
 export * from "./keepAsRightSelection";
+export * from "./extractErrorInLeft";

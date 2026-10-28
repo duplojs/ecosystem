@@ -1,4 +1,5 @@
 export * from "./computeRelative";
+export * from "./concatSegment";
 export type * from "./constraints";
 export * from "./create";
 export * from "./createAbsolute";

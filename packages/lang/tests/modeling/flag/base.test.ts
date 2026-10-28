@@ -1,4 +1,6 @@
-import { DDataStructure, DModeling, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DModeling from "@scripts/modeling";
 
 describe("createFlag", () => {
 	const name = DModeling.createNewType("UserName", DDataStructure.string());
@@ -47,7 +49,7 @@ describe("createFlag", () => {
 			typeof userStructure
 		>("UserRole");
 		const entity = userStructure.new({ name: userName });
-		const result = pipe(entity, flag.append("reader"));
+		const result = DCommon.pipe(entity, flag.append("reader"));
 
 		expect(flag.getPayload(result)).toBe("reader");
 	});
@@ -89,7 +91,7 @@ describe("createFlag", () => {
 		const input: typeof entity | ReturnType<typeof flag.append<typeof entity, "admin">> = entity;
 
 		if (flag.has(input)) {
-			type _CheckNarrowed = ExpectType<
+			type _CheckNarrowed = DCommon.ExpectType<
 				typeof input,
 				Extract<typeof input, DModeling.Flag<"UserRole", "admin">>,
 				"strict"

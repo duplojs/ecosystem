@@ -1,13 +1,15 @@
 import { Steps } from '../../core/steps';
-import { ResponseContract } from '../../core/response';
-import { EntrypointKey } from './types';
+import { EntrypointKey, OpenApiEndpointContract } from './types';
+import { OpenApiEndpointContractMetadata } from './metadata';
+import { Metadata } from '../../core/metadata';
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 export type EntrypointReduceResult = Record<EntrypointKey, DDataStructure.Structure | Record<string, DDataStructure.Structure>>;
 export interface AggregateStepsResult {
     entrypointContract: EntrypointReduceResult;
-    endpointContract: readonly ResponseContract.Contracts[];
+    endpointContract: readonly OpenApiEndpointContract[];
 }
 export interface AggregateStepsParams {
-    readonly defaultExtractContract: ResponseContract.Contract;
+    readonly metadata?: readonly Metadata[];
+    readonly defaultExtractMetadata?: ReturnType<typeof OpenApiEndpointContractMetadata>;
 }
-export declare function aggregateStepContract(steps: readonly Steps[], params: AggregateStepsParams): AggregateStepsResult;
+export declare function aggregateStepContract(steps: readonly Steps[], params?: AggregateStepsParams): AggregateStepsResult;

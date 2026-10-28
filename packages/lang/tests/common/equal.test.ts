@@ -1,4 +1,6 @@
-import { DArray, DCommon, type ExpectType, pipe } from "@scripts";
+
+import * as DArray from "@scripts/array";
+import * as DCommon from "@scripts/common";
 
 describe("equal", () => {
 	it("compares values directly", () => {
@@ -9,7 +11,7 @@ describe("equal", () => {
 	it("compares against a value list", () => {
 		const normalize = (input: "value" | "other" | null) => {
 			if (DCommon.equal(input, ["value", null])) {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					"value" | null,
 					"strict"
@@ -17,7 +19,7 @@ describe("equal", () => {
 
 				return input ?? "empty";
 			} else {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					"other",
 					"strict"
@@ -33,13 +35,13 @@ describe("equal", () => {
 	});
 
 	it("supports curried usage in a pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["value", "other"] as const,
 			DArray.filter(DCommon.equal("value")),
 			DArray.first,
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"value" | undefined,
 			"strict"

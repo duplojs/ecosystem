@@ -1,4 +1,5 @@
-import { DObject, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DObject from "@scripts/object";
 
 describe("discriminate", () => {
 	it("should discriminate an object from a property", () => {
@@ -20,7 +21,7 @@ describe("discriminate", () => {
 		if (DObject.discriminate(source, "type", "created")) {
 			expect(source.id).toBe(1);
 
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				{
 					type: "created";
@@ -29,7 +30,7 @@ describe("discriminate", () => {
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				{
 					type: "deleted";
@@ -54,12 +55,12 @@ describe("discriminate", () => {
 			id: 1,
 		} as const;
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
-			when(
+			DCommon.when(
 				DObject.discriminate("type", ["created"]),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						{
 							readonly type: "created";

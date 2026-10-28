@@ -1,4 +1,5 @@
-import { DPattern, equal, pipe, type ExpectType, type AnyValue } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPattern from "@scripts/pattern";
 
 describe("pattern when", () => {
 	it("match", () => {
@@ -10,7 +11,7 @@ describe("pattern when", () => {
 
 		expect(result).toStrictEqual(DPattern.result("duplojs"));
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			"laravel" | DPattern.PatternResult<"duplojs">,
 			"strict"
@@ -26,7 +27,7 @@ describe("pattern when", () => {
 
 		expect(result).toBe("laravel");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			"laravel" | DPattern.PatternResult<"duplojs">,
 			"strict"
@@ -34,12 +35,12 @@ describe("pattern when", () => {
 	});
 
 	it("wraps matched input into pattern result", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"duplojs" as "duplojs" | "laravel",
 			DPattern.when(
 				(value) => value === "duplojs",
 				(value) => {
-					type checkValue = ExpectType<
+					type checkValue = DCommon.ExpectType<
 						typeof value,
 						"duplojs",
 						"strict"
@@ -52,9 +53,9 @@ describe("pattern when", () => {
 				},
 			),
 			DPattern.when(
-				equal("laravel"),
+				DCommon.equal("laravel"),
 				(value) => {
-					type checkValue = ExpectType<
+					type checkValue = DCommon.ExpectType<
 						typeof value,
 						"laravel",
 						"strict"
@@ -74,7 +75,7 @@ describe("pattern when", () => {
 			matched: true,
 		});
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			{
 				framework: "duplojs";
@@ -91,13 +92,13 @@ describe("pattern when", () => {
 		const result = DPattern.match("test" as unknown)
 			.when(
 				(value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
-						AnyValue,
+						DCommon.AnyValue,
 						"strict"
 					>;
 
-					return equal(value, "test");
+					return DCommon.equal(value, "test");
 				},
 				(value) => value,
 			)

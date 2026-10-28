@@ -3,3 +3,4 @@ import "./document";
 import "./serverSentEvent";
 import "./cookie";
 import "./stream";
+import "./rejection";

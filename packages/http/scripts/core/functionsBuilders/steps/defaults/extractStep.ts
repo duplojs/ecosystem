@@ -6,7 +6,7 @@ import * as DEither from "@duplojs/lang/either";
 import * as DObject from "@duplojs/lang/object";
 import * as DPattern from "@duplojs/lang/pattern";
 import { type Request } from "@core/request";
-import { PredictedResponse } from "@core/response";
+import { PredictedResponse, ResponseHelper } from "@core/response";
 import { type Floor } from "@core/types";
 import { createStepFunctionBuilder } from "../create";
 
@@ -14,32 +14,31 @@ type Extractor = (request: Request, floor: Floor) => DCommon.MaybePromise<Predic
 
 export const defaultExtractStepFunctionBuilder = createStepFunctionBuilder(
 	extractStepKind.has,
-	(step, { success, environment, defaultExtractContract, defaultCodecs }) => {
+	(step, { success, defaultExtractOtherwise, defaultCodecs }) => {
 		const {
 			shape,
-			responseContract: stepResponseContract,
+			otherwise: stepOtherwise,
 		} = step.definition;
 
-		const responseContract = stepResponseContract ?? defaultExtractContract;
+		const otherwise = stepOtherwise ?? defaultExtractOtherwise;
 
 		function createExtractor(
 			structure: DDataStructure.Structure,
 			key: keyof ExtractShape,
 			subKey: string | undefined,
 		): Extractor {
-			const createResponse = environment === "DEV"
-				? (result: unknown) => new PredictedResponse(
-					responseContract.code,
-					responseContract.information,
-					result,
-				)
-				: () => new PredictedResponse(responseContract.code, responseContract.information, undefined);
 			const setHeader = subKey === undefined || key === "body"
 				? (response: PredictedResponse) => response.setHeader("extract-key", `request.${key}`)
 				: (response: PredictedResponse) => response.setHeader("extract-key", `request.${key}.${subKey}`);
-			const getResponse = (result: unknown) => setHeader(createResponse(result));
-			const treatResult = (result: DEither.Left | DEither.Right, floor: Floor) => DEither.isLeft(result)
-				? getResponse(DEither.unwrapLeft(result))
+			const treatResult = (
+				result: DEither.Left<string, DDataStructure.Error | Error> | DEither.Right,
+				floor: Floor,
+			) => DEither.isLeft(result)
+				? setHeader(otherwise({
+					response: ResponseHelper,
+					floor,
+					dataStructureError: DEither.unwrapLeft(result),
+				}))
 				: {
 					...floor,
 					[subKey ?? key]: DEither.unwrapRight(result),

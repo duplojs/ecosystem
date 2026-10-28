@@ -1,5 +1,5 @@
 import { type Floor } from "@core/types";
-import { type ResponseContract } from "@core/response";
+import { type PredictedResponses } from "@core/response";
 import { createRoute, type Route, type RouteDefinition } from "@core/route";
 import { createHandlerStep, type HandlerStep, type HandlerStepFunctionParams } from "@core/steps";
 import type * as DCommon from "@duplojs/lang/common";
@@ -15,26 +15,12 @@ declare module "./builder" {
 		GenericFloor extends Floor = {},
 	> {
 		handler<
-			GenericResponseContract extends (
-				| ResponseContract.Contracts
-				| readonly [
-					ResponseContract.Contracts,
-					...ResponseContract.Contracts[],
-				]
-			),
-			GenericResponse extends ResponseContract.Convert<
-				GenericResponseContract extends readonly any[]
-					? GenericResponseContract[number]
-					: GenericResponseContract
-			>,
+			const GenericResponse extends PredictedResponses,
 			const GenericMetadata extends readonly Metadata[] = readonly [],
 		>(
-			responseContract: GenericResponseContract,
 			theFunction: (
 				floor: GenericFloor,
-				params: HandlerStepFunctionParams<
-					GenericResponse
-				>,
+				params: HandlerStepFunctionParams,
 			) => DCommon.MaybePromise<GenericResponse>,
 			...metadata: GenericMetadata,
 		): Route<
@@ -45,12 +31,9 @@ declare module "./builder" {
 						...GenericDefinition["steps"],
 						HandlerStep<
 							{
-								readonly responseContract: GenericResponseContract;
 								theFunction(
 									floor: GenericFloor,
-									params: HandlerStepFunctionParams<
-										GenericResponse
-									>
+									params: HandlerStepFunctionParams
 								): DCommon.MaybePromise<GenericResponse>;
 								readonly metadata: GenericMetadata;
 							}
@@ -66,7 +49,6 @@ routeBuilderHandler.set(
 	"handler",
 	({
 		args: [
-			responseContract,
 			theFunction,
 			...metadata
 		],
@@ -77,7 +59,6 @@ routeBuilderHandler.set(
 			steps: [
 				...accumulator.steps,
 				createHandlerStep({
-					responseContract,
 					theFunction,
 					metadata,
 				}),

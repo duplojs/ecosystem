@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, type DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DString from "@scripts/string";
 
 describe("partial", () => {
 	it("makes every object property optional", () => {
@@ -11,7 +14,7 @@ describe("partial", () => {
 			}),
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly name?: string;
@@ -40,7 +43,7 @@ describe("partial", () => {
 			}),
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly email?: string & DString.Email | undefined;
@@ -67,7 +70,7 @@ describe("partial", () => {
 			}),
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly name?: string | undefined;
@@ -100,7 +103,7 @@ describe("partial", () => {
 			}),
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly value?: string | undefined;
@@ -129,7 +132,7 @@ describe("partial", () => {
 			}),
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly value?: string | number | undefined;
@@ -155,7 +158,7 @@ describe("partial", () => {
 			}),
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly value?: undefined;
@@ -190,7 +193,7 @@ describe("partial", () => {
 		).addConstraint(
 			DDataStructure.refine(
 				(data): data is PartialUserWithName => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						PartialUser,
 						"strict"
@@ -201,7 +204,7 @@ describe("partial", () => {
 			),
 		);
 
-		type _CheckConstraints = ExpectType<
+		type _CheckConstraints = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.Structure<
 				{
@@ -222,7 +225,7 @@ describe("partial", () => {
 			>,
 			"strict"
 		>;
-		type _CheckValue = ExpectType<
+		type _CheckValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			PartialUser & PartialUserWithName,
 			"strict"

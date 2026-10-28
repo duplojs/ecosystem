@@ -1,9 +1,10 @@
 /**
  * @title Créer une route HTTP
  *
- * Construction du flux d’une route : entrées validées, contexte de traitement et réponses contextualisées.
+ * Définir les entrées d'une route, préparer les données du traitement et produire sa réponse HTTP.
  */
-import { ResponseContract, useRouteBuilder, controlBodyAsFormData } from "@duplojs/http";
+import { useRouteBuilder, controlBodyAsFormData, type RouteDeclarationToContract } from "@duplojs/http";
+import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DSDataStructure from "@duplojs/server/dataStructure";
 
@@ -22,7 +23,7 @@ declare function getUsers(params: {
 
 // Une route est une suite de steps exécutées dans l'ordre.
 // Elles partagent leurs données via le `floor`; `handler` clôture la route.
-useRouteBuilder("GET", "/users")
+export const usersRoute = useRouteBuilder("GET", "/users")
 	.extract({
 		query: {
 			page: DDataStructure.number([
@@ -37,30 +38,37 @@ useRouteBuilder("GET", "/users")
 		},
 	})
 	.handler(
-		ResponseContract.ok("users.findMany", DDataStructure.array(userStructure)),
 		async({ page, quantityPerPage }, { response }) => {
 			const users = await getUsers({
 				page,
 				quantityPerPage,
 			});
 
-			return response("users.findMany", users);
+			return response.ok("users.findMany", users);
 		},
 	);
 
-// Un `ResponseContract` associe un statut HTTP, un body éventuel et une
-// `information` littérale.
-//
-// L'information contextualise la réponse et sert de discriminant principal.
-// Le statut HTTP garde son rôle de convention protocolaire, mais c'est
-// l'information qui identifie finement le résultat du flux, y compris lorsqu'une
-// réponse n'a pas besoin de body.
-ResponseContract.ok("superResponse", DDataStructure.string());
-ResponseContract.created("user.created", userStructure);
-ResponseContract.noContent("user.deleted");
-ResponseContract.conflict("email.alreadyUse");
-ResponseContract.notFound("user.notfound");
-ResponseContract.notFound("product.notfound");
+// `response.ok` construit une réponse 200 avec une information et un body.
+// L'information identifie le résultat de l'opération, même lorsque plusieurs
+// réponses partagent le même statut HTTP.
+// Le type de la route reprend les réponses retournées par ses étapes :
+// ici le résultat du handler et le refus d'extraction par défaut.
+export type UsersRouteContract = RouteDeclarationToContract<typeof usersRoute>;
+
+type _CheckResponses = DCommon.ExpectType<
+	UsersRouteContract["responses"],
+	| {
+		readonly code: "200";
+		readonly information: "users.findMany";
+		readonly body: User[];
+	}
+	| {
+		readonly code: "422";
+		readonly information: "extract-error";
+		readonly body: string;
+	},
+	"strict"
+>;
 
 // `extract` valide les entrées de requête avant de les ajouter au `floor`.
 // Il peut cibler params, query, headers et body.
@@ -83,7 +91,6 @@ useRouteBuilder("POST", "/users/{userId}")
 		}),
 	})
 	.handler(
-		ResponseContract.noContent("user.received"),
 		(
 			{
 				userId,
@@ -99,26 +106,29 @@ useRouteBuilder("POST", "/users/{userId}")
 			void body.username;
 			void body.age;
 
-			return response("user.received");
+			return response.noContent("user.received");
 		},
 	);
 
 // Si une source utilise directement une `DataStructure`, elle garde son nom :
 // le body sera disponible dans `floor.body`.
 useRouteBuilder("POST", "/profile")
-	.extract({
-		body: DDataStructure.object({
-			name: DDataStructure.string(),
-			age: DDataStructure.number(),
-		}),
-	})
+	.extract(
+		{
+			body: DDataStructure.object({
+				name: DDataStructure.string(),
+				age: DDataStructure.number(),
+			}),
+		},
+		// Cette réponse locale remplace le refus d'extraction du Hub pour cette étape.
+		({ response }) => response.badRequest("profile.invalid"),
+	)
 	.handler(
-		ResponseContract.noContent("profile.updated"),
 		({ body }, { response }) => {
 			void body.name;
 			void body.age;
 
-			return response("profile.updated");
+			return response.noContent("profile.updated");
 		},
 	);
 
@@ -132,12 +142,11 @@ useRouteBuilder("GET", "/search")
 		},
 	})
 	.handler(
-		ResponseContract.noContent("search.done"),
 		({ page, search }, { response }) => {
 			void page;
 			void search;
 
-			return response("search.done");
+			return response.noContent("search.done");
 		},
 	);
 
@@ -163,12 +172,11 @@ useRouteBuilder(
 		},
 	})
 	.handler(
-		ResponseContract.noContent("documents.received"),
 		({ title, userId, files }, { response }) => {
 			void title;
 			void userId;
 			void files;
 
-			return response("documents.received");
+			return response.noContent("documents.received");
 		},
 	);

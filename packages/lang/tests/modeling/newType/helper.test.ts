@@ -1,4 +1,7 @@
-import { DDataStructure, DModeling, type DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DModeling from "@scripts/modeling";
+import type * as DString from "@scripts/string";
 
 describe("createNewType", () => {
 	it("creates a capitalized new type with optional constraints", () => {
@@ -8,7 +11,7 @@ describe("createNewType", () => {
 			[DDataStructure.minCharacters(3)],
 		);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DModeling.NewTypeStructure<
 				"UserName",
@@ -17,7 +20,7 @@ describe("createNewType", () => {
 			>,
 			"strict"
 		>;
-		type _CheckValue = ExpectType<
+		type _CheckValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string & DModeling.NewType<"UserName", DString.MinCharacters<3>>,
 			"strict"
@@ -34,7 +37,7 @@ describe("createNewType", () => {
 			DDataStructure.number(),
 		);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DModeling.NewTypeStructure<"UserAge", number, readonly []>,
 			"strict"

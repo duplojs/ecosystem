@@ -1,4 +1,5 @@
-import { DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("expect", () => {
 	it("should keep an either unchanged and preserve its exact type", () => {
@@ -7,7 +8,7 @@ describe("expect", () => {
 
 		expect(result).toBe(input);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DEither.Success<42>,
 			"strict"

@@ -44,6 +44,7 @@ export * from "./queue";
 export * from "./simpleClone";
 export * from "./stringToBytes";
 export * from "./stringToMillisecond";
+export * from "./tap";
 export * from "./timeout";
 export * from "./toCurriedPredicate";
 export * from "./toRegExp";

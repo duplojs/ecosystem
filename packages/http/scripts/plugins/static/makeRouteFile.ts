@@ -4,13 +4,11 @@ import * as DArray from "@duplojs/lang/array";
 import * as DEither from "@duplojs/lang/either";
 import { useRouteBuilder } from "@core/builders";
 import { IgnoreByRouteStoreMetadata } from "@core/metadata";
-import { ResponseContract } from "@core/response";
 import type { RoutePath } from "@core/route";
 import { createCacheControllerHooks } from "@plugin-cacheController/hooks";
 import { type CacheControlDirectives } from "@plugin-cacheController/types";
 import { createKind } from "./kind";
 import * as DKind from "@duplojs/lang/kind";
-import * as DSDataStructure from "@duplojs/server/dataStructure";
 
 interface MakeRouteFileParams {
 	readonly source: DSFile.FileInterface;
@@ -52,10 +50,6 @@ export function makeRouteFile(params: MakeRouteFileParams) {
 		},
 	)
 		.handler(
-			[
-				ResponseContract.ok("resource.found", DSDataStructure.file()),
-				ResponseContract.notModified("resource.notModified"),
-			],
 			async(__, { response, request }) => {
 				const sourceStatResult = await params.source.stat();
 
@@ -75,14 +69,14 @@ export function makeRouteFile(params: MakeRouteFileParams) {
 					&& resourceStat.modifiedAt
 					&& new Date(request.headers["if-modified-since"]).getTime() >= resourceStat.modifiedAt.getTime()
 				) {
-					return response("resource.notModified")
+					return response.notModified("resource.notModified")
 						.setHeader("last-modified", resourceStat.modifiedAt.toISOString());
 				}
 
 				return resourceStat.modifiedAt
-					? response("resource.found", params.source)
+					? response.ok("resource.found", params.source)
 						.setHeader("last-modified", resourceStat.modifiedAt.toISOString())
-					: response("resource.found", params.source);
+					: response.ok("resource.found", params.source);
 			},
 		);
 }

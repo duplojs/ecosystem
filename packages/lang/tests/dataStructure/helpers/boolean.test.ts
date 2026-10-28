@@ -1,4 +1,6 @@
-import { DDataStructure, DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
 
 describe("boolean", () => {
 	it("creates a boolean type structure", () => {
@@ -6,12 +8,12 @@ describe("boolean", () => {
 		const success = structure.check(true);
 		const failure = structure.check("true");
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.TypeStructure<boolean, readonly []>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			boolean,
 			"strict"
@@ -42,7 +44,7 @@ describe("boolean", () => {
 			},
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly user: {
@@ -63,7 +65,7 @@ describe("boolean", () => {
 		const directStructure = DDataStructure.boolean([
 			DDataStructure.refine(
 				(data): data is true => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						boolean,
 						"strict"
@@ -76,7 +78,7 @@ describe("boolean", () => {
 		const addedStructure = DDataStructure.boolean().addConstraint(
 			DDataStructure.refine(
 				(data): data is true => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						boolean,
 						"strict"
@@ -87,7 +89,7 @@ describe("boolean", () => {
 			),
 		);
 
-		type _CheckDirectConstraints = ExpectType<
+		type _CheckDirectConstraints = DCommon.ExpectType<
 			typeof directStructure,
 			DDataStructure.TypeStructure<
 				boolean,
@@ -95,12 +97,12 @@ describe("boolean", () => {
 			>,
 			"strict"
 		>;
-		type _CheckDirectValue = ExpectType<
+		type _CheckDirectValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof directStructure>,
 			true,
 			"strict"
 		>;
-		type _CheckAddedConstraints = ExpectType<
+		type _CheckAddedConstraints = DCommon.ExpectType<
 			typeof addedStructure,
 			DDataStructure.Structure<
 				boolean,
@@ -110,7 +112,7 @@ describe("boolean", () => {
 			>,
 			"strict"
 		>;
-		type _CheckAddedValue = ExpectType<
+		type _CheckAddedValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof addedStructure>,
 			true,
 			"strict"

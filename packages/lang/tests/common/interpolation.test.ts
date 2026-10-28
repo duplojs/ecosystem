@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("createInterpolation", () => {
 	it("replaces every placeholder with its value", () => {
@@ -8,7 +9,7 @@ describe("createInterpolation", () => {
 			slug: "profile",
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"user-42-profile",
 			"strict"
@@ -21,7 +22,7 @@ describe("createInterpolation", () => {
 		const interpolation = DCommon.createInterpolation("static", true);
 		const result = interpolation();
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"static",
 			"strict"
@@ -36,7 +37,7 @@ describe("createInterpolation", () => {
 			id: "42",
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"

@@ -1,4 +1,5 @@
-import { DChrono, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("isSerializedTheTime", () => {
 	it("returns true for a safe serialized time", () => {
@@ -8,7 +9,7 @@ describe("isSerializedTheTime", () => {
 		expect(result).toBe(true);
 
 		if (result) {
-			type _CheckInput = ExpectType<
+			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				DChrono.SerializedTheTime,
 				"strict"

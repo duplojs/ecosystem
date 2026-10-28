@@ -1,4 +1,6 @@
-import { DDataStructure, DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
 
 describe("record", () => {
 	it("creates a record structure from string key and value structures", () => {
@@ -15,7 +17,7 @@ describe("record", () => {
 			second: "invalid",
 		});
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.RecordStructure<
 				Partial<{ readonly [Prop in string]: number }>,
@@ -23,7 +25,7 @@ describe("record", () => {
 			>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			Partial<{ readonly [Prop in string]: number }>,
 			"strict"
@@ -52,7 +54,7 @@ describe("record", () => {
 			role: "admin",
 		};
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.RecordStructure<
 				{
@@ -63,7 +65,7 @@ describe("record", () => {
 			>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly name: string;
@@ -100,7 +102,7 @@ describe("record", () => {
 			],
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly users: readonly {
@@ -147,7 +149,7 @@ describe("record", () => {
 			[
 				DDataStructure.refine(
 					(data): data is AdminRecord => {
-						type check = ExpectType<
+						type check = DCommon.ExpectType<
 							typeof data,
 							UserRecord,
 							"strict"
@@ -164,7 +166,7 @@ describe("record", () => {
 		).addConstraint(
 			DDataStructure.refine(
 				(data): data is AdminRecord => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						UserRecord,
 						"strict"
@@ -175,7 +177,7 @@ describe("record", () => {
 			),
 		);
 
-		type _CheckDirectConstraints = ExpectType<
+		type _CheckDirectConstraints = DCommon.ExpectType<
 			typeof directStructure,
 			DDataStructure.RecordStructure<
 				{
@@ -194,12 +196,12 @@ describe("record", () => {
 			>,
 			"strict"
 		>;
-		type _CheckDirectValue = ExpectType<
+		type _CheckDirectValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof directStructure>,
 			UserRecord & AdminRecord,
 			"strict"
 		>;
-		type _CheckAddedConstraints = ExpectType<
+		type _CheckAddedConstraints = DCommon.ExpectType<
 			typeof addedStructure,
 			DDataStructure.Structure<
 				{
@@ -220,7 +222,7 @@ describe("record", () => {
 			>,
 			"strict"
 		>;
-		type _CheckAddedValue = ExpectType<
+		type _CheckAddedValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof addedStructure>,
 			UserRecord & AdminRecord,
 			"strict"

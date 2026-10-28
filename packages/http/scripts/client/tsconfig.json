@@ -3,8 +3,10 @@
   "compilerOptions": {
 	"types": ["web"],
     "paths": {
-	  "@client/*": ["./*"]
+	  "@client/*": ["./*"],
+	  "@core": ["../core/index.ts"],
+	  "@core/*": ["../core/*"]
     },
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts", "../core/**/*.ts"]
 }

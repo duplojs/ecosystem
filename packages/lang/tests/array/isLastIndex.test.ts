@@ -1,4 +1,5 @@
-import { DArray, pipe } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("isLastIndex", () => {
 	it("should validate the last index", () => {
@@ -7,7 +8,7 @@ describe("isLastIndex", () => {
 	});
 
 	it("should validate the last index in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["a", "b"] as const,
 			DArray.isLastIndex(1),
 		);

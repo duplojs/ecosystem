@@ -1,4 +1,5 @@
-import { DEither, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("matchInformationOtherwise", () => {
 	it("should match provided information and call otherwise for the rest", () => {
@@ -14,7 +15,7 @@ describe("matchInformationOtherwise", () => {
 				success: () => 84,
 			},
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					DEither.Error<"message">,
 					"strict"
@@ -26,7 +27,7 @@ describe("matchInformationOtherwise", () => {
 
 		expect(result).toBe(84);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number | DEither.Error<"message">,
 			"strict"
@@ -35,7 +36,7 @@ describe("matchInformationOtherwise", () => {
 
 	it("should call otherwise for an unmatched either in pipe", () => {
 		const input = DEither.error("message");
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.matchInformationOtherwise(
 				{},

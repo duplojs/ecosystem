@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("callThen", () => {
 	it("calls the callback directly for non-promise inputs", () => {
@@ -7,7 +8,7 @@ describe("callThen", () => {
 			(input) => input.length,
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -22,7 +23,7 @@ describe("callThen", () => {
 			(input) => input.length,
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<number>,
 			"strict"

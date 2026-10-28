@@ -1,4 +1,5 @@
-import { DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DString from "@scripts/string";
 
 describe("isNotEmpty", () => {
 	it("should validate a non-empty string", () => {
@@ -10,13 +11,13 @@ describe("isNotEmpty", () => {
 		const source = "hello" as string;
 
 		if (DString.isNotEmpty(source)) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				string & DString.NotEmpty,
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				string,
 				"strict"

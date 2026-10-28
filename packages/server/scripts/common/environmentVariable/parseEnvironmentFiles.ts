@@ -50,7 +50,7 @@ export function parseEnvironmentLine(line: string) {
 
 export function parseEnvironmentFiles(
 	baseEnv: Record<string, string>,
-	paths: (string & DPath.Path)[],
+	paths: DPath.AnyPath[],
 ) {
 	return DGenerator.asyncReduce(
 		paths,

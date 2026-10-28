@@ -1,4 +1,5 @@
-import { DPath, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DPath from "@scripts/path";
 
 describe("is", () => {
 	it.each([
@@ -83,7 +84,7 @@ describe("is", () => {
 		);
 
 		if (DPath.is(literalPath)) {
-			type check = ExpectType<
+			type check = DCommon.ExpectType<
 				typeof literalPath,
 				| "foo/bar"
 				| "foo"
@@ -105,7 +106,7 @@ describe("is", () => {
 				"strict"
 			>;
 		} else {
-			type check = ExpectType<
+			type check = DCommon.ExpectType<
 				typeof literalPath,
 				| ""
 				| "./foo"
@@ -131,13 +132,13 @@ describe("is", () => {
 		const value = "test" as string;
 
 		if (DPath.is(value)) {
-			type check = ExpectType<
+			type check = DCommon.ExpectType<
 				typeof value,
 				string & DPath.Path,
 				"strict"
 			>;
 		} else {
-			type check = ExpectType<
+			type check = DCommon.ExpectType<
 				typeof value,
 				string,
 				"strict"

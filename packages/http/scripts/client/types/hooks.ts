@@ -1,7 +1,7 @@
 import type * as DCommon from "@duplojs/lang/common";
 import { type ClientEventsResponse, type ServerEvent, type AllClientResponse, type AllNotPredictedClientResponse, type ClientStreamResponse } from "./clientResponse";
 import { type PromiseRequestParams } from "./promiseRequestParams";
-import { type ServerRouteResponseFlux } from "./serverRoute";
+import { type RouteContractResponseFlux } from "@core";
 
 export type RequestHook<
 	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
@@ -90,7 +90,7 @@ export type CloseStreamHook<
 export type ReceiveDataStreamHook<
 	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
 > = (
-	data: ServerRouteResponseFlux,
+	data: RouteContractResponseFlux,
 	response: ClientStreamResponse<GenericHookParams>,
 ) => DCommon.MaybePromise<void>;
 

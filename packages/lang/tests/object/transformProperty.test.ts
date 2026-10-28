@@ -1,4 +1,5 @@
-import { DObject, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DObject from "@scripts/object";
 
 describe("transformProperty", () => {
 	it("should transform an object property", () => {
@@ -16,7 +17,7 @@ describe("transformProperty", () => {
 			version: "1",
 		});
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			{
 				name: string;
@@ -27,7 +28,7 @@ describe("transformProperty", () => {
 	});
 
 	it("should transform an object property in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			{
 				name: "Duplo",
 				version: 1,

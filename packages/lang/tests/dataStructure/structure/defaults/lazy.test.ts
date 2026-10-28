@@ -1,4 +1,8 @@
-import { DDataStructure, DEither, type DCommon, type DKind, type ExpectType } from "@scripts";
+
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DCommon from "@scripts/common";
+import type * as DKind from "@scripts/kind";
 
 describe("LazyStructure", () => {
 	it("checks values through a memoized deferred structure and narrows with is", async() => {
@@ -10,19 +14,19 @@ describe("LazyStructure", () => {
 		const asyncSuccess = await structure.asyncCheck("value");
 		const failure = structure.check(123);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string,
 			"strict"
 		>;
-		type _CheckSuccess = ExpectType<
+		type _CheckSuccess = DCommon.ExpectType<
 			typeof success,
 			| DEither.Right<"check-success", string>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"check-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncSuccess = ExpectType<
+		type _CheckAsyncSuccess = DCommon.ExpectType<
 			typeof asyncSuccess,
 			| DEither.Right<"check-success", string>
 			| DEither.Left<"check-error", DDataStructure.Error>,
@@ -59,7 +63,7 @@ describe("LazyStructure", () => {
 			[],
 		);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string,
 			"strict"
@@ -105,7 +109,7 @@ describe("LazyStructure", () => {
 			names: ["Jane", "John"],
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly id: number | "anonymous";
@@ -178,27 +182,27 @@ describe("LazyStructure", () => {
 			DDataStructure.createCodecs({ codec }),
 		);
 
-		type _CheckEncoded = ExpectType<
+		type _CheckEncoded = DCommon.ExpectType<
 			typeof encoded,
 			| DEither.Right<"encode-success", { readonly name: number }>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncEncoded = ExpectType<
+		type _CheckAsyncEncoded = DCommon.ExpectType<
 			typeof asyncEncoded,
 			| DEither.Right<"encode-success", { readonly name: number }>
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckDecoded = ExpectType<
+		type _CheckDecoded = DCommon.ExpectType<
 			typeof decoded,
 			| DEither.Right<"decode-success", { readonly name: string }>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncDecoded = ExpectType<
+		type _CheckAsyncDecoded = DCommon.ExpectType<
 			typeof asyncDecoded,
 			| DEither.Right<"decode-success", { readonly name: string }>
 			| DEither.Left<"decode-error", DDataStructure.Error>,

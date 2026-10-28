@@ -1,4 +1,5 @@
-import { DChrono, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("getDifference", () => {
 	it("returns signed difference in milliseconds with classic call", () => {
@@ -9,7 +10,7 @@ describe("getDifference", () => {
 
 		expect(result.toNative()).toBe(172800000);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheTime,
 			"strict"
@@ -53,14 +54,14 @@ describe("getDifference", () => {
 	});
 
 	it("works in pipe with curried overload", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2024-01-03"),
 			DChrono.getDifference(DChrono.createDate("2024-01-01")),
 		);
 
 		expect(result.toNative()).toBe(172800000);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheTime,
 			"strict"

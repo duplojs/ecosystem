@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, DModeling, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DModeling from "@scripts/modeling";
 
 describe("whenIsSelected", () => {
 	it("should map selected information and keep unselected values", () => {
@@ -22,7 +25,7 @@ describe("whenIsSelected", () => {
 
 		expect(result).toBe(84);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			84 | DEither.Error<"message">,
 			"strict"
@@ -36,7 +39,7 @@ describe("whenIsSelected", () => {
 				: DEither.success(42)
 		);
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.whenIsSelected(
 				{
@@ -52,7 +55,7 @@ describe("whenIsSelected", () => {
 
 		expect(result).toBe("MESSAGE");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"MESSAGE" | DEither.Success<42>,
 			"strict"
@@ -84,7 +87,7 @@ describe("whenIsSelected", () => {
 				"map-error": false,
 			},
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					string & DModeling.NewType<"user-name">,
 					"strict"
@@ -96,7 +99,7 @@ describe("whenIsSelected", () => {
 
 		expect(result).toBe("selected");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| "selected"
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>

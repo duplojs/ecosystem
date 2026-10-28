@@ -1,4 +1,5 @@
-import { DChrono, type DArray } from "@scripts";
+import * as DChrono from "@scripts/chrono";
+import type * as DArray from "@scripts/array";
 
 describe("DChrono maxTime", () => {
 	const time01 = DChrono.createTime(1, "second");

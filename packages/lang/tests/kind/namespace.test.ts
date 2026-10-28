@@ -1,4 +1,5 @@
-import { DKind, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DKind from "@scripts/kind";
 
 describe("createNamespace", () => {
 	it("creates handlers with namespaced runtime keys", () => {
@@ -6,7 +7,7 @@ describe("createNamespace", () => {
 		const kind = createKind<"item", number>("item");
 		const result = kind.addTo({}, 42);
 
-		type _CheckDefinition = ExpectType<
+		type _CheckDefinition = DCommon.ExpectType<
 			typeof kind.definition,
 			DKind.Definition<"@TestNamespace/item", number>,
 			"strict"

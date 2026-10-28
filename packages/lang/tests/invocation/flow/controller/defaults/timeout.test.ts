@@ -1,4 +1,5 @@
-import { DInvocation, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DInvocation from "@scripts/invocation";
 
 describe("timeout", () => {
 	afterEach(() => {
@@ -32,7 +33,7 @@ describe("timeout", () => {
 		await expect(result).resolves.toBe(42);
 		expect(steps).toStrictEqual(["before-timeout", "after-timeout"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			Promise<number>,
 			"strict"

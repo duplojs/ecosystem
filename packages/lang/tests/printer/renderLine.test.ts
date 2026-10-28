@@ -1,4 +1,5 @@
-import { DPrinter, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DPrinter from "@scripts/printer";
 
 describe("renderLine", () => {
 	it("renders printable values separated by spaces", () => {
@@ -8,7 +9,7 @@ describe("renderLine", () => {
 			true,
 		]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"

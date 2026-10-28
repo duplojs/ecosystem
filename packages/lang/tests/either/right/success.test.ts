@@ -1,4 +1,5 @@
-import { DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DEither from "@scripts/either";
 
 describe("success", () => {
 	it("should create a success right either", () => {
@@ -9,7 +10,7 @@ describe("success", () => {
 		expect(DEither.informationKind.getValue(either)).toBe("success");
 		expect(DEither.valueKind.getValue(either)).toStrictEqual({ value: 42 });
 
-		type _CheckEither = ExpectType<
+		type _CheckEither = DCommon.ExpectType<
 			typeof either,
 			DEither.Success<{ readonly value: 42 }>,
 			"strict"

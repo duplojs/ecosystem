@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("falsy", () => {
 	it("detects falsy and truthy values", () => {
@@ -12,7 +13,7 @@ describe("falsy", () => {
 	it("narrows to falsy values", () => {
 		const normalize = (input: "" | "value") => {
 			if (DCommon.falsy(input)) {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					"",
 					"strict"
@@ -20,7 +21,7 @@ describe("falsy", () => {
 
 				return "empty";
 			} else {
-				type _CheckInput = ExpectType<
+				type _CheckInput = DCommon.ExpectType<
 					typeof input,
 					"value",
 					"strict"

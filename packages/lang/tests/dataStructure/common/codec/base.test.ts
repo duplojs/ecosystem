@@ -1,4 +1,5 @@
-import { DDataStructure, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
 
 describe("createCodec and createCodecs", () => {
 	it("creates a codec kind and delegates its encoded value predicate without error context", () => {
@@ -14,7 +15,7 @@ describe("createCodec and createCodecs", () => {
 			(data) => `value-${data}`,
 		);
 
-		type _CheckCodec = ExpectType<
+		type _CheckCodec = DCommon.ExpectType<
 			typeof codec,
 			DDataStructure.Codec<
 				typeof DDataStructure.TheString,
@@ -49,7 +50,7 @@ describe("createCodec and createCodecs", () => {
 			numberCodec,
 		});
 
-		type _CheckCodecs = ExpectType<
+		type _CheckCodecs = DCommon.ExpectType<
 			typeof codecs,
 			DDataStructure.Codecs<{
 				stringCodec: typeof stringCodec;
@@ -189,12 +190,12 @@ describe("createCodec and createCodecs", () => {
 		);
 		const codecs = DDataStructure.createCodecs({ codec });
 
-		type _CheckEncodedValue = ExpectType<
+		type _CheckEncodedValue = DCommon.ExpectType<
 			DDataStructure.EncodedValue<string, typeof codecs>,
 			number,
 			"strict"
 		>;
-		type _CheckFallbackValue = ExpectType<
+		type _CheckFallbackValue = DCommon.ExpectType<
 			DDataStructure.EncodedValue<boolean, typeof codecs>,
 			boolean,
 			"strict"

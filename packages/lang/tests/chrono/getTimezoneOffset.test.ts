@@ -1,4 +1,5 @@
-import { type ExpectType, DChrono } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("getTimezoneOffset", () => {
 	it("returns zero for UTC", () => {
@@ -8,7 +9,7 @@ describe("getTimezoneOffset", () => {
 
 		expect(result).toBe(0);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -23,7 +24,7 @@ describe("getTimezoneOffset", () => {
 
 		expect(result).toBe(-18000000);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -39,7 +40,7 @@ describe("getTimezoneOffset", () => {
 
 		expect(result).toBe(-18000000);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -55,7 +56,7 @@ describe("getTimezoneOffset", () => {
 
 		expect(result).toBe(0);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -72,7 +73,7 @@ describe("getTimezoneOffset", () => {
 
 		expect(result).toBe(expected);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"

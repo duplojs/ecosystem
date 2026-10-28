@@ -55,7 +55,7 @@ function getSkillPaths(
 	);
 }
 
-function removeSkill(path: string & DPath.Path) {
+function removeSkill(path: DPath.AnyPath) {
 	return DCommon.asyncPipe(
 		DSFile.remove(path, { recursive: true }),
 		DEither.whenIsLeft(

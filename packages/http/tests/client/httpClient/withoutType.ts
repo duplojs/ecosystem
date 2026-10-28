@@ -1,8 +1,9 @@
-import { createHttpClient, type RequestErrorContent, type PromiseRequest, type PromiseRequestParams, type ServerRoute, type ClientEventsResponse, type AllNotPredictedClientResponse, type AllClientResponse, type ServerEvent, isClientEventsResponse, type ServerRouteResponseFlux, type ClientStreamResponse, isClientStreamResponse } from "@client";
+import { createHttpClient, type RequestErrorContent, type PromiseRequest, type PromiseRequestParams, type ClientEventsResponse, type AllNotPredictedClientResponse, type AllClientResponse, type ServerEvent, isClientEventsResponse, type ClientStreamResponse, isClientStreamResponse } from "@client";
+import { type RouteContractResponseFlux, type RouteContract } from "@core";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 
-const httpClient = createHttpClient<ServerRoute, { params1: string }>({
+const httpClient = createHttpClient<RouteContract, { params1: string }>({
 	baseUrl: "http://test.com",
 });
 
@@ -612,7 +613,7 @@ void httpClient.get("/stream")
 		(data, response) => {
 			type Check = DCommon.ExpectType<
 				typeof data,
-				ServerRouteResponseFlux,
+				RouteContractResponseFlux,
 				"strict"
 			>;
 
@@ -641,7 +642,7 @@ void httpClient.get("/stream")
 				response.onStream("receiveData", (data, response) => {
 					type Check = DCommon.ExpectType<
 						typeof data,
-						ServerRouteResponseFlux,
+						RouteContractResponseFlux,
 						"strict"
 					>;
 

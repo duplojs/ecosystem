@@ -3,15 +3,14 @@ import { type Route, type HookRouteLifeCycle, routeKind } from "@core/route";
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
 import * as DObject from "@duplojs/lang/object";
-import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DPattern from "@duplojs/lang/pattern";
 import { type HookHubLifeCycle } from "./hooks";
 import { type HandlerStepFunctionParams, type HandlerStep, createHandlerStep, type ExtractShapeCodecs } from "@core/steps";
 import { type BodyController, type BodyReaderImplementation, Request } from "@core/request";
-import { type ClientErrorResponseCode, type ResponseContract } from "@core/response";
+import { type PredictedResponses } from "@core/response";
 import { defaultNotfoundHandler } from "./defaultNotfoundHandler";
-import { type Environment } from "@core/types";
-import { defaultExtractContract } from "./defaultExtractContract";
+import { type DefaultOtherwiseExtractResponse, type Floor, type Environment, type ExtractOtherwise } from "@core/types";
+import { defaultExtractOtherwise } from "./defaultExtractOtherwise";
 import { type createStepFunctionBuilder } from "@core/functionsBuilders/steps";
 import { type createRouteFunctionBuilder } from "@core/functionsBuilders/route";
 import { defaultBodyController } from "./defaultBodyController";
@@ -23,7 +22,7 @@ import { defaultExtractShapeCodecs } from "./defaultExtractShapeCodecs";
 
 export * from "./hooks";
 export * from "./defaultNotfoundHandler";
-export * from "./defaultExtractContract";
+export * from "./defaultExtractOtherwise";
 export * from "./defaultBodyController";
 export * from "./defaultMalformedUrlHandler";
 export * from "./defaultEmptyReaderImplementation";
@@ -70,11 +69,10 @@ export class Hub<
 
 	public notfoundHandler: HandlerStep = defaultNotfoundHandler;
 
-	public defaultExtractContract: ResponseContract.Contract<
-		ClientErrorResponseCode,
-		string,
-		DDataStructure.Structure<undefined>
-	> = defaultExtractContract;
+	public defaultExtractOtherwise: ExtractOtherwise<
+		Floor,
+		DefaultOtherwiseExtractResponse
+	> = defaultExtractOtherwise;
 
 	public defaultBodyController: BodyController = defaultBodyController;
 
@@ -187,20 +185,13 @@ export class Hub<
 	}
 
 	public setNotfoundHandler<
-		GenericResponseContract extends ResponseContract.Contract,
-		GenericResponse extends ResponseContract.Convert<
-			GenericResponseContract
-		>,
+		const GenericResponse extends PredictedResponses,
 	>(
-		responseContract: GenericResponseContract,
 		theFunction: (
-			param: HandlerStepFunctionParams<
-				GenericResponse
-			>,
+			param: HandlerStepFunctionParams,
 		) => DCommon.MaybePromise<GenericResponse>,
 	) {
 		this.notfoundHandler = createHandlerStep({
-			responseContract,
 			theFunction: (floor, params) => theFunction(params),
 			metadata: [],
 		});
@@ -208,10 +199,10 @@ export class Hub<
 		return this;
 	}
 
-	public setDefaultExtractContract(
-		responseContract: this["defaultExtractContract"],
+	public setDefaultExtractOtherwise(
+		otherwise: this["defaultExtractOtherwise"],
 	) {
-		this.defaultExtractContract = responseContract;
+		this.defaultExtractOtherwise = otherwise;
 
 		return this;
 	}
@@ -241,20 +232,13 @@ export class Hub<
 	}
 
 	public setMalformedUrlHandler<
-		GenericResponseContract extends ResponseContract.Contract,
-		GenericResponse extends ResponseContract.Convert<
-			GenericResponseContract
-		>,
+		const GenericResponse extends PredictedResponses,
 	>(
-		responseContract: GenericResponseContract,
 		theFunction: (
-			param: HandlerStepFunctionParams<
-				GenericResponse
-			>,
+			param: HandlerStepFunctionParams,
 		) => DCommon.MaybePromise<GenericResponse>,
 	) {
 		this.malformedUrlHandler = createHandlerStep({
-			responseContract,
 			theFunction: (__, params) => theFunction(params),
 			metadata: [],
 		});

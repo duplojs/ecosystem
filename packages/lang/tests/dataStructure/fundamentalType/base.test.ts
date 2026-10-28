@@ -1,4 +1,7 @@
-import { DDataStructure, type DCommon, type DKind, type ExpectType } from "@scripts";
+
+import * as DDataStructure from "@scripts/dataStructure";
+import type * as DCommon from "@scripts/common";
+import type * as DKind from "@scripts/kind";
 
 describe("createFundamentalType", () => {
 	it("creates a discriminable fundamental type that delegates checks with itself", () => {
@@ -22,12 +25,12 @@ describe("createFundamentalType", () => {
 			executeCheck,
 		);
 
-		type _CheckFundamentalType = ExpectType<
+		type _CheckFundamentalType = DCommon.ExpectType<
 			typeof fundamentalType,
 			TestFundamentalType,
 			"strict"
 		>;
-		type _CheckFundamentalValue = ExpectType<
+		type _CheckFundamentalValue = DCommon.ExpectType<
 			DDataStructure.FundamentalTypeValue<typeof fundamentalType>,
 			string,
 			"strict"

@@ -1,8 +1,10 @@
+import type { AnyPath } from "./types";
 import * as DArray from "@scripts/array";
 import * as DString from "@scripts/string";
-import type { Path } from "./constraints";
 
-export type PathMatcher = (path: string & Path) => boolean;
+export type PathMatcher<
+	GenericPath extends AnyPath = AnyPath,
+> = (path: GenericPath) => boolean;
 
 const regexSpecialCharacters = /[\\^$.*+?()[\]{}|]/g;
 
@@ -221,7 +223,7 @@ export function createMatcher(
 		}
 	}
 
-	return (path: string & Path): boolean => {
+	return (path: AnyPath): boolean => {
 		let selected = false;
 
 		for (const rule of positiveRules) {

@@ -14,6 +14,8 @@ import type { OpenApiDocument } from "./types/openApiDocument";
 import type { OpenApiSecuritySchema, SupportedBearerFormat } from "./types";
 import * as DSFile from "@duplojs/server/file";
 import type * as DPath from "@duplojs/lang/path";
+import { type AggregateStepsParams } from "./aggregateStepContract";
+import { type OpenApiEndpointContractMetadata } from "./metadata";
 
 interface OpenApiSecurityOptionBearer {
 	type: "bearer";
@@ -31,42 +33,43 @@ interface OpenApiSecurityOptionBasic {
 }
 
 export interface OpenApiGeneratorPluginParams {
-	routePath?: RoutePath;
-	outputFile?: string & DPath.Path;
+	readonly defaultExtractMetadata?: ReturnType<typeof OpenApiEndpointContractMetadata>;
+	readonly routePath?: RoutePath;
+	readonly outputFile?: DPath.AnyPath;
 
 	/**
 	 * @default "Swagger API"
 	 */
-	title?: string;
+	readonly title?: string;
 
 	/**
 	 * @default "0.0.0"
 	 */
-	version?: string;
-	summary?: string;
-	contact?: {
-		name?: string;
-		email?: string;
-		url?: string;
+	readonly version?: string;
+	readonly summary?: string;
+	readonly contact?: {
+		readonly name?: string;
+		readonly email?: string;
+		readonly url?: string;
 	};
-	license?: {
-		name: string;
-		url?: string;
-		identifier?: string;
+	readonly license?: {
+		readonly name: string;
+		readonly url?: string;
+		readonly identifier?: string;
 	};
-	security?:
+	readonly security?:
 		| OpenApiSecurityOptionBearer
 		| OpenApiSecurityOptionApiKey
 		| OpenApiSecurityOptionBasic;
-	servers?: {
-		url: string;
-		description?: string;
+	readonly servers?: {
+		readonly url: string;
+		readonly description?: string;
 	}[];
 
 	/**
 	 * @default "5.31.0"
 	 */
-	swaggerUiVersion?: string;
+	readonly swaggerUiVersion?: string;
 }
 
 export function openApiGeneratorPlugin(pluginParams: OpenApiGeneratorPluginParams) {
@@ -94,9 +97,9 @@ export function openApiGeneratorPlugin(pluginParams: OpenApiGeneratorPluginParam
 						DArray.filter((route) => route.definition.method !== "OPTIONS"),
 						DArray.flatMap(
 							(route) => routeToOpenApi(route, {
-								defaultExtractContract: hub.defaultExtractContract,
 								resultSchemaContext,
 								contextToJsonSchemaFactory,
+								defaultExtractMetadata: pluginParams.defaultExtractMetadata,
 							}),
 						),
 					);

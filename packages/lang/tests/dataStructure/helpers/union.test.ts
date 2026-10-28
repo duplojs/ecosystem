@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, type DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DString from "@scripts/string";
 
 describe("union", () => {
 	it("creates a union structure from helper structures", () => {
@@ -10,12 +13,12 @@ describe("union", () => {
 		const success = structure.check("value");
 		const failure = structure.check(null);
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.UnionStructure<string | number | boolean, readonly []>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string | number | boolean,
 			"strict"
@@ -71,7 +74,7 @@ describe("union", () => {
 			values: [1, "skip", 2],
 		} as const;
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			| {
 				readonly kind: "user";
@@ -129,7 +132,7 @@ describe("union", () => {
 			],
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly events: readonly {
@@ -160,7 +163,7 @@ describe("union", () => {
 			[
 				DDataStructure.refine(
 					(data): data is string => {
-						type check = ExpectType<
+						type check = DCommon.ExpectType<
 							typeof data,
 							string | number,
 							"strict"
@@ -177,7 +180,7 @@ describe("union", () => {
 		]).addConstraint(
 			DDataStructure.refine(
 				(data): data is string => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						string | number,
 						"strict"
@@ -188,7 +191,7 @@ describe("union", () => {
 			),
 		);
 
-		type _CheckDirectConstraints = ExpectType<
+		type _CheckDirectConstraints = DCommon.ExpectType<
 			typeof directStructure,
 			DDataStructure.UnionStructure<
 				string | number,
@@ -196,12 +199,12 @@ describe("union", () => {
 			>,
 			"strict"
 		>;
-		type _CheckDirectValue = ExpectType<
+		type _CheckDirectValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof directStructure>,
 			string,
 			"strict"
 		>;
-		type _CheckAddedConstraints = ExpectType<
+		type _CheckAddedConstraints = DCommon.ExpectType<
 			typeof addedStructure,
 			DDataStructure.Structure<
 				string | number,
@@ -211,7 +214,7 @@ describe("union", () => {
 			>,
 			"strict"
 		>;
-		type _CheckAddedValue = ExpectType<
+		type _CheckAddedValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof addedStructure>,
 			string,
 			"strict"

@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("preparePipe", () => {
 	it("creates a pipe function for a fixed input type", () => {
@@ -9,7 +10,7 @@ describe("preparePipe", () => {
 			(input) => `${input}`,
 		)("value");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			`${number}`,
 			"strict"

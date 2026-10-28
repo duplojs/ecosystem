@@ -1,4 +1,4 @@
-import { createExtractStep, extractStepKind, stepKind, type ExtractStepDefinition, ResponseContract } from "@core";
+import { createExtractStep, extractStepKind, stepKind, type ExtractStepDefinition } from "@core";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 
 describe("extractStep", () => {
@@ -10,7 +10,7 @@ describe("extractStep", () => {
 					authorization: DDataStructure.string(),
 				},
 			},
-			responseContract: ResponseContract.unprocessableContent("invalid extract input"),
+			otherwise: ({ response }) => response.unprocessableContent("invalid extract input"),
 			metadata: [],
 		};
 

@@ -1,4 +1,5 @@
-import { pipe, type ExpectType, DChrono } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("getFirstDayOfMonth", () => {
 	it("returns first day start for mid-month date", () => {
@@ -10,7 +11,7 @@ describe("getFirstDayOfMonth", () => {
 			DChrono.serialize(DChrono.createDate("2024-02-01")),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -26,7 +27,7 @@ describe("getFirstDayOfMonth", () => {
 			DChrono.serialize(DChrono.createDate("2024-02-01")),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -42,7 +43,7 @@ describe("getFirstDayOfMonth", () => {
 			DChrono.serialize(DChrono.createDate("-5-03-01")),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"
@@ -50,7 +51,7 @@ describe("getFirstDayOfMonth", () => {
 	});
 
 	it("can be used in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			DChrono.createDate("2021-12-25"),
 			DChrono.getFirstDayOfMonth,
 		);
@@ -59,7 +60,7 @@ describe("getFirstDayOfMonth", () => {
 			DChrono.serialize(DChrono.createDate("2021-12-01")),
 		);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			DChrono.TheDate,
 			"strict"

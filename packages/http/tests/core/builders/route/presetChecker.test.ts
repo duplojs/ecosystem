@@ -1,4 +1,4 @@
-import { extractStepKind, ResponseContract, type RouteBuilder, stepKind, useCheckerBuilder, useRouteBuilder, type Request, type CheckerStep, type ExtractStep, createPresetChecker, presetCheckerStepKind, type PresetCheckerStep, IgnoreByRouteStoreMetadata, type Metadata } from "@core";
+import { extractStepKind, type RouteBuilder, stepKind, useCheckerBuilder, useRouteBuilder, type Request, type CheckerStep, type ExtractStep, createPresetChecker, presetCheckerStepKind, type PresetCheckerStep, IgnoreByRouteStoreMetadata, type Metadata } from "@core";
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 
@@ -13,7 +13,7 @@ describe("route builder preset checker method", () => {
 			checker,
 			{
 				result: "ok",
-				otherwise: ResponseContract.badRequest("test"),
+				otherwise: ({ response }) => response.badRequest("test"),
 			},
 		);
 
@@ -73,7 +73,7 @@ describe("route builder preset checker method", () => {
 							readonly shape: {
 								body: DDataStructure.TypeStructure<string, readonly []>;
 							};
-							readonly responseContract: undefined;
+							readonly otherwise: undefined;
 							readonly metadata: readonly [];
 						}>,
 						PresetCheckerStep<{
@@ -101,7 +101,7 @@ describe("route builder preset checker method", () => {
 			checker,
 			{
 				result: "ok",
-				otherwise: ResponseContract.badRequest("test"),
+				otherwise: ({ response }) => response.badRequest("test"),
 				indexing: "superValue",
 			},
 		);
@@ -153,7 +153,7 @@ describe("route builder preset checker method", () => {
 							readonly shape: {
 								body: DDataStructure.TypeStructure<string, readonly []>;
 							};
-							readonly responseContract: undefined;
+							readonly otherwise: undefined;
 							readonly metadata: readonly [];
 						}>,
 						PresetCheckerStep<{

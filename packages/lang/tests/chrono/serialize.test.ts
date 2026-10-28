@@ -1,4 +1,5 @@
-import { DChrono, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("serialize", () => {
 	it("serializes a date", () => {
@@ -8,7 +9,7 @@ describe("serialize", () => {
 
 		expect(result).toBe("date1704067200000+");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DChrono.SerializedTheDate,
 			"strict"
@@ -30,7 +31,7 @@ describe("serialize", () => {
 
 		expect(result).toBe("time2000+");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			DChrono.SerializedTheTime,
 			"strict"

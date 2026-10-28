@@ -1,4 +1,5 @@
-import { DKind, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DKind from "@scripts/kind";
 
 describe("parentClass", () => {
 	it("creates a class from a kind name", () => {
@@ -6,7 +7,7 @@ describe("parentClass", () => {
 		const kind = DKind.create<"class-kind">("class-kind");
 		const instance = new KindClass<"value">("value");
 
-		type _CheckInstance = ExpectType<
+		type _CheckInstance = DCommon.ExpectType<
 			typeof instance,
 			DKind.Kind<DKind.Handler<DKind.Definition<"class-kind">>, "value">,
 			"strict"
@@ -35,7 +36,7 @@ describe("parentClass", () => {
 		const KindClass = DKind.parentClass(kind, Parent);
 		const instance = new KindClass(12, "John");
 
-		type _CheckInstance = ExpectType<
+		type _CheckInstance = DCommon.ExpectType<
 			typeof instance,
 			& Parent
 			& DKind.Kind<typeof kind, 12>,

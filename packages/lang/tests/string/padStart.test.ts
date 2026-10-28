@@ -1,4 +1,6 @@
-import { type DNumber, DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import type * as DNumber from "@scripts/number";
+import * as DString from "@scripts/string";
 
 describe("padStart", () => {
 	it("should pad the start of a string", () => {
@@ -6,7 +8,7 @@ describe("padStart", () => {
 
 		expect(result).toBe("00042");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string & DString.MinCharacters<2>,
 			"strict"
@@ -14,7 +16,7 @@ describe("padStart", () => {
 	});
 
 	it("should pad the start of a string in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"42",
 			DString.padStart(4, "0"),
 		);
@@ -34,7 +36,7 @@ describe("padStart", () => {
 
 		expect(result).toBe("000hello");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (string & DString.MinCharacters<0>)
 			| (string & DString.MinCharacters<5>),
@@ -53,7 +55,7 @@ describe("padStart", () => {
 		const sourceMin = "hello" as string & DString.MinCharacters<3>;
 		const resultMin = DString.padStart(sourceMin, 8, "0");
 
-		type _CheckMinResult = ExpectType<
+		type _CheckMinResult = DCommon.ExpectType<
 			typeof resultMin,
 			string & DString.MinCharacters<3>,
 			"strict"
@@ -62,7 +64,7 @@ describe("padStart", () => {
 		const sourceMax = "hello" as string & DString.MaxCharacters<5>;
 		const resultMax = DString.padStart(sourceMax, 8, "0");
 
-		type _CheckMaxResult = ExpectType<
+		type _CheckMaxResult = DCommon.ExpectType<
 			typeof resultMax,
 			string,
 			"strict"
@@ -71,7 +73,7 @@ describe("padStart", () => {
 		const sourceLength = "hello" as string & DString.LengthEqual<5>;
 		const resultLength = DString.padStart(sourceLength, 8, "0");
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			string & DString.MinCharacters<5>,
 			"strict"

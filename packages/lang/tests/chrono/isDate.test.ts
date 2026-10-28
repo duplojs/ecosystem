@@ -1,4 +1,5 @@
-import { DChrono, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("DChrono.isDate", () => {
 	it("returns true for valid TheDate values", () => {
@@ -6,7 +7,7 @@ describe("DChrono.isDate", () => {
 		expect(DChrono.isDate(valid)).toBe(true);
 
 		if (DChrono.isDate(valid)) {
-			type Check = ExpectType<
+			type Check = DCommon.ExpectType<
 				typeof valid,
 				DChrono.TheDate,
 				"strict"
@@ -17,12 +18,12 @@ describe("DChrono.isDate", () => {
 	it("narrows a TheDate inside a pipe when callback", () => {
 		const valid = DChrono.createDateOrThrow(1700000000);
 		const source = valid as object;
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
-			when(
+			DCommon.when(
 				DChrono.isDate,
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						DChrono.TheDate,
 						"strict"

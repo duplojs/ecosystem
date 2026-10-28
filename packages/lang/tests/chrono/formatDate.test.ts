@@ -1,4 +1,5 @@
-import { type ExpectType, DChrono } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("format", () => {
 	beforeEach(() => {
@@ -15,7 +16,7 @@ describe("format", () => {
 
 		expect(result).toBe("2024-01-01 00:00:00.0 UTC");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -28,7 +29,7 @@ describe("format", () => {
 
 		expect(result).toBe("2023-12-31 19:00:00.0 America/New_York");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -42,7 +43,7 @@ describe("format", () => {
 
 		expect(result).toBe("2024/01/01");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"

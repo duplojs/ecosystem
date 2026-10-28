@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("filter", () => {
 	it("should filter values with callback params", () => {
@@ -13,7 +14,7 @@ describe("filter", () => {
 
 		expect(result).toEqual(["a", "bb", "ccc"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly string[] & DArray.MaxElements<3>,
 			"strict"
@@ -21,7 +22,7 @@ describe("filter", () => {
 	});
 
 	it("should filter values in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, 2, 3, 4],
 			DArray.filter((value) => value % 2 === 0),
 		);
@@ -37,7 +38,7 @@ describe("filter", () => {
 
 		expect(result).toEqual(["a", "b"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly ("a" | "b")[] & DArray.MaxElements<4>,
 			"strict"
@@ -52,7 +53,7 @@ describe("filter", () => {
 
 		expect(result).toEqual([1, 2, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| (readonly number[] & DArray.MaxElements<0>)
 			| (readonly number[] & DArray.MaxElements<3>),
@@ -64,7 +65,7 @@ describe("filter", () => {
 		const sourceMin = ["a", "bb", "ccc"] as string[] & DArray.MinElements<3>;
 		const resultMin = DArray.filter(sourceMin, () => true);
 
-		type _CheckMinResult = ExpectType<
+		type _CheckMinResult = DCommon.ExpectType<
 			typeof resultMin,
 			readonly string[],
 			"strict"
@@ -73,7 +74,7 @@ describe("filter", () => {
 		const sourceLength = ["a", "bb", "ccc"] as string[] & DArray.LengthEqual<3>;
 		const resultLength = DArray.filter(sourceLength, () => true);
 
-		type _CheckLengthResult = ExpectType<
+		type _CheckLengthResult = DCommon.ExpectType<
 			typeof resultLength,
 			readonly string[] & DArray.MaxElements<3>,
 			"strict"

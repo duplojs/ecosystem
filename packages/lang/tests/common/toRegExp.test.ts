@@ -1,10 +1,11 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("toRegExp", () => {
 	it("creates an exact regexp from a string", () => {
 		const result = DCommon.toRegExp("a+b");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			RegExp,
 			"strict"

@@ -1,4 +1,7 @@
-import { DArray, DChrono, type DCommon, type ExpectType } from "@scripts";
+
+import * as DArray from "@scripts/array";
+import * as DChrono from "@scripts/chrono";
+import type * as DCommon from "@scripts/common";
 
 describe("findDuplicates", () => {
 	it("should return duplicated values once", () => {
@@ -6,7 +9,7 @@ describe("findDuplicates", () => {
 
 		expect(result).toEqual(["a", "b"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly ("a" | "b")[] & DArray.MinElements<1> | undefined,
 			"strict"

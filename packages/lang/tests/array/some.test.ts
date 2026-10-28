@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("some", () => {
 	it("should validate at least one value with callback params", () => {
@@ -13,7 +14,7 @@ describe("some", () => {
 
 		expect(result).toBe(true);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			boolean,
 			"strict"
@@ -21,7 +22,7 @@ describe("some", () => {
 	});
 
 	it("should validate at least one value in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, 3, 4],
 			DArray.some((value) => value % 2 === 0),
 		);

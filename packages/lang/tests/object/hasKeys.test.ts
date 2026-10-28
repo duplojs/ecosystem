@@ -1,4 +1,5 @@
-import { DObject, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DObject from "@scripts/object";
 
 describe("hasKeys", () => {
 	it("should validate a defined key", () => {
@@ -27,7 +28,7 @@ describe("hasKeys", () => {
 		};
 
 		if (DObject.hasKeys(source, ["name", "version"])) {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				{
 					name: string;
@@ -36,7 +37,7 @@ describe("hasKeys", () => {
 				"strict"
 			>;
 		} else {
-			type _CheckSource = ExpectType<
+			type _CheckSource = DCommon.ExpectType<
 				typeof source,
 				{
 					name?: string;
@@ -56,12 +57,12 @@ describe("hasKeys", () => {
 			version?: number;
 		};
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			source,
-			when(
+			DCommon.when(
 				DObject.hasKeys(["name", "version"]),
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						{
 							name: string;

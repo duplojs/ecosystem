@@ -1,4 +1,4 @@
-import { ResponseContract, useRouteBuilder, Request, Response, usePreflightBuilder, useProcessBuilder, defaultExtractStepFunctionBuilder, defaultHandlerStepFunctionBuilder, HookResponse, type HookRouteLifeCycle, PredictedResponse } from "@core";
+import { useRouteBuilder, Request, Response, usePreflightBuilder, useProcessBuilder, defaultExtractStepFunctionBuilder, defaultHandlerStepFunctionBuilder, HookResponse, type HookRouteLifeCycle, PredictedResponse } from "@core";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import { createBodyReader } from "@test-utils/bodyReader";
 import { useTestRouteFunctionBuilder } from "@test-utils/useTestRouteFunctionBuilder";
@@ -14,8 +14,7 @@ describe("route function builder", () => {
 		const route = useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ params: { value: DDataStructure.string() } })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				(floor, { response }) => response("good", floor.value),
+				(floor, { response }) => response.ok("good", floor.value),
 			);
 
 		await expect(useTestRouteFunctionBuilder(route, { stepFunctionBuilders: [] }))
@@ -31,8 +30,7 @@ describe("route function builder", () => {
 			.useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ params: { value: DDataStructure.string() } })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				(floor, { response }) => response("good", floor.value),
+				(floor, { response }) => response.ok("good", floor.value),
 			);
 
 		await expect(
@@ -52,8 +50,7 @@ describe("route function builder", () => {
 			.useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ params: { value: DDataStructure.string() } })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				(floor, { response }) => response("good", floor.value),
+				(floor, { response }) => response.ok("good", floor.value),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -83,8 +80,7 @@ describe("route function builder", () => {
 	it("route preflight send response", async() => {
 		const process = useProcessBuilder()
 			.cut(
-				ResponseContract.badRequest("preflight"),
-				(floor, { response }) => response("preflight"),
+				(floor, { response }) => response.badRequest("preflight"),
 			)
 			.exports();
 
@@ -93,8 +89,7 @@ describe("route function builder", () => {
 			.useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ params: { value: DDataStructure.string() } })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				(floor, { response }) => response("good", floor.value),
+				(floor, { response }) => response.ok("good", floor.value),
 			);
 
 		const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -125,7 +120,6 @@ describe("route function builder", () => {
 		const route = useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
 			.extract({ params: { value: DDataStructure.string() } })
 			.handler(
-				ResponseContract.ok("good", DDataStructure.undefined()),
 				(floor, { response }) => ({ information: "good" }) as never,
 			);
 
@@ -164,8 +158,7 @@ describe("route function builder", () => {
 				],
 			})
 				.handler(
-					ResponseContract.noContent("good"),
-					(floor, { response }) => response("good"),
+					(floor, { response }) => response.noContent("good"),
 				);
 
 			const buildedRoute = await useTestRouteFunctionBuilder(route);
@@ -178,7 +171,7 @@ describe("route function builder", () => {
 					method: "",
 					origin: "",
 					path: "",
-					params: { },
+					params: {},
 					query: {},
 					url: "",
 					bodyReader: createBodyReader(),
@@ -202,7 +195,6 @@ describe("route function builder", () => {
 				],
 			})
 				.handler(
-					ResponseContract.noContent("good"),
 					(floor, { response }) => {
 						throw new Error("test");
 					},
@@ -218,7 +210,7 @@ describe("route function builder", () => {
 					method: "",
 					origin: "",
 					path: "",
-					params: { },
+					params: {},
 					query: {},
 					url: "",
 					bodyReader: createBodyReader(),
@@ -244,7 +236,6 @@ describe("route function builder", () => {
 				],
 			})
 				.handler(
-					ResponseContract.noContent("good"),
 					(floor, { response }) => {
 						throw new Error("test");
 					},
@@ -260,7 +251,7 @@ describe("route function builder", () => {
 					method: "",
 					origin: "",
 					path: "",
-					params: { },
+					params: {},
 					query: {},
 					url: "",
 					bodyReader: createBodyReader(),
@@ -321,8 +312,7 @@ describe("route function builder", () => {
 						.exports(),
 				)
 				.handler(
-					ResponseContract.noContent("ok"),
-					(floor, { response }) => response("ok"),
+					(floor, { response }) => response.noContent("ok"),
 				);
 
 			const buildedRoute = await useTestRouteFunctionBuilder(route, {
@@ -353,7 +343,7 @@ describe("route function builder", () => {
 					method: "",
 					origin: "",
 					path: "",
-					params: { },
+					params: {},
 					query: {},
 					url: "",
 					bodyReader: createBodyReader(),

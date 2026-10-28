@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("memo", () => {
 	it("computes the value once and then reuses it", () => {
@@ -9,7 +10,7 @@ describe("memo", () => {
 			return "value" as const;
 		});
 
-		type _CheckValue = ExpectType<
+		type _CheckValue = DCommon.ExpectType<
 			typeof memoized.value,
 			"value",
 			"strict"

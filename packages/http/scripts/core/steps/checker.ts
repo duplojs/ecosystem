@@ -1,24 +1,29 @@
 import { createKind } from "@core/kind";
 import * as DCommon from "@duplojs/lang/common";
 import { type StepKind, stepKind } from "./kind";
-import { type Checker } from "@core/checker";
+import { type CheckerFunctionOutput, type Checker } from "@core/checker";
 import { type Floor } from "@core/types";
-import { type ClientErrorResponseCode, type ResponseContract } from "@core/response";
 import { type Metadata } from "@core/metadata";
 import type * as DKind from "@duplojs/lang/kind";
-import type * as DDataStructure from "@duplojs/lang/dataStructure";
+import { type PredictedResponse } from "@core/response";
+import { type ResponseHelper } from "@core/response/helpers";
+
+export interface CheckerStepOtherwiseParams<
+	GenericFloor extends Floor = Floor,
+	GenericResult extends CheckerFunctionOutput = CheckerFunctionOutput,
+> {
+	response: ResponseHelper.Methods400;
+	floor: GenericFloor;
+	result: GenericResult;
+}
 
 export interface CheckerStepDefinition {
 	readonly checker: Checker;
 	readonly result: string | readonly string[];
 	readonly indexing?: string;
 	input(input: Floor): unknown;
-	readonly options?: Record<string, unknown> | ((input: any) => Record<string, unknown>);
-	readonly responseContract: ResponseContract.Contract<
-		ClientErrorResponseCode,
-		string,
-		DDataStructure.Structure<undefined>
-	>;
+	options?(input: Floor): Record<string, unknown>;
+	otherwise(params: CheckerStepOtherwiseParams): PredictedResponse;
 	readonly metadata: readonly Metadata[];
 }
 

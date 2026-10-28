@@ -1,7 +1,12 @@
 {
   "extends": "../../tsconfig.app.json",
   "compilerOptions": {
-	"types": ["node"]
+	"types": ["node"],
+	"paths": {
+		"@routes": ["./routes/index.ts"],
+		"@routes/*": ["./routes/*"]
+	}
   },
   "include": ["**/*.ts"],
+  "exclude": ["*.generate"]
 }

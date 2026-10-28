@@ -1,4 +1,4 @@
-import { type HttpServerParams, ResponseContract, type RouterParams, TextBodyController, createHub, implementHttpServer, serverErrorExitHookFunction, serverErrorNextHookFunction, useRouteBuilder } from "@core";
+import { type HttpServerParams, type RouterParams, TextBodyController, createHub, implementHttpServer, serverErrorExitHookFunction, serverErrorNextHookFunction, useRouteBuilder } from "@core";
 import type * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 
@@ -13,10 +13,9 @@ describe("implementHttpServer", () => {
 
 		const route = useRouteBuilder("GET", "/")
 			.handler(
-				ResponseContract.noContent("ok"),
 				(floor, { response }) => {
 					routeHandler();
-					return response("ok");
+					return response.noContent("ok");
 				},
 			);
 
@@ -97,8 +96,7 @@ describe("implementHttpServer", () => {
 			],
 		})
 			.handler(
-				ResponseContract.noContent("ok"),
-				(floor, { response }) => response("ok"),
+				(floor, { response }) => response.noContent("ok"),
 			);
 
 		const serverErrorHook = vi.fn(() => {

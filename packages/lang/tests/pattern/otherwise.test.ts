@@ -1,11 +1,13 @@
-import { DPattern, DString, type ExpectType, equal, pipe } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DPattern from "@scripts/pattern";
+import * as DString from "@scripts/string";
 
 describe("otherwise", () => {
 	it("treat normal value result", () => {
 		const result = DPattern.otherwise(
 			1 as 1 | DPattern.PatternResult<"match">,
 			(value) => {
-				type check = ExpectType<
+				type check = DCommon.ExpectType<
 					typeof value,
 					1,
 					"strict"
@@ -17,7 +19,7 @@ describe("otherwise", () => {
 
 		expect(result).toBe(1);
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			1 | "match",
 			"strict"
@@ -25,15 +27,15 @@ describe("otherwise", () => {
 	});
 
 	it("not match on when", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"test" as "titi" | "test",
 			DPattern.when(
-				equal("titi"),
+				DCommon.equal("titi"),
 				() => 50,
 			),
 			DPattern.otherwise(
 				(value) => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof value,
 						"test",
 						"strict"
@@ -46,7 +48,7 @@ describe("otherwise", () => {
 
 		expect(result).toStrictEqual("TEST");
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			"TEST" | 50,
 			"strict"
@@ -54,10 +56,10 @@ describe("otherwise", () => {
 	});
 
 	it("match on when and skip ", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			"test" as "titi" | "test",
 			DPattern.when(
-				equal("test"),
+				DCommon.equal("test"),
 				() => 50,
 			),
 			DPattern.otherwise(DString.toUpperCase),
@@ -65,7 +67,7 @@ describe("otherwise", () => {
 
 		expect(result).toStrictEqual(50);
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			"TITI" | 50,
 			"strict"

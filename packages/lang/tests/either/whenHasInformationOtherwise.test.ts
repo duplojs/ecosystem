@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, DModeling, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import * as DModeling from "@scripts/modeling";
 
 describe("whenHasInformationOtherwise", () => {
 	it("should map matching information and type the otherwise value", () => {
@@ -16,7 +19,7 @@ describe("whenHasInformationOtherwise", () => {
 				return 84;
 			},
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					DEither.Error<"message">,
 					"strict"
@@ -28,7 +31,7 @@ describe("whenHasInformationOtherwise", () => {
 
 		expect(result).toBe(84);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			84 | DEither.Error<"message">,
 			"strict"
@@ -37,7 +40,7 @@ describe("whenHasInformationOtherwise", () => {
 
 	it("should call otherwise when information does not match in pipe", () => {
 		const input = DEither.error("message");
-		const result = pipe(
+		const result = DCommon.pipe(
 			input,
 			DEither.whenHasInformationOtherwise(
 				"success" as never,
@@ -76,7 +79,7 @@ describe("whenHasInformationOtherwise", () => {
 			structure.decodeMap(codecs, 42),
 			"map-success",
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					number & DModeling.NewType<"nested-number">,
 					"strict"
@@ -85,7 +88,7 @@ describe("whenHasInformationOtherwise", () => {
 				return "mapped" as const;
 			},
 			(value) => {
-				type _CheckValue = ExpectType<
+				type _CheckValue = DCommon.ExpectType<
 					typeof value,
 					| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 					| DEither.Left<"map-error", DDataStructure.Error>,
@@ -96,7 +99,7 @@ describe("whenHasInformationOtherwise", () => {
 			},
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"mapped" | "otherwise",
 			"strict"

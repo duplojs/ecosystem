@@ -11,6 +11,6 @@ export interface ProcessStepDefinition {
 }
 export declare const processStepKind: DKind.Handler<DKind.Definition<"@DuplojsHttpCore/process-step", unknown>>;
 export interface ProcessStep<GenericDefinition extends ProcessStepDefinition = ProcessStepDefinition> extends DCommon.Forward<DKind.Kind<typeof processStepKind> & StepKind> {
-    definition: GenericDefinition;
+    readonly definition: GenericDefinition;
 }
 export declare function createProcessStep<GenericDefinition extends ProcessStepDefinition>(definition: GenericDefinition): ProcessStep<GenericDefinition>;

@@ -1,4 +1,8 @@
-import { DDataStructure, DEither, type DCommon, type DKind, type ExpectType } from "@scripts";
+
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DCommon from "@scripts/common";
+import type * as DKind from "@scripts/kind";
 
 describe("RecordStructure", () => {
 	it("checks string keyed records and narrows with is", async() => {
@@ -14,19 +18,19 @@ describe("RecordStructure", () => {
 		const success = structure.check(input);
 		const asyncSuccess = await structure.asyncCheck(input);
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			Partial<{ readonly [Prop in string]: number }>,
 			"strict"
 		>;
-		type _CheckSuccess = ExpectType<
+		type _CheckSuccess = DCommon.ExpectType<
 			typeof success,
 			| DEither.Right<"check-success", Partial<{ readonly [Prop in string]: number }>>
 			| DEither.Left<"async-error", DDataStructure.ErrorPromise>
 			| DEither.Left<"check-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncSuccess = ExpectType<
+		type _CheckAsyncSuccess = DCommon.ExpectType<
 			typeof asyncSuccess,
 			| DEither.Right<"check-success", Partial<{ readonly [Prop in string]: number }>>
 			| DEither.Left<"check-error", DDataStructure.Error>,
@@ -37,7 +41,7 @@ describe("RecordStructure", () => {
 		expect(asyncSuccess).toStrictEqual(DEither.right("check-success", input));
 		expect(structure.is(input)).toBe(true);
 		if (structure.is(input)) {
-			type _CheckNarrowedInput = ExpectType<
+			type _CheckNarrowedInput = DCommon.ExpectType<
 				typeof input,
 				Partial<{ readonly [Prop in string]: number }>,
 				"strict"
@@ -59,7 +63,7 @@ describe("RecordStructure", () => {
 			role: "admin",
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly name: string;
@@ -89,7 +93,7 @@ describe("RecordStructure", () => {
 			extra: "value",
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			Partial<{ readonly [Prop in string]: string }>,
 			"strict"
@@ -126,7 +130,7 @@ describe("RecordStructure", () => {
 		const input = {};
 		const codecs = DDataStructure.createCodecs({});
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly deletedAt?: undefined;
@@ -265,7 +269,7 @@ describe("RecordStructure", () => {
 			DDataStructure.StructureValue<typeof structure>,
 			typeof codecs
 		>;
-		type _CheckEncodedRecord = ExpectType<
+		type _CheckEncodedRecord = DCommon.ExpectType<
 			EncodedRecord,
 			{
 				readonly first: number;
@@ -273,7 +277,7 @@ describe("RecordStructure", () => {
 			},
 			"strict"
 		>;
-		type _CheckEncoded = ExpectType<
+		type _CheckEncoded = DCommon.ExpectType<
 			typeof encoded,
 			| DEither.Right<
 				"encode-success",
@@ -283,7 +287,7 @@ describe("RecordStructure", () => {
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncEncoded = ExpectType<
+		type _CheckAsyncEncoded = DCommon.ExpectType<
 			typeof asyncEncoded,
 			| DEither.Right<
 				"encode-success",
@@ -292,7 +296,7 @@ describe("RecordStructure", () => {
 			| DEither.Left<"encode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckDecoded = ExpectType<
+		type _CheckDecoded = DCommon.ExpectType<
 			typeof decoded,
 			| DEither.Right<
 				"decode-success",
@@ -305,7 +309,7 @@ describe("RecordStructure", () => {
 			| DEither.Left<"decode-error", DDataStructure.Error>,
 			"strict"
 		>;
-		type _CheckAsyncDecoded = ExpectType<
+		type _CheckAsyncDecoded = DCommon.ExpectType<
 			typeof asyncDecoded,
 			| DEither.Right<
 				"decode-success",

@@ -1,4 +1,5 @@
-import { type ExtractStep, extractStepKind, type RouteBuilder, stepKind, useRouteBuilder, type Request, ResponseContract, IgnoreByRouteStoreMetadata, type Metadata } from "@core";
+import { getBuilderDefinition } from "@test-utils/builder";
+import { type PredictedResponse, type ExtractStep, extractStepKind, type RouteBuilder, stepKind, useRouteBuilder, type Request, IgnoreByRouteStoreMetadata, type Metadata } from "@core";
 import type * as DString from "@duplojs/lang/string";
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -23,7 +24,7 @@ describe("route builder extract method", () => {
 								[extractStepKind.runTimeKey]: null,
 								[stepKind.runTimeKey]: null,
 								definition: {
-									responseContract: undefined,
+									otherwise: undefined,
 									shape: {
 										body: expect.objectContaining({
 											[DDataStructure.typeStructureKind.runTimeKey]: null,
@@ -51,7 +52,7 @@ describe("route builder extract method", () => {
 							readonly shape: {
 								body: DDataStructure.TypeStructure<string, readonly []>;
 							};
-							readonly responseContract: undefined;
+							readonly otherwise: undefined;
 							readonly metadata: readonly [Metadata<"ignore-by-route-store", unknown>];
 						}>,
 					];
@@ -63,70 +64,30 @@ describe("route builder extract method", () => {
 		>;
 	});
 
-	it("extract with custom contract", () => {
-		const routeBuilder = useRouteBuilder("GET", "/test")
-			.extract(
-				{ body: DDataStructure.string() },
-				ResponseContract.forbidden("test"),
-			);
-
-		expect({ ...routeBuilder })
-			.toStrictEqual(
-				expect.objectContaining({
-					[DCommon.builderKind.runTimeKey]: {
-						hooks: [],
-						method: "GET",
-						paths: ["/test"],
-						bodyController: null,
-						preflightSteps: [],
-						metadata: [],
-						steps: [
-							{
-								[extractStepKind.runTimeKey]: null,
-								[stepKind.runTimeKey]: null,
-								definition: {
-									responseContract: expect.objectContaining({
-										[ResponseContract.contractKind.runTimeKey]: null,
-										code: "403",
-									}),
-									shape: {
-										body: expect.objectContaining({
-											[DDataStructure.typeStructureKind.runTimeKey]: null,
-										}),
-									},
-									metadata: [],
-								},
-							},
-						],
-					},
-				}),
-			);
-
-		type Check = DCommon.ExpectType<
-			typeof routeBuilder,
-			RouteBuilder<
-				{
-					readonly method: "GET";
-					readonly paths: readonly ["/test"];
-					readonly preflightSteps: readonly [];
-					readonly hooks: readonly [];
-					readonly bodyController: null;
-					readonly steps: readonly [
-						ExtractStep<{
-							readonly shape: {
-								body: DDataStructure.TypeStructure<string, readonly []>;
-							};
-							readonly responseContract: ResponseContract.Contract<
-								"403",
-								"test",
-								DDataStructure.TypeStructure<undefined, readonly []>
-							>;
-							readonly metadata: readonly [];
-						}>,
-					];
-					readonly metadata: readonly [];
-				},
-				{ body: string }
+	it("extract with custom otherwise", () => {
+		const builder = useRouteBuilder("GET", "/test")
+			.extract({ body: DDataStructure.string() }, ({ response, floor, dataStructureError }) => {
+				type _Floor = DCommon.ExpectType<
+					typeof floor,
+					{},
+					"strict"
+				>;
+				type _Error = DCommon.ExpectType<
+					typeof dataStructureError,
+					DDataStructure.Error | Error,
+					"strict"
+				>;
+				return response.forbidden("invalid-input", { reason: dataStructureError.message });
+			});
+		const { steps } = getBuilderDefinition(builder);
+		expect(steps[0].definition.otherwise).toEqual(expect.any(Function));
+		type Output = ReturnType<NonNullable<typeof steps[0]["definition"]["otherwise"]>>;
+		type _Output = DCommon.ExpectType<
+			Output,
+			PredictedResponse<
+				"403",
+				"invalid-input",
+				{ readonly reason: string }
 			>,
 			"strict"
 		>;
@@ -151,7 +112,7 @@ describe("route builder extract method", () => {
 								[extractStepKind.runTimeKey]: null,
 								[stepKind.runTimeKey]: null,
 								definition: {
-									responseContract: undefined,
+									otherwise: undefined,
 									shape: {
 										body: {
 											test: expect.objectContaining({
@@ -183,7 +144,7 @@ describe("route builder extract method", () => {
 									test: DDataStructure.TypeStructure<string, readonly []>;
 								};
 							};
-							readonly responseContract: undefined;
+							readonly otherwise: undefined;
 							readonly metadata: readonly [];
 						}>,
 					];
@@ -207,7 +168,13 @@ describe("route builder extract method", () => {
 					prop6: DDataStructure.array(DDataStructure.undefined()),
 					prop7: DDataStructure.array(DDataStructure.null()),
 					prop8: DDataStructure.object({
-						template: DDataStructure.string([DDataStructure.refine((data): data is "test-1" | "test-test" | "test-3" => true)]),
+						template: DDataStructure.string(
+							[
+								DDataStructure.refine(
+									(data): data is "test-1" | "test-test" | "test-3" => true,
+								),
+							],
+						),
 						union: DCommon.pipe(
 							DDataStructure.union([
 								DDataStructure.string([DDataStructure.email()]),
@@ -239,7 +206,7 @@ describe("route builder extract method", () => {
 								[extractStepKind.runTimeKey]: null,
 								[stepKind.runTimeKey]: null,
 								definition: {
-									responseContract: undefined,
+									otherwise: undefined,
 									shape: {
 										body: expect.objectContaining({
 											[DDataStructure.objectStructureKind.runTimeKey]: null,
@@ -269,13 +236,13 @@ describe("route builder extract method", () => {
 					readonly prop8: {
 						readonly template: "test-1" | "test-test" | "test-3";
 						readonly union?:
-							| readonly (
-								| (string & DString.Email)
-								| { readonly test: readonly (string | undefined)[] }
-								| null
-							)[]
+						| readonly (
+							| (string & DString.Email)
+							| { readonly test: readonly (string | undefined)[] }
 							| null
-							| undefined;
+						)[]
+						| null
+						| undefined;
 					};
 				};
 			},

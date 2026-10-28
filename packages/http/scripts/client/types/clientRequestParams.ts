@@ -1,9 +1,9 @@
 import type * as DCommon from "@duplojs/lang/common";
-import { type ServerRouteHeaders, type ServerRouteParams, type ServerRouteQuery, type ServerRoute } from "./serverRoute";
 import { type ObjectCanBeEmpty } from "./ObjectCanBeEmpty";
 import type * as DObject from "@duplojs/lang/object";
 import { type CreateClientCacheKey } from "./clientCache";
 import type * as DChrono from "@duplojs/lang/chrono";
+import { type RouteContractParams, type RouteContractHeaders, type RouteContractQuery, type RouteContract } from "@core";
 
 export interface ClientRequestInitParams extends Pick<
 	RequestInit,
@@ -20,11 +20,11 @@ export interface ClientRequestInitParams extends Pick<
 
 }
 
-export type ClientRequestParamsHeaders = ServerRouteHeaders;
+export type ClientRequestParamsHeaders = RouteContractHeaders;
 
-export type ClientRequestParamsParams = ServerRouteParams;
+export type ClientRequestParamsParams = RouteContractParams;
 
-export type ClientRequestParamsQuery = ServerRouteQuery;
+export type ClientRequestParamsQuery = RouteContractQuery;
 
 export type ClientRequestParamsBody = unknown;
 
@@ -59,14 +59,14 @@ type MaybeParams<
 	? DObject.PartialKeys<GenericParams, InferredKeys>
 	: never;
 
-export type ServerRouteToClientRequestParams<
-	GenericServerRoute extends ServerRoute = ServerRoute,
+export type RouteContractToClientRequestParams<
+	GenericRouteContract extends RouteContract = RouteContract,
 	GenericHookParams extends Record<string, unknown> = Record<string, unknown>,
-> = GenericServerRoute extends any
+> = GenericRouteContract extends any
 	? DCommon.SimplifyTopLevel<(
 		& {
-			method: GenericServerRoute["method"];
-			path: GenericServerRoute["path"];
+			method: GenericRouteContract["method"];
+			path: GenericRouteContract["path"];
 			abortController?: AbortController;
 			initParams?: ClientRequestInitParams;
 			hookParams?: GenericHookParams;
@@ -76,35 +76,43 @@ export type ServerRouteToClientRequestParams<
 		}
 		& MaybeParams<
 			& (
-				DCommon.IsEqual<GenericServerRoute["headers"], unknown> extends true
+				DCommon.IsEqual<GenericRouteContract["headers"], unknown> extends true
 					? {}
 					: {
-						headers: GenericServerRoute["headers"];
+						headers: GenericRouteContract["headers"];
 					}
 			)
 			& (
-				DCommon.IsEqual<GenericServerRoute["params"], unknown> extends true
+				DCommon.IsEqual<GenericRouteContract["params"], unknown> extends true
 					? {}
 					: {
-						params: GenericServerRoute["params"];
+						params: GenericRouteContract["params"];
 					}
 			)
 			& (
-				DCommon.IsEqual<GenericServerRoute["query"], unknown> extends true
+				DCommon.IsEqual<GenericRouteContract["query"], unknown> extends true
 					? {}
 					: {
-						query: GenericServerRoute["query"];
+						query: GenericRouteContract["query"];
 					}
 			)
 			& (
-				DCommon.IsEqual<GenericServerRoute["body"], unknown> extends true
+				DCommon.IsEqual<GenericRouteContract["body"], unknown> extends true
 					? {}
 					: {
-						body: GenericServerRoute["body"] extends DCommon.TheFormData<infer InferredValue>
-							? DCommon.TheFormData<DCommon.ToJson<InferredValue, File>>
+						body: GenericRouteContract["body"] extends DCommon.TheFormData<infer InferredValue>
+							? DCommon.TheFormData<
+								DCommon.ToJson<
+									InferredValue,
+									| File
+									| DChrono.TheDate
+									| DChrono.TheTime
+								>
+							>
 							: DCommon.ToJson<
-								GenericServerRoute["body"],
-								DChrono.TheDate | DChrono.TheTime
+								GenericRouteContract["body"],
+								| DChrono.TheDate
+								| DChrono.TheTime
 							>;
 					}
 			)

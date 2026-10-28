@@ -1,4 +1,7 @@
-import { DCommon, type DNumber, type DString, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
+import type * as DNumber from "@scripts/number";
+import type * as DString from "@scripts/string";
 
 describe("removeConstraint", () => {
 	it("returns the same value at runtime", () => {
@@ -7,7 +10,7 @@ describe("removeConstraint", () => {
 
 		expect(result).toBe(value);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			{ readonly id: 1 },
 			"strict"
@@ -20,7 +23,7 @@ describe("removeConstraint", () => {
 
 		expect(result.toUpperCase()).toBe("HELLO");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -35,7 +38,7 @@ describe("removeConstraint", () => {
 		const value = "hello" as string & DString.AllowedCharacters<"a-z">;
 		const result = DCommon.removeConstraint(value);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"
@@ -52,7 +55,7 @@ describe("removeConstraint", () => {
 
 		expect(result + 1).toBe(43);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			number,
 			"strict"
@@ -70,7 +73,7 @@ describe("removeConstraint", () => {
 
 		expect(["hello", 42]).toContain(result);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string | number,
 			"strict"

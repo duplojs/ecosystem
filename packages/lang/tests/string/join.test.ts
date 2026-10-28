@@ -1,4 +1,6 @@
-import { type DArray, DString, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import type * as DArray from "@scripts/array";
+import * as DString from "@scripts/string";
 
 describe("join", () => {
 	it("should join a tuple with a separator", () => {
@@ -6,7 +8,7 @@ describe("join", () => {
 
 		expect(result).toBe("hello world");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"hello world",
 			"strict"
@@ -14,14 +16,14 @@ describe("join", () => {
 	});
 
 	it("should join strings in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			["a", "b", "c"] as const,
 			DString.join("-"),
 		);
 
 		expect(result).toBe("a-b-c");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"a-b-c",
 			"strict"
@@ -33,7 +35,7 @@ describe("join", () => {
 
 		expect(result).toBe("");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			"",
 			"strict"
@@ -47,7 +49,7 @@ describe("join", () => {
 
 		expect(result).toBe("a-b");
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			string,
 			"strict"

@@ -1,4 +1,4 @@
-import { DCommon } from "@scripts";
+import * as DCommon from "@scripts/common";
 
 describe("bindPrototypeMethods", () => {
 	it("binds prototype methods to the instance", () => {

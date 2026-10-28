@@ -1,5 +1,5 @@
 import * as DEither from "@duplojs/lang/either";
-import { Request, ResponseContract, RouterBuildError, createHandlerStep, createHub, defaultCheckerStepFunctionBuilder, defaultCutStepFunctionBuilder, defaultExtractStepFunctionBuilder, defaultHandlerStepFunctionBuilder, defaultProcessStepFunctionBuilder, defaultRouteFunctionBuilder, stepKind, createRouterElementSystem } from "@core";
+import { Request, RouterBuildError, createHandlerStep, createHub, defaultCheckerStepFunctionBuilder, defaultCutStepFunctionBuilder, defaultExtractStepFunctionBuilder, defaultHandlerStepFunctionBuilder, defaultProcessStepFunctionBuilder, defaultRouteFunctionBuilder, stepKind, createRouterElementSystem } from "@core";
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 
@@ -24,7 +24,7 @@ describe("createRouterElementSystem", () => {
 				defaultExtractStepFunctionBuilder,
 				defaultProcessStepFunctionBuilder,
 			],
-			defaultExtractContract: hub.defaultExtractContract,
+			defaultExtractOtherwise: hub.defaultExtractOtherwise,
 			defaultCodecs: {},
 		};
 	}
@@ -33,7 +33,6 @@ describe("createRouterElementSystem", () => {
 		const spy = vi.fn();
 		const parseFunction = DDataStructure.undefined().asyncParse;
 		const handlerStep = createHandlerStep({
-			responseContract: ResponseContract.noContent("system.route"),
 			theFunction: async(__, { request, response }) => {
 				spy(
 					await request
@@ -43,7 +42,7 @@ describe("createRouterElementSystem", () => {
 							parseFunction,
 						),
 				);
-				return response("system.route", undefined as never);
+				return response.noContent("system.route");
 			},
 			metadata: [],
 		});

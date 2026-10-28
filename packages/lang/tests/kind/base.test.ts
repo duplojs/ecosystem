@@ -1,4 +1,5 @@
-import { DKind, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DKind from "@scripts/kind";
 
 describe("kind create", () => {
 	it("creates a kind handler that adds and reads kind values immutably", () => {
@@ -6,12 +7,12 @@ describe("kind create", () => {
 		const input = { id: 1 };
 		const result = kind.addTo(input, "value");
 
-		type _CheckDefinition = ExpectType<
+		type _CheckDefinition = DCommon.ExpectType<
 			typeof kind.definition,
 			DKind.Definition<"test", "value">,
 			"strict"
 		>;
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			& DKind.Kind<typeof kind, "value">
 			& { id: number },

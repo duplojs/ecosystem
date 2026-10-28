@@ -1,7 +1,6 @@
 import { BuildedStep, Steps } from '../../steps/types';
 import { HookRouteLifeCycle } from '../../route';
-import { ResponseContract } from '../../response';
-import { Environment } from '../../types';
+import { Environment, ExtractOtherwise } from '../../types';
 import { ExtractShapeCodecs } from '../../steps';
 import type * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
@@ -15,7 +14,7 @@ export interface StepFunctionBuilderParams {
     buildStep(element: Steps): Promise<BuildStepSuccessEither | BuildStepNotSupportEither>;
     success(result: BuildStepResult): BuildStepSuccessEither;
     readonly environment: Environment;
-    readonly defaultExtractContract: ResponseContract.Contract;
+    readonly defaultExtractOtherwise: ExtractOtherwise;
     readonly defaultCodecs: ExtractShapeCodecs;
 }
 export declare function createStepFunctionBuilder<GenericSupportStep extends Steps>(support: (step: Steps) => step is GenericSupportStep, builder: (step: GenericSupportStep, params: StepFunctionBuilderParams) => DCommon.MaybePromise<BuildStepSuccessEither | BuildStepNotSupportEither>): (step: Steps, params: StepFunctionBuilderParams) => DCommon.MaybePromise<BuildStepSuccessEither | BuildStepNotSupportEither>;

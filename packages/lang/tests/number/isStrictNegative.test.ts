@@ -1,4 +1,5 @@
-import { DNumber, pipe, when, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DNumber from "@scripts/number";
 
 describe("isStrictNegative", () => {
 	it("should validate a strictly negative number", () => {
@@ -11,13 +12,13 @@ describe("isStrictNegative", () => {
 		const source = -1 as number;
 
 		if (DNumber.isStrictNegative(source)) {
-			type _CheckCurrentSource = ExpectType<
+			type _CheckCurrentSource = DCommon.ExpectType<
 				typeof source,
 				number & DNumber.Negative,
 				"strict"
 			>;
 
-			type _CheckExpectedSource = ExpectType<
+			type _CheckExpectedSource = DCommon.ExpectType<
 				typeof source,
 				// @ts-expect-error isStrictNegative should narrow with StrictNegative.
 				number & DNumber.StrictNegative,
@@ -30,7 +31,7 @@ describe("isStrictNegative", () => {
 		const source = -1 as -1 | 1;
 
 		if (DNumber.isStrictNegative(source)) {
-			type _CheckCurrentSource = ExpectType<
+			type _CheckCurrentSource = DCommon.ExpectType<
 				typeof source,
 				(-1 | 1) & DNumber.Negative,
 				"strict"
@@ -39,12 +40,12 @@ describe("isStrictNegative", () => {
 	});
 
 	it("should narrow a number inside a pipe when callback", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			-1 as number,
-			when(
+			DCommon.when(
 				DNumber.isStrictNegative,
 				(value) => {
-					type _CheckValue = ExpectType<
+					type _CheckValue = DCommon.ExpectType<
 						typeof value,
 						number & DNumber.Negative,
 						"strict"

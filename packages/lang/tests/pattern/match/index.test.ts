@@ -1,4 +1,6 @@
-import { DPattern, DString, type ExpectType, type AnyValue } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DPattern from "@scripts/pattern";
+import * as DString from "@scripts/string";
 
 describe("pattern match", () => {
 	it("match literal string", () => {
@@ -6,7 +8,7 @@ describe("pattern match", () => {
 			"test" as "test" | "toto" | "tata",
 			"test",
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					"test",
 					"strict"
@@ -18,7 +20,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			"toto" | "tata" | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -30,7 +32,7 @@ describe("pattern match", () => {
 			"tata" as "test" | "toto" | "tata",
 			"test",
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					"test",
 					"strict"
@@ -42,7 +44,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual("tata");
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			"toto" | "tata" | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -54,7 +56,7 @@ describe("pattern match", () => {
 			"test" as string,
 			"test",
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					"test",
 					"strict"
@@ -66,7 +68,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			string | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -78,7 +80,7 @@ describe("pattern match", () => {
 			"titi" as string,
 			"test",
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					"test",
 					"strict"
@@ -90,7 +92,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual("titi");
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			string | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -102,7 +104,7 @@ describe("pattern match", () => {
 			11 as 11 | 22 | 33,
 			11,
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					11,
 					"strict"
@@ -114,7 +116,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			22 | 33 | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -126,7 +128,7 @@ describe("pattern match", () => {
 			22 as 11 | 22 | 33,
 			11,
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					11,
 					"strict"
@@ -138,7 +140,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual(22);
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			22 | 33 | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -150,7 +152,7 @@ describe("pattern match", () => {
 			10 as number,
 			10,
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					10,
 					"strict"
@@ -162,7 +164,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			number | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -174,7 +176,7 @@ describe("pattern match", () => {
 			20 as number,
 			10,
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					10,
 					"strict"
@@ -186,7 +188,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual(20);
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			number | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -198,7 +200,7 @@ describe("pattern match", () => {
 			null as "test" | null,
 			null,
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					null,
 					"strict"
@@ -210,7 +212,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			"test" | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -222,7 +224,7 @@ describe("pattern match", () => {
 			"test" as "test" | null,
 			null,
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					null,
 					"strict"
@@ -234,7 +236,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual("test");
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			"test" | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -246,7 +248,7 @@ describe("pattern match", () => {
 			undefined as "test" | undefined,
 			undefined,
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					undefined,
 					"strict"
@@ -258,7 +260,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			"test" | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -270,7 +272,7 @@ describe("pattern match", () => {
 			"test" as "test" | undefined,
 			undefined,
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					undefined,
 					"strict"
@@ -282,7 +284,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual("test");
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			"test" | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -294,7 +296,7 @@ describe("pattern match", () => {
 			true as boolean,
 			true,
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					true,
 					"strict"
@@ -306,7 +308,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			false | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -318,7 +320,7 @@ describe("pattern match", () => {
 			true as boolean,
 			false,
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					false,
 					"strict"
@@ -330,7 +332,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual(true);
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			true | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -341,7 +343,7 @@ describe("pattern match", () => {
 		const result = DPattern.match(
 			"one" as "one" | "two",
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					"one" | "two",
 					"strict"
@@ -350,7 +352,7 @@ describe("pattern match", () => {
 				return true;
 			},
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					"one" | "two",
 					"strict"
@@ -362,7 +364,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			"one" | "two" | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -374,7 +376,7 @@ describe("pattern match", () => {
 			"one" as "one" | "two",
 			DString.startsWith("o"),
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
 					"one",
 					"strict"
@@ -386,7 +388,7 @@ describe("pattern match", () => {
 
 		expect(result).toStrictEqual(DPattern.result("myValue"));
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof result,
 			"two" | DPattern.PatternResult<"myValue">,
 			"strict"
@@ -396,19 +398,19 @@ describe("pattern match", () => {
 	it("builder variant with single argument", () => {
 		const match = DPattern.match<"foo" | "bar">("bar")
 			.with("foo", (value) => {
-				type Check = ExpectType<typeof value, "foo", "strict">;
+				type Check = DCommon.ExpectType<typeof value, "foo", "strict">;
 
 				return "matched-foo";
 			})
 			.otherwise((rest) => {
-				type Check = ExpectType<typeof rest, "bar", "strict">;
+				type Check = DCommon.ExpectType<typeof rest, "bar", "strict">;
 
 				return `rest-${rest}`;
 			});
 
 		expect(match).toBe("rest-bar");
 
-		type Check = ExpectType<
+		type Check = DCommon.ExpectType<
 			typeof match,
 			string,
 			"strict"
@@ -419,9 +421,9 @@ describe("pattern match", () => {
 		const result = DPattern.match(
 			"test" as unknown,
 			(value) => {
-				type Check = ExpectType<
+				type Check = DCommon.ExpectType<
 					typeof value,
-					AnyValue,
+					DCommon.AnyValue,
 					"strict"
 				>;
 

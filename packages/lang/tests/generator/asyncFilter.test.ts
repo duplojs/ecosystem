@@ -1,4 +1,6 @@
-import { DArray, DGenerator, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
+import * as DGenerator from "@scripts/generator";
 
 describe("asyncFilter", () => {
 	it("filters async iterable values", async() => {
@@ -14,7 +16,7 @@ describe("asyncFilter", () => {
 
 		await expect(DArray.from(result)).resolves.toStrictEqual([3, 4]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			AsyncGenerator<2 | 3 | 4, unknown, unknown>,
 			"strict"
@@ -22,14 +24,14 @@ describe("asyncFilter", () => {
 	});
 
 	it("narrows values with a type predicate in pipe", async() => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, "a", 2, "b"] as const,
 			DGenerator.asyncFilter((item): item is "a" | "b" => typeof item === "string"),
 		);
 
 		await expect(DArray.from(result)).resolves.toStrictEqual(["a", "b"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			AsyncGenerator<"a" | "b", unknown, unknown>,
 			"strict"
@@ -42,7 +44,7 @@ describe("asyncFilter", () => {
 			yield await Promise.resolve("a" as 1 | "a");
 		})();
 		const result = DGenerator.asyncFilter(input, (item) => {
-			type _CheckItem = ExpectType<
+			type _CheckItem = DCommon.ExpectType<
 				typeof item,
 				1 | "a",
 				"strict"
@@ -53,7 +55,7 @@ describe("asyncFilter", () => {
 
 		await expect(DArray.from(result)).resolves.toStrictEqual([1, "a"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			AsyncGenerator<1 | "a", unknown, unknown>,
 			"strict"

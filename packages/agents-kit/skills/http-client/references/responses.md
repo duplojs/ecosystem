@@ -21,7 +21,7 @@ La famille `ExpectedResponse` sans sélecteur (`whenExpectedResponse`, `iWantExp
 
 Une réponse **prévue** appartient aux réponses contractuelles de l'API. Elle peut être un succès ou une erreur métier, par exemple un `404` déclaré. Une réponse **voulue** est celle que le consommateur décide d'accepter à cet endroit du programme. Une réponse prévue peut donc être rejetée par un sélecteur.
 
-DuploJS marque ses réponses contractuelles : les réponses `PredictedResponse` et leurs équivalents SSE et stream conduisent le serveur à ajouter le header `predicted`. Cette classe marque la réponse ; elle n'ajoute pas de traitement métier. Une erreur de parsing du body ou une erreur interne hors contrat peut produire une réponse imprévue. Son code ou son information peut coïncider avec celui d'une réponse déclarée, sans garantir le même body.
+Le serveur DuploJS ajoute le header `predicted` aux `PredictedResponse` et à leurs équivalents SSE et stream. Ce marqueur permet au client de reconnaître les réponses prévues par l'API. Une erreur de parsing du body ou une erreur interne peut produire une réponse imprévue. Son code ou son information peut coïncider avec celui d'une réponse prévue, sans garantir le même body.
 
 Par défaut, `disabledPredictedMode` vaut `false`. Le client vérifie la **présence** du header indiqué par `predictedHeaderKey` (`predicted` par défaut). Sans ce header, les hooks ciblés par information, code ou famille ne s'exécutent pas et les attentes et sélecteurs renvoient `Left<"unexpect-response", ...>`, même si le code ou l'information correspond. Cela évite d'utiliser sous un type contractuel le contenu d'une autre réponse. Les hooks généraux de réponse et le hook dédié aux réponses imprévues restent disponibles.
 

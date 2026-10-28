@@ -1,4 +1,5 @@
-import { DDataStructure, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
 
 describe("isUndefinedStructure", () => {
 	it("returns true for an undefined structure", () => {
@@ -6,7 +7,7 @@ describe("isUndefinedStructure", () => {
 			DDataStructure.undefined(),
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			boolean,
 			"strict"

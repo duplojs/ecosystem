@@ -1,194 +1,76 @@
-import { ResponseContract, useRouteBuilder, Request, Response, PredictedResponse } from "@core";
-import * as DDataStructure from "@duplojs/lang/dataStructure";
-import { createBodyReader } from "@test-utils/bodyReader";
-import { useTestRouteFunctionBuilder } from "@test-utils/useTestRouteFunctionBuilder";
+import { createCutStep, PredictedResponse } from "@core";
+import { createTestRequest } from "@test-utils/createTestRequest";
+import { useTestStepFunctionBuilder } from "@test-utils/useTestStepFunctionBuilder";
 
 describe("cut step function builder", () => {
-	const spyResponse = vi.fn();
-
-	beforeEach(() => {
-		spyResponse.mockClear();
+	it("returns the exact response with its headers and body", async() => {
+		const body = {
+			value: "unrestricted",
+			extra: true,
+		};
+		const request = createTestRequest();
+		const floor = { existing: 42 };
+		const theFunction = vi.fn((input, { response, request: receivedRequest }) => {
+			expect(input).toBe(floor);
+			expect(receivedRequest).toBe(request);
+			return response.forbidden("cut-rejected", body).setHeader("x-reason", "test");
+		});
+		const built = await useTestStepFunctionBuilder(createCutStep({
+			theFunction,
+			metadata: [],
+		}));
+		const result = await built.buildedFunction(request, floor);
+		expect(result).toBe(theFunction.mock.results[0]?.value);
+		expect(result).toStrictEqual(new PredictedResponse("403", "cut-rejected", body).setHeader("x-reason", "test"));
+		expect(built.hooksRouteLifeCycle).toStrictEqual([]);
 	});
 
-	it("response from cut", async() => {
-		const route = useRouteBuilder("GET", "/test/{value}", { hooks: [{ afterSendResponse: spyResponse }] })
-			.extract({ params: { value: DDataStructure.string() } })
-			.cut(
-				[ResponseContract.ok("goodCut", DDataStructure.string())],
-				(floor, { response }) => response("goodCut", floor.value),
-			)
-			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				(floor, { response }) => response("good", floor.value),
-			);
-
-		const buildedRoute = await useTestRouteFunctionBuilder(route);
-
-		await buildedRoute(
-			new Request({
-				headers: {},
-				host: "",
-				matchedPath: "",
-				method: "",
-				origin: "",
-				path: "",
-				params: { value: "test" },
-				query: {},
-				url: "",
-				bodyReader: createBodyReader(),
-
+	it("merges output without mutating the original floor", async() => {
+		const floor = {
+			kept: true,
+			replaced: "old",
+		};
+		const step = createCutStep({
+			theFunction: (input, { output }) => output({
+				replaced: 42,
+				added: "value",
 			}),
-		);
-
-		expect(spyResponse).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentResponse: new PredictedResponse("200", "goodCut", "test"),
-			}),
-		);
+			metadata: [],
+		});
+		const built = await useTestStepFunctionBuilder(step);
+		expect(await built.buildedFunction(createTestRequest(), floor)).toStrictEqual({
+			kept: true,
+			replaced: 42,
+			added: "value",
+		});
+		expect(floor).toStrictEqual({
+			kept: true,
+			replaced: "old",
+		});
 	});
 
-	it("missing contract error", async() => {
-		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.cut(
-				ResponseContract.noContent("good"),
-				(floor, { response }) => response("wrongInfo" as any),
-			)
-			.handler(
-				ResponseContract.noContent("good"),
-				(floor, { response }) => response("good"),
-			);
-
-		const buildedRoute = await useTestRouteFunctionBuilder(route);
-
-		await buildedRoute(
-			new Request({
-				headers: {},
-				host: "",
-				matchedPath: "",
-				method: "",
-				origin: "",
-				path: "",
-				params: {},
-				query: {},
-				url: "",
-				bodyReader: createBodyReader(),
-
-			}),
-		);
-
-		expect(spyResponse).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentResponse: new Response("500", "server-error", new ResponseContract.Error("wrongInfo", "Contract not found.")),
-			}),
-		);
+	it("supports asynchronous empty output", async() => {
+		const step = createCutStep({
+			theFunction: (floor, { output }) => Promise.resolve(output()),
+			metadata: [],
+		});
+		const built = await useTestStepFunctionBuilder(step);
+		expect(await built.buildedFunction(createTestRequest(), { kept: true })).toStrictEqual({ kept: true });
 	});
 
-	it("missing contract error", async() => {
-		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.cut(
-				[ResponseContract.ok("good", DDataStructure.string([DDataStructure.maxCharacters(3)]))],
-				(floor, { response }) => response("good", "1234" as never),
-			)
-			.handler(
-				ResponseContract.noContent("good"),
-				(floor, { response }) => response("good"),
-			);
-
-		const buildedRoute = await useTestRouteFunctionBuilder(route);
-
-		await buildedRoute(
-			new Request({
-				headers: {},
-				host: "",
-				matchedPath: "",
-				method: "",
-				origin: "",
-				path: "",
-				params: {},
-				query: {},
-				url: "",
-				bodyReader: createBodyReader(),
-
-			}),
-		);
-
-		expect(spyResponse).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentResponse: new Response(
-					"500",
-					"server-error",
-					new ResponseContract.Error(
-						"good",
-						expect.any(DDataStructure.Error),
-					),
-				),
-			}),
-		);
-	});
-
-	it("cut passe value", async() => {
-		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.cut([], (floor, { output }) => output({ cutValue: "test" }))
-			.handler(
-				ResponseContract.ok("good", DDataStructure.string()),
-				(floor, { response }) => response("good", floor.cutValue),
-			);
-
-		const buildedRoute = await useTestRouteFunctionBuilder(route);
-
-		await buildedRoute(
-			new Request({
-				headers: {},
-				host: "",
-				matchedPath: "",
-				method: "",
-				origin: "",
-				path: "",
-				params: {},
-				query: {},
-				url: "",
-				bodyReader: createBodyReader(),
-
-			}),
-		);
-
-		expect(spyResponse).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentResponse: new PredictedResponse("200", "good", "test"),
-			}),
-		);
-	});
-
-	it("async cut passe value", async() => {
-		const route = useRouteBuilder("GET", "/test", { hooks: [{ afterSendResponse: spyResponse }] })
-			.cut([], (floor, { output }) => Promise.resolve(output()))
-			.handler(
-				ResponseContract.noContent("good"),
-				(floor, { response }) => response("good"),
-			);
-
-		const buildedRoute = await useTestRouteFunctionBuilder(route);
-
-		await buildedRoute(
-			new Request({
-				headers: {},
-				host: "",
-				matchedPath: "",
-				method: "",
-				origin: "",
-				path: "",
-				params: {},
-				query: {},
-				url: "",
-				bodyReader: createBodyReader(),
-
-			}),
-		);
-
-		expect(spyResponse).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentResponse: new PredictedResponse("204", "good", undefined),
-			}),
+	it("awaits an asynchronous response", async() => {
+		const step = createCutStep({
+			theFunction: (floor, { response }) => Promise.resolve(response.conflict("busy")),
+			metadata: [],
+		});
+		const built = await useTestStepFunctionBuilder(step);
+		expect(
+			await built.buildedFunction(
+				createTestRequest(),
+				{},
+			),
+		).toStrictEqual(
+			new PredictedResponse("409", "busy", undefined),
 		);
 	});
 });

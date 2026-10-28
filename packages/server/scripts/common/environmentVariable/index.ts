@@ -12,7 +12,7 @@ import { expandEnvironmentVariables } from "./expandEnvironmentVariables";
 import { overrideEnvironmentVariables } from "./overrideEnvironmentVariables";
 
 export interface EnvironmentVariableFileParams {
-	includedEnvironmentFiles?: (string & DPath.Path)[];
+	includedEnvironmentFiles?: DPath.AnyPath[];
 	override?: boolean;
 	justRead?: boolean;
 	codecs?: DDataStructure.Codecs;

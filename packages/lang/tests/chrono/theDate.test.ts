@@ -1,4 +1,5 @@
-import { DChrono, type ExpectType, pipe } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
 
 describe("TheDate", () => {
 	it("returns a native Date with the same timestamp", () => {
@@ -9,7 +10,7 @@ describe("TheDate", () => {
 		expect(result).toBeInstanceOf(Date);
 		expect(result.getTime()).toBe(baseDate.getTime());
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			Date,
 			"strict"
@@ -25,7 +26,7 @@ describe("TheDate", () => {
 		expect(asString).toBe(DChrono.serialize(baseDate));
 		expect(asJson).toBe(DChrono.serialize(baseDate));
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof asString,
 			DChrono.SerializedTheDate,
 			"strict"
@@ -58,14 +59,14 @@ describe("TheDate", () => {
 	it("works inside pipe with instance methods", () => {
 		const baseDate = DChrono.createDate("2020-01-01");
 
-		const result = pipe(
+		const result = DCommon.pipe(
 			baseDate,
 			(value) => value.toNative(),
 		);
 
 		expect(result.getTime()).toBe(baseDate.getTime());
 
-		type check = ExpectType<
+		type check = DCommon.ExpectType<
 			typeof result,
 			Date,
 			"strict"

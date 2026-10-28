@@ -1,4 +1,5 @@
-import { DCommon, type ExpectType } from "@scripts";
+
+import * as DCommon from "@scripts/common";
 
 describe("pipe", () => {
 	it("runs every pipe in order", () => {
@@ -9,7 +10,7 @@ describe("pipe", () => {
 			(input) => `${input}`,
 		);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			`${number}`,
 			"strict"

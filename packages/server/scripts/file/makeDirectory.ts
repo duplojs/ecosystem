@@ -7,16 +7,16 @@ interface MakeDirectoryParams {
 	recursive?: boolean;
 }
 
-class MakeDirectoryErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-make-directory-not-found", Error) {}
-class MakeDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-make-directory-permission-denied", Error) {}
-class MakeDirectoryErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-make-directory-already-exists", Error) {}
-class MakeDirectoryErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-make-directory-not-directory", Error) {}
-class MakeDirectoryErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-make-directory-no-space", Error) {}
-class MakeDirectoryErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-make-directory-read-only", Error) {}
-class MakeDirectoryErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-make-directory-invalid-argument", Error) {}
-class MakeDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-make-directory-too-many-open-files", Error) {}
-class MakeDirectoryErrorBusy extends DCommon.DuploJSError.parentClass("file-system-make-directory-busy", Error) {}
-class MakeDirectoryError extends DCommon.DuploJSError.parentClass("file-system-make-directory-error", Error) {}
+export class MakeDirectoryErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-make-directory-not-found", Error) {}
+export class MakeDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-make-directory-permission-denied", Error) {}
+export class MakeDirectoryErrorAlreadyExists extends DCommon.DuploJSError.parentClass("file-system-make-directory-already-exists", Error) {}
+export class MakeDirectoryErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-make-directory-not-directory", Error) {}
+export class MakeDirectoryErrorNoSpace extends DCommon.DuploJSError.parentClass("file-system-make-directory-no-space", Error) {}
+export class MakeDirectoryErrorReadOnly extends DCommon.DuploJSError.parentClass("file-system-make-directory-read-only", Error) {}
+export class MakeDirectoryErrorInvalidArgument extends DCommon.DuploJSError.parentClass("file-system-make-directory-invalid-argument", Error) {}
+export class MakeDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-make-directory-too-many-open-files", Error) {}
+export class MakeDirectoryErrorBusy extends DCommon.DuploJSError.parentClass("file-system-make-directory-busy", Error) {}
+export class MakeDirectoryError extends DCommon.DuploJSError.parentClass("file-system-make-directory-error", Error) {}
 
 export type MakeDirectoryErrors = (
 	| MakeDirectoryErrorNotFound
@@ -104,7 +104,7 @@ function handleDenoMakeDirectoryError(error: Error) {
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		makeDirectory(
-			path: string & DPath.Path,
+			path: DPath.AnyPath,
 			params?: MakeDirectoryParams
 		): Promise<MakeDirectoryResult>;
 	}

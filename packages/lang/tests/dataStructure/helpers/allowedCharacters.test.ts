@@ -1,4 +1,7 @@
-import { DDataStructure, DEither, type DString, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
+import type * as DString from "@scripts/string";
 
 describe("allowedCharacters", () => {
 	it("creates and applies an allowed characters constraint", () => {
@@ -7,12 +10,12 @@ describe("allowedCharacters", () => {
 		const success = structure.check("abc");
 		const failure = structure.check("ABC");
 
-		type _CheckConstraint = ExpectType<
+		type _CheckConstraint = DCommon.ExpectType<
 			typeof constraint,
 			DDataStructure.AllowedCharactersConstraint<"a-z">,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			string & DString.AllowedCharacters<"a-z">,
 			"strict"

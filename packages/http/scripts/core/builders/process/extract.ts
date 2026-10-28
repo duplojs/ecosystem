@@ -1,10 +1,10 @@
-import { type Floor } from "@core/types";
+import { type Floor, type ExtractOtherwise, type ExtractStepOtherwiseParams } from "@core/types";
 import { createExtractStep, type ExtractShape, type ExtractStep } from "@core/steps";
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import type * as DObject from "@duplojs/lang/object";
 import { processBuilder } from "./builder";
-import { type ClientErrorResponseCode, type ResponseContract } from "@core/response";
+import { type PredictedResponse } from "@core/response";
 import { type ProcessDefinition } from "@core/process";
 import { type Metadata } from "@core/metadata";
 
@@ -15,14 +15,13 @@ declare module "./builder" {
 	> {
 		extract<
 			GenericShape extends ExtractShape,
-			GenericResponseContract extends (
-				| ResponseContract.Contract<ClientErrorResponseCode, string, DDataStructure.Structure<undefined>>
-				| undefined
-			) = never,
+			GenericResponse extends PredictedResponse = never,
 			const GenericMetadata extends readonly Metadata[] = readonly [],
 		>(
 			shape: GenericShape,
-			responseContract?: GenericResponseContract,
+			otherwise?: (
+				params: ExtractStepOtherwiseParams<GenericFloor>,
+			) => GenericResponse,
 			...metadata: GenericMetadata
 		): ProcessBuilder<
 			DObject.Assign<
@@ -33,7 +32,9 @@ declare module "./builder" {
 						ExtractStep<
 							{
 								readonly shape: GenericShape;
-								readonly responseContract: DCommon.NeverCoalescing<GenericResponseContract, undefined>;
+								readonly otherwise: DCommon.IsNever<GenericResponse> extends true
+									? undefined
+									: ExtractOtherwise<GenericFloor, GenericResponse>;
 								readonly metadata: GenericMetadata;
 							}
 						>,
@@ -70,7 +71,7 @@ processBuilder.set(
 	({
 		args: [
 			shape,
-			responseContract,
+			otherwise,
 			...metadata
 		],
 		accumulator,
@@ -81,7 +82,7 @@ processBuilder.set(
 			...accumulator.steps,
 			createExtractStep({
 				shape,
-				responseContract,
+				otherwise,
 				metadata,
 			}),
 		],

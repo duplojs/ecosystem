@@ -1,4 +1,5 @@
-import { DObject, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DObject from "@scripts/object";
 
 describe("entry", () => {
 	it("should create a readonly object entry", () => {
@@ -6,7 +7,7 @@ describe("entry", () => {
 
 		expect(result).toEqual(["name", "Duplo"]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			readonly ["name", "Duplo"],
 			"strict"

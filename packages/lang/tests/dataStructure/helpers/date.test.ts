@@ -1,4 +1,7 @@
-import { DChrono, DDataStructure, DEither, type ExpectType } from "@scripts";
+import type * as DCommon from "@scripts/common";
+import * as DChrono from "@scripts/chrono";
+import * as DDataStructure from "@scripts/dataStructure";
+import * as DEither from "@scripts/either";
 
 describe("date", () => {
 	it("creates a date type structure", () => {
@@ -7,12 +10,12 @@ describe("date", () => {
 		const success = structure.check(value);
 		const failure = structure.check(new Date(0));
 
-		type _CheckStructure = ExpectType<
+		type _CheckStructure = DCommon.ExpectType<
 			typeof structure,
 			DDataStructure.TypeStructure<DChrono.TheDate, readonly []>,
 			"strict"
 		>;
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			DChrono.TheDate,
 			"strict"
@@ -46,7 +49,7 @@ describe("date", () => {
 			},
 		};
 
-		type _CheckStructureValue = ExpectType<
+		type _CheckStructureValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof structure>,
 			{
 				readonly calendar: {
@@ -71,7 +74,7 @@ describe("date", () => {
 		const directStructure = DDataStructure.date([
 			DDataStructure.refine(
 				(data): data is EpochDate => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						DChrono.TheDate,
 						"strict"
@@ -84,7 +87,7 @@ describe("date", () => {
 		const addedStructure = DDataStructure.date().addConstraint(
 			DDataStructure.refine(
 				(data): data is EpochDate => {
-					type check = ExpectType<
+					type check = DCommon.ExpectType<
 						typeof data,
 						DChrono.TheDate,
 						"strict"
@@ -95,7 +98,7 @@ describe("date", () => {
 			),
 		);
 
-		type _CheckDirectConstraints = ExpectType<
+		type _CheckDirectConstraints = DCommon.ExpectType<
 			typeof directStructure,
 			DDataStructure.TypeStructure<
 				DChrono.TheDate,
@@ -103,12 +106,12 @@ describe("date", () => {
 			>,
 			"strict"
 		>;
-		type _CheckDirectValue = ExpectType<
+		type _CheckDirectValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof directStructure>,
 			EpochDate,
 			"strict"
 		>;
-		type _CheckAddedConstraints = ExpectType<
+		type _CheckAddedConstraints = DCommon.ExpectType<
 			typeof addedStructure,
 			DDataStructure.Structure<
 				DChrono.TheDate,
@@ -118,7 +121,7 @@ describe("date", () => {
 			>,
 			"strict"
 		>;
-		type _CheckAddedValue = ExpectType<
+		type _CheckAddedValue = DCommon.ExpectType<
 			DDataStructure.StructureValue<typeof addedStructure>,
 			EpochDate,
 			"strict"

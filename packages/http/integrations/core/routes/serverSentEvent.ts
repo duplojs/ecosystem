@@ -1,4 +1,4 @@
-import { ResponseContract, useRouteBuilder } from "@duplojs/http";
+import { useRouteBuilder } from "@duplojs/http";
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 
@@ -9,16 +9,11 @@ useRouteBuilder("GET", "/sse")
 		},
 	})
 	.handler(
-		[
-			ResponseContract.serverSentEvents("super-sse", DDataStructure.object({ test: DDataStructure.string() }), { other: DDataStructure.string() }),
-			ResponseContract.noContent("close"),
-		],
-		({ close }, { serverSentEventsResponse, response }) => {
+		({ close }, { response }) => {
 			if (close) {
-				return response("close");
+				return response.noContent("close");
 			}
-			return serverSentEventsResponse(
-				"super-sse",
+			return response.serverSentEvents("super-sse").onStart<{ test: string }, { other: string }>(
 				async({ send }) => {
 					await send("message", { test: "1" }, { retry: 100 });
 

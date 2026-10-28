@@ -1,4 +1,5 @@
-import { DArray, pipe, type ExpectType } from "@scripts";
+import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 
 describe("set", () => {
 	it("should set a value without mutating the source", () => {
@@ -8,7 +9,7 @@ describe("set", () => {
 		expect(result).toEqual([1, "a", 3]);
 		expect(source).toEqual([1, 2, 3]);
 
-		type _CheckResult = ExpectType<
+		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			(1 | 2 | 3 | "a")[],
 			"strict"
@@ -16,7 +17,7 @@ describe("set", () => {
 	});
 
 	it("should set a value in pipe", () => {
-		const result = pipe(
+		const result = DCommon.pipe(
 			[1, 2, 3] as const,
 			DArray.set(1, "a"),
 		);

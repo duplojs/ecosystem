@@ -1,3 +1,3 @@
 ## HTTP
 
-Interfaces HTTP côté serveur : réception et validation des requêtes, orchestration des traitements et contrats de réponse typés partageables avec les clients.
+Développement d’API HTTP avec DuploJS, de la définition des routes au démarrage du serveur.

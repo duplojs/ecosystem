@@ -1,6 +1,7 @@
 import { hub } from "@core";
+import { type FindRouteContract } from "@duplojs/http";
 import { createHttpServer } from "@duplojs/http/node";
-import { type AllNotPredictedClientResponse, type ClientEventsResponseHandler, createHttpClient, type FindServerRoute, type PromiseRequestParams, type RequestErrorContent, type ServerRouteToClientRequestParams } from "@duplojs/http/client";
+import { type AllNotPredictedClientResponse, type ClientEventsResponseHandler, createHttpClient, type PromiseRequestParams, type RequestErrorContent, type RouteContractToClientRequestParams } from "@duplojs/http/client";
 import { type Routes } from "./clientType";
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
@@ -36,8 +37,8 @@ describe("client", async() => {
 
 	it("get all users", async() => {
 		type RequestParams = DCommon.SimplifyTopLevel<
-			& ServerRouteToClientRequestParams<
-				FindServerRoute<
+			& RouteContractToClientRequestParams<
+				FindRouteContract<
 					Routes,
 					"GET",
 					"/users"
@@ -118,8 +119,8 @@ describe("client", async() => {
 		const result = await httpClient.get("/users/{userId}", { params: { userId: 15 } });
 
 		type RequestParams = DCommon.SimplifyTopLevel<
-			& ServerRouteToClientRequestParams<
-				FindServerRoute<
+			& RouteContractToClientRequestParams<
+				FindRouteContract<
 					Routes,
 					"GET",
 					"/users/{userId}"
@@ -139,7 +140,7 @@ describe("client", async() => {
 				| {
 					code: "422";
 					information: "extract-error";
-					body: undefined;
+					body: string;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -195,8 +196,8 @@ describe("client", async() => {
 		});
 
 		type RequestParams = DCommon.SimplifyTopLevel<
-			& ServerRouteToClientRequestParams<
-				FindServerRoute<
+			& RouteContractToClientRequestParams<
+				FindRouteContract<
 					Routes,
 					"POST",
 					"/users"
@@ -213,7 +214,7 @@ describe("client", async() => {
 				| {
 					code: "422";
 					information: "extract-error";
-					body: undefined;
+					body: string;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -272,8 +273,8 @@ describe("client", async() => {
 		});
 
 		type RequestParams = DCommon.SimplifyTopLevel<
-			& ServerRouteToClientRequestParams<
-				FindServerRoute<
+			& RouteContractToClientRequestParams<
+				FindRouteContract<
 					Routes,
 					"POST",
 					"/documents"
@@ -290,7 +291,7 @@ describe("client", async() => {
 				| {
 					code: "422";
 					information: "extract-error";
-					body: undefined;
+					body: string;
 					ok: boolean | null;
 					headers: Headers;
 					type: ResponseType;
@@ -352,6 +353,16 @@ describe("client", async() => {
 		);
 	});
 
+	it("preserves a downloaded text file on the raw response", async() => {
+		const result = await httpClient.get("/documents/test").iWantInformationOrThrow("file.send");
+
+		expect(result.code).toBe("200");
+		expect(result.headers.get("content-disposition")).toContain("attachment;");
+		expect(result.body).toBeUndefined();
+		expect(result.raw.bodyUsed).toBe(false);
+		expect(await result.raw.text()).toBe("this is super file with super content.");
+	});
+
 	describe("server sent events", () => {
 		it("stream and retry 2 time", async() => {
 			const spyClientMessage = vi.fn();
@@ -367,8 +378,8 @@ describe("client", async() => {
 				.iWantInformationOrThrow("super-sse");
 
 			type RequestParams = DCommon.SimplifyTopLevel<
-				& ServerRouteToClientRequestParams<
-					FindServerRoute<
+				& RouteContractToClientRequestParams<
+					FindRouteContract<
 						Routes,
 						"GET",
 						"/sse"
@@ -403,7 +414,7 @@ describe("client", async() => {
 						}
 						| {
 							event: "message";
-							data: { readonly test: string };
+							data: { test: string };
 							id?: string | undefined;
 							retry?: number | undefined;
 						}

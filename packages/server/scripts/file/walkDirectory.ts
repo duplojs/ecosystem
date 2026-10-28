@@ -9,12 +9,12 @@ import { type FolderInterface, createFolderInterface } from "./folderInterface";
 import { createUnknownEntryInterface, type UnknownEntryInterface } from "./unknownEntryInterface";
 import * as DSCommon from "@scripts/common";
 
-class WalkDirectoryErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-walk-directory-not-found", Error) {}
-class WalkDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-walk-directory-permission-denied", Error) {}
-class WalkDirectoryErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-walk-directory-not-directory", Error) {}
-class WalkDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-walk-directory-too-many-open-files", Error) {}
-class WalkDirectoryErrorBusy extends DCommon.DuploJSError.parentClass("file-system-walk-directory-busy", Error) {}
-class WalkDirectoryError extends DCommon.DuploJSError.parentClass("file-system-walk-directory-error", Error) {}
+export class WalkDirectoryErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-walk-directory-not-found", Error) {}
+export class WalkDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-walk-directory-permission-denied", Error) {}
+export class WalkDirectoryErrorNotDirectory extends DCommon.DuploJSError.parentClass("file-system-walk-directory-not-directory", Error) {}
+export class WalkDirectoryErrorTooManyOpenFiles extends DCommon.DuploJSError.parentClass("file-system-walk-directory-too-many-open-files", Error) {}
+export class WalkDirectoryErrorBusy extends DCommon.DuploJSError.parentClass("file-system-walk-directory-busy", Error) {}
+export class WalkDirectoryError extends DCommon.DuploJSError.parentClass("file-system-walk-directory-error", Error) {}
 
 export type WalkDirectoryErrors = (
 	| WalkDirectoryErrorNotFound
@@ -57,7 +57,7 @@ function handleNodeWalkDirectoryError(error: Error) {
 
 export interface WalkDirectoryParams {
 	recursive?: boolean;
-	matcher?: DPath.PathMatcher;
+	matcher?: DPath.PathMatcher<string & DPath.Absolute>;
 }
 
 export type WalkDirectoryResult = (
@@ -75,7 +75,7 @@ export type WalkDirectoryResult = (
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		walkDirectory(
-			path: string & DPath.Path,
+			path: DPath.AnyPath,
 			params?: WalkDirectoryParams,
 		): Promise<WalkDirectoryResult>;
 	}
@@ -106,11 +106,18 @@ export const walkDirectory = implementFunction(
 								),
 							}),
 						),
-						DGenerator.filter(
-							(value) => params?.matcher
-								? params?.matcher(value.path)
-								: true,
-						),
+						(generator) => {
+							const matcher = params?.matcher;
+
+							if (!matcher) {
+								return generator;
+							}
+
+							return DGenerator.filter(
+								generator,
+								({ path }) => matcher(path),
+							);
+						},
 						DGenerator.map(
 							DCommon.innerPipe(
 								DPattern.when(
