@@ -1,0 +1,25 @@
+{
+  "name": "@duplojs/agents-exercises-todo",
+  "version": "0.0.0",
+  "description": "Exercice pour évaluer la qualité des skills des agents.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "./.commands/build.sh",
+    "start": "node dist/index.mjs",
+    "test:types": "./.commands/test-types.sh",
+    "test:lint": "./.commands/test-lint.sh",
+    "test:lint:fix": "./.commands/test-lint.sh --fix"
+  },
+  "dependencies": {
+    "@duplojs/lang": "workspace:*",
+    "@duplojs/http": "workspace:*"
+  },
+  "devDependencies": {
+    "@duplojs/code-config": "workspace:*",
+    "@duplojs/agents-kit": "workspace:*"
+  },
+  "engines": {
+    "node": ">=24.18.0"
+  }
+}

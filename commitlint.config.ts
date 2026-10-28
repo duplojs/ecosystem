@@ -13,6 +13,7 @@ const scopes = [
 	"ecosystem",
 	"agents-kit",
 	"jsdoc-include",
+	"agents-exercises",
 	"ci-cd",
 	"docs",
 ];

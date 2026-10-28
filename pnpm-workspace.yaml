@@ -3,6 +3,7 @@ packages:
   - "packages/*"
   - "packages/*/integrations"
   - "packages-private/*"
+  - "packages-private/agents-exercises/*"
   - "packages-private/*/integrations"
   - "docs"
   - "docs/libs/*/*"
