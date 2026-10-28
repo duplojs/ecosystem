@@ -3,6 +3,7 @@ import type * as DKind from "@duplojs/lang/kind";
 import * as DArray from "@duplojs/lang/array";
 import { findOptionToken, optionKind, type Option } from "../base";
 import { createKind } from "@scripts/command/kind";
+import type { ForbiddenInvalidIdentifier } from "../../types";
 
 export const booleanOptionKind = createKind("command-boolean-option");
 
@@ -16,16 +17,24 @@ export interface BooleanOption<
 		& DKind.Kind<typeof booleanOptionKind>
 	> {}
 
-export interface CreateBooleanOptionParams {
+export interface CreateBooleanOptionParams<
+	GenericAliases extends readonly string[] = readonly string[],
+> {
 	description?: string;
-	aliases?: readonly string[];
+	aliases?: (
+		& GenericAliases
+		& {
+			readonly [Index in keyof GenericAliases]: ForbiddenInvalidIdentifier<GenericAliases[Index]>
+		}
+	);
 }
 
 export function createBooleanOption<
 	GenericName extends string,
+	const GenericAliases extends readonly string[] = readonly string[],
 >(
-	name: GenericName,
-	params?: CreateBooleanOptionParams,
+	name: GenericName & ForbiddenInvalidIdentifier<GenericName>,
+	params?: CreateBooleanOptionParams<GenericAliases>,
 ): BooleanOption<GenericName> {
 	const self: BooleanOption<GenericName> = {
 		name,

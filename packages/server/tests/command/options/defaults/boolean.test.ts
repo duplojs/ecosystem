@@ -1,8 +1,56 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DModeling from "@duplojs/lang/modeling";
+import type * as DString from "@duplojs/lang/string";
 import { DSCommand } from "@scripts";
 
 describe("createBooleanOption", () => {
+	it("accepts valid identifier literals and aliases", () => {
+		const option = DSCommand.createBooleanOption("2nd_mode-name", {
+			aliases: ["v", "verbose-2"],
+		});
+
+		type _CheckOption = DCommon.ExpectType<
+			typeof option,
+			DSCommand.BooleanOption<"2nd_mode-name">,
+			"strict"
+		>;
+
+		expect(option.name).toBe("2nd_mode-name");
+		expect(option.aliases).toEqual(["v", "verbose-2"]);
+	});
+
+	it("rejects unknown, constrained, union, empty, malformed, and numeric-only names", () => {
+		const unknownName = "verbose" as string;
+		const unionName = "verbose" as "verbose" | "quiet";
+		const constrainedName = "verbose" as "verbose" & DString.MinCharacters<3>;
+
+		// @ts-expect-error identifier must be a known string literal
+		DSCommand.createBooleanOption(unknownName);
+		// @ts-expect-error identifier cannot be constrained
+		DSCommand.createBooleanOption(constrainedName);
+		// @ts-expect-error identifier must be a single literal, not a union
+		DSCommand.createBooleanOption(unionName);
+		// @ts-expect-error identifier cannot be empty
+		DSCommand.createBooleanOption("");
+		// @ts-expect-error identifier must start with a letter or digit
+		DSCommand.createBooleanOption("-verbose");
+		// @ts-expect-error identifier contains an unsupported character
+		DSCommand.createBooleanOption("bad.name");
+		// @ts-expect-error identifier cannot contain only digits
+		DSCommand.createBooleanOption("0123");
+	});
+
+	it("validates each alias and requires aliases to be known literals", () => {
+		const unknownAliases: string[] = ["v"];
+
+		// @ts-expect-error aliases must be known string literals
+		DSCommand.createBooleanOption("verbose", { aliases: unknownAliases });
+		// @ts-expect-error each alias must use allowed characters
+		DSCommand.createBooleanOption("verbose", { aliases: ["v", "bad.name"] });
+		// @ts-expect-error aliases cannot contain only digits
+		DSCommand.createBooleanOption("verbose", { aliases: ["v", "0123"] });
+	});
+
 	it("creates a boolean option", () => {
 		const option = DSCommand.createBooleanOption("verbose", {
 			description: "Enable verbose logs.",

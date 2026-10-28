@@ -6,15 +6,17 @@ import { type CreateCommandExecuteParams, type CreateCommandParams, type Subject
 import { createError, interpretExecCommandError, SymbolCommandError, type Error } from "./error";
 import type { Option } from "./options";
 import type { Argument } from "./argument";
+import type { ForbiddenInvalidIdentifier } from "./types";
 
 export interface ExecCommandParams<
 	GenericOptions extends DCommon.AnyTuple<Option> = DCommon.AnyTuple<Option>,
 	GenericSubjects extends Subjects = Subjects,
+	GenericDisplayName extends string = string,
 > extends CreateCommandParams<
 		GenericOptions,
 		GenericSubjects
 	> {
-	displayName?: string;
+	displayName?: GenericDisplayName & ForbiddenInvalidIdentifier<GenericDisplayName>;
 	dataStructureErrorInterpreter?: DDataStructure.ErrorInterpreter;
 }
 
@@ -28,10 +30,12 @@ export function exec(
 export function exec<
 	const GenericOptions extends DCommon.AnyTuple<Option> = never,
 	GenericSubjects extends Subjects = never,
+	const GenericDisplayName extends string = string,
 >(
 	params: ExecCommandParams<
 		GenericOptions,
-		GenericSubjects
+		GenericSubjects,
+		GenericDisplayName
 	>,
 	execute: (
 		params: CreateCommandExecuteParams<
@@ -59,7 +63,7 @@ export async function exec(
 	const error = createError(displayName);
 
 	const result = await create(
-		displayName,
+		displayName as never,
 		params,
 		execute,
 	).execute(

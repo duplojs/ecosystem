@@ -5,7 +5,7 @@ import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DSDataStructure from "@scripts/dataStructure";
 import { createKind } from "./kind";
 import { type Error, type SymbolCommandError } from "./error";
-import { type EligibleType } from "./types";
+import type { EligibleType, ForbiddenInvalidIdentifier } from "./types";
 
 export const argumentKind = createKind("command-argument");
 
@@ -37,7 +37,7 @@ export function createArgument<
 	GenericValue extends DDataStructure.StructureValue<GenericStructure>,
 	const GenericParams extends CreateArgumentParams = {},
 >(
-	name: GenericName,
+	name: GenericName & ForbiddenInvalidIdentifier<GenericName>,
 	dataStructure: GenericStructure,
 	params?: GenericParams,
 ): Argument<

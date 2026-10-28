@@ -11,6 +11,17 @@ describe("exec", () => {
 		vi.restoreAllMocks();
 	});
 
+	it("validates the display name in exec params", () => {
+		const checkDisplayName = async() => {
+			await DSCommand.exec({ displayName: "build-task" }, () => undefined);
+
+			// @ts-expect-error displayName must be a valid identifier
+			await DSCommand.exec({ displayName: "build.task" }, () => undefined);
+		};
+
+		expect(checkDisplayName).toBeTypeOf("function");
+	});
+
 	it("executes the root command without params and returns ok", async() => {
 		setEnvironment("TEST");
 		const getProcessArgumentsSpy = vi.fn().mockReturnValue([]);

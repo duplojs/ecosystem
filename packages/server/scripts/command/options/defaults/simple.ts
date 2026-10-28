@@ -4,7 +4,7 @@ import * as DEither from "@duplojs/lang/either";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DSDataStructure from "@scripts/dataStructure";
 import { constructOption, type Option } from "../base";
-import type { EligibleType } from "../../types";
+import type { EligibleType, ForbiddenInvalidIdentifier } from "../../types";
 import { createKind } from "@scripts/command/kind";
 
 export const simpleOptionKind = createKind("command-simple-option");
@@ -23,9 +23,16 @@ export interface SimpleOption<
 	readonly required: boolean;
 }
 
-export interface CreateSimpleOptionParams {
+export interface CreateSimpleOptionParams<
+	GenericAliases extends readonly string[] = readonly string[],
+> {
 	description?: string;
-	aliases?: readonly string[];
+	aliases?: (
+		& GenericAliases
+		& {
+			readonly [Index in keyof GenericAliases]: ForbiddenInvalidIdentifier<GenericAliases[Index]>
+		}
+	);
 	required?: boolean;
 }
 
@@ -35,11 +42,12 @@ export const createOption = constructOption(
 		GenericName extends string,
 		GenericStructure extends DDataStructure.Structure<EligibleType>,
 		GenericValue extends DDataStructure.StructureValue<GenericStructure>,
-		const GenericParams extends CreateSimpleOptionParams = {},
+		const GenericAliases extends readonly string[] = readonly string[],
+		const GenericParams extends CreateSimpleOptionParams<GenericAliases> = {},
 	>(
-		name: GenericName,
+		name: GenericName & ForbiddenInvalidIdentifier<GenericName>,
 		dataStructure: GenericStructure,
-		params?: GenericParams & CreateSimpleOptionParams,
+		params?: GenericParams & CreateSimpleOptionParams<GenericAliases>,
 	): SimpleOption<
 		GenericName,
 		(

@@ -7,7 +7,7 @@ import type * as DArray from "@duplojs/lang/array";
 import * as DEither from "@duplojs/lang/either";
 import * as DSDataStructure from "@scripts/dataStructure";
 import { constructOption, type Option } from "../base";
-import type { EligibleType } from "../../types";
+import type { EligibleType, ForbiddenInvalidIdentifier } from "../../types";
 import { createKind } from "@scripts/command/kind";
 
 const defaultSeparator = ",";
@@ -31,9 +31,16 @@ export interface ArrayOption<
 	readonly max?: number;
 }
 
-export interface CreateArrayOptionParams {
+export interface CreateArrayOptionParams<
+	GenericAliases extends readonly string[] = readonly string[],
+> {
 	description?: string;
-	aliases?: readonly string[];
+	aliases?: (
+		& GenericAliases
+		& {
+			readonly [Index in keyof GenericAliases]: ForbiddenInvalidIdentifier<GenericAliases[Index]>
+		}
+	);
 	min?: number;
 	max?: number;
 	required?: boolean;
@@ -46,11 +53,12 @@ export const createArrayOption = constructOption(
 		GenericName extends string,
 		GenericStructure extends DDataStructure.Structure<EligibleType>,
 		GenericValue extends DDataStructure.StructureValue<GenericStructure>,
-		const GenericParams extends CreateArrayOptionParams = {},
+		const GenericAliases extends readonly string[] = readonly string[],
+		const GenericParams extends CreateArrayOptionParams<GenericAliases> = {},
 	>(
-		name: GenericName,
+		name: GenericName & ForbiddenInvalidIdentifier<GenericName>,
 		dataStructure: GenericStructure,
-		params?: GenericParams & CreateArrayOptionParams,
+		params?: GenericParams & CreateArrayOptionParams<GenericAliases>,
 	): ArrayOption<
 		GenericName,
 		(

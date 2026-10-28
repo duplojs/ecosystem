@@ -4,6 +4,20 @@ import * as DDataStructure from "@duplojs/lang/dataStructure";
 import { DSCommand } from "@scripts";
 
 describe("createArrayOption", () => {
+	it("validates the option name and aliases", () => {
+		const option = DSCommand.createArrayOption("file-ids", DDataStructure.string(), {
+			aliases: ["f"],
+		});
+
+		expect(option.name).toBe("file-ids");
+		expect(option.aliases).toEqual(["f"]);
+
+		// @ts-expect-error option names must be valid identifiers
+		DSCommand.createArrayOption("file.ids", DDataStructure.string());
+		// @ts-expect-error every alias must be a valid identifier
+		DSCommand.createArrayOption("file", DDataStructure.string(), { aliases: ["bad.name"] });
+	});
+
 	it("creates an optional array option", () => {
 		const dataStructure = DDataStructure.string();
 		const option = DSCommand.createArrayOption("tags", dataStructure, {

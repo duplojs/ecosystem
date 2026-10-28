@@ -3,6 +3,20 @@ import * as DDataStructure from "@duplojs/lang/dataStructure";
 import { DSCommand } from "@scripts";
 
 describe("createOption", () => {
+	it("validates the option name and aliases", () => {
+		const option = DSCommand.createOption("file-name", DDataStructure.string(), {
+			aliases: ["f"],
+		});
+
+		expect(option.name).toBe("file-name");
+		expect(option.aliases).toEqual(["f"]);
+
+		// @ts-expect-error option names must be valid identifiers
+		DSCommand.createOption("file.name", DDataStructure.string());
+		// @ts-expect-error every alias must be a valid identifier
+		DSCommand.createOption("file", DDataStructure.string(), { aliases: ["bad.name"] });
+	});
+
 	it("creates an optional simple option", () => {
 		const dataStructure = DDataStructure.string();
 		const option = DSCommand.createOption("name", dataStructure, {

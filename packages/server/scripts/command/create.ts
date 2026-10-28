@@ -7,8 +7,8 @@ import { createKind } from "./kind";
 import { isOptionToken, type Option } from "./options";
 import { SymbolCommandError, type Error } from "./error";
 import { logCommandHelp, helpOption } from "./help";
-import { type Argument } from "./argument";
-import { type ForbiddenDuplicateName } from "./types";
+import type { Argument } from "./argument";
+import type { ForbiddenDuplicateName, ForbiddenInvalidIdentifier } from "./types";
 
 const commandKind = createKind("command");
 
@@ -111,7 +111,7 @@ export type CreateCommandExecuteParams<
 export function create<
 	GenericName extends string,
 >(
-	name: GenericName,
+	name: GenericName & ForbiddenInvalidIdentifier<GenericName>,
 	execute: () => void,
 ): Command<GenericName>;
 
@@ -120,7 +120,7 @@ export function create<
 	const GenericOptions extends DCommon.AnyTuple<Option> = never,
 	GenericSubjects extends Subjects = never,
 >(
-	name: GenericName,
+	name: GenericName & ForbiddenInvalidIdentifier<GenericName>,
 	params: CreateCommandParams<
 		GenericOptions,
 		GenericSubjects

@@ -11,6 +11,15 @@ describe("create", () => {
 		vi.restoreAllMocks();
 	});
 
+	it("validates command names", () => {
+		const command = DSCommand.create("build-task", () => undefined);
+
+		expect(command.name).toBe("build-task");
+
+		// @ts-expect-error command names must be valid identifiers
+		DSCommand.create("build.task", () => undefined);
+	});
+
 	it("identifies command tuples", () => {
 		const command = DSCommand.create("child", () => undefined);
 		const argument = DSCommand.createArgument("id", DDataStructure.string());

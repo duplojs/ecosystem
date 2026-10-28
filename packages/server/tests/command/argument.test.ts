@@ -11,6 +11,15 @@ describe("createArgument", () => {
 		vi.restoreAllMocks();
 	});
 
+	it("validates argument names", () => {
+		const argument = DSCommand.createArgument("resource-id", DDataStructure.string());
+
+		expect(argument.name).toBe("resource-id");
+
+		// @ts-expect-error argument names must be valid identifiers
+		DSCommand.createArgument("resource.id", DDataStructure.string());
+	});
+
 	it("creates a required argument", () => {
 		const dataStructure = DDataStructure.number();
 		const argument = DSCommand.createArgument("id", dataStructure);
