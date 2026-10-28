@@ -21,6 +21,10 @@
       "require": "./dist/unplugindts.cjs"
     }
   },
+  "dependencies": {
+    "@duplojs/lang": "0.1.0-beta.3",
+    "@duplojs/server": "0.1.0-beta.3"
+  },
   "devDependencies": {
     "@duplojs/code-config": "workspace:*",
     "@types/node": "24.13.3"

@@ -249,6 +249,13 @@ importers:
         version: 6.0.3
 
   packages-private/jsdoc-include:
+    dependencies:
+      '@duplojs/lang':
+        specifier: 0.1.0-beta.3
+        version: 0.1.0-beta.3
+      '@duplojs/server':
+        specifier: 0.1.0-beta.3
+        version: 0.1.0-beta.3(@duplojs/lang@0.1.0-beta.3)
     devDependencies:
       '@duplojs/code-config':
         specifier: workspace:*
@@ -878,6 +885,16 @@ packages:
 
   '@docsearch/sidepanel-js@4.7.1':
     resolution: {integrity: sha512-uyOKbC6rjHCZBVbLCSZVb1NDWzjbD27WqxTuRYnkTW717laEj2dX+W8Ho1fNHSyG4dqssIlPWlXdg+McGxxxxg==}
+
+  '@duplojs/lang@0.1.0-beta.3':
+    resolution: {integrity: sha512-BMFV6LdGljoAqJFXQEh+66ecBChnIjFjeoS0c6cNubmgdjZ5niIj7Wk80exBB2A9m+9hNPvuRLkD2Tlt5QtoLg==}
+    engines: {node: '>=24.18.0'}
+
+  '@duplojs/server@0.1.0-beta.3':
+    resolution: {integrity: sha512-63MpQDPglQ8YDCo0WiLZ61eLEg8d7W1WGt7a3qFKaKmbt4DvEsnZTHPElZy0IpwMcoh9s8988BxZI2gS8O4Xcw==}
+    engines: {node: '>=24.18.0'}
+    peerDependencies:
+      '@duplojs/lang': 0.1.0-beta.3
 
   '@esbuild/aix-ppc64@0.28.2':
     resolution: {integrity: sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ==}
@@ -4646,6 +4663,12 @@ snapshots:
   '@docsearch/js@4.7.1': {}
 
   '@docsearch/sidepanel-js@4.7.1': {}
+
+  '@duplojs/lang@0.1.0-beta.3': {}
+
+  '@duplojs/server@0.1.0-beta.3(@duplojs/lang@0.1.0-beta.3)':
+    dependencies:
+      '@duplojs/lang': 0.1.0-beta.3
 
   '@esbuild/aix-ppc64@0.28.2':
     optional: true

@@ -68,23 +68,23 @@ Ne pas prefixer les chemins par `./jsDoc/` si le plugin est configure avec `incl
 
 ## Plugin de build
 
-`@duplojs/jsdoc-include` est un plugin `unplugin` compatible Rollup, Rolldown et Vite.
+`@duplojs/jsdoc-include` fournit un helper pour le hook `beforeWriteFile` de `unplugin-dts`. Il injecte les contenus des includes dans les fichiers `.d.ts` generes. Le chemin `includedPath` designe le dossier `jsDoc/` du package.
 
-Il doit s'executer apres les autres plugins de generation, notamment apres `unplugin-dts`, afin de remplacer les includes dans les fichiers generes. Son implementation utilise `enforce: "post"`.
-
-Verifier la configuration de build du package lorsque les includes ne sont pas encore resolus. Avec Rolldown, le plugin attendu ressemble a :
+Cette integration peut etre utilisee avec les plateformes compatibles avec `unplugin-dts`. Avec Rolldown, la configuration ressemble a :
 
 ```ts
-import jsdocInclude from "@duplojs/jsdoc-include/rolldown";
+import { beforeWriteFileDtsHook } from "@duplojs/jsdoc-include/unplugindts";
 import * as DPath from "@duplojs/lang/path";
-
-const includedPath = DPath.createOrThrow(`${import.meta.dirname}/jsDoc`);
+import { defineConfig } from "rolldown";
+import dts from "unplugin-dts/rolldown";
 
 export default defineConfig({
 	plugins: [
-		dts(/* ... */),
-		jsdocInclude({
-			includedPath,
+		dts({
+			beforeWriteFile: beforeWriteFileDtsHook({
+				includedPath: DPath.createOrThrow(`${import.meta.dirname}/jsDoc`),
+				lineChar: "\n",
+			}),
 		}),
 	],
 });

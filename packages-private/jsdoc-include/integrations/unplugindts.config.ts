@@ -1,4 +1,5 @@
 import { beforeWriteFileDtsHook } from "@duplojs/jsdoc-include/unplugindts";
+import * as DPath from "@duplojs/lang/path";
 import { defineConfig } from "rolldown";
 import dts from "unplugin-dts/rolldown";
 
@@ -20,7 +21,7 @@ export default defineConfig({
 			outDirs: "dist/unplugindts",
 			bundleTypes: false,
 			beforeWriteFile: beforeWriteFileDtsHook({
-				includedPath: `${import.meta.dirname}/docs`,
+				includedPath: DPath.createOrThrow(`${import.meta.dirname}/docs`),
 				lineChar: "\n",
 			}),
 		}),

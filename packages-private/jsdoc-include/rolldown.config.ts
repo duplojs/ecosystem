@@ -7,7 +7,7 @@ export default defineConfig({
 		unplugindts: "scripts/unplugindts.ts",
 	},
 	platform: "neutral",
-	external: [/^node:/],
+	external: [/^@duplojs\/(lang|server)(\/|$)/],
 	tsconfig: "tsconfig.build.json",
 	output: [
 		{
