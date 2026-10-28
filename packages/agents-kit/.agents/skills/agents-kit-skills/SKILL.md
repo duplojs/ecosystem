@@ -71,11 +71,11 @@ Le [tsconfig documentaire](../../../tsconfig.doc.json) inclut `skills/**/*.ts`. 
 
 ## Intégrer un skill installable
 
-Créer le dossier sous `skills/<nom>/` et choisir un `name` cohérent avec son nom installé `duplojs-<nom>`. Ajouter la clé `<nom>` à **`SkillEnum` dans [scripts/bin/install/skill.ts](../../../scripts/bin/install/skill.ts)** lors de l'ajout d'un nouveau skill. Lors d'une modification, vérifier que cette entrée existe déjà.
+Créer le dossier sous `skills/<nom>/` et choisir un `name` cohérent avec son nom installé `duplojs-<nom>`. Ajouter la clé `<nom>` à **`SkillEnum` dans [scripts/bin/installSkill/skill.ts](../../../scripts/bin/installSkill/skill.ts)** lors de l'ajout d'un nouveau skill. Lors d'une modification, vérifier que cette entrée existe déjà.
 
 Les tests de l'installateur couvrent ses comportements avec un ou deux skills représentatifs : sélection, installation complète, copie, liens, destinations, remplacement et erreurs. Ne pas ajouter de cas pour chaque nouveau skill lorsque le mécanisme d'installation reste identique. Ajouter un test seulement si un nouveau comportement ou un cas d'usage spécifique le justifie.
 
-Conserver un contrôle global entre `SkillEnum` et les dossiers distribués, et un inventaire automatique pour l'installation complète dans les [tests d'installation](../../../integrations/install.test.ts). Vérifier ainsi que les références et exemples sont distribués ensemble, en copie comme en lien symbolique, sans maintenir une nouvelle liste de scénarios par skill. Le champ `files` du package doit continuer à inclure les ressources nécessaires.
+Conserver un contrôle global entre `SkillEnum` et les dossiers distribués, et un inventaire automatique pour l'installation complète dans les [tests d'installation](../../../integrations/installSkill.test.ts). Vérifier ainsi que les références et exemples sont distribués ensemble, en copie comme en lien symbolique, sans maintenir une nouvelle liste de scénarios par skill. Le champ `files` du package doit continuer à inclure les ressources nécessaires.
 
 ## Vérifier le résultat
 

@@ -8,8 +8,8 @@ import * as DPath from "@duplojs/lang/path";
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 
-export const installCommand = DSCommand.create(
-	"install",
+export const installSkillCommand = DSCommand.create(
+	"install-skill",
 	{
 		options: [
 			DSCommand.createBooleanOption("copy", {

@@ -14,18 +14,18 @@ Read the relevant pages by resolving their links relative to the summary. Before
 
 Use each API domain's `index.llms.md` to find a public function by its exported namespace and name, such as `DArray.map` in [`docs/API/10-lang/10-array/index.llms.md`](docs/API/10-lang/10-array/index.llms.md). The other current domains are [Chrono](docs/API/10-lang/10-chrono/index.llms.md), [Common](docs/API/10-lang/10-common/index.llms.md), [DataStructure](docs/API/10-lang/10-dataStructure/index.llms.md), [Either](docs/API/10-lang/10-either/index.llms.md), and [Generator](docs/API/10-lang/10-generator/index.llms.md). API sources are primarily TypeScript files combining descriptions and typed usage examples. Each summary exposes their headers and links to those files.
 
-The `install` command creates symbolic links to the package's skills by default.
+The `install-skill` command creates symbolic links to the package's skills by default.
 The boolean `--copy` option copies the skills instead.
 Each installation removes the skill's destination and replaces it with the requested copy or link. The target of any existing symbolic link is preserved.
 
 ```sh
-pnpm exec duplojs-agents-kit install
-pnpm exec duplojs-agents-kit install http-server --type codex
-pnpm exec duplojs-agents-kit install http-client --copy
-pnpm exec duplojs-agents-kit install command --type codex
-pnpm exec duplojs-agents-kit install server --type codex
-pnpm exec duplojs-agents-kit install modeling --type codex
-pnpm exec duplojs-agents-kit install test --type codex
+pnpm exec duplojs-agents-kit install-skill
+pnpm exec duplojs-agents-kit install-skill http-server --type codex
+pnpm exec duplojs-agents-kit install-skill http-client --copy
+pnpm exec duplojs-agents-kit install-skill command --type codex
+pnpm exec duplojs-agents-kit install-skill server --type codex
+pnpm exec duplojs-agents-kit install-skill modeling --type codex
+pnpm exec duplojs-agents-kit install-skill test --type codex
 ```
 
 Two independently installable skills cover HTTP:
@@ -39,7 +39,7 @@ The `modeling` skill (`duplojs-modeling`) guides business system modeling and im
 
 The `test` skill (`duplojs-test`) guides testing DuploJS results and type contracts, selecting expected Either information, monitoring new result variants with exhaustive selectors, and isolating server dependencies through `TESTImplementation`. It also points to the concepts for organizing E2E tests with `@duplojs/playwright`.
 
-The `command` skill guides the creation of typed CLI commands with `@duplojs/server/command`, including arguments, options, subcommands, help, and executable entry points. Running `install` without a skill installs all supported skills. References and checked TypeScript examples are included in both copied and linked installations.
+The `command` skill guides the creation of typed CLI commands with `@duplojs/server/command`, including arguments, options, subcommands, help, and executable entry points. Running `install-skill` without a skill installs all supported skills. References and checked TypeScript examples are included in both copied and linked installations.
 
 The `setup` command creates `AGENTS.md` by default, or `CLAUDE.md` with `--type claude`, in the current project if needed and synchronizes a marked coding conventions block while preserving the surrounding content:
 
