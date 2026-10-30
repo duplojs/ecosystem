@@ -8,5 +8,5 @@ export default oxlint.defineConfig({
 			ruleset: { open: true },
 		}),
 	],
-	ignorePatterns: ["dist/**"],
+	ignorePatterns: ["dist/**", ".agents/**"],
 });

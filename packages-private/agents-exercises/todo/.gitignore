@@ -1,0 +1,3 @@
+src/business/applications/**/*.ts
+src/infrastructure/http/**/*.ts
+src/infrastructure/adapters/**/*.ts

@@ -9,7 +9,11 @@ type OverrideParameter<
 export function override<
 	GenericObject extends object,
 >(
-	value: OverrideParameter<GenericObject>,
+	value: NoInfer<
+		OverrideParameter<
+			GenericObject
+		>
+	>,
 ): (
 	object: GenericObject,
 ) => GenericObject;
@@ -18,7 +22,11 @@ export function override<
 	GenericObject extends object,
 >(
 	object: GenericObject,
-	value: OverrideParameter<GenericObject>,
+	value: NoInfer<
+		OverrideParameter<
+			GenericObject
+		>
+	>,
 ): GenericObject;
 
 export function override(

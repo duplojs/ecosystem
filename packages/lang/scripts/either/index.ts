@@ -12,6 +12,8 @@ export * from "./safeCallback";
 export * from "./asyncSafeCallback";
 export * from "./expect";
 export * from "./matchInformation";
+export * from "./matchInformationCombination";
+export * from "./matchInformationCombinationOtherwise";
 export * from "./matchInformationOtherwise";
 export * from "./rewriteInformation";
 export * from "./toMaybe";
