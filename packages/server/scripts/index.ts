@@ -1,3 +1,5 @@
+import "./override";
+
 export { setEnvironment, TESTImplementation } from "./implementor";
 
 export * from "./common";
