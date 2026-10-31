@@ -25,7 +25,7 @@ type ObjectToJson<
 			& GenericClearValue
 			& infer InferredConstraint
 		)
-			? InferredConstraint
+			? DKind.Remove<Extract<InferredConstraint, object>>
 			: unknown
 	),
 	GenericEntity = (

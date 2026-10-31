@@ -6,3 +6,4 @@ export * from "./reader";
 export * from "./resolver";
 export * from "./signature";
 export * from "./step";
+export * from "./workflow";
