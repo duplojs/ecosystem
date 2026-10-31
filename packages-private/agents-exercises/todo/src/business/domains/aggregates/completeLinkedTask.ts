@@ -33,6 +33,7 @@ export function completeLinkedTask(
 				return DCommon.pipe(
 					likedTask.list,
 					CompleteListFact.run,
+					DEither.unwrapRight,
 					(list) => DEither.result(
 						"completed-task-and-list",
 						{
