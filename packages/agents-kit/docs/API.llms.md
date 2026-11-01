@@ -29,3 +29,15 @@ Création, discrimination, transformation et propagation des réussites ou des �
 ## [DGenerator](API/10-lang/10-generator/index.llms.md)
 
 Création et composition de génératrices synchrones ou asynchrones pour produire, transformer, filtrer, réduire et consommer des séquences de valeurs.
+
+# [@duplojs/playwright](API/60-playwright/index.llms.md)
+
+Fabriques de site, pages et composants, interactions et assertions pour les parcours E2E.
+
+# [Actions](API/60-playwright/10-actions/index.llms.md)
+
+Interactions avec les éléments nommés des pages et composants.
+
+# [Assertions](API/60-playwright/10-assertions/index.llms.md)
+
+Vérifications de l’état des éléments nommés des pages et composants.
