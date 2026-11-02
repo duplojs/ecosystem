@@ -79,8 +79,11 @@
 	},
 	"devDependencies": {
 		"@duplojs/code-config": "workspace:*",
+		"@duplojs/eslint": "workspace:*",
     "@types/node": "24.13.3",
-    "@types/web": "0.0.358"
+    "@types/web": "0.0.358",
+    "vue": "3.5.43",
+    "vue-tsc": "3.3.11"
 	},
 	"files": [
 		"dist",

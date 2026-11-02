@@ -1,6 +1,7 @@
 import { engineConfig, createOxlintOverride, oxlint } from "@duplojs/code-config/oxlint";
 
 export default oxlint.defineConfig({
+	plugins: ["vue"],
 	extends: [engineConfig],
 	overrides: [
 		createOxlintOverride({

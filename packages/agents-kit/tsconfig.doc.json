@@ -5,6 +5,7 @@
 	},
 	"include": [
 		"./docs/**/*.ts",
+		"./docs/**/*.vue",
 		"./skills/**/*.ts"
 	]
 }

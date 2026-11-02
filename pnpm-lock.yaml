@@ -288,9 +288,6 @@ importers:
 
   packages/agents-kit:
     dependencies:
-      '@duplojs/eslint':
-        specifier: workspace:*
-        version: link:../eslint
       '@duplojs/form':
         specifier: workspace:*
         version: link:../form
@@ -316,12 +313,21 @@ importers:
       '@duplojs/code-config':
         specifier: workspace:*
         version: link:../code-config
+      '@duplojs/eslint':
+        specifier: workspace:*
+        version: link:../eslint
       '@types/node':
         specifier: 24.13.3
         version: 24.13.3
       '@types/web':
         specifier: 0.0.358
         version: 0.0.358
+      vue:
+        specifier: 3.5.43
+        version: 3.5.43(typescript@6.0.3)
+      vue-tsc:
+        specifier: 3.3.11
+        version: 3.3.11(typescript@6.0.3)
 
   packages/agents-kit/integrations:
     dependencies:

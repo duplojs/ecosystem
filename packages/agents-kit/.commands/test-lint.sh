@@ -3,3 +3,4 @@
 set -euo pipefail
 
 duplojs-oxlint --quiet "$@"
+duplojs-eslint --quiet "$@"
