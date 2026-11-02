@@ -1,6 +1,6 @@
 ---
 name: agents-kit-docs
-description: "Créer, organiser ou corriger la documentation DuploJS dans le package AgentKit : documentation concise pour les agents, routage et exposition dans les fichiers générés `*.llms.md`."
+description: "Créer, organiser ou corriger la documentation DuploJS dans AgentKit : contenu destiné aux agents, exposition dans les résumés LLM et sommaires vers ces résumés."
 ---
 
 # Documentation AgentKit
@@ -9,9 +9,20 @@ Le package `@duplojs/agents-kit` regroupe les skills et la documentation destin�
 
 Les chemins indiqués ci-dessous sont relatifs à la racine du package, accessible par [`../../..`](../../..) depuis le dossier de ce skill. La racine du monorepo se trouve deux niveaux au-dessus du package.
 
-La documentation d'AgentKit fournit aux agents les connaissances nécessaires pour utiliser et implémenter les concepts de l'écosystème DuploJS. Toutes ses sources documentaires doivent être pensées pour alimenter des fichiers `*.llms.md`. Chacun de ces fichiers sert de routeur vers les ressources de son périmètre et suit les mêmes règles de rédaction, d'organisation et d'exposition. Par exemple, `docs/concepts/` alimente `docs/concepts.llms.md` ; d'autres ensembles documentaires peuvent alimenter leurs propres routeurs. Les sources documentaires font autorité : les modifier, puis régénérer les routeurs concernés.
+La documentation d'AgentKit fournit aux agents les connaissances nécessaires pour utiliser et implémenter les concepts de l'écosystème DuploJS. Les sources documentaires font autorité : les modifier, puis régénérer les fichiers `*.llms.md` concernés.
 
-Le **routage** permet de trouver la connaissance pertinente. Le **contenu documentaire** permet d'agir correctement une fois la ressource consultée. Organiser les deux pour limiter le contexte chargé et les répétitions.
+## Organiser la lecture par niveaux
+
+Le **routage** permet de trouver la connaissance pertinente. Le **contenu documentaire** permet d'agir correctement une fois la ressource consultée. Deux types de fichiers `*.llms.md` organisent cette lecture :
+
+| Type | Commande | Rôle |
+| --- | --- | --- |
+| Résumé documentaire | `generate-summary` | Exposer les introductions et les ressources d'un périmètre selon leur niveau d'exposition, avec des liens vers les détails. |
+| Sommaire de résumés | `generate-table-of-content` | Présenter les domaines et pointer vers leurs résumés LLM pour choisir lequel charger. |
+
+Lorsque le volume documentaire rend un résumé unique trop chargé, répartir les sources en périmètres cohérents, générer un résumé par périmètre et les rendre accessibles depuis un sommaire. L'agent consulte alors le sommaire, le résumé pertinent, puis les sources nécessaires. Ce parcours évite de charger l'inventaire de toute la documentation pour trouver une ressource.
+
+Par exemple, `docs/concepts/` alimente directement le résumé `docs/concepts.llms.md`. La référence API utilise le sommaire `docs/API.llms.md`, qui mène aux résumés `index.llms.md` de ses domaines, puis aux fichiers TypeScript des fonctions. Choisir les périmètres et les niveaux de routage selon la documentation à exposer.
 
 Pour documenter les fonctions dans `docs/API/`, appliquer les [précisions propres à la référence API](references/api.md) en complément des règles communes ci-dessous.
 
@@ -20,14 +31,14 @@ Pour documenter les fonctions dans `docs/API/`, appliquer les [précisions propr
 - Définir la connaissance que la ressource doit transmettre et les décisions qu'elle doit permettre à l'agent de prendre. Respecter le périmètre demandé.
 - Lire systématiquement le [skill fondamental](../../../skills/fundamental/SKILL.md) avant toute rédaction ou modification de documentation pour comprendre les principes et les usages communs de DuploJS et les appliquer aux explications et aux exemples.
 - Selon le domaine documenté, consulter les autres [skills distribués dans `skills/`](../../../skills/) et les références pertinentes qu'ils indiquent pour comprendre comment utiliser les API et composer les mécanismes de l'écosystème. S'appuyer sur ces démarches pour présenter des usages cohérents, puis confirmer les contrats dans les sources documentaires et les API publiques concernées.
-- Identifier le dossier source et les routeurs `*.llms.md` concernés à partir des commandes de génération du package. Appliquer les mêmes règles à chaque ensemble documentaire.
+- Identifier le dossier source, son résumé et le sommaire qui y mène lorsqu'il existe, à partir des commandes de génération dans [`.commands/build.sh`](../../../.commands/build.sh). Déterminer à quel niveau exposer la ressource pour qu'un agent puisse la trouver sans charger les autres domaines.
 - Consulter les documents voisins et les ressources consacrées aux notions mobilisées. Pour une révision, lire la ressource entière et les documents liés avant de choisir où intervenir. Identifier leur progression et la ressource responsable de chaque connaissance ; réutiliser leur terminologie et leurs références.
 - Vérifier les exports publics et les signatures TypeScript utiles ; lire les implémentations et les tests lorsque le comportement ou les garanties nécessitent confirmation.
 - Avant de créer ou modifier un exemple TypeScript, lire les [règles d'importation du monorepo](../../../../../.agents/importations.md), situées dans `../../.agents/importations.md` depuis la racine du package.
 
-## Organisation et exposition
+## Organiser les sources d'un résumé
 
-Pour chaque routeur, le parcours de génération commence dans le dossier source passé à `llms generate-summary --input` et descend récursivement dans les dossiers à préfixe numérique. Il reconnaît les fichiers documentaires numérotés et les `index.md`. L'ordre est lexical. Ces conventions s'appliquent à tous les dossiers sources, dont `docs/concepts/`.
+Le parcours de `generate-summary` commence dans le dossier source passé à `--input` et descend récursivement dans les dossiers à préfixe numérique. Il reconnaît les fichiers documentaires numérotés et les `index.md`. L'ordre est lexical. Les conventions suivantes concernent les sources d'un résumé, dont `docs/concepts/`.
 
 | Ressource | Convention |
 | --- | --- |
@@ -38,7 +49,7 @@ Pour chaque routeur, le parcours de génération commence dans le dossier source
 
 Choisir le niveau d'exposition avant de numéroter un nouveau fichier :
 
-| Format | Préfixes disponibles | Contenu intégré à chaque routeur `*.llms.md` concerné |
+| Format | Préfixes disponibles | Contenu intégré au résumé concerné |
 | --- | --- | --- |
 | TypeScript fondamental | `01` à `09` | Header et contenu documentaire. |
 | TypeScript consulté à la demande | `10, 20, 30, 40, 50, 60, 70, 80, 90` | Header uniquement. |
@@ -47,6 +58,14 @@ Choisir le niveau d'exposition avant de numéroter un nouveau fichier :
 Les fichiers détaillés utilisent exclusivement les dizaines indiquées : les positions intermédiaires comme `15` ou `25` sont exclues. Le préfixe ordonne les ressources dans leur niveau ; il ne change pas la règle d'exposition du Markdown.
 
 Le séparateur Markdown est une ligne contenant exactement `---` ; il n'est pas exposé. La partie suivante reste dans le fichier source et se consulte à la demande. Un Markdown sans séparateur doit donc contenir uniquement du routage.
+
+## Relier les résumés par un sommaire
+
+`generate-table-of-content` parcourt récursivement le dossier passé à `--input`, y compris les dossiers sans préfixe numérique. Il construit le sommaire à partir des introductions des `index.md`, avant le premier séparateur `---`, et repère les fichiers `llms.md` ou `*.llms.md` présents dans les mêmes dossiers. Il transforme les titres de chaque introduction en liens vers le premier fichier LLM rencontré dans son dossier, relativement au fichier de sortie.
+
+Placer un `index.md` auprès de chaque résumé à rendre accessible dans le sommaire. Son titre et sa description doivent permettre de choisir le domaine ; conserver l'inventaire des ressources dans le résumé. Les index des dossiers parents présentent les regroupements : sans fichier LLM dans leur dossier, leurs titres restent sans lien. Un dossier sans index laisse parcourir ses enfants, mais un résumé sans index n'apporte aucune entrée locale au sommaire.
+
+Le sommaire réutilise ces présentations sans incorporer le contenu des résumés. Rédiger les index pour qu'ils restent utiles aux deux niveaux où ils sont exposés, plutôt que maintenir manuellement un second catalogue dans le fichier généré.
 
 ## Rédiger le routage
 
@@ -83,23 +102,29 @@ Pour vérifier le périmètre du routage : **si l'exemple change mais transmet l
 
 Le Markdown porte les explications et contextualise les liens vers les exemples TypeScript ou les fixtures, sans recopier leur implémentation. Les fichiers TypeScript documentaires associent code et commentaires après leur header ; plusieurs API peuvent être combinées pour démontrer un même concept.
 
-## Intégrer et vérifier
+## Intégrer et générer
 
 Placer la ressource dans le domaine approprié selon les conventions d'organisation et d'exposition. Adapter l'index si le périmètre du domaine évolue.
 
-La CLI locale `pnpm run llms` regroupe les outils documentaires pour les LLM. Sa seule sous-commande actuelle, `generate-summary`, génère un résumé documentaire qui sert de routeur vers les sources. Le build `pnpm --filter @duplojs/agents-kit build` régénère les résumés déclarés dans `.commands/build.sh` : `docs/concepts.llms.md` et un `index.llms.md` par domaine API. Pour chaque résumé concerné, utiliser le dossier source et la sortie correspondants, depuis la racine du package :
+La CLI locale `pnpm run llms`, définie dans [`bin/index.ts`](../../../bin/index.ts), fournit les deux commandes de génération. Depuis la racine du package, générer les résumés concernés avant le sommaire qui les référence :
 
 ```sh
-pnpm run llms generate-summary --input <dossier-source> --output <nom>.llms.md
+pnpm run llms generate-summary --input <dossier-source> --output <résumé>.llms.md --ignore '*.llms.md'
+pnpm run llms generate-table-of-content --input <dossier-des-domaines> --output <sommaire>.llms.md
 ```
+
+Les deux commandes exigent `--input` et une sortie `--output` terminant par `.llms.md`. L'option `--ignore` exclut les chemins correspondant au motif ; entourer les motifs de quotes pour éviter leur expansion par le shell. Pour un résumé écrit parmi ses sources, exclure les fichiers LLM déjà générés. Le sommaire doit au contraire pouvoir les repérer ; il exclut automatiquement son propre fichier de sortie.
+
+Le build `pnpm --filter @duplojs/agents-kit build` génère `docs/concepts.llms.md`, puis les `index.llms.md` des domaines API configurés, puis le sommaire `docs/API.llms.md`. Lors de l'ajout d'un périmètre documentaire, intégrer sa génération dans `.commands/build.sh` en conservant cet ordre de dépendance.
 
 Les commandes `test:types` (via `tsconfig.doc.json`) et `test:lint` du package vérifient aussi les exemples et les fixtures. Vérifier que les nouveaux dossiers documentaires sont couverts par ces configurations. Le champ `files` du package doit inclure `docs` afin de publier ensemble les routeurs et leurs cibles ; adapter les fichiers publiés si les sources ou les routeurs sont placés ailleurs.
 
-Avant de terminer :
+## Vérifier le parcours et le contenu
 
 - Vérifier la position, l'ordre, la numérotation et l'exposition selon les tableaux ci-dessus.
 - Relire le routage indépendamment des exemples : il doit permettre de retrouver le sujet sans charger son explication.
-- Vérifier chaque routeur concerné après génération : exposition attendue, pertinence du routage dans son périmètre et liens résolus relativement au fichier `*.llms.md` qui les contient.
+- Après génération, vérifier le résumé concerné : présentation du domaine, exposition attendue des ressources et liens résolus relativement au fichier qui les contient.
+- Lorsqu'un sommaire mène à ce résumé, vérifier aussi l'entrée du domaine, son lien et la pertinence de sa présentation. Parcourir un chemin complet du sommaire à une source pour contrôler que chaque niveau permet de choisir la suite sans répéter le détail du suivant.
 - Relire chaque ressource modifiée dans son ensemble, du point de vue d'une future implémentation : progression homogène, absence de contradiction ou de répétition, longueur proportionnée aux décisions et garanties à transmettre. Retirer les passages sans apport et remplacer les réexplications par les références pertinentes.
 - Vérifier les liens, l'exactitude des API et, pour les exemples TypeScript créés ou modifiés, la conformité des imports et le typage.
 - Inspecter chaque appel dans les exemples, y compris à l'intérieur des callbacks. Pour tout appel natif ou tiers, rechercher l'équivalent public DuploJS et le remplacer lorsqu'il existe. Effectuer ce contrôle même si le typage et le lint passent.

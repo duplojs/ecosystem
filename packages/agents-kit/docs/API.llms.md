@@ -30,6 +30,10 @@ Création, discrimination, transformation et propagation des réussites ou des �
 
 Création et composition de génératrices synchrones ou asynchrones pour produire, transformer, filtrer, réduire et consommer des séquences de valeurs.
 
+## [DObject](API/10-lang/10-object/index.llms.md)
+
+Fonctions fonctionnelles pour lire, discriminer, transformer, fusionner et reconstruire des objets en conservant les informations de typage utiles.
+
 # [@duplojs/playwright](API/60-playwright/index.llms.md)
 
 Fabriques de site, pages et composants, interactions et assertions pour les parcours E2E.

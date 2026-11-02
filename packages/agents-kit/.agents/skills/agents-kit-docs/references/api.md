@@ -8,9 +8,11 @@ Consacrer un fichier TypeScript à chaque fonction demandée, en regroupant ses 
 
 Le titre du header est `Namespace.fonction`, par exemple `@title DArray.map`, accompagné d'une courte phrase décrivant son rôle. Exposer uniquement ce header dans le routeur concerné, pour retrouver la fonction.
 
-Chaque dossier de domaine de la référence API doit contenir un `index.md` sans préfixe numérique. Le créer s'il manque. Y placer un titre et une courte présentation expliquant le rôle du domaine et à quoi servent ses API, comme un en-tête de domaine.
+La référence API suit le parcours `docs/API.llms.md` → `docs/API/<package>/<domaine>/index.llms.md` → `10-<fonction>.ts`. Le sommaire permet de choisir le domaine avant de charger son inventaire de fonctions. Chaque domaine possède son propre résumé documentaire ; éviter de réunir toutes les fonctions de l'écosystème dans un résumé global.
 
-Chaque domaine API possède un résumé documentaire `index.llms.md` dans son dossier. Rattacher chaque source, y compris l'`index.md` de présentation, au résumé correspondant à son domaine. Après génération, vérifier que cette présentation est bien exposée dans le résumé du domaine.
+Chaque dossier de domaine doit contenir un `index.md` sans préfixe numérique. Le créer s'il manque. Y placer un titre et une courte présentation expliquant le rôle du domaine et à quoi servent ses API. Cette présentation alimente à la fois le résumé du domaine et son entrée dans le sommaire. Les index des dossiers parents présentent les packages et l'ensemble de la référence.
+
+Rattacher chaque source au résumé `index.llms.md` de son domaine, y compris l'`index.md` de présentation. Générer ce résumé avec `generate-summary`, puis actualiser `docs/API.llms.md` avec `generate-table-of-content`, selon les règles communes. Pour un nouveau domaine, ajouter sa commande de résumé au build avant la génération du sommaire. Vérifier le parcours complet : présentation et lien du domaine dans le sommaire, puis headers et liens des fonctions dans son résumé.
 
 Dans le contenu du fichier, décrire en une phrase ce que fait globalement la fonction, puis le montrer par de petits exemples typés. Ne pas recopier les signatures publiques ni ajouter une explication détaillée de leurs paramètres, génériques ou surcharges : les appels illustrent leur utilisation.
 
