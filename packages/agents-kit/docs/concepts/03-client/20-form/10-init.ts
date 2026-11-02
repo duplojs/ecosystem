@@ -89,7 +89,3 @@ dispose();
 
 // `component` est le composant Vue à monter ; le submit reste applicatif.
 void TheForm;
-
-// <TheForm @submit="() => console.log(check())">
-//   <PrimaryButton type="submit" label="Submit" />
-// </TheForm>
