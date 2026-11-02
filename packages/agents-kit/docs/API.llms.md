@@ -34,14 +34,38 @@ Création et composition de génératrices synchrones ou asynchrones pour produi
 
 Fonctions fonctionnelles pour lire, discriminer, transformer, fusionner et reconstruire des objets en conservant les informations de typage utiles.
 
-# [@duplojs/playwright](API/60-playwright/index.llms.md)
+# @duplojs/form
+
+Construction de formulaires typés à partir de champs composables et de leurs validations.
+
+## Form pour Vue
+
+Fabriques de formulaires, de champs et de templates pour l'intégration Vue.
+
+### [Construction de formulaires](API/50-form/10-vue/10-construction/index.llms.md)
+
+Fabriques de formulaires, de champs et de templates.
+
+### [Layouts](API/50-form/10-vue/20-layouts/index.llms.md)
+
+Composition des champs et ajout de structure, validation, contrôle de flux et slots.
+
+### [Design system](API/50-form/10-vue/30-designSystem/index.llms.md)
+
+Composants et inputs prêts à l'emploi pour construire les formulaires et les commandes des templates Grid.
+
+# @duplojs/playwright
 
 Fabriques de site, pages et composants, interactions et assertions pour les parcours E2E.
 
-# [Actions](API/60-playwright/10-actions/index.llms.md)
+## [Construction](API/60-playwright/10-construction/index.llms.md)
+
+Fabriques de sites, pages, composants, interactions et wrappers de parcours.
+
+## [Actions](API/60-playwright/20-actions/index.llms.md)
 
 Interactions avec les éléments nommés des pages et composants.
 
-# [Assertions](API/60-playwright/10-assertions/index.llms.md)
+## [Assertions](API/60-playwright/30-assertions/index.llms.md)
 
 Vérifications de l’état des éléments nommés des pages et composants.

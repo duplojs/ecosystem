@@ -16,8 +16,12 @@ pnpm run llms generate-summary --input docs/API/10-lang/10-either --output docs/
 pnpm run llms generate-summary --input docs/API/10-lang/10-generator --output docs/API/10-lang/10-generator/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-object --output docs/API/10-lang/10-object/index.llms.md --ignore '*.llms.md'
 
-pnpm run llms generate-summary --input docs/API/60-playwright/10-actions --output docs/API/60-playwright/10-actions/index.llms.md --ignore '*.llms.md'
-pnpm run llms generate-summary --input docs/API/60-playwright/10-assertions --output docs/API/60-playwright/10-assertions/index.llms.md --ignore '*.llms.md'
-pnpm run llms generate-summary --input docs/API/60-playwright --output docs/API/60-playwright/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/50-form/10-vue/10-construction --output docs/API/50-form/10-vue/10-construction/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/50-form/10-vue/20-layouts --output docs/API/50-form/10-vue/20-layouts/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/50-form/10-vue/30-designSystem --output docs/API/50-form/10-vue/30-designSystem/index.llms.md --ignore '*.llms.md'
+
+pnpm run llms generate-summary --input docs/API/60-playwright/10-construction --output docs/API/60-playwright/10-construction/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/60-playwright/20-actions --output docs/API/60-playwright/20-actions/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/60-playwright/30-assertions --output docs/API/60-playwright/30-assertions/index.llms.md --ignore '*.llms.md'
 
 pnpm run llms generate-table-of-content --input docs/API --output docs/API.llms.md
