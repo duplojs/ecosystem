@@ -381,6 +381,11 @@ Comportements transversaux et instrumentation du cycle des échanges HTTP.
 
 Création et gestion de formulaires typés pour les interfaces utilisateur.
 
+## [Intégrer un formulaire dans une page Vue](concepts/03-client/20-form/50-integration.md)
+
+Séparer la logique d'un formulaire de son rendu dans une page Vue.
+
+
 ### [Créer un formulaire](concepts/03-client/20-form/10-init.ts)
 
 Initialisation et cycle de vie d’un formulaire Vue typé.
