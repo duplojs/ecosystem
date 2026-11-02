@@ -113,6 +113,7 @@ export default oxlint.defineConfig({
 			},
 			customRules: {
 				"typescript/no-confusing-void-expression": "off",
+				"require-yield": "off",
 			},
 		}),
 	],

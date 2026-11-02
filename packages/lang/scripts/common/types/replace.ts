@@ -1,5 +1,5 @@
 import type * as DKind from "@scripts/kind";
-import { type BaseConstraint, type RemoveConstraint } from "../constraint";
+import { type BaseConstraint, type ConstraintSymbol, type RemoveConstraint } from "../constraint";
 import { type IsEqual } from "./isEqual";
 import { type ContainExtends } from "./IsExtends";
 import { type NeverCoalescing } from "./neverCoalescing";
@@ -8,6 +8,23 @@ import type * as DChrono from "@scripts/chrono";
 import type * as DObject from "@scripts/object";
 import type * as DModeling from "@scripts/modeling";
 import { type DuploJSError } from "../error";
+import { type UnionToIntersection } from "./unionToIntersection";
+
+type RemoveObjectConstraint<
+	GenericObject extends object,
+> = GenericObject extends BaseConstraint
+	? GenericObject extends infer InferredValue & Pick<GenericObject, ConstraintSymbol>
+		? RemoveConstraint<InferredValue>
+		: never
+	: GenericObject;
+
+type FlagMetadata<
+	GenericFlags extends Record<Capitalize<string>, unknown>,
+> = UnionToIntersection<{
+	[Prop in keyof GenericFlags]: Prop extends Capitalize<string>
+		? DModeling.Flag<Prop, GenericFlags[Prop]>
+		: never
+}[keyof GenericFlags]>;
 
 type ReplaceValue<
 	GenericValue extends unknown,
@@ -28,13 +45,20 @@ type ReplaceValue<
 	>
 	: never;
 
+type ReplaceProperties<
+	GenericValue,
+	GenericReplacer extends [unknown, unknown],
+	GenericReplaceType extends ("extends" | "equal"),
+> = {
+	readonly [Prop in keyof GenericValue]: ComputeReplace<GenericValue[Prop], GenericReplacer, GenericReplaceType>
+};
+
 // The conditional result expands the replaced shape in tooltips while preserving constraint aliases.
 type ReplaceObject<
 	GenericObject extends object,
 	GenericReplacer extends [unknown, unknown],
 	GenericReplaceType extends ("extends" | "equal"),
-	GenericUnconstrainedValue = RemoveConstraint<GenericObject>,
-	GenericClearValue = DKind.Remove<Extract<GenericUnconstrainedValue, object>>,
+	GenericUnconstrainedValue = RemoveObjectConstraint<GenericObject>,
 	GenericConstraint = (
 		GenericObject extends (
 			& GenericUnconstrainedValue
@@ -43,24 +67,46 @@ type ReplaceObject<
 			? InferredConstraint
 			: unknown
 	),
-	GenericEntity = (
-		GenericObject extends DModeling.Entity<infer InferredName>
-			? DModeling.Entity<InferredName>
-			: unknown
+	GenericMetadata = (
+		& (
+			GenericObject extends DModeling.Entity<infer InferredName>
+				? DModeling.Entity<InferredName>
+				: unknown
+		)
+		& (
+			GenericObject extends DModeling.ObjectTag<infer InferredName>
+				? DModeling.ObjectTag<InferredName>
+				: unknown
+		)
+		& (
+			GenericObject extends DModeling.Flag
+				? FlagMetadata<DKind.GetValue<typeof DModeling.flagKind, GenericObject>>
+				: unknown
+		)
+		& (
+			GenericObject extends DModeling.Fact<infer InferredName, infer InferredPayload>
+				? DModeling.Fact<InferredName, InferredPayload>
+				: unknown
+		)
 	),
-	GenericObjectTag = (
-		GenericObject extends DModeling.ObjectTag<infer InferredName>
-			? DModeling.ObjectTag<InferredName>
-			: unknown
+	GenericClearValue = (
+		GenericUnconstrainedValue extends GenericMetadata & infer InferredValue
+			? DKind.Remove<Extract<InferredValue, object>>
+			: never
 	),
 > = GenericClearValue extends unknown
-	? {
-		readonly [Prop in keyof GenericClearValue]: ComputeReplace<
-			GenericClearValue[Prop],
-			GenericReplacer,
-			GenericReplaceType
-		>
-	} & GenericConstraint & GenericEntity & GenericObjectTag
+	? (
+		GenericClearValue extends readonly unknown[]
+			? number extends GenericClearValue["length"]
+				? Exclude<keyof GenericClearValue, keyof unknown[]> extends never
+					? GenericClearValue extends readonly [...unknown[], unknown]
+						? ReplaceProperties<GenericClearValue, GenericReplacer, GenericReplaceType>
+						// Keep mapped tuples and extra properties; expand plain arrays directly.
+						: readonly ComputeReplace<GenericClearValue[number], GenericReplacer, GenericReplaceType>[]
+					: ReplaceProperties<GenericClearValue, GenericReplacer, GenericReplaceType>
+				: ReplaceProperties<GenericClearValue, GenericReplacer, GenericReplaceType>
+			: ReplaceProperties<GenericClearValue, GenericReplacer, GenericReplaceType>
+	) & GenericConstraint & GenericMetadata
 	: never;
 
 // These types can be replaced directly, but their properties are not traversed.
@@ -97,7 +143,7 @@ type HasObjectReplacement<
 	GenericReplacer extends [unknown, unknown],
 	GenericReplaceType extends ("extends" | "equal"),
 	GenericVisited extends readonly unknown[] = readonly [],
-	GenericClearValue = DKind.Remove<Extract<RemoveConstraint<GenericObject>, object>>,
+	GenericClearValue = DKind.Remove<Extract<RemoveObjectConstraint<GenericObject>, object>>,
 > = UnionContain<GenericVisited[number], GenericObject> extends true
 	? false
 	: GenericClearValue extends object
