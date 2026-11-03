@@ -35,22 +35,21 @@ describe("createFact", () => {
 	type User = DDataStructure.StructureValue<typeof User>;
 
 	it("create fact and run it", () => {
-		interface UserCreatedFact extends DModeling.Fact<
+		const UserCreatedFact = DModeling.createFact<
 			"UserCreated",
 			{
 				name: Name;
 				age: Age;
-			}
-		> {}
-
-		const UserCreatedFact = DModeling.createFact<
-			UserCreatedFact,
+			},
 			typeof User
 		>("UserCreated")(
 			({
 				applyFact,
 			}) => (
-				payload: DModeling.GetFactPayload<UserCreatedFact>,
+				payload: {
+					name: Name;
+					age: Age;
+				},
 			) => applyFact(
 				User.new({
 					Name: payload.name,
@@ -59,6 +58,21 @@ describe("createFact", () => {
 				payload,
 			),
 		);
+		type UserCreatedFact = DModeling.GetFact<typeof UserCreatedFact>;
+
+		type checkFact = DCommon.ExpectType<
+			UserCreatedFact,
+			DModeling.Fact<"UserCreated", {
+				name: Name;
+				age: Age;
+			}>,
+			"strict"
+		>;
+
+		// @ts-expect-error the runtime name must match the declared name
+		DModeling.createFact<"UserCreated", DModeling.GetFactPayload<UserCreatedFact>, typeof User>("OtherFact");
+		// @ts-expect-error the fact name must start with an uppercase letter
+		DModeling.createFact<"userCreated", DModeling.GetFactPayload<UserCreatedFact>, typeof User>("userCreated");
 
 		type check1 = DCommon.ExpectType<
 			typeof UserCreatedFact,
@@ -112,25 +126,22 @@ describe("createFact", () => {
 	});
 
 	it("apply fact through pipe while preserving input type and value", () => {
-		interface UserRenamedFact extends DModeling.Fact<
+		const UserRenamedFact = DModeling.createFact<
 			"UserRenamed",
 			{
 				previousName: Name;
-			}
-		> {}
-
-		const UserRenamedFact = DModeling.createFact<
-			UserRenamedFact,
+			},
 			typeof User
 		>("UserRenamed")(
 			({ applyFact }) => <GenericEntity extends User>(
 				entity: GenericEntity,
-				payload: DModeling.GetFactPayload<UserRenamedFact>,
+				payload: { previousName: Name },
 			) => DCommon.pipe(
 				entity,
 				applyFact(payload),
 			),
 		);
+		type UserRenamedFact = DModeling.GetFact<typeof UserRenamedFact>;
 		const entity = User.new({
 			Name: DEither.unwrapRightOrThrow(Name.map("mathcovax")),
 			Age: DEither.unwrapRightOrThrow(Age.map(24)),
@@ -169,37 +180,32 @@ describe("createFact", () => {
 	});
 
 	it("replace the previous fact in both type and runtime", () => {
-		interface UserCreatedFact extends DModeling.Fact<
+		const UserCreatedFact = DModeling.createFact<
 			"UserCreated",
 			{
 				origin: "registration";
-			}
-		> {}
-		interface UserActivatedFact extends DModeling.Fact<
-			"UserActivated",
-			{
-				origin: "confirmation";
-			}
-		> {}
-
-		const UserCreatedFact = DModeling.createFact<
-			UserCreatedFact,
+			},
 			typeof User
 		>("UserCreated")(
 			({ applyFact }) => <GenericEntity extends User>(
 				entity: GenericEntity,
-				payload: DModeling.GetFactPayload<UserCreatedFact>,
+				payload: { origin: "registration" },
 			) => applyFact(entity, payload),
 		);
+		type UserCreatedFact = DModeling.GetFact<typeof UserCreatedFact>;
 		const UserActivatedFact = DModeling.createFact<
-			UserActivatedFact,
+			"UserActivated",
+			{
+				origin: "confirmation";
+			},
 			typeof User
 		>("UserActivated")(
 			({ applyFact }) => <GenericEntity extends User>(
 				entity: GenericEntity,
-				payload: DModeling.GetFactPayload<UserActivatedFact>,
+				payload: { origin: "confirmation" },
 			) => applyFact(entity, payload),
 		);
+		type UserActivatedFact = DModeling.GetFact<typeof UserActivatedFact>;
 		const entity: User = User.new({
 			Name: DEither.unwrapRightOrThrow(Name.map("mathcovax")),
 			Age: DEither.unwrapRightOrThrow(Age.map(24)),

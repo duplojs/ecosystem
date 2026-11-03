@@ -8,26 +8,40 @@ describe("createFlag", () => {
 	const userName = "Jane" as DDataStructure.StructureValue<typeof name>;
 
 	it("creates a flag handler for an entity and value structure", () => {
-		const valueStructure = DDataStructure.string();
-		interface UserRole extends DModeling.Flag<
-			"UserRole",
-			string
-		> {}
 		const flag = DModeling.createFlag<
-			UserRole,
+			"UserRole",
+			string,
 			typeof userStructure
 		>("UserRole");
 
 		expect(flag.name).toBe("UserRole");
+
+		type UserRole = DModeling.GetFlag<typeof flag>;
+		type _CheckFlag = DCommon.ExpectType<
+			UserRole,
+			DModeling.Flag<"UserRole", string>,
+			"strict"
+		>;
+		type _CheckHandler = DCommon.ExpectType<
+			typeof flag,
+			DModeling.FlagHandler<
+				"UserRole",
+				DDataStructure.StructureValue<typeof userStructure>,
+				string
+			>,
+			"strict"
+		>;
+
+		// @ts-expect-error the runtime name must match the declared name
+		DModeling.createFlag<"UserRole", string, typeof userStructure>("OtherRole");
+		// @ts-expect-error the flag name must start with an uppercase letter
+		DModeling.createFlag<"userRole", string, typeof userStructure>("userRole");
 	});
 
 	it("appends and reads a flag without mutating the entity", () => {
-		interface UserRole extends DModeling.Flag<
-			"UserRole",
-			string
-		> {}
 		const flag = DModeling.createFlag<
-			UserRole,
+			"UserRole",
+			string,
 			typeof userStructure
 		>("UserRole");
 		const entity = userStructure.new({ name: userName });
@@ -40,12 +54,9 @@ describe("createFlag", () => {
 	});
 
 	it("appends a flag in a pipe", () => {
-		interface UserRole extends DModeling.Flag<
-			"UserRole",
-			string
-		> {}
 		const flag = DModeling.createFlag<
-			UserRole,
+			"UserRole",
+			string,
 			typeof userStructure
 		>("UserRole");
 		const entity = userStructure.new({ name: userName });
@@ -55,20 +66,14 @@ describe("createFlag", () => {
 	});
 
 	it("preserves other flags when appending a new one", () => {
-		interface UserRole extends DModeling.Flag<
-			"UserRole",
-			string
-		> {}
 		const role = DModeling.createFlag<
-			UserRole,
+			"UserRole",
+			string,
 			typeof userStructure
 		>("UserRole");
-		interface UserState extends DModeling.Flag<
-			"UserState",
-			unknown
-		> {}
 		const state = DModeling.createFlag<
-			UserState,
+			"UserState",
+			unknown,
 			typeof userStructure
 		>("UserState");
 		const entity = userStructure.new({ name: userName });
@@ -79,12 +84,9 @@ describe("createFlag", () => {
 	});
 
 	it("narrows an entity union to the flagged branch", () => {
-		interface UserRole extends DModeling.Flag<
-			"UserRole",
-			string
-		> {}
 		const flag = DModeling.createFlag<
-			UserRole,
+			"UserRole",
+			string,
 			typeof userStructure
 		>("UserRole");
 		const entity = userStructure.new({ name: userName });

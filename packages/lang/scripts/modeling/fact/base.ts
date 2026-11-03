@@ -133,29 +133,41 @@ export interface CreateFactConstructorParams<
 	>;
 }
 
+export type GetFact<
+	GenericHandler extends FactHandler,
+> = GenericHandler extends FactHandler<
+	infer InferredName,
+	any,
+	infer InferredPayload,
+	any
+>
+	? Fact<InferredName, InferredPayload>
+	: never;
+
 export function createFact<
-	GenericFact extends Fact,
+	GenericName extends Capitalize<string>,
+	GenericPayload extends object,
 	GenericEntityStructure extends EntityStructure,
 >(
-	name: GetFactName<GenericFact>,
+	name: GenericName,
 ): <
-	GenericRun extends FactRun<GetFactName<GenericFact>>,
+	GenericRun extends FactRun<GenericName>,
 >(
 	createRun: (
 		params: CreateFactConstructorParams<
-			GetFactName<GenericFact>,
+			GenericName,
 			DDataStructure.StructureValue<
 				GenericEntityStructure
 			>,
-			GetFactPayload<GenericFact>
+			GenericPayload
 		>,
 	) => GenericRun,
 ) => FactHandler<
-	GetFactName<GenericFact>,
+	GenericName,
 	DDataStructure.StructureValue<
 		GenericEntityStructure
 	>,
-	GetFactPayload<GenericFact>,
+	GenericPayload,
 	GenericRun
 > {
 	function applyFact(...args: [Entity, unknown] | [unknown]) {

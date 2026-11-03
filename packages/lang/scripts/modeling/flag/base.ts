@@ -83,15 +83,26 @@ export interface FlagHandler<
 	>;
 }
 
+export type GetFlag<
+	GenericHandler extends FlagHandler,
+> = GenericHandler extends FlagHandler<
+	infer InferredName,
+	any,
+	infer InferredPayload
+>
+	? Flag<InferredName, InferredPayload>
+	: never;
+
 export function createFlag<
-	GenericFLag extends Flag,
+	GenericName extends Capitalize<string>,
+	GenericPayload extends unknown,
 	GenericEntityStructure extends EntityStructure,
 >(
-	name: GetFlagName<GenericFLag>,
+	name: GenericName,
 ): FlagHandler<
-	GetFlagName<GenericFLag>,
+	GenericName,
 	DDataStructure.StructureValue<GenericEntityStructure>,
-	GetFlagPayload<GenericFLag>
+	GenericPayload
 > {
 	function append(...args: [unknown] | [Entity, unknown]) {
 		if (args.length === 1) {
