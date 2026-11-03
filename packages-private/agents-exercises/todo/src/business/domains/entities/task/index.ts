@@ -65,14 +65,14 @@ export namespace Task {
 
 	export type Facts = CreateTaskFact | CompleteTaskFact | AssignTaskFact;
 
-	export type PendingFlag = DModeling.Flag<"Pending", PendingState>;
-	export const PendingFlag = DModeling.createFlag<PendingFlag, typeof Entity>("Pending");
+	export const PendingFlag = DModeling.createFlag<"Pending", PendingState, typeof Entity>("Pending");
+	export type PendingFlag = DModeling.GetFlag<typeof PendingFlag>;
 
-	export type PendingAndAssignedFlag = DModeling.Flag<"PendingAndAssigned", PendingAndAssignedState>;
-	export const PendingAndAssignedFlag = DModeling.createFlag<PendingAndAssignedFlag, typeof Entity>("PendingAndAssigned");
+	export const PendingAndAssignedFlag = DModeling.createFlag<"PendingAndAssigned", PendingAndAssignedState, typeof Entity>("PendingAndAssigned");
+	export type PendingAndAssignedFlag = DModeling.GetFlag<typeof PendingAndAssignedFlag>;
 
-	export type CompletedFlag = DModeling.Flag<"Completed", CompletedState>;
-	export const CompletedFlag = DModeling.createFlag<CompletedFlag, typeof Entity>("Completed");
+	export const CompletedFlag = DModeling.createFlag<"Completed", CompletedState, typeof Entity>("Completed");
+	export type CompletedFlag = DModeling.GetFlag<typeof CompletedFlag>;
 
 	export function refineState<
 		GenericEntity extends Entity,
@@ -96,11 +96,11 @@ export namespace Task {
 		);
 	}
 
-	export type LinkedWithListFlag = DModeling.Flag<"LinkedWithList", List.Id>;
-	export const LinkedWithListFlag = DModeling.createFlag<LinkedWithListFlag, typeof Entity>("LinkedWithList");
+	export const LinkedWithListFlag = DModeling.createFlag<"LinkedWithList", List.Id, typeof Entity>("LinkedWithList");
+	export type LinkedWithListFlag = DModeling.GetFlag<typeof LinkedWithListFlag>;
 
-	export type NotLinkedWithListFlag = DModeling.Flag<"NotLinkedWithList", null>;
-	export const NotLinkedWithListFlag = DModeling.createFlag<NotLinkedWithListFlag, typeof Entity>("NotLinkedWithList");
+	export const NotLinkedWithListFlag = DModeling.createFlag<"NotLinkedWithList", null, typeof Entity>("NotLinkedWithList");
+	export type NotLinkedWithListFlag = DModeling.GetFlag<typeof NotLinkedWithListFlag>;
 
 	export function refineLinkedListState<
 		GenericEntity extends Entity,

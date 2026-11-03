@@ -2,20 +2,16 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DModeling from "@duplojs/lang/modeling";
 import { List } from "..";
 
-export type CompleteListFact = DModeling.Fact<
+export const CompleteListFact = DModeling.createFact<
 	"ListCompleted",
 	{
 		state: List.CompletedState;
-	}
->;
-
-export const CompleteListFact = DModeling.createFact<
-	CompleteListFact,
+	},
 	typeof List.Entity
 >("ListCompleted")(
 	({ applyFact }) => (list: List.Entity & List.OpenFlag) => {
 		const state = List.CompletedState.new({});
-		const payload: DModeling.GetFactPayload<CompleteListFact> = { state };
+		const payload = { state };
 
 		return DCommon.pipe(
 			list,
@@ -25,3 +21,4 @@ export const CompleteListFact = DModeling.createFact<
 		);
 	},
 );
+export type CompleteListFact = DModeling.GetFact<typeof CompleteListFact>;

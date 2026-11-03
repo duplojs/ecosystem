@@ -3,15 +3,11 @@ import * as DModeling from "@duplojs/lang/modeling";
 import { Task } from "..";
 import { type User } from "../../user";
 
-export type AssignTaskFact = DModeling.Fact<
+export const AssignTaskFact = DModeling.createFact<
 	"TaskAssigned",
 	{
 		state: Task.PendingAndAssignedState;
-	}
->;
-
-export const AssignTaskFact = DModeling.createFact<
-	AssignTaskFact,
+	},
 	typeof Task.Entity
 >("TaskAssigned")(
 	({ applyFact }) => (
@@ -23,7 +19,7 @@ export const AssignTaskFact = DModeling.createFact<
 		const state = Task.PendingAndAssignedState.new({
 			assigneeUserId: params.user.Id,
 		});
-		const payload: DModeling.GetFactPayload<AssignTaskFact> = { state };
+		const payload = { state };
 
 		return DCommon.pipe(
 			params.task,
@@ -33,3 +29,4 @@ export const AssignTaskFact = DModeling.createFact<
 		);
 	},
 );
+export type AssignTaskFact = DModeling.GetFact<typeof AssignTaskFact>;

@@ -3,18 +3,14 @@ import * as DModeling from "@duplojs/lang/modeling";
 import { List } from "..";
 import { type User } from "../../user";
 
-export type CreateListFact = DModeling.Fact<
+export const CreateListFact = DModeling.createFact<
 	"ListCreated",
 	{
 		id: List.Id;
 		title: List.Title;
 		state: List.OpenState;
 		creatorId: User.Id;
-	}
->;
-
-export const CreateListFact = DModeling.createFact<
-	CreateListFact,
+	},
 	typeof List.Entity
 >("ListCreated")(
 	({ applyFact }) => (
@@ -25,7 +21,7 @@ export const CreateListFact = DModeling.createFact<
 		},
 	) => {
 		const state = List.OpenState.new({});
-		const payload: DModeling.GetFactPayload<CreateListFact> = {
+		const payload = {
 			id: params.id,
 			title: params.title,
 			creatorId: params.creator.Id,
@@ -40,3 +36,4 @@ export const CreateListFact = DModeling.createFact<
 		);
 	},
 );
+export type CreateListFact = DModeling.GetFact<typeof CreateListFact>;

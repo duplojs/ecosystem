@@ -62,14 +62,14 @@ export namespace List {
 
 	export type Facts = CreateListFact | CompleteListFact | AssignListFact;
 
-	export type OpenFlag = DModeling.Flag<"Open", OpenState>;
-	export const OpenFlag = DModeling.createFlag<OpenFlag, typeof Entity>("Open");
+	export const OpenFlag = DModeling.createFlag<"Open", OpenState, typeof Entity>("Open");
+	export type OpenFlag = DModeling.GetFlag<typeof OpenFlag>;
 
-	export type OpenAndAssignedFlag = DModeling.Flag<"OpenAndAssigned", OpenAndAssignedState>;
-	export const OpenAndAssignedFlag = DModeling.createFlag<OpenAndAssignedFlag, typeof Entity>("OpenAndAssigned");
+	export const OpenAndAssignedFlag = DModeling.createFlag<"OpenAndAssigned", OpenAndAssignedState, typeof Entity>("OpenAndAssigned");
+	export type OpenAndAssignedFlag = DModeling.GetFlag<typeof OpenAndAssignedFlag>;
 
-	export type CompletedFlag = DModeling.Flag<"Completed", CompletedState>;
-	export const CompletedFlag = DModeling.createFlag<CompletedFlag, typeof Entity>("Completed");
+	export const CompletedFlag = DModeling.createFlag<"Completed", CompletedState, typeof Entity>("Completed");
+	export type CompletedFlag = DModeling.GetFlag<typeof CompletedFlag>;
 
 	export function refineState<GenericEntity extends Entity>(entity: GenericEntity) {
 		return DPattern.matchWithTaggedObject(

@@ -3,15 +3,11 @@ import * as DModeling from "@duplojs/lang/modeling";
 import { List } from "..";
 import { type User } from "../../user";
 
-export type AssignListFact = DModeling.Fact<
+export const AssignListFact = DModeling.createFact<
 	"ListAssigned",
 	{
 		state: List.OpenAndAssignedState;
-	}
->;
-
-export const AssignListFact = DModeling.createFact<
-	AssignListFact,
+	},
 	typeof List.Entity
 >("ListAssigned")(
 	({ applyFact }) => (
@@ -23,7 +19,7 @@ export const AssignListFact = DModeling.createFact<
 		const state = List.OpenAndAssignedState.new({
 			assigneeUserId: params.user.Id,
 		});
-		const payload: DModeling.GetFactPayload<AssignListFact> = { state };
+		const payload = { state };
 
 		return DCommon.pipe(
 			params.list,
@@ -33,3 +29,4 @@ export const AssignListFact = DModeling.createFact<
 		);
 	},
 );
+export type AssignListFact = DModeling.GetFact<typeof AssignListFact>;

@@ -4,7 +4,7 @@ import { Task } from "..";
 import { type List } from "../../list";
 import { type User } from "../../user";
 
-export type CreateTaskFact = DModeling.Fact<
+export const CreateTaskFact = DModeling.createFact<
 	"TaskCreated",
 	{
 		id: Task.Id;
@@ -12,11 +12,7 @@ export type CreateTaskFact = DModeling.Fact<
 		title: Task.Title;
 		state: Task.PendingState;
 		creatorId: User.Id;
-	}
->;
-
-export const CreateTaskFact = DModeling.createFact<
-	CreateTaskFact,
+	},
 	typeof Task.Entity
 >("TaskCreated")(
 	({ applyFact }) => (
@@ -28,7 +24,7 @@ export const CreateTaskFact = DModeling.createFact<
 		},
 	) => {
 		const state = Task.PendingState.new({});
-		const payload: DModeling.GetFactPayload<CreateTaskFact> = {
+		const payload = {
 			id: params.id,
 			listId: params.list?.id ?? null,
 			title: params.title,
@@ -44,3 +40,4 @@ export const CreateTaskFact = DModeling.createFact<
 		);
 	},
 );
+export type CreateTaskFact = DModeling.GetFact<typeof CreateTaskFact>;
