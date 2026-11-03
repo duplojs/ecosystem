@@ -16,6 +16,11 @@ pnpm run llms generate-summary --input docs/API/10-lang/10-either --output docs/
 pnpm run llms generate-summary --input docs/API/10-lang/10-generator --output docs/API/10-lang/10-generator/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-object --output docs/API/10-lang/10-object/index.llms.md --ignore '*.llms.md'
 
+pnpm run llms generate-summary --input docs/API/40-json-web-token/10-tokenHandler --output docs/API/40-json-web-token/10-tokenHandler/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/40-json-web-token/20-signer --output docs/API/40-json-web-token/20-signer/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/40-json-web-token/30-cipher --output docs/API/40-json-web-token/30-cipher/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/40-json-web-token/40-utils --output docs/API/40-json-web-token/40-utils/index.llms.md --ignore '*.llms.md'
+
 pnpm run llms generate-summary --input docs/API/50-form/10-vue/10-construction --output docs/API/50-form/10-vue/10-construction/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/50-form/10-vue/20-layouts --output docs/API/50-form/10-vue/20-layouts/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/50-form/10-vue/30-designSystem --output docs/API/50-form/10-vue/30-designSystem/index.llms.md --ignore '*.llms.md'

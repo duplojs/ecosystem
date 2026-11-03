@@ -34,6 +34,26 @@ Création et composition de génératrices synchrones ou asynchrones pour produi
 
 Fonctions fonctionnelles pour lire, discriminer, transformer, fusionner et reconstruire des objets en conservant les informations de typage utiles.
 
+# @duplojs/json-web-token
+
+Politiques JWT réutilisables, signature, chiffrement facultatif et primitives cryptographiques.
+
+## [TokenHandler](API/40-json-web-token/10-tokenHandler/index.llms.md)
+
+Définir une politique et créer, décoder ou vérifier les tokens associés.
+
+## [Signer](API/40-json-web-token/20-signer/index.llms.md)
+
+Configurer la signature et la vérification cryptographiques.
+
+## [Cipher](API/40-json-web-token/30-cipher/index.llms.md)
+
+Configurer le chiffrement et le déchiffrement facultatifs des tokens.
+
+## [Utilitaires JWT](API/40-json-web-token/40-utils/index.llms.md)
+
+Manipuler les encodages et les primitives cryptographiques publiques.
+
 # @duplojs/form
 
 Construction de formulaires typés à partir de champs composables et de leurs validations.
