@@ -1,15 +1,15 @@
 import { config, type UserConfig, typePattern, referencePattern } from "@duplojs/code-config/commitlint";
 
 const scopes = [
-    "code-config",
+	"code-config",
 	"eslint",
 	"form",
 	"http",
-    "json-web-token",
-    "lang",
-    "playwright",
-    "server",
-    "tools",
+	"json-web-token",
+	"lang",
+	"playwright",
+	"server",
+	"tools",
 	"ecosystem",
 	"agents-kit",
 	"jsdoc-include",
@@ -21,7 +21,7 @@ const scopes = [
 const scopePattern = scopes.join("|");
 
 const headerPattern = new RegExp(
-    `^(${typePattern}):(${scopePattern})\\((${referencePattern})\\): ([^\\s].*)$`,
+	`^(${typePattern}):(${scopePattern})\\((${referencePattern})\\): ([^\\s].*)$`,
 );
 
 export default {
@@ -37,5 +37,5 @@ export default {
 		...config.rules,
 		"scope-empty": [2, "never"],
 		"scope-enum": [2, "always", scopes],
-    }
+	},
 } satisfies UserConfig;

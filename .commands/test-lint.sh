@@ -5,7 +5,7 @@ RESET='\033[0m'
 
 set -euo pipefail
 
-tsc -p tsconfig.config.json
+duplojs-oxlint --quiet --config oxlint.config.ts
 
 printf "\n${GREEN}@duplojs/code-config${RESET}\n"
 pnpm --filter @duplojs/code-config test:lint
@@ -42,3 +42,6 @@ pnpm --filter @duplojs/jsdoc-include test:lint
 
 printf "\n${GREEN}docs${RESET}\n"
 pnpm --filter docs test:lint
+
+printf "\n${GREEN}@duplojs/agents-exercises-todo${RESET}\n"
+pnpm --filter @duplojs/agents-exercises-todo test:lint

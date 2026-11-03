@@ -2,5 +2,5 @@
 
 set -euo pipefail
 
-tsc -p tsconfig.app.json "$@"
-tsc -p tsconfig.config.json "$@"
+tsc -p tsconfig.app.json
+tsc -p tsconfig.config.json

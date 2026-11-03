@@ -5,8 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "./.commands/build.sh",
-    "start": "node dist/index.mjs",
+    "clear": "./.commands/clear.sh",
     "test:types": "./.commands/test-types.sh",
     "test:lint": "./.commands/test-lint.sh",
     "test:lint:fix": "./.commands/test-lint.sh --fix"

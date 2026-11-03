@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-rolldown --config "$@"
+git clean -fdX -- src
