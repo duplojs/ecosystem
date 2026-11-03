@@ -2,16 +2,13 @@ import * as DModeling from "@duplojs/lang/modeling";
 import { Book } from "..";
 import * as DCommon from "@duplojs/lang/common";
 
-export type CreateBookFact = DModeling.Fact<
+export const CreateBookFact = DModeling.createFact<
 	"CreateBook",
 	{
 		id: Book.Id;
 		title: Book.Title;
 		state: Book.AvailableState;
-	}
->;
-export const CreateBookFact = DModeling.createFact<
-	CreateBookFact,
+	},
 	typeof Book.Entity
 >("CreateBook")(
 	({ applyFact }) => (
@@ -33,3 +30,4 @@ export const CreateBookFact = DModeling.createFact<
 		);
 	},
 );
+export type CreateBookFact = DModeling.GetFact<typeof CreateBookFact>;

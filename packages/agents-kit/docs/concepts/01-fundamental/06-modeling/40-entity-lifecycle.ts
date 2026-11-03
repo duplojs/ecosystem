@@ -87,23 +87,21 @@ export namespace User {
 	// Ici, chacun porte au runtime la payload de l'état qu'il certifie.
 	// Une fonction exigeant `User.Entity & User.AwaitingValidationFlag` reçoit ainsi
 	// une entité dont l'état d'attente est prouvé, avec son `AwaitingValidationState`.
-	export type AwaitingValidationFlag = DModeling.Flag<
-		"AwaitingValidation",
-		AwaitingValidationState
-	>;
+	// Déclarer d'abord la factory avec le nom, la payload et la structure d'entité,
+	// puis en dériver le type avec `GetFlag`.
 	export const AwaitingValidationFlag = DModeling.createFlag<
-		AwaitingValidationFlag,
+		"AwaitingValidation",
+		AwaitingValidationState,
 		typeof Entity
 	>("AwaitingValidation");
+	export type AwaitingValidationFlag = DModeling.GetFlag<typeof AwaitingValidationFlag>;
 
-	export type ValidateFlag = DModeling.Flag<
-		"Validate",
-		ValidateState
-	>;
 	export const ValidateFlag = DModeling.createFlag<
-		ValidateFlag,
+		"Validate",
+		ValidateState,
 		typeof Entity
 	>("Validate");
+	export type ValidateFlag = DModeling.GetFlag<typeof ValidateFlag>;
 
 	// Après hydratation, `state` reste typé comme l'union des états possibles.
 	// `refineState` inspecte sa valeur et ajoute le flag correspondant sans modifier
@@ -132,17 +130,16 @@ export namespace User {
 // y compris un changement de propriété qui conserve le même état nommé.
 // Sa payload décrit l'événement et reste portée par l'entité après application du fait.
 // Ici, la création place toujours l'utilisateur en attente de validation.
-export type UserCreateFact = DModeling.Fact<
+// `createFact` reçoit les mêmes trois génériques que `createFlag`, puis construit `run`
+// dans un second appel. `GetFact` extrait le type du fait depuis cette factory.
+export const UserCreateFact = DModeling.createFact<
 	"UserCreated",
 	{
 		id: User.Id;
 		age: User.Age;
 		name: User.Name;
 		state: User.AwaitingValidationState;
-	}
->;
-export const UserCreateFact = DModeling.createFact<
-	UserCreateFact,
+	},
 	typeof User.Entity
 >("UserCreated")(
 	({ applyFact }) => (
@@ -156,7 +153,7 @@ export const UserCreateFact = DModeling.createFact<
 		//
 		// Elle contient notamment l'état produit par cette étape du cycle de vie,
 		// ce qui permet de conserver cette information avec la `Fact`.
-		const payload: DModeling.GetFactPayload<UserCreateFact> = {
+		const payload = {
 			id: params.id,
 			age: params.age,
 			name: params.name,
@@ -179,20 +176,19 @@ export const UserCreateFact = DModeling.createFact<
 	},
 );
 
+export type UserCreateFact = DModeling.GetFact<typeof UserCreateFact>;
+
 // Cette `Fact` représente la transition entre l'attente de validation
 // et l'état validé.
 //
 // Sa signature fait elle-même partie de la règle métier :
 // seules les entités possédant `AwaitingValidationFlag` peuvent effectuer
 // cette transition.
-export type ValidateUserFact = DModeling.Fact<
+export const ValidateUserFact = DModeling.createFact<
 	"ValidateUserFact",
 	{
 		state: User.ValidateState;
-	}
->;
-export const ValidateUserFact = DModeling.createFact<
-	ValidateUserFact,
+	},
 	typeof User.Entity
 >("ValidateUserFact")(
 	({ applyFact }) => (
@@ -205,7 +201,7 @@ export const ValidateUserFact = DModeling.createFact<
 		//
 		// Le fait `ValidateUserFact` conserve donc également les informations
 		// produites lors de cette transition.
-		const payload: DModeling.GetFactPayload<ValidateUserFact> = {
+		const payload = {
 			state: User.ValidateState.new({
 				address: params.address,
 				validateAt: DChrono.now(),
@@ -227,6 +223,8 @@ export const ValidateUserFact = DModeling.createFact<
 		);
 	},
 );
+
+export type ValidateUserFact = DModeling.GetFact<typeof ValidateUserFact>;
 
 declare const id: User.Id;
 declare const age: User.Age;

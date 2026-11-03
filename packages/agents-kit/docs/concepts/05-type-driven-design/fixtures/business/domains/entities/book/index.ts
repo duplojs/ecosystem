@@ -49,23 +49,19 @@ export namespace Book {
 		| ReturnBookFact
 	);
 
-	export type AvailableFlag = DModeling.Flag<
-		"Available",
-		AvailableState
-	>;
 	export const AvailableFlag = DModeling.createFlag<
-		AvailableFlag,
+		"Available",
+		AvailableState,
 		typeof Entity
 	>("Available");
+	export type AvailableFlag = DModeling.GetFlag<typeof AvailableFlag>;
 
-	export type BorrowedFlag = DModeling.Flag<
-		"Borrowed",
-		BorrowedState
-	>;
 	export const BorrowedFlag = DModeling.createFlag<
-		BorrowedFlag,
+		"Borrowed",
+		BorrowedState,
 		typeof Entity
 	>("Borrowed");
+	export type BorrowedFlag = DModeling.GetFlag<typeof BorrowedFlag>;
 
 	export function refineState<
 		GenericEntity extends Entity,

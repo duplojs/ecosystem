@@ -4,12 +4,9 @@ import { type Book } from "../../book";
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 
-export type ClientGiveBackBook = DModeling.Fact<
-	"ClientGiveBackBook",
-	Book.Entity
->;
 export const ClientGiveBackBook = DModeling.createFact<
-	ClientGiveBackBook,
+	"ClientGiveBackBook",
+	Book.Entity,
 	typeof Client.Entity
 >("ClientGiveBackBook")(
 	({ applyFact }) => (
@@ -31,3 +28,4 @@ export const ClientGiveBackBook = DModeling.createFact<
 		);
 	},
 );
+export type ClientGiveBackBook = DModeling.GetFact<typeof ClientGiveBackBook>;

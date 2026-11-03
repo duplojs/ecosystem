@@ -27,23 +27,19 @@ export namespace Client {
 		| ClientGiveBackBook
 	);
 
-	export type CanRentBookFlag = DModeling.Flag<
-		"CanRentBook",
-		readonly Book.Id[] & DArray.MaxElements<4>
-	>;
 	export const CanRentBookFlag = DModeling.createFlag<
-		CanRentBookFlag,
+		"CanRentBook",
+		readonly Book.Id[] & DArray.MaxElements<4>,
 		typeof Entity
 	>("CanRentBook");
+	export type CanRentBookFlag = DModeling.GetFlag<typeof CanRentBookFlag>;
 
-	export type NoBookRentalSlotsAvailableFlag = DModeling.Flag<
-		"NoBookRentalSlotsAvailable",
-		undefined
-	>;
 	export const NoBookRentalSlotsAvailableFlag = DModeling.createFlag<
-		NoBookRentalSlotsAvailableFlag,
+		"NoBookRentalSlotsAvailable",
+		undefined,
 		typeof Entity
 	>("NoBookRentalSlotsAvailable");
+	export type NoBookRentalSlotsAvailableFlag = DModeling.GetFlag<typeof NoBookRentalSlotsAvailableFlag>;
 
 	export function canRentBook<
 		GenericEntity extends Entity,
@@ -61,14 +57,12 @@ export namespace Client {
 		}
 	}
 
-	export type HaveBookFlag = DModeling.Flag<
-		"HaveBook",
-		Book.Entity
-	>;
 	export const HaveBookFlag = DModeling.createFlag<
-		HaveBookFlag,
+		"HaveBook",
+		Book.Entity,
 		typeof Entity
 	>("HaveBook");
+	export type HaveBookFlag = DModeling.GetFlag<typeof HaveBookFlag>;
 	export function clientHaveBook(client: Entity, book: Book.Entity) {
 		if (DArray.includes(client.borrowedBooks, book.id)) {
 			return DEither.right(
