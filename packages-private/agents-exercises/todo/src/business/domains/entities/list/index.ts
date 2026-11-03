@@ -2,7 +2,7 @@ import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import * as DModeling from "@duplojs/lang/modeling";
 import * as DPattern from "@duplojs/lang/pattern";
-import type { CompleteListFact, CreateListFact } from "./facts";
+import type { AssignListFact, CompleteListFact, CreateListFact } from "./facts";
 import { User } from "../user";
 
 export * from "./facts";
@@ -60,7 +60,7 @@ export namespace List {
 	}));
 	export type Entity = DDataStructure.StructureValue<typeof Entity>;
 
-	export type Facts = CreateListFact | CompleteListFact;
+	export type Facts = CreateListFact | CompleteListFact | AssignListFact;
 
 	export type OpenFlag = DModeling.Flag<"Open", OpenState>;
 	export const OpenFlag = DModeling.createFlag<OpenFlag, typeof Entity>("Open");

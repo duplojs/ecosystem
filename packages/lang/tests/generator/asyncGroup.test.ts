@@ -2,6 +2,41 @@ import * as DGenerator from "@scripts/generator";
 import * as DCommon from "@scripts/common";
 
 describe("asyncGroup", () => {
+	it("groups a synchronous iterable with an async callback", async() => {
+		const input: Iterable<1 | "a"> = new Set([1, "a"] as const);
+		const result = DGenerator.asyncGroup(
+			input,
+			async(item, { output }) => Promise.resolve(output("value", item)),
+		);
+
+		await expect(result).resolves.toEqual({ value: [1, "a"] });
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			Promise<{
+				readonly value?: readonly [1 | "a", ...(1 | "a")[]] | undefined;
+			}>,
+			"strict"
+		>;
+	});
+
+	it("groups readonly arrays with an async callback in pipe", async() => {
+		const result = DCommon.pipe(
+			[1, "a"] as const,
+			DGenerator.asyncGroup(async(item, { output }) => Promise.resolve(output("value", item))),
+		);
+
+		await expect(result).resolves.toEqual({ value: [1, "a"] });
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			Promise<{
+				readonly value?: readonly [1 | "a", ...(1 | "a")[]] | undefined;
+			}>,
+			"strict"
+		>;
+	});
+
 	it("groups async iterable values by callback output", async() => {
 		const input = (async function *() {
 			yield await Promise.resolve("a" as const);

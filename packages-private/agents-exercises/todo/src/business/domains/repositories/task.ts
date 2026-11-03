@@ -11,4 +11,13 @@ export interface TaskRepository {
 		& boolean
 		& DInvocation.Evidence<"all-task-of-list-are-completed">
 	>;
+	findAllLinkedTask(
+		list: List.Entity
+	): Promise<
+		AsyncGenerator<
+			& Task.Entity
+			& Task.LinkedWithListFlag
+			& DInvocation.Evidence<"linked-task">
+		>
+	>;
 }

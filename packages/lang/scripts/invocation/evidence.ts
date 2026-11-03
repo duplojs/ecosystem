@@ -92,33 +92,39 @@ export function evidenceResult(
 export type FindEvidence<
 	GenericValue extends unknown,
 > = (
-	GenericValue extends Evidence
-		? GenericValue
-		: GenericValue extends Promise<unknown>
-			? FindEvidence<
-				Awaited<GenericValue>
-			>
-			: GenericValue extends DEither.Right | DEither.Left
+	DCommon.Or<[
+		DCommon.IsEqual<any, GenericValue>,
+		DCommon.IsEqual<unknown, GenericValue>,
+		DCommon.IsNever<GenericValue>,
+	]> extends true
+		? never
+		: GenericValue extends Evidence
+			? GenericValue
+			: GenericValue extends Promise<unknown>
 				? FindEvidence<
-					DEither.GetValue<GenericValue>
+					Awaited<GenericValue>
 				>
-				: GenericValue extends Generator<
-					infer InferredYeldValue,
-					infer InferredResult
-				>
-					? (
-						| FindEvidence<InferredYeldValue>
-						| FindEvidence<InferredResult>
-					)
-					: GenericValue extends AsyncGenerator<
+				: GenericValue extends DEither.Right | DEither.Left
+					? FindEvidence<
+						DEither.GetValue<GenericValue>
+					>
+					: GenericValue extends Generator<
 						infer InferredYeldValue,
 						infer InferredResult
 					>
 						? (
+						| FindEvidence<InferredYeldValue>
+						| FindEvidence<InferredResult>
+						)
+						: GenericValue extends AsyncGenerator<
+							infer InferredYeldValue,
+							infer InferredResult
+						>
+							? (
 							| FindEvidence<InferredYeldValue>
 							| FindEvidence<InferredResult>
-						)
-						: never
+							)
+							: never
 ) extends infer InferredResult extends Evidence
 	? InferredResult
 	: never;

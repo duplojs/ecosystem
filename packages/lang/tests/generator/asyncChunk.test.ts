@@ -3,6 +3,46 @@ import * as DCommon from "@scripts/common";
 import * as DGenerator from "@scripts/generator";
 
 describe("asyncChunk", () => {
+	it("splits a synchronous iterable into async chunks", async() => {
+		const input: Iterable<1 | "a" | 2> = new Set([1, "a", 2] as const);
+		const result = DGenerator.asyncChunk(input, 2);
+
+		await expect(DArray.from(result)).resolves.toStrictEqual([[1, "a"], [2]]);
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			AsyncGenerator<
+				& readonly (1 | "a" | 2)[]
+				& DArray.MinElements<1>
+				& DArray.MaxElements<2>,
+				unknown,
+				unknown
+			>,
+			"strict"
+		>;
+	});
+
+	it("splits readonly arrays into async chunks in pipe", async() => {
+		const result = DCommon.pipe(
+			[1, "a", 2] as const,
+			DGenerator.asyncChunk(2),
+		);
+
+		await expect(DArray.from(result)).resolves.toStrictEqual([[1, "a"], [2]]);
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			AsyncGenerator<
+				& readonly (1 | "a" | 2)[]
+				& DArray.MinElements<1>
+				& DArray.MaxElements<2>,
+				unknown,
+				unknown
+			>,
+			"strict"
+		>;
+	});
+
 	it("splits async iterable values into chunks", async() => {
 		const input = (async function *() {
 			yield await Promise.resolve(1 as const);

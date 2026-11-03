@@ -3,7 +3,7 @@ import * as DEither from "@duplojs/lang/either";
 import * as DModeling from "@duplojs/lang/modeling";
 import * as DPattern from "@duplojs/lang/pattern";
 import { List } from "../list";
-import type { CompleteTaskFact, CreateTaskFact } from "./facts";
+import type { AssignTaskFact, CompleteTaskFact, CreateTaskFact } from "./facts";
 import * as DCommon from "@duplojs/lang/common";
 import { User } from "../user";
 
@@ -63,7 +63,7 @@ export namespace Task {
 	}));
 	export type Entity = DDataStructure.StructureValue<typeof Entity>;
 
-	export type Facts = CreateTaskFact | CompleteTaskFact;
+	export type Facts = CreateTaskFact | CompleteTaskFact | AssignTaskFact;
 
 	export type PendingFlag = DModeling.Flag<"Pending", PendingState>;
 	export const PendingFlag = DModeling.createFlag<PendingFlag, typeof Entity>("Pending");

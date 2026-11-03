@@ -12,14 +12,14 @@ export function asyncGroup<
 		params: GroupTheFunctionParams,
 	) => DCommon.MaybePromise<GenericOutput>,
 ): (
-	asyncIterator: AsyncIterable<GenericItem>,
+	asyncIterator: AsyncIterable<GenericItem> | Iterable<GenericItem>,
 ) => Promise<GroupResult<GenericOutput>>;
 
 export function asyncGroup<
 	GenericItem extends unknown,
 	GenericOutput extends GroupOutputResult,
 >(
-	asyncIterator: AsyncIterable<GenericItem>,
+	asyncIterator: AsyncIterable<GenericItem> | Iterable<GenericItem>,
 	theFunction: (
 		item: GenericItem,
 		params: GroupTheFunctionParams,
@@ -29,12 +29,15 @@ export function asyncGroup<
 export function asyncGroup(
 	...args:
 		| [theFunction: DCommon.AnyFunction<any, AsyncGroupOutput>]
-		| [asyncIterator: AsyncIterable<unknown>, theFunction: DCommon.AnyFunction<any, AsyncGroupOutput>]
+		| [
+			asyncIterator: AsyncIterable<unknown> | Iterable<unknown>,
+			theFunction: DCommon.AnyFunction<any, AsyncGroupOutput>,
+		]
 ): any {
 	if (args.length === 1) {
 		const [theFunction] = args;
 
-		return (asyncIterator: AsyncIterable<unknown>) => asyncGroup(
+		return (asyncIterator: AsyncIterable<unknown> | Iterable<unknown>) => asyncGroup(
 			asyncIterator,
 			theFunction,
 		);

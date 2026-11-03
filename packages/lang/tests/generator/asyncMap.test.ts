@@ -3,6 +3,22 @@ import * as DArray from "@scripts/array";
 import * as DGenerator from "@scripts/generator";
 
 describe("asyncMap", () => {
+	it("maps a synchronous generator with an async callback", async() => {
+		const input = (function *() {
+			yield 1 as const;
+			yield "a" as const;
+		})();
+		const result = DGenerator.asyncMap(input, async(item) => Promise.resolve(item));
+
+		await expect(DArray.from(result)).resolves.toStrictEqual([1, "a"]);
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof result,
+			AsyncGenerator<1 | "a", unknown, unknown>,
+			"strict"
+		>;
+	});
+
 	it("maps async iterable values", async() => {
 		const input = (async function *() {
 			yield await Promise.resolve("a" as const);

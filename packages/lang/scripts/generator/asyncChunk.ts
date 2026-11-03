@@ -22,26 +22,26 @@ export function asyncChunk<
 >(
 	size: GenericSize,
 ): (
-	iterator: AsyncIterable<GenericItem>,
+	iterator: AsyncIterable<GenericItem> | Iterable<GenericItem>,
 ) => AsyncChunkOutput<GenericItem, GenericSize>;
 
 export function asyncChunk<
 	const GenericItem extends unknown,
 	GenericSize extends number,
 >(
-	iterator: AsyncIterable<GenericItem>,
+	iterator: AsyncIterable<GenericItem> | Iterable<GenericItem>,
 	size: GenericSize,
 ): AsyncChunkOutput<GenericItem, GenericSize>;
 
 export function asyncChunk(
 	...args:
 		| [size: number]
-		| [iterator: AsyncIterable<unknown>, size: number]
+		| [iterator: AsyncIterable<unknown> | Iterable<unknown>, size: number]
 ): any {
 	if (args.length === 1) {
 		const [size] = args;
 
-		return (iterator: AsyncIterable<unknown>) => asyncChunk(iterator, size);
+		return (iterator: AsyncIterable<unknown> | Iterable<unknown>) => asyncChunk(iterator, size);
 	}
 
 	const [iterator, size] = args;

@@ -43,7 +43,7 @@ export function asyncMap(
 	if (args.length === 1) {
 		const [theFunction] = args;
 
-		return (iterator: AsyncIterable<unknown>) => asyncMap(iterator, theFunction);
+		return (iterator: AsyncIterable<unknown> | Iterable<unknown>) => asyncMap(iterator, theFunction);
 	}
 
 	const [iterator, theFunction] = args;
