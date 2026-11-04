@@ -185,7 +185,7 @@ Additionner des durées écrites avec une unité ou exprimées en millisecondes.
 ### [DCommon.tap](10-tap.ts)
 
 Exécuter un traitement secondaire tout en conservant la valeur d’entrée.
-
+ 
 ### [DCommon.timeout](10-timeout.ts)
 
 Créer une promise résolue après un délai en millisecondes.

@@ -103,5 +103,7 @@
 		"chss.stylesheetLocation": ".vscode/style-syntax.chss",
 		
 		"vue.codeActions.askNewComponentName": false,
+
+		"terminal.integrated.cwd": "${workspaceFolder:ecosystem}"
 	}
 }

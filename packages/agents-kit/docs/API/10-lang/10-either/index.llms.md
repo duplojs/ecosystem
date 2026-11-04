@@ -21,7 +21,7 @@ Retourner un Either sans modifier sa valeur ni son type.
 ### [DEither.extractErrorInLeft](10-extractErrorInLeft.ts)
 
 Extraire d’un Left les erreurs DuploJS sélectionnées par leur identifiant.
-
+ 
 ### [DEither.fail](10-fail.ts)
 
 Créer un Left standardisé représentant un échec sans valeur.
@@ -69,11 +69,11 @@ Appliquer exhaustivement une callback selon l’information du résultat.
 ### [DEither.matchInformationCombination](10-matchInformationCombination.ts)
 
 Appliquer un traitement pour chaque combinaison d’informations d’une collection d’Either.
-
+ 
 ### [DEither.matchInformationCombinationOtherwise](10-matchInformationCombinationOtherwise.ts)
 
 Traiter les combinaisons d’informations choisies et fournir un cas de repli.
-
+ 
 ### [DEither.matchInformationOtherwise](10-matchInformationOtherwise.ts)
 
 Appliquer une callback pour certaines informations et une branche de repli pour les autres.

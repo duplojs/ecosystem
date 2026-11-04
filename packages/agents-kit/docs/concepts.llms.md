@@ -495,3 +495,5 @@ Réaliser les garanties des ports, résoudre les use cases et adapter leurs entr
 ### [Infrastructure : réaliser et raccorder les contrats](concepts/05-type-driven-design/04-infrastructure/10-implementation.md)
 
 Implémenter les capacités techniques demandées par l'application, établir réellement leurs garanties et exposer les opérations aux consommateurs.
+
+
