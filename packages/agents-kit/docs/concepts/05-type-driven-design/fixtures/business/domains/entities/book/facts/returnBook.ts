@@ -1,5 +1,5 @@
 import * as DModeling from "@duplojs/lang/modeling";
-import { Client } from "../../client";
+import { type Client } from "../../client";
 import { Book } from "..";
 import * as DCommon from "@duplojs/lang/common";
 
@@ -9,10 +9,14 @@ export const ReturnBookFact = DModeling.createFact<
 	typeof Book.Entity
 >("ReturnBook")(
 	({ applyFact }) => (
-		client: Client.Entity & Client.HaveBookFlag,
+		{
+			client,
+			book,
+		}: {
+			client: Client.Entity;
+			book: Book.Entity & Book.BorrowedFlag;
+		},
 	) => {
-		const book = Client.HaveBookFlag.getPayload(client);
-
 		const availableState = Book.AvailableState.new({});
 
 		return DCommon.pipe(

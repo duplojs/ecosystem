@@ -15,7 +15,7 @@ export const bookRepository = BookRepositoryPort.createImplementation({
 	save: (entity) => Promise.resolve(entity),
 	rankAvailability: DInvocation.signedFunction(
 		"rankAvailability",
-		async({ book }) => {
+		async(book) => {
 
 		},
 	),

@@ -6,7 +6,10 @@
 import * as DCommon from "@duplojs/lang/common";
 import * as DString from "@duplojs/lang/string";
 
-const input = { status: "saved", revision: 3 };
+const input = {
+	status: "saved",
+	revision: 3,
+};
 declare function recordStatus(status: Uppercase<string>): void;
 
 // Appel classique : enregistrer le statut sans remplacer l’objet d’entrée.

@@ -10,16 +10,18 @@ export const ClientRentBookFact = DModeling.createFact<
 	typeof Client.Entity
 >("ClientRentBookFact")(
 	({ applyFact }) => (
-		client: Client.Entity & Client.CanRentBookFlag,
-		book: Book.Entity & Book.AvailableFlag,
+		params: {
+			client: Client.Entity & Client.CanRentBookFlag;
+			book: Book.Entity & Book.AvailableFlag;
+		},
 	) => {
 		const borrowedBooks = DArray.push(
-			Client.CanRentBookFlag.getPayload(client),
-			book.id,
+			Client.CanRentBookFlag.getPayload(params.client),
+			params.book.id,
 		);
 
 		return DCommon.pipe(
-			client,
+			params.client,
 			Client.Entity.update({
 				borrowedBooks,
 			}),

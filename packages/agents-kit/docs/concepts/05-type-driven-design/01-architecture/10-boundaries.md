@@ -1,41 +1,44 @@
 ### Frontières entre domaine, application et infrastructure
 
-Déterminer les dépendances autorisées, les opérations utilisables depuis chaque couche et le traitement des données et erreurs aux frontières du système.
+Responsabilités des couches, sens des dépendances et préparation des garanties aux frontières du système.
+
 ---
 
-### Sens des dépendances
+### Faire du domaine le contrat de l'opération
 
-Les couches suivent cette direction :
+Le domaine traduit les exigences du monde réel en états, préconditions, transitions et opérations coordonnées. Il définit ce qui doit se passer et les garanties nécessaires pour continuer.
+
+| Couche | Responsabilité | Exemple du retour d'un livre |
+| --- | --- | --- |
+| Domaine | Définir les états autorisés, les faits, leur enchaînement et les capacités extérieures requises. | Exiger le lien client-livre, rendre le livre, demander la prochaine inscription en attente et réserver le livre si une inscription existe. |
+| Application | Satisfaire les préconditions et les effets de l'agrégat avec des ports abstraits. | Fournir le résultat de sélection attendu, sauvegarder les entités transmises et propager une indisponibilité. |
+| Infrastructure | Réaliser les ports et adapter les points d'entrée aux contrats applicatifs. | Interroger le stockage, hydrater les entités et convertir le résultat en réponse HTTP. |
+
+Une règle encore à décider dans un use case ou un adaptateur indique un contrat métier incomplet. Les couches techniques conservent leurs choix d'implémentation, mais ces choix doivent respecter les garanties définies dans le domaine.
+
+### Sens des dépendances
 
 ```text
 Infrastructure → Application → Domaine
 Infrastructure → Domaine
 ```
 
-Le domaine ne dépend ni de l'application ni de l'infrastructure. L'application orchestre les opérations du domaine et définit les ports dont elle a besoin. L'infrastructure fournit les implémentations concrètes et adapte les systèmes externes à ces contrats.
+Le domaine n'importe ni l'application ni l'infrastructure. Il décrit ses besoins extérieurs par des [repositories](../02-domains/30-repositories.md) et ses demandes d'effets par des [workflows](../02-domains/20-aggregates.md). Il n'appelle aucune implémentation technique.
 
-Une dépendance vers le domaine depuis l'infrastructure est donc autorisée lorsqu'elle sert à consommer un contrat ou une capacité du logiciel. Elle ne permet pas à l'infrastructure de déplacer une règle métier dans sa propre couche.
+L'application définit les ports de ses use cases ; l'infrastructure les implémente. Changer de base de données ou de protocole d'entrée ne change donc pas les transitions du domaine.
 
 ### Respecter les responsabilités aux frontières
 
-Une couche extérieure peut consommer le domaine et l'application, mais ne réalise pas leurs transitions à leur place. L'infrastructure peut :
+Un point d'entrée peut lire des données par un repository et appeler les qualifications pures du domaine pour préparer les paramètres d'un use case. Une lecture seule, comme `findById`, ne demande pas un use case de relais.
 
-- lire des données à travers un repository, dont l'implémentation les hydrate avec `map` ou `decodeMap` ;
-- appeler une fonction pure de qualification pour établir une condition attendue par l'application ;
-- appeler un use case et adapter son résultat au point d'entrée consommé.
+Dès que l'opération conduit un cycle de vie ou des effets métier, le point d'entrée passe par un use case. Il n'appelle directement ni fait ni agrégat, et ne modifie pas une entité pour réaliser une transition. Les fonctions du domaine restent responsables de la vérification qui établit un flag ou une preuve combinatoire.
 
-Les lectures seules, comme `findById` ou `findMany`, peuvent servir une consultation ou préparer les entrées d'un use case sans imposer un use case de relais. Lorsqu'une opération comporte des règles métier, le domaine les exprime et l'application orchestre leur exécution, les effets et la persistance.
+La signature du use case indique les [préconditions à préparer](../03-applications/10-use-case.md#préparer-les-préconditions-demandées) par le point d'entrée.
 
-L'infrastructure passe alors par le use case : elle n'appelle directement ni `Fact` ni agrégat et ne modifie pas une entité pour réaliser une transition. Elle n'utilise pas non plus `Flag.append` ; la qualification du domaine établit le flag après avoir constaté la condition.
+### Faire circuler les garanties et les résultats
 
-### Faire entrer les données dans le modèle
+Les structures du domaine valident les entrées externes et hydratent les données existantes. Les qualifications, refinements et repositories établissent les garanties exigées par l'opération.
 
-L'implémentation qui lit une base, une API ou un fichier hydrate la donnée avant de la retourner avec le contrat prévu. Les structures du domaine servent aussi à valider les entrées externes, afin de transmettre les types métier jusqu'aux use cases.
+Le domaine distingue les issues qui ont un sens pour son raisonnement. L'application sélectionne celles qui permettent de poursuivre et propage les refus, y compris les résultats techniques ajoutés par ses ports. L'infrastructure adapte le résultat final au consommateur : statut HTTP, sortie de commande ou autre protocole.
 
-La couche qui possède la donnée établit les préconditions demandées : qualification du domaine pour un flag, opération prévue par le contrat pour une évidence de contexte. Un simple filtre technique ne suffit pas à produire ces preuves.
-
-### Adapter les résultats
-
-Un résultat métier attendu reste discriminé par son contrat, souvent avec `Either` et une `information`. La frontière le traduit ensuite vers le besoin du consommateur : réponse HTTP, sortie de commande ou autre protocole. Le code de transport ne remplace pas la règle qui a produit le résultat.
-
-Les refus prévisibles restent des résultats à traiter, qu'ils concernent le métier, la vérification d'une donnée externe ou une manipulation technique. Les exceptions de défaillance imprévue déjà émises par les dépendances ou le runtime remontent implicitement, sans ajouter de `throw` dans les fonctions réutilisables. Le code applicatif réserve ses `throw` explicites à la consommation finale du résultat par la frontière, qui décide de sa conséquence. La distinction et l'adaptation des API qui lèvent sont détaillées dans les [résultats et exceptions](../../01-fundamental/03-either/50-external-results.ts).
+Le traitement des refus prévisibles et des défaillances imprévues suit les [règles des résultats et exceptions](../../01-fundamental/03-either/50-external-results.ts).

@@ -1,58 +1,50 @@
-### Conception des entités en Type-Driven Design
+### Entités, qualifications et faits
 
-Organisation des modèles métier, de leurs invariants, qualifications et transitions dans le domaine.
+Modéliser les données et leurs invariants, certifier leurs conditions actuelles et rendre explicites les préconditions des transitions métier.
+
 ---
 
-### Placer les règles métier
+### Décrire les valeurs possibles
 
-Concevoir une entité consiste à définir ses données, les conditions nécessaires aux opérations métier et les garanties obtenues après chaque transition. Les primitives sont documentées dans les fondamentaux : [NewType](../../01-fundamental/06-modeling/10-new-type.ts), [Entity](../../01-fundamental/06-modeling/20-entity.ts), [TaggedObject](../../01-fundamental/06-modeling/30-tagged-object.ts) et [cycle de vie avec Flag et Fact](../../01-fundamental/06-modeling/40-entity-lifecycle.ts).
+Une entité porte une identité et une forme métier stable. Ses propriétés utilisent les types qui expriment leur sens et leurs contraintes : identifiants distincts, titres bornés, collections limitées ou variantes d'état. Regrouper dans son namespace les types, structures, états, flags et l'union de ses faits permet de retrouver son cycle de vie.
 
-Les règles suivantes sont des **conventions d'architecture du domaine** :
+Les propriétés propres à un état appartiennent à une variante de cet état. Dans [`Book`](../fixtures/business/domains/entities/book/index.ts), `state` est une union de `TaggedObject` : disponible, emprunté, réservé ou retiré. Le client emprunteur existe dans `BorrowedState` ; `ReservedState` référence l'entrée de liste d'attente concernée. Ces informations ne deviennent pas des propriétés facultatives communes à tous les livres.
 
-| Responsabilité | Placement et règle |
+Chaque [`WaitingListEntry`](../fixtures/business/domains/entities/waitingListEntry/index.ts) représente une inscription individuelle. Plusieurs inscriptions peuvent concerner un livre, mais son état `ReservedState` n'en référence qu'une : la réservation effective. Le client reste porté par cette entrée, sans duplication de son `clientId` dans le livre.
+
+Les primitives et leurs API sont présentées dans les fondamentaux : [NewType](../../01-fundamental/06-modeling/10-new-type.ts), [Entity](../../01-fundamental/06-modeling/20-entity.ts) et [TaggedObject](../../01-fundamental/06-modeling/30-tagged-object.ts).
+
+### Qualifier une condition actuelle
+
+Une qualification observe une entité sans modifier ses propriétés métier. Elle vérifie une condition puis retourne la valeur avec le `Flag` correspondant. Un flag peut certifier un état nommé ou une capacité ; plusieurs flags compatibles peuvent coexister.
+
+[`Book.refineState`](../fixtures/business/domains/entities/book/index.ts) reconnaît l'état du livre et produit notamment `AvailableFlag` ou `BorrowedFlag`. Dans [`Client`](../fixtures/business/domains/entities/client/index.ts), l'invariant limite `borrowedBooks` à cinq identifiants. La qualification `canRentBook` vérifie que le client en possède au plus quatre avant une nouvelle location et produit `CanRentBookFlag`. Cette capacité permet au fait de préserver l'invariant en ajoutant un emprunt.
+
+| Besoin | Modélisation |
 | --- | --- |
-| Définir le modèle | Regrouper dans le namespace TypeScript de l'entité son `createEntityNamespace`, ses `NewType`, sa définition commune, ses états, ses flags et l'union de ses `Facts`. Représenter les propriétés pouvant changer de forme par des unions, notamment de `TaggedObject`. |
-| Qualifier une condition | Une fonction du namespace inspecte les données sans modifier les propriétés métier et ajoute le flag correspondant uniquement après vérification. La condition peut porter sur un état, une capacité ou une relation avec une autre entité. |
-| Créer ou modifier l'entité | Une `Fact` de son dossier `facts/` porte chaque création ou modification métier, même un simple changement de propriété. Elle peut lire plusieurs entités, mais ne modifie que sa cible. `Entity.update` est réservé aux faits ; ils ajoutent les flags dont leur transition établit les conditions. |
-| Hydrater des données existantes | Utiliser les API de mapping décrites dans [Entity](../../01-fundamental/06-modeling/20-entity.ts). Cette entrée dans le modèle ne constitue pas une création métier. |
-| Coordonner plusieurs cibles | Prévoir un fait par entité modifiée et confier leur orchestration à un [agrégat](./20-aggregates.md). |
+| Décrire les données propres à une variante | État sous forme de `TaggedObject`. |
+| Certifier une condition sur l'entité actuelle | Qualification et `Flag`. |
+| Certifier une combinaison de plusieurs valeurs | [Refinement](./40-refinements.md) produisant une évidence sur le contexte. |
+| Exiger une vérification extérieure ou une provenance | [Evidence](./20-aggregates.md#exiger-les-preuves-utiles-au-parcours) issue du contrat qui établit cette garantie. |
 
-`Flag.append` est réservé aux qualifications et aux faits décrits ci-dessus. Le placement de l'appel et la vérification de sa condition relèvent de ces conventions ; la présence d'un flag dans le type ne dispense pas son producteur d'établir la garantie annoncée.
-
-### Choisir la primitive de modélisation
-
-Les propriétés d'une entité portent des types métier explicites, généralement des `NewType`, des structures ou des `TaggedObject` adaptés à leur rôle. Utiliser la primitive correspondant à l'intention évite de confondre identité, forme, état et ordre d'exécution.
-
-| Intention | Primitive | Règle |
-| --- | --- | --- |
-| Donner une identité métier à une valeur | `NewType` | Deux valeurs de même représentation mais de sens différent ne sont pas interchangeables. Les contraintes de forme sont vérifiées lors du mapping. |
-| Décrire une forme identifiée | `TaggedObject` | Son tag permet le pattern matching et le transport entre frontières. Il décrit une shape, pas un cycle de vie ; une union de tags modélise les formes possibles d'une propriété. |
-| Certifier une condition sur l'entité actuelle | `Flag` | Une qualification inspecte la valeur puis ajoute le flag correspondant. Le flag peut porter la payload de la vérification ; plusieurs flags peuvent coexister. |
-| Représenter une création ou modification métier | `Fact` | Toute transition est un événement, même si l'état final ressemble à l'état initial. Une fact peut lire plusieurs entités, mais ne modifie que sa cible. |
-| Imposer une provenance ou un ordre d'exécution | `Evidence` | La preuve identifie l'opération qui doit avoir précédé, indépendamment de la forme de la valeur. Ses contrats sont détaillés dans les [agrégats](./20-aggregates.md) et les [repositories](./30-repositories.md). |
-
-Un `Flag` et une `Evidence` peuvent sembler proches, mais leur centre de gravité diffère : le flag certifie une caractéristique ou une qualification de l'état courant d'une entité ; l'évidence certifie un passage requis par le parcours d'exécution, indépendamment de la nature de la valeur. Une condition d'état se modélise donc par un flag ; une dépendance d'ordre ou de provenance se modélise par une evidence.
-
-Une fonction de qualification peut être utilisée après l'hydratation d'une entité, y compris par l'infrastructure. Elle ne modifie pas les propriétés métier et ne réalise aucune transition ; `Flag.append` est utilisé seulement après la vérification de la condition, dans une qualification ou une `Fact`.
-
-### Distinguer invariant et précondition
-
-Un invariant doit rester vrai pour toute valeur de l'entité. Une précondition détermine si une opération particulière est possible et devient une preuve exigée par sa signature.
-
-Dans la fixture [`Client`](../fixtures/business/domains/entities/client/index.ts), `borrowedBooks` contient au maximum **cinq** identifiants. `Client.canRentBook` vérifie une limite de **quatre** avant une nouvelle location et produit un résultat `CanRentBook` portant `CanRentBookFlag`, ou `NoBookRentalSlotsAvailable`. Le fait peut ainsi ajouter un livre en préservant l'invariant. Une capacité à agir mérite une qualification même si elle ne constitue pas un état du cycle de vie.
+`Flag.append` appartient aux qualifications et aux faits qui établissent réellement sa condition. L'appelant consomme leur résultat ; il ne fabrique pas un flag pour contourner une précondition.
 
 ### Définir le contrat d'une transition
 
-Exiger les preuves en entrée, construire des propriétés portant les contraintes attendues, créer ou mettre à jour la cible, puis ajouter les garanties de sortie et appliquer le fait. Le [cycle de vie](../../01-fundamental/06-modeling/40-entity-lifecycle.ts) détaille les API et la reconstruction des preuves après `update`.
+Une `Fact` représente une création ou une modification métier. Elle peut lire plusieurs entités, mais ne modifie qu'une seule cible. Chaque changement métier passe par un fait, y compris un changement de propriété qui conserve le même état nommé. Un [agrégat](./20-aggregates.md) coordonne les faits lorsque l'opération touche plusieurs cibles.
 
-La fixture [`BookRentalFact`](../fixtures/business/domains/entities/book/facts/rental.ts) illustre ce contrat :
+La signature du fait exige les états nécessaires à sa transition. [`BookRentalFact`](../fixtures/business/domains/entities/book/facts/rental.ts) reçoit un client portant `CanRentBookFlag` et un livre portant `AvailableFlag`. Il construit l'état emprunté, met à jour le livre, ajoute `BorrowedFlag` et applique le fait. Le client est lu ; sa modification appartient à [`ClientRentBookFact`](../fixtures/business/domains/entities/client/facts/rentBook.ts).
 
-| Étape | Contrat |
-| --- | --- |
-| Entrée | Un `Client.Entity & Client.CanRentBookFlag` et un `Book.Entity & Book.AvailableFlag`. Pour le livre, qualifier avec [`Book.refineState`](../fixtures/business/domains/entities/book/index.ts) puis sélectionner la branche disponible. |
-| Transformation | Construire un `BorrowedState` avec l'identifiant du client et mettre à jour le livre. Le client est lu, sans être modifié par ce fait. |
-| Sortie | Ajouter `BorrowedFlag` et appliquer `BookRentalFact` avec le nouvel état comme payload. `run` enveloppe la valeur `Book.Entity & Book.BorrowedFlag & BookRentalFact` dans un `Either` droit. |
+Une évidence appartient au contrat d'un fait si sa garantie est intrinsèque à la transition ; une provenance propre à un parcours relève de l'agrégat. Ainsi, [`PrepareWaitingListEntryFact`](../fixtures/business/domains/entities/waitingListEntry/facts/prepare.ts) exige une entrée en attente, sans imposer sa sélection lors d'un retour. [`CancelWaitingListEntryFact`](../fixtures/business/domains/entities/waitingListEntry/facts/cancel.ts) accepte une entrée en attente ou prête et un motif, pour servir aussi bien le retrait d'un livre qu'une annulation par le client.
 
-Après une transition, poursuivre avec **l'entité retournée**. Les preuves d'une ancienne valeur décrivent la situation antérieure et ne doivent pas être transférées sans vérification. Les valeurs fournies à `update` doivent déjà porter le typage métier attendu : cette opération ne valide pas les nouvelles propriétés au runtime, comme précisé dans [Entity](../../01-fundamental/06-modeling/20-entity.ts).
+### Distinguer l'événement et l'état produit
 
-La fact portée par l'entité représente le fait courant ; conserver un historique persistant des transitions demande un mécanisme dédié. Les entités, flags et évidences sont immuables : après `update`, poursuivre avec la nouvelle valeur et ne pas transférer automatiquement les preuves de l'ancienne. Une preuve devenue fausse entre la qualification et la persistance révèle une contrainte de concurrence ou de transaction à traiter dans le contrat d'orchestration, pas une raison de rendre les preuves mutables.
+La payload du fait décrit l'événement ; celle du flag porte les informations de la condition certifiée. Elles peuvent différer. [`ReserveBookFact`](../fixtures/business/domains/entities/book/facts/reserve.ts) conserve `waitingListEntryId` et `clientId` dans sa payload. L'état réservé et son flag ne conservent que `waitingListEntryId`, suffisant pour référencer la réservation effective.
+
+Le fait courant porté par une entité ne constitue pas à lui seul un historique persistant. Si le métier demande cet historique, sa conservation doit être prévue par un contrat dédié.
+
+### Poursuivre avec la nouvelle entité
+
+`Entity.update` est réservé aux faits. Il reconstruit l'entité à partir de ses propriétés déclarées et ne conserve pas automatiquement les anciens flags ni le fait précédent. La transition établit les garanties de la nouvelle valeur, puis les opérations suivantes utilisent cette valeur retournée.
+
+Les propriétés fournies à `update` doivent déjà satisfaire les types métier : cette opération ne réalise pas une validation runtime. Ne pas transférer les preuves de l'ancienne valeur par un spread ou un cast. Le [cycle de vie avec Flag et Fact](../../01-fundamental/06-modeling/40-entity-lifecycle.ts) détaille ces mécanismes.

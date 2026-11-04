@@ -56,21 +56,4 @@ export namespace Client {
 			);
 		}
 	}
-
-	export const HaveBookFlag = DModeling.createFlag<
-		"HaveBook",
-		Book.Entity,
-		typeof Entity
-	>("HaveBook");
-	export type HaveBookFlag = DModeling.GetFlag<typeof HaveBookFlag>;
-	export function clientHaveBook(client: Entity, book: Book.Entity) {
-		if (DArray.includes(client.borrowedBooks, book.id)) {
-			return DEither.right(
-				"client-have-book",
-				HaveBookFlag.append(client, book),
-			);
-		}
-
-		return DEither.left("client-not-have-book");
-	}
 }

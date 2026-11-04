@@ -1,3 +1,3 @@
-# Type Driven Design
+# Type-Driven Design
 
-Architecture en couches, modélisation du domaine et orchestration applicative pour faire vivre les cycles de vie métier.
+Concevoir un domaine qui impose les états, les preuves et le déroulement des opérations métier, puis satisfaire ses contrats dans l'application et l'infrastructure.

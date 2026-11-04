@@ -43,6 +43,8 @@ export const clientRentBookCommand = DSCommand.create(
 				"book.notfound": true,
 				"client.notfound": true,
 				BorrowedState: true,
+				ReservedState: true,
+				WithdrawnState: true,
 				NoBookRentalSlotsAvailable: true,
 				success: false,
 			})
@@ -51,12 +53,10 @@ export const clientRentBookCommand = DSCommand.create(
 			return;
 		}
 
-		const result = await DCommon.pipe(
+		await DCommon.pipe(
 			inputResult,
 			DEither.unwrapRight,
 			useCases.clientRentBookUseCase,
 		);
-
-		console.log(JSON.stringify(result));
 	},
 );

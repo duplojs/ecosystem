@@ -9,15 +9,17 @@ export const BookRentalFact = DModeling.createFact<
 	typeof Book.Entity
 >("BookRental")(
 	({ applyFact }) => (
-		client: Client.Entity & Client.CanRentBookFlag,
-		book: Book.Entity & Book.AvailableFlag,
+		params: {
+			client: Client.Entity & Client.CanRentBookFlag;
+			book: Book.Entity & Book.AvailableFlag;
+		},
 	) => {
 		const borrowedState = Book.BorrowedState.new({
-			currentBorrowerId: client.id,
+			currentBorrowerId: params.client.id,
 		});
 
 		return DCommon.pipe(
-			book,
+			params.book,
 			Book.Entity.update({
 				state: borrowedState,
 			}),

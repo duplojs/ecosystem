@@ -1,6 +1,6 @@
 import * as DInvocation from "@duplojs/lang/invocation";
 import * as UseCases from "../../business/applications/useCases";
-import { bookRepository, clientRepository, emailRepository } from "../ports";
+import { bookRepository, clientRepository, emailRepository, waitingListEntryRepository } from "../ports";
 
 export const useCases = DInvocation.resolveReaders(
 	UseCases,
@@ -8,5 +8,6 @@ export const useCases = DInvocation.resolveReaders(
 		bookRepository,
 		clientRepository,
 		emailRepository,
+		waitingListEntryRepository,
 	},
 );

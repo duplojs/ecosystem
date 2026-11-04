@@ -1,69 +1,62 @@
-### Conception des use cases en Type-Driven Design
+### Use cases : satisfaire les agrégats
 
-Orchestration applicative des agrégats, sélection et propagation des résultats Either, ports et injection avec Reader, résolution des effets et persistance.
+Préparer les garanties requises, raccorder les workflows aux ports applicatifs et encadrer leur exécution, notamment transactionnelle.
+
 ---
 
-### Rôle de la couche applicative
+### Implémenter les exigences du domaine
 
-La couche applicative se situe sous le domaine et au-dessus de l'infrastructure. Un **use case orchestre techniquement les agrégats** : préparer leurs entrées et leurs preuves, sélectionner les résultats permettant de poursuivre, appeler les agrégats, traiter leurs sorties, exécuter les résolveurs et sauvegarder les données.
+Un use case prépare ou reçoit les entrées d'un agrégat, l'appelle, satisfait les demandes de son workflow avec des ports et restitue son résultat. Il conduit cette exécution technique selon les [frontières de l'architecture](../01-architecture/10-boundaries.md), sans importer les implémentations d'infrastructure.
 
-Les règles et les transitions métier restent dans le [domaine](../02-domains/20-aggregates.md). L'application décide de l'enchaînement des opérations et de la persistance à travers des ports abstraits ; l'infrastructure implémente ces ports avec les outils concrets. Les use cases peuvent être transportés avec le domaine dans une autre application si les implémentations respectent ces contrats.
+### Préparer les préconditions demandées
 
-Un agrégat reste une fonction pure : les mêmes entrées produisent le même résultat métier et les mêmes besoins d'effets. Un use case équipé de ports impurs dépend aussi de l'état extérieur ; les mêmes paramètres ne garantissent donc pas le même résultat. Les frontières et les opérations autorisées entre les couches sont décrites dans [l'architecture](../01-architecture/10-boundaries.md).
+La signature détermine la préparation : un identifiant demande encore une recherche ; une entité qualifiée ou un contexte prouvé supposent ces garanties déjà établies. Le use case peut effectuer cette préparation ou la demander à son appelant.
 
-### Composer les résultats avec Either
-
-Les opérations utilisées par les use cases renvoient souvent des monades `Either`. Leur statut et leur information permettent de sélectionner les résultats souhaités, de poursuivre le cas positif et de propager les échecs.
-
-| Besoin | Outil |
+| Fixture | Exigence et préparation |
 | --- | --- |
-| Enchaîner les étapes du cas positif | `DEither.rightPipe` transmet la valeur des `Right` aux étapes suivantes ; dès qu'un `Left` apparaît, il le retourne sans exécuter la suite. `rightAsyncPipe` attend également les étapes asynchrones. |
-| Choisir quels résultats autorisent la poursuite | `keepAsRightByInformation` ou `keepAsRightSelection` classe les variantes souhaitées à droite et les autres à gauche. |
-| Réunir plusieurs résultats nécessaires à une étape | `group` ou `asyncGroup` rassemble les valeurs des `Right` dans un `Success`, ou retourne le premier `Left`. Fournir des getters permet de ne pas exécuter les opérations suivantes après un échec. |
-| Traiter un résultat précis | Les fonctions de discrimination, comme `whenHasInformation` et `matchInformation`, permettent de définir la suite selon l'information du résultat. |
+| [`CreateBookUseCase`](../fixtures/business/applications/useCases/createBook.ts) | Reçoit un titre, appelle sa vérification et sélectionne `title-not-registered`. Fournit ensuite à l'agrégat ce titre prouvé et l'identifiant généré. |
+| [`ClientRentBookUseCase`](../fixtures/business/applications/useCases/clientRentBook.ts) | Reçoit directement le client capable de louer et le livre disponible, avec leurs flags. |
+| [`ClientGiveBackBookUseCase`](../fixtures/business/applications/useCases/clientGiveBackBook.ts) | Reçoit le contexte client-livre portant la preuve produite par le refinement. |
+| [`WithdrawBookUseCase`](../fixtures/business/applications/useCases/withdrawBook.ts) | Reçoit un livre disponible ou réservé, selon la précondition du retrait. |
 
-Un refus prévisible reste un résultat à gérer par les couches appelantes, y compris lorsqu'il provient d'une opération technique. Les exceptions techniques déjà émises par les dépendances ou le runtime remontent implicitement ; le use case n'ajoute pas ses propres `throw`, conformément aux [résultats et exceptions](../../01-fundamental/03-either/50-external-results.ts). `unwrapRight` intervient seulement après la discrimination, lorsqu'une seule branche pertinente reste à poursuivre.
+Dans la création, `keepAsRightByInformation("title-not-registered")` classe `title-already-registered` à gauche. Le `rightAsyncPipe` le propage sans générer d'identifiant, appeler l'agrégat ou sauvegarder de livre. Voir les [outils de composition](../../01-fundamental/03-either/30-composition.ts) et d'[adaptation Either](../../01-fundamental/03-either/40-result-adaptation.ts).
 
-Voir les fondamentaux : [composition et propagation des échecs](../../01-fundamental/03-either/30-composition.ts), [adaptation des résultats](../../01-fundamental/03-either/40-result-adaptation.ts), [discrimination](../../01-fundamental/03-either/10-discrimination.ts) et [traitement exhaustif](../../01-fundamental/03-either/20-exhaustive-handling.ts).
+### Déclarer les dépendances du use case
 
-### Préparer les préconditions de l'agrégat
+Le use case déclare les capacités dont il a besoin avec `createReader`. Celui-ci reçoit les références des ports puis une fonction qui, à partir de leurs implémentations, construit la fonction du use case. Les paramètres métier sont fournis à cette dernière lors de chaque appel.
 
-Dans [`CreateBookUseCase`](../fixtures/business/applications/useCases/createBook.ts), `bookRepository.titleIsAlreadyRegistered` retourne le résultat de la vérification du titre. `keepAsRightByInformation("title-not-registered")` conserve le cas souhaité à droite et classe `title-already-registered` à gauche.
+La déclaration des contrats, leurs extensions techniques et le nommage des dépendances injectées sont décrits dans le [chapitre des ports](./20-ports.md). Le use case consomme ces contrats sans connaître les adaptateurs qui les réalisent.
 
-Le `rightAsyncPipe` fournit alors à l'[agrégat `createBook`](../fixtures/business/domains/aggregates/createBook.ts) le titre portant la preuve `title-not-registered` et l'identifiant généré portant `generated`, puis sauvegarde le livre produit. Si le titre est déjà enregistré, le résultat à gauche est retourné sans génération d'identifiant, appel d'agrégat ni sauvegarde.
+Reader fournit les dépendances ; `consumeWorkflow` satisfait les effets de l'agrégat. Un Reader peut aussi dépendre d'autres Readers ; leurs ports font alors partie des dépendances à fournir. L'[infrastructure](../04-infrastructure/10-implementation.md#résoudre-les-use-cases-une-fois-les-ports-fournis) résout cet ensemble pour exposer les fonctions applicatives.
 
-La sélection conserve les preuves et rend l'appel type-safe. L'implémentation du repository doit réellement établir les garanties qu'elle annonce. Voir [les repositories](../02-domains/30-repositories.md) et [les évidences](../../01-fundamental/06-modeling/50-evidence.ts).
+### Raccorder chaque demande du workflow
 
-Les garanties peuvent aussi être exigées de l'appelant : [`ClientRentBookUseCase`](../fixtures/business/applications/useCases/clientRentBook.ts) reçoit déjà un client portant `CanRentBookFlag` et un livre portant `AvailableFlag`, qualifiés dans la [route de location](../fixtures/infrastructure/http/routes/clientRentBook.ts).
+La consommation associe une implémentation à chaque [demande du workflow](../02-domains/20-aggregates.md#faire-du-workflow-le-contrat-du-déroulement), selon les données et résultats exigés, y compris leurs évidences et signatures.
 
-### Déclarer les ports et construire le Reader
+Dans le [use case de location](../fixtures/business/applications/useCases/clientRentBook.ts), `commit/book-and-client` sauvegarde les deux entités transmises et `commit/send-informational-email` reçoit la fonction signée du port de courriel.
 
-Un **port décrit une capacité nécessaire à l'application**. Il peut reprendre un contrat de repository du domaine et le compléter : [`BookRepositoryPort`](../fixtures/business/applications/ports/book.ts) étend `BookRepository` avec `save`, car la décision de sauvegarder appartient à l'application.
+Dans le [use case de retour](../fixtures/business/applications/useCases/clientGiveBackBook.ts), `resolve/next-pending-waiting-list-entry` appelle le repository et sélectionne ses deux issues normales comme `Right` ; le refus technique reste à gauche. Les commits sont raccordés aux sauvegardes correspondantes et à l'opération signée de disponibilité.
 
-`save` n'est pas une obligation générale des repositories. Cette méthode appartient au port applicatif lorsque le domaine ne fixe pas lui-même le moment, le contexte ou les garanties de la sauvegarde. Si le métier exige une sauvegarde particulière, la dépendance doit être exprimée dans le contrat et, si nécessaire, par une `Evidence`.
+### Exécuter une itération sans déplacer les transitions
 
-Le port associe une interface TypeScript à une constante créée avec `DInvocation.createPort<Interface>()`. L'interface décrit les signatures ; la constante représente la dépendance au runtime. Dans l'infrastructure, la constante du port, par exemple `BookRepositoryPort`, expose `createImplementation` et reçoit une implémentation compatible avec ce contrat.
+Le [use case de retrait](../fixtures/business/applications/useCases/withdrawBook.ts) raccorde `commit/withdrawn-book` et `commit/cancelled-waiting-list-entry` aux sauvegardes du livre et des inscriptions. Pour l'itération, il fournit `waitingListEntryRepository.findAllActiveByBook` comme `getIterator` et règle `concurrency` à cinq. Le même consommateur satisfait ainsi les commits du workflow imbriqué.
 
-Le use case utilise la monade **Reader** de `@duplojs/lang/invocation`. `DInvocation.createReader` reçoit les ports nécessaires et une fonction qui reçoit leurs implémentations, puis retourne la fonction du cas d'utilisation. Les dépendances sont injectées lors de la résolution du Reader ; les paramètres métier sont fournis ensuite à la fonction obtenue.
+La concurrence reste un choix technique compatible avec le contrat métier. Si les traitements doivent respecter un ordre ou partager une garantie particulière, le contrat doit l'exprimer ; une configuration de concurrence ne l'établit pas.
 
-Pour un port, Reader met la première lettre de la clé de dépendance en minuscule et retire le suffixe final `Port` : `BookRepositoryPort` correspond à `bookRepository`. **L'injection doit respecter ce nom et la signature du port.** Un Reader peut aussi dépendre d'autres Readers, résolus à partir des ports fournis.
+### Propager les arrêts et respecter les garanties d'exécution
 
-Dans l'infrastructure, `Reader.run` résout un use case isolé ; `DInvocation.resolveReaders` résout un ensemble avec tous les ports nécessaires. La [fixture de résolution](../fixtures/infrastructure/useCases/index.ts) produit ainsi `useCases.clientRentBookUseCase`, appelable depuis n'importe quel point d'entrée respectant sa signature.
+Un effet qui retourne un `Left` interrompt la consommation et propage ce résultat sans exécuter les étapes suivantes du workflow.
 
-Un use case peut dépendre d'un autre `Reader` ; ses dépendances sont alors incluses dans celles du reader courant. Le même port peut être partagé par plusieurs readers.
+Cet arrêt n'annule pas les effets déjà exécutés. Dans le retrait, le livre a été transmis au premier commit avant l'ouverture du flux. Si celle-ci échoue, cette prise en charge a déjà eu lieu. Avec une itération concurrente, des traitements déjà engagés peuvent également avoir produit des effets.
 
-### Résoudre les effets et décider de la persistance
+Les sauvegardes parallèles d'un même commit ne constituent pas non plus une transaction. Si l'opération exige l'atomicité, une protection contre des modifications concurrentes ou une autre garantie d'exécution, cette exigence doit être prévue dans les contrats puis établie par les implémentations. Une évidence seule ne maintient pas une garantie dans le temps.
 
-**Reader fournit les dépendances du use case ; Resolver exécute les effets déclarés par l'agrégat.** L'[agrégat `clientRentBook`](../fixtures/business/domains/aggregates/clientRentBook.ts) retourne les nouvelles entités et le besoin `sendInformationalEmail`, sans envoyer lui-même de courriel.
+### Exécuter l'opération dans un contexte transactionnel
 
-Le [use case de location](../fixtures/business/applications/useCases/clientRentBook.ts) fournit `emailRepository.sendRentInformationalEmail` à `resolver.resolve`, puis sauvegarde le client et le livre. Le [use case de retour](../fixtures/business/applications/useCases/clientGiveBackBook.ts) résout de même `rankBookAvailability` avant de sauvegarder.
+Le risque de modifications partielles concerne toute opération logicielle qui coordonne plusieurs écritures, indépendamment des workflows. Lorsque ces données doivent évoluer ensemble, prévoir une exécution transactionnelle dans les contrats. Le domaine peut exiger une capacité transactionnelle de repository et des évidences attestant que ses entrées ont été obtenues dans ce contexte ; ces preuves ne créent pas la transaction.
 
-L'ordre appartient au use case selon le besoin de l'opération. Si la sauvegarde doit précéder les effets, `Resolver.runAndResolve` permet d'attendre cette étape avant de les déclencher. Si un effet doit réussir avant la sauvegarde, arrêter la composition lorsqu'il renvoie un `Left`. Une transaction peut être coordonnée par un port ; l'application en définit le périmètre et l'infrastructure fournit le mécanisme. `promiseObject` exécute plusieurs sauvegardes en parallèle, sans fournir d'atomicité par lui-même.
+L'application demande cette capacité ; l'infrastructure ouvre la transaction et fournit les repositories liés à son contexte technique. Y appeler le workflow et attendre toute sa consommation, y compris ses itérations et sauvegardes, avant de valider la transaction. Les lectures qui établissent les préconditions doivent aussi utiliser ce contexte, ou leurs garanties doivent être réétablies à l'écriture. Tous les accès concernés passent par le même client ou gestionnaire transactionnel.
 
-### Démarche d'implémentation
+L'adaptateur doit demander l'annulation des écritures de cette transaction sur une exception ou un `Left` qui interrompt l'opération. Un `Left` est une valeur de retour normale : l'ORM ne le reconnaît pas automatiquement comme un motif de rollback. Le contrat transactionnel doit prévoir ce cas et restituer le refus après l'annulation ; la réussite n'est restituée qu'après validation de la transaction.
 
-1. Lire les contrats des agrégats : entrées, preuves, résultats et effets attendus.
-2. Définir les paramètres du use case et les ports nécessaires, puis créer le Reader.
-3. Préparer les entrées et composer les résultats Either pour poursuivre les branches souhaitées et propager ou traiter les autres.
-4. Appeler les agrégats, résoudre leurs effets et sauvegarder leurs résultats dans l'ordre requis.
-5. Fournir les implémentations de ports et résoudre les use cases dans l'infrastructure.
+Cette atomicité porte sur les accès à la base participant à la transaction. Elle n'annule ni un courriel envoyé ni un appel HTTP déjà exécuté : leur coordination peut demander un envoi après validation ou l'enregistrement transactionnel d'une intention d'envoi à traiter ensuite. Les invariants soumis à la concurrence exigent également des contraintes de base, un niveau d'isolation ou des verrous adaptés. Un flux volumineux peut allonger la transaction ; son périmètre et ses limites doivent rester compatibles avec le contrat métier et les capacités du stockage.

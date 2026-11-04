@@ -1,3 +1,3 @@
 ## Architecture
 
-Responsabilités des couches, sens des dépendances, opérations autorisées aux frontières et exposition des résultats aux consommateurs.
+Répartir la décision métier, la satisfaction des contrats et la réalisation technique entre domaine, application et infrastructure.

@@ -21,12 +21,12 @@ export const CreateBookUseCase = DInvocation.createReader(
 				"title-not-registered",
 			),
 		),
-		(title) => createBook({
-			id: bookRepository.generateId(),
-			title,
-		}),
-		(book) => DCommon.promiseObject({
-			book: bookRepository.save(book),
-		}),
+		(title) => DInvocation.consumeWorkflow(
+			createBook({
+				id: bookRepository.generateId(),
+				title,
+			}),
+			{ "commit/book": bookRepository.save },
+		),
 	),
 );

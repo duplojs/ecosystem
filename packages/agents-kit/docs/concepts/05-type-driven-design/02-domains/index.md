@@ -1,3 +1,3 @@
 ## Domaines
 
-Modélisation du métier et contrats de ses opérations : entités, invariants, transitions, agrégats et repositories.
+États et transitions des entités, orchestration par les agrégats, capacités des repositories et preuves de contexte produites par les refinements.

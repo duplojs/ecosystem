@@ -28,16 +28,18 @@ export const clientRentBookRoute = useRouteBuilder("POST", "/book-rentals")
 			{
 				AvailableState: (book) => output({ book }),
 				BorrowedState: () => response.conflict("book.unavailable"),
+				ReservedState: () => response.conflict("book.unavailable"),
+				WithdrawnState: () => response.conflict("book.unavailable"),
 			},
 		),
 	)
 	.handler(
 		async({ client, book }, { response }) => {
-			const result = await useCases.clientRentBookUseCase({
+			await useCases.clientRentBookUseCase({
 				client,
 				book,
 			});
 
-			return response.created("book.rented", DEither.unwrapRight(result));
+			return response.created("book.rented");
 		},
 	);

@@ -437,47 +437,61 @@ Organisation d’une suite E2E selon les pages et les composants du site testé.
 
 Scénarios utilisateur, interactions et vérifications avec les objets du site.
  
-# Type Driven Design
+# Type-Driven Design
 
-Architecture en couches, modélisation du domaine et orchestration applicative pour faire vivre les cycles de vie métier.
+Concevoir un domaine qui impose les états, les preuves et le déroulement des opérations métier, puis satisfaire ses contrats dans l'application et l'infrastructure.
 
 ## Architecture
 
-Responsabilités des couches, sens des dépendances, opérations autorisées aux frontières et exposition des résultats aux consommateurs.
+Répartir la décision métier, la satisfaction des contrats et la réalisation technique entre domaine, application et infrastructure.
 
 ### [Frontières entre domaine, application et infrastructure](concepts/05-type-driven-design/01-architecture/10-boundaries.md)
 
-Déterminer les dépendances autorisées, les opérations utilisables depuis chaque couche et le traitement des données et erreurs aux frontières du système.
+Responsabilités des couches, sens des dépendances et préparation des garanties aux frontières du système.
+
 
 ## Domaines
 
-Modélisation du métier et contrats de ses opérations : entités, invariants, transitions, agrégats et repositories.
+États et transitions des entités, orchestration par les agrégats, capacités des repositories et preuves de contexte produites par les refinements.
 
-### [Conception des entités en Type-Driven Design](concepts/05-type-driven-design/02-domains/10-entities.md)
+### [Entités, qualifications et faits](concepts/05-type-driven-design/02-domains/10-entities.md)
 
-Organisation des modèles métier, de leurs invariants, qualifications et transitions dans le domaine.
+Modéliser les données et leurs invariants, certifier leurs conditions actuelles et rendre explicites les préconditions des transitions métier.
 
-### [Conception des agrégats en Type-Driven Design](concepts/05-type-driven-design/02-domains/20-aggregates.md)
 
-Contrats des transactions métier, préconditions et orchestration de faits réutilisables.
+### [Agrégats, preuves et workflows](concepts/05-type-driven-design/02-domains/20-aggregates.md)
 
-### [Conception des repositories en Type-Driven Design](concepts/05-type-driven-design/02-domains/30-repositories.md)
+Définir le déroulement d'une opération métier, les preuves qui l'autorisent et les demandes commit, resolve et iterate que l'application doit satisfaire.
 
-Contrats des opérations nécessaires au métier dont l'implémentation technique reste extérieure au domaine.
+
+### [Repositories : capacités extérieures du domaine](concepts/05-type-driven-design/02-domains/30-repositories.md)
+
+Définir les opérations extérieures utiles au métier, leurs résultats et leurs garanties sans exposer leur réalisation technique.
+
+
+### [Refinements : qualifier un contexte métier](concepts/05-type-driven-design/02-domains/40-refinements.md)
+
+Vérifier une combinaison d'entités ou de valeurs et produire la preuve de cet état commun sans réaliser de transition.
+
 
 ## Applications
 
-Orchestration des agrégats, ports de capacités, injection des dépendances, effets et persistance.
+Use cases pour satisfaire les agrégats et ports pour définir leurs capacités extérieures, leurs extensions techniques et leurs dépendances injectables.
 
-### [Conception des use cases en Type-Driven Design](concepts/05-type-driven-design/03-applications/10-use-case.md)
+### [Use cases : satisfaire les agrégats](concepts/05-type-driven-design/03-applications/10-use-case.md)
 
-Orchestration applicative des agrégats, sélection et propagation des résultats Either, ports et injection avec Reader, résolution des effets et persistance.
+Préparer les garanties requises, raccorder les workflows aux ports applicatifs et encadrer leur exécution, notamment transactionnelle.
+
+
+### [Ports : contrats des dépendances applicatives](concepts/05-type-driven-design/03-applications/20-ports.md)
+
+Définir les capacités requises par l'application, étendre les résultats des contrats du domaine et rendre leurs implémentations injectables sans dépendre d'une technologie.
+
 
 ## Infrastructure
 
-Assemblage concret de l'application : implémentation des ports, résolution des use cases et raccordement aux points d'entrée.
+Réaliser les garanties des ports, résoudre les use cases et adapter leurs entrées et résultats aux systèmes concrets.
 
-### [Assembler l'application dans l'infrastructure](concepts/05-type-driven-design/04-infrastructure/10-implementation.md)
+### [Infrastructure : réaliser et raccorder les contrats](concepts/05-type-driven-design/04-infrastructure/10-implementation.md)
 
-Fournir les dépendances concrètes de l'application et raccorder ses capacités aux points d'entrée du système.
-
+Implémenter les capacités techniques demandées par l'application, établir réellement leurs garanties et exposer les opérations aux consommateurs.

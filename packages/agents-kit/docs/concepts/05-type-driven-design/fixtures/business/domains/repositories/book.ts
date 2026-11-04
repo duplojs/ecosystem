@@ -10,7 +10,7 @@ export interface BookRepository {
 	>;
 	rankAvailability: DInvocation.SignedFunction<
 		"rankAvailability",
-		(params: { book: Book.Entity }) => Promise<void>
+		(book: Book.Entity) => Promise<void>
 	>;
 	findById(id: Book.Id): Promise<DEither.Maybe<Book.Entity>>;
 }

@@ -10,13 +10,17 @@ export const ClientGiveBackBook = DModeling.createFact<
 	typeof Client.Entity
 >("ClientGiveBackBook")(
 	({ applyFact }) => (
-		client: Client.Entity & Client.HaveBookFlag,
+		{
+			client,
+			book,
+		}: {
+			client: Client.Entity;
+			book: Book.Entity & Book.BorrowedFlag;
+		},
 	) => {
-		const book = Client.HaveBookFlag.getPayload(client);
-
 		const borrowedBooks = DArray.filter(
 			client.borrowedBooks,
-			(bookId) => bookId === book.id,
+			(bookId) => bookId !== book.id,
 		);
 
 		return DCommon.pipe(

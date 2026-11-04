@@ -1,41 +1,35 @@
-### Conception des repositories en Type-Driven Design
+### Repositories : capacités extérieures du domaine
 
-Contrats des opérations nécessaires au métier dont l'implémentation technique reste extérieure au domaine.
+Définir les opérations extérieures utiles au métier, leurs résultats et leurs garanties sans exposer leur réalisation technique.
+
 ---
 
-### Déclarer une capacité à partir du besoin métier
+### Nommer les opérations dont le métier a besoin
 
-Dans ce Type-Driven Design, un **repository est, conceptuellement, un agrégat dont l'implémentation ne concerne pas le domaine**. Il est déclaré dans le domaine sous forme de contrat : ses entrées, ses résultats possibles et ses garanties utilisent les types métier ; sa réalisation technique reste extérieure.
+Un repository décrit les entrées, les issues et les garanties d'une capacité extérieure au domaine. Ce rôle couvre les lectures, les vérifications sur des collections, la génération d'identifiants, les flux d'entités ou l'envoi d'un courriel, sans exposer leur réalisation technique.
 
-Son périmètre suit les capacités que le métier doit nommer : récupération de données, génération de valeurs, vérifications préalables, calculs précis ou envoi de courriels. Le domaine décrit ce qu'il attend sans exposer de requête SQL, de client de base de données ou de configuration de transport.
-
-Les fixtures donnent des contrats adaptés à plusieurs besoins :
-
-| Besoin | Contrat |
+| Besoin du domaine | Contrat de la fixture |
 | --- | --- |
-| Obtenir un identifiant issu de la génération prévue | [`BookRepository.generateId`](../fixtures/business/domains/repositories/book.ts) retourne un `Book.Id` portant l'évidence `generated`. |
-| Vérifier une condition du catalogue | `BookRepository.titleIsAlreadyRegistered` retourne une promesse de résultat portant `title-already-registered` ou `title-not-registered`, avec le titre concerné. |
-| Retrouver une entité | `BookRepository.findById` et [`ClientRepository.findById`](../fixtures/business/domains/repositories/client.ts) retournent une promesse de `Maybe` contenant l'entité ou représentant son absence. |
-| Demander un traitement de disponibilité | `BookRepository.rankAvailability` décrit une fonction signée recevant le livre. |
-| Envoyer un courriel de location | [`EmailRepository.sendRentInformationalEmail`](../fixtures/business/domains/repositories/email.ts) décrit une fonction signée recevant le client et le livre. |
+| Disposer d'un identifiant généré | [`BookRepository.generateId`](../fixtures/business/domains/repositories/book.ts). |
+| Savoir si un titre figure déjà au catalogue | `BookRepository.titleIsAlreadyRegistered`. |
+| Retrouver une entité existante | `BookRepository.findById` et [`ClientRepository.findById`](../fixtures/business/domains/repositories/client.ts). |
+| Choisir la prochaine inscription ou parcourir les inscriptions actives | [`WaitingListEntryRepository`](../fixtures/business/domains/repositories/waitingListEntry.ts). |
+| Envoyer le courriel d'information de location | [`EmailRepository.sendRentInformationalEmail`](../fixtures/business/domains/repositories/email.ts). |
 
-Voir [les preuves de passage](../../01-fundamental/06-modeling/50-evidence.ts) et [l'identité des fonctions dans les dépendances](../../01-fundamental/06-modeling/60-signed-function.ts) pour les mécanismes de typage utilisés par ces contrats.
+Un nom d'opération métier et une signature précise rendent le besoin implémentable. Une méthode générique qui laisse à chaque appelant le choix des filtres ou de l'ordre peut laisser des décisions métier hors du domaine.
 
-### Relier le contrat aux transactions
+### Décrire la garantie, au-delà de la forme
 
-Un repository intervient de deux façons auprès des [agrégats](./20-aggregates.md) :
+Le contrat doit expliquer ce que le résultat certifie. Pour `findNextPendingForBook`, il s'agit de l'entrée en attente du livre fourni ayant la date de demande la plus ancienne ; l'identifiant départage les dates égales. Le résultat contient le livre disponible et cette entrée qualifiée. L'autre issue certifie l'absence d'entrée en attente pour ce livre.
 
-- **Avant la transaction**, son opération fournit des données ou établit une précondition extérieure que l'agrégat exige en entrée. `createBook` utilise ainsi les garanties de génération d'identifiant et de vérification du titre. Pour une recherche, la couche appelante gère l'absence de l'entité et la qualifie selon les besoins de l'opération.
-- **Pour les effets attendus**, son contrat définit une dépendance du résolveur retourné par l'agrégat. `clientRentBook` utilise ainsi la signature de `EmailRepository.sendRentInformationalEmail`.
+Les deux issues normales sont `next-pending-waiting-list-entry` et `no-pending-waiting-list-entry`. Elles utilisent [EvidenceResult](../../01-fundamental/06-modeling/50-evidence.ts) pour associer leur information à l'évidence de même nom sur leur valeur.
 
-L'application orchestre les appels techniques et la résolution des effets. L'agrégat exploite les résultats préparés ou déclare les effets attendus, sans exécuter l'implémentation du repository.
+Pour `findAllActiveByBook`, le résultat est un générateur asynchrone : il fournit une fois chaque entrée active du livre retiré, encore en attente ou déjà prête. Les entrées annulées sont exclues. Chaque élément contient le livre et l'entrée qualifiée, avec l'évidence `active-waiting-list-entry-for-withdrawn-book`. Le contrat porte sur chaque élément et sur le périmètre complet du flux ; le type de l'élément ne suffit pas à prouver l'exhaustivité de sa lecture.
 
-Lorsqu'une recherche retourne une entité, le repository l'hydrate avant de la transmettre. Une requête peut filtrer sur un état, mais elle ne suffit pas à ajouter le flag : appeler ensuite la qualification du domaine. Si elle révèle un autre état, le repository doit signaler l'incohérence comme une erreur technique.
+### Exiger un résultat sans appeler l'implémentation
 
-Une opération de repository peut établir un contexte transactionnel ou une autre garantie d'exécution. Si elle reçoit une callback, son contrat doit préciser que celle-ci est exécutée dans le contexte requis ; l'implémentation ne produit l'évidence associée qu'après avoir réellement établi et exécuté ce contexte. Le domaine peut exiger cette preuve dans une `Fact`, un agrégat ou une étape intermédiaire.
+Le contrat peut fournir une précondition, comme le titre vérifié de `createBook`, ou le contexte d'un `resolve` ou d'un `iterate`. L'agrégat exige ces résultats avec [GetEvidenceResult](./20-aggregates.md#exiger-les-preuves-utiles-au-parcours). Pour demander une opération identifiée, comme le courriel de location ou `BookRepository.rankAvailability`, il utilise un [commit signé](./20-aggregates.md#transmettre-une-donnée-avec-commit).
 
-### Respecter les garanties annoncées
+### Laisser les contraintes techniques à l'application
 
-**L'implémentation doit réellement établir une condition avant de produire sa preuve.** Le contrat exige la garantie dans le typage ; ajouter une évidence ne réalise pas la vérification technique.
-
-Changer de base de données, de générateur ou de service de courriel préserve les transactions métier tant que les opérations conservent leurs entrées, leurs résultats et le sens des garanties annoncées. La seule compatibilité TypeScript ne suffit pas à respecter ce contrat.
+Le [port applicatif](../03-applications/20-ports.md#ajouter-les-résultats-propres-à-lexécution-technique) ajoute les refus techniques aux résultats métier. L'[infrastructure](../04-infrastructure/10-implementation.md#implémenter-les-garanties-des-ports) établit les garanties annoncées : une autre technologie peut satisfaire le même contrat si elle en respecte le sens, au-delà de la compatibilité TypeScript.

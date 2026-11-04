@@ -1,49 +1,65 @@
-### Conception des agrégats en Type-Driven Design
+### Agrégats, preuves et workflows
 
-Contrats des transactions métier, préconditions et orchestration de faits réutilisables.
+Définir le déroulement d'une opération métier, les preuves qui l'autorisent et les demandes commit, resolve et iterate que l'application doit satisfaire.
+
 ---
 
-### Délimiter une transaction métier
+### Porter l'opération métier entière
 
-Dans ce Type-Driven Design, un **agrégat est une fonction pure de transaction métier**. Son nom exprime l'opération prise en charge. Il exige ses préconditions dans sa signature, choisit les faits nécessaires, relie leurs entrées et leurs sorties et rassemble les résultats métier.
+Dans ce Type-Driven Design, un **agrégat est une fonction qui conduit une opération métier**. Il exige ses préconditions, coordonne les [faits](./10-entities.md#définir-le-contrat-dune-transition), relie leurs entrées et leurs sorties et détermine le résultat final.
 
-Les [faits](./10-entities.md) portent les transitions de chaque cible et restent réutilisables dans plusieurs agrégats. Un agrégat peut appeler un seul fait : ses exigences peuvent déjà différer de celles de cette transition.
+[`clientRentBook`](../fixtures/business/domains/aggregates/clientRentBook.ts) coordonne ainsi le fait qui ajoute un emprunt au client et celui qui passe le livre à l'état emprunté.
 
-Pour concevoir l'opération, déterminer ses entrées et leurs preuves, choisir les faits, organiser leur enchaînement selon leurs dépendances, puis restituer les entités produites et les éventuels besoins d'effets. Les couches appelantes fournissent les entrées qualifiées et gèrent les situations où les préconditions ne peuvent pas être établies. La décision de créer un agrégat vient du besoin métier ; elle ne se déduit pas seulement du nombre d'entités dans les paramètres.
+L'agrégat fixe aussi les exigences propres à l'opération. [`CreateBookFact`](../fixtures/business/domains/entities/book/facts/create.ts) reçoit un identifiant et un titre. L'agrégat [`createBook`](../fixtures/business/domains/aggregates/createBook.ts) exige en plus que l'identifiant ait été généré et que le titre ait été vérifié comme absent du catalogue. Le fait reste réutilisable ; ce parcours de création porte ses propres preuves.
 
-Un agrégat n'appelle jamais un repository et n'exécute jamais une dépendance fournie par l'extérieur. Il reste pur : pour les mêmes entrées, il produit le même résultat métier et les mêmes besoins déclarés. L'application appelle les repositories, prépare les entrées puis appelle l'agrégat.
+Un agrégat reste pur. Il n'appelle ni repository ni callback impure injectée : il transforme les valeurs disponibles et déclare les besoins extérieurs. À entrées et résultats fournis identiques, son raisonnement métier est identique. Un agrégat sans effet à demander peut retourner directement une valeur ou un `Either`.
 
-### Coordonner plusieurs entités
+### Exiger les preuves utiles au parcours
 
-La fixture [`clientRentBook`](../fixtures/business/domains/aggregates/clientRentBook.ts) exige un `Client.Entity & Client.CanRentBookFlag` et un `Book.Entity & Book.AvailableFlag`.
+Une [Evidence](../../01-fundamental/06-modeling/50-evidence.ts) rend exigible dans les types une garantie de contexte, une relation entre valeurs ou une provenance.
 
-Elle appelle [`ClientRentBookFact`](../fixtures/business/domains/entities/client/facts/rentBook.ts) pour ajouter le livre aux emprunts du client et [`BookRentalFact`](../fixtures/business/domains/entities/book/facts/rental.ts) pour passer le livre à l'état emprunté. Les deux faits reçoivent ici les mêmes entrées qualifiées et produisent chacun la nouvelle valeur de leur cible.
+Un `Book.Title` satisfait ses contraintes de forme, mais ne prouve pas que le catalogue ne contient pas déjà ce titre. Le résultat `title-not-registered` du [repository](../fixtures/business/domains/repositories/book.ts) apporte cette garantie contextuelle. De même, le [refinement client-livre](./40-refinements.md) certifie une combinaison que ni le client seul ni un livre simplement qualifié comme emprunté ne suffisent à établir.
 
-Si plusieurs faits modifient successivement **la même entité**, transmettre à chaque étape la valeur retournée par la précédente, avec les preuves exigées. Réutiliser l'entrée initiale ferait perdre les modifications intermédiaires.
+`GetEvidenceResult` permet d'exiger la valeur portant une évidence précise parmi les résultats d'une fonction ou d'une méthode, y compris à travers une promesse, un `Either` ou un générateur. L'agrégat se rattache ainsi au contrat qui définit le résultat attendu sans reprendre l'ensemble de ses issues. Les noms d'évidence distinguent les garanties : deux méthodes annonçant le même type et la même évidence restent compatibles. Une identité d'opération particulière se représente avec une [SignedFunction](../../01-fundamental/06-modeling/60-signed-function.ts).
 
-Une `Fact` représente l'événement du cycle de vie d'une seule entité. Lorsque le métier coordonne plusieurs entités dans la même opération, l'agrégat orchestre les faits correspondants. Si cette coordination n'est pas une exigence du métier, les transitions peuvent rester dans des opérations distinctes.
+L'agrégat peut exiger la provenance d'une sélection ou d'un flux, puis transmettre aux faits les entités qualifiées selon leurs propres préconditions.
 
-### Ajouter les exigences propres à la transaction
+### Faire du workflow le contrat du déroulement
 
-La fixture [`createBook`](../fixtures/business/domains/aggregates/createBook.ts) distingue le contrat de création de l'entité et celui de la transaction :
+Le workflow exprime les endroits où l'opération transmet une donnée, attend un contexte supplémentaire ou applique un cycle de vie à une collection. Il précise ce que l'application doit fournir et à quel moment. Les branches métier restent dans l'agrégat ; les appels techniques restent dans l'application.
 
-| Contrat | Préconditions |
-| --- | --- |
-| [`CreateBookFact`](../fixtures/business/domains/entities/book/facts/create.ts) | Un `Book.Id` et un `Book.Title`. |
-| Agrégat `createBook` | Un identifiant portant la preuve `generated` et un titre portant la preuve `title-not-registered`, exigés avec `GetEvidenceResult`. |
+| Demande | Ce que le domaine impose | Liberté de réalisation technique |
+| --- | --- | --- |
+| `commit` | Prendre en charge une donnée à cette étape du déroulement. | Réaliser la sauvegarde ou l'action prévue par le contrat. |
+| `resolve` | Fournir le résultat qualifié nécessaire pour poursuivre le raisonnement. | Obtenir ce résultat par l'opération extérieure appropriée. |
+| `iterate` | Fournir les éléments du périmètre demandé et exécuter le workflow métier pour chacun. | Lire le flux progressivement et organiser son exécution. |
 
-Ces garanties proviennent du contrat de [`BookRepository`](../fixtures/business/domains/repositories/book.ts). Les contraintes de `Book.Title` décrivent sa forme ; l'absence du titre dans le catalogue dépend d'une vérification extérieure. Un titre seul ne satisfait donc pas le contrat de l'agrégat. Voir [les preuves de passage](../../01-fundamental/06-modeling/50-evidence.ts) pour le mécanisme `Evidence` et [les repositories](./30-repositories.md) pour les opérations qui les produisent.
+Les fixtures déclarent ces demandes avec `createWorkflow` ; l'[application](../03-applications/10-use-case.md) les satisfait avec `consumeWorkflow`.
 
-Un autre agrégat peut réutiliser le même fait avec d'autres préconditions. **Les exigences de la transaction appartiennent à l'agrégat ; la création ou modification de l'entité appartient au fait.**
+### Transmettre une donnée avec commit
 
-Le niveau d'exigence dépend de l'orchestration choisie. Une `Fact` peut exiger directement une évidence lorsqu'une transition impose une provenance, tandis que l'agrégat ou une étape intermédiaire peut l'exiger lorsque la contrainte concerne le parcours complet. Ne pas ajouter cette exigence à une transition qui autorise volontairement plusieurs provenances.
+Un `commit` indique que la donnée a atteint le point où l'agrégat veut la confier à une opération extérieure. La persistance est un usage fréquent. Le commit peut aussi demander une action, par exemple l'envoi d'un courriel. Sa valeur de retour n'alimente pas le raisonnement métier du générateur.
 
-### Déclarer les effets attendus
+Dans [`clientRentBook`](../fixtures/business/domains/aggregates/clientRentBook.ts), les faits produisent les nouvelles valeurs du client et du livre. Le premier commit les transmet ensemble ; le suivant demande le courriel d'information. L'application attend la prise en charge du premier avant de poursuivre avec le second.
 
-Lorsqu'une transaction nécessite des effets, retourner un `Resolver` contenant les résultats métier et le contrat des opérations attendues. Sa construction déclare ces besoins sans les exécuter : l'agrégat reste pur.
+Si l'identité de l'action importe, `withSignature<EmailRepository["sendRentInformationalEmail"]>()` exige la fonction signée correspondante. Un commit qui transmet simplement une entité laisse au use case le raccordement à sa sauvegarde.
 
-Le `Resolver` est optionnel. Un agrégat sans effet peut retourner directement sa valeur ou son `Either`; l'utiliser sert à rassembler plusieurs résultats et à déclarer les effets nécessaires, sans les exécuter.
+### Obtenir un contexte extérieur avec resolve
 
-Dans `clientRentBook`, le résolveur rassemble `client` et `book` et exige `sendInformationalEmail`, typé par `EmailRepository["sendRentInformationalEmail"]`. L'[application](../03-applications/10-use-case.md) fournit les implémentations, exécute le résolveur et décide de l'ordre des effets et de la persistance.
+Un `resolve` intervient lorsque les données disponibles ne permettent pas de poursuivre la décision métier. Une qualification pure suffit si toute l'information est déjà présente. Quand la réponse dépend d'une collection extérieure potentiellement volumineuse, le domaine exige le résultat utile sans charger cette collection dans ses paramètres.
 
-Le résolveur décrit les conséquences attendues de l'événement métier ; l'application décide de leur ordre, de leur criticité et de leur stratégie d'exécution. Si un effet doit réussir avant de poursuivre, la composition du use case doit arrêter les étapes suivantes lorsqu'il renvoie un `Left`.
+[`clientGiveBackBook`](../fixtures/business/domains/aggregates/clientGiveBackBook.ts) applique les faits de retour, puis demande la prochaine inscription en attente du livre rendu. Il exige les résultats de `WaitingListEntryRepository.findNextPendingForBook` : une entrée sélectionnée ou la preuve qu'aucune entrée n'est en attente.
+
+Ces deux issues permettent de continuer. Sans inscription, l'agrégat transmet le livre disponible et le client. Avec une inscription, il applique les faits de réservation du livre et de préparation de l'entrée, puis transmet les trois entités. La décision de réserver appartient entièrement au domaine ; l'application fournit le contexte qui la rend possible.
+
+Le [repository](./30-repositories.md#décrire-la-garantie-au-delà-de-la-forme) précise les garanties de sélection ; l'[application](../03-applications/10-use-case.md#propager-les-arrêts-et-respecter-les-garanties-dexécution) traite l'impossibilité de satisfaire la résolution.
+
+### Faire vivre chaque élément d'un flux avec iterate
+
+Un `iterate` exprime qu'une même opération métier doit s'appliquer à chaque élément d'un ensemble. Il permet de parcourir un volume non borné sans réunir toutes les entités en mémoire et de conserver les transitions du domaine pour chacune.
+
+[`withdrawBook`](../fixtures/business/domains/aggregates/withdrawBook.ts) reçoit un livre disponible ou réservé : il est encore à la bibliothèque. Après le fait de retrait et le commit du livre, il demande toutes les entrées actives de sa liste d'attente. Chaque élément doit porter la preuve du résultat de `WaitingListEntryRepository.findAllActiveByBook` et contenir une entrée en attente ou prête.
+
+Le workflow imbriqué applique `CancelWaitingListEntryFact` avec le motif `book-withdrawn`, puis transmet l'entrée annulée par un commit. Une mise à jour globale en base contournerait ces faits et leurs préconditions. Le domaine conserve le choix de la transition et de son motif ; l'application fournit la génératrice asynchrone et le degré de concurrence.
+
+Le résultat final est le livre retiré ; le workflow n'accumule pas les entrées traitées. Le [use case de retrait](../fixtures/business/applications/useCases/withdrawBook.ts) montre le raccordement du flux et des commits. Les conséquences d'un arrêt après des effets déjà exécutés sont décrites dans la [consommation applicative](../03-applications/10-use-case.md#propager-les-arrêts-et-respecter-les-garanties-dexécution).
