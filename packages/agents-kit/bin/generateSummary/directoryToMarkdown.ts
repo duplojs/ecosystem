@@ -138,7 +138,7 @@ export const directoryToMarkdown: (
 						const header = DCommon.pipe(
 							DEither.rightPipe(
 								content,
-								DString.extract(/^\/\*\*(?<headerContent>[^]*)\*\//),
+								DString.extract(/^\/\*\*(?<headerContent>[^]*?)\*\//),
 								(extractResult) => DEither.toMaybe(extractResult?.namedGroups.headerContent),
 								DString.split("\n"),
 								DArray.filter(DString.isNotEmpty),
@@ -156,8 +156,7 @@ export const directoryToMarkdown: (
 						if (DString.startsWith(fileName, "0")) {
 							const exampleContent = DCommon.pipe(
 								content,
-								DString.split("*/"),
-								DArray.last,
+								DString.replace(/^\/\*\*[^]*?\*\//, ""),
 							);
 
 							return DCommon.pipe(

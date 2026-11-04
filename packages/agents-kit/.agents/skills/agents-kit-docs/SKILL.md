@@ -83,6 +83,8 @@ Nommer le concept, le problème ou la capacité documentée avec un titre explic
  */
 ```
 
+Dans les fichiers TypeScript documentaires, le header initial est l'unique commentaire de bloc autorisé. Réserver la forme `/** … */` à ce header et utiliser exclusivement des commentaires de ligne `//` dans le reste du fichier, y compris pour une explication sur plusieurs lignes. Convertir tout autre commentaire `/* … */` ou `/** … */` en lignes `//`, en conservant son contenu.
+
 Dans les sources conceptuelles, un symbole d'API peut nommer le concept lui-même. Les fonctions utilisées seulement pour l'illustrer restent dans l'exemple.
 
 Pour vérifier le périmètre du routage : **si l'exemple change mais transmet la même connaissance, le titre et la description doivent rester pertinents.**
