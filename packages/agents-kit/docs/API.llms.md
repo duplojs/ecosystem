@@ -42,6 +42,10 @@ Fonctions fonctionnelles pour lire, discriminer, transformer, fusionner et recon
 
 Le domaine `DPath` représente des chemins avec des contraintes de type, les normalise, les assemble et vérifie leurs segments. Ses fabriques valident les chaînes runtime avant de produire un chemin typé.
 
+## [DPattern](API/10-lang/10-pattern/index.llms.md)
+
+Correspondre des valeurs à des motifs, affiner les unions discriminées et composer des traitements exhaustifs ou avec branche de repli.
+
 # [DPrinter](API/10-lang/10-printer/index.llms.md)
 
 Fonctions et constantes pour assembler du texte, formater des lignes et paragraphes, ajouter une indentation ou des styles ANSI.

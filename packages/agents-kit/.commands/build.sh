@@ -17,6 +17,7 @@ pnpm run llms generate-summary --input docs/API/10-lang/10-generator --output do
 pnpm run llms generate-summary --input docs/API/10-lang/10-number --output docs/API/10-lang/10-number/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-object --output docs/API/10-lang/10-object/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-path --output docs/API/10-lang/10-path/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/10-lang/10-pattern --output docs/API/10-lang/10-pattern/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-printer --output docs/API/10-lang/10-printer/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-string --output docs/API/10-lang/10-string/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-tuple --output docs/API/10-lang/10-tuple/index.llms.md --ignore '*.llms.md'
