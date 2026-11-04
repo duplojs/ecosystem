@@ -30,9 +30,17 @@ Création, discrimination, transformation et propagation des réussites ou des �
 
 Création et composition de génératrices synchrones ou asynchrones pour produire, transformer, filtrer, réduire et consommer des séquences de valeurs.
 
+## [DNumber](API/10-lang/10-number/index.llms.md)
+
+Prédicats et transformations fonctionnelles pour comparer, vérifier, agréger et trier des nombres tout en conservant leurs contraintes de typage.
+
 ## [DObject](API/10-lang/10-object/index.llms.md)
 
 Fonctions fonctionnelles pour lire, discriminer, transformer, fusionner et reconstruire des objets en conservant les informations de typage utiles.
+
+# [DString](API/10-lang/10-string/index.llms.md)
+
+Fonctions de manipulation, recherche, validation et transformation des chaînes de caractères, avec des formes curifiées et des contraintes de typage lorsque l'API peut les établir.
 
 # @duplojs/json-web-token
 
