@@ -9,18 +9,18 @@ import * as DGenerator from "@duplojs/lang/generator";
 
 const head = (async function *() {
 	await DCommon.timeout();
-	yield 1 as const;
-	yield 2 as const;
+	yield 1;
+	yield 2;
 })();
 
 const tail = (async function *() {
 	await DCommon.timeout();
-	yield 4 as const;
-	yield 5 as const;
+	yield 4;
+	yield 5;
 })();
 
 // Appel classique : les valeurs sont produites dans l’ordre [1, 2, 3, 4, 5].
-const result = DGenerator.asyncConcat(head, [3] as const, tail);
+const result = DGenerator.asyncConcat(head, [3], tail);
 
 type _CheckResult = DCommon.ExpectType<
 	typeof result,
@@ -31,16 +31,13 @@ type _CheckResult = DCommon.ExpectType<
 // Appel curifié : les itérables ajoutés sont configurés dans l’étape du pipe.
 const piped = DCommon.pipe(
 	[1, 2],
-	DGenerator.asyncConcat(([
-		3,
-		4,
-	] as number[])),
+	DGenerator.asyncConcat([3, 4]),
 	DArray.from,
 );
 
 // La promesse se résout vers [1, 2, 3, 4].
 type _CheckPiped = DCommon.ExpectType<
 	typeof piped,
-	Promise<readonly number[]>,
+	Promise<readonly (1 | 2 | 3 | 4)[]>,
 	"strict"
 >;

@@ -4,7 +4,7 @@
  * Vérifier qu’une chaîne respecte le format sérialisé sûr d’une TheTime.
  */
 import * as DChrono from "@duplojs/lang/chrono";
-import type * as DCommon from "@duplojs/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 
 const value = "time90000+";
 const isSerialized = DChrono.isSerializedTheTime(value);
@@ -24,3 +24,18 @@ if (DChrono.isSerializedTheTime(value)) {
 	type _CheckNarrowed = DCommon.ExpectType<typeof timeValue, number, "strict">;
 }
 
+declare const checkedValue: string;
+
+// Le pipe valide la chaîne avant de lire sa valeur temporelle.
+const timeValue = DCommon.pipe(
+	checkedValue,
+	DCommon.when(
+		DChrono.isSerializedTheTime,
+		(serializedTime) => {
+			type _CheckTime = DCommon.ExpectType<typeof serializedTime, DChrono.SerializedTheTime, "strict">;
+
+			return DChrono.toTimeValue(serializedTime);
+		},
+	),
+);
+type _CheckTimeValue = DCommon.ExpectType<typeof timeValue, string | number, "strict">;

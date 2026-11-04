@@ -15,10 +15,23 @@ type Event =
 		type: "deleted";
 		id: number;
 	};
-type CreatedEvent = Extract<Event, { type: "created" }>;
-type DeletedEvent = Extract<Event, { type: "deleted" }>;
+interface CreatedEvent {
+	type: "created";
+	id: string;
+}
+
+interface DeletedEvent {
+	type: "deleted";
+	id: number;
+}
 
 declare const event: Event;
+
+if (DObject.discriminate(event, "type", "created")) {
+	type _CheckIfEvent = DCommon.ExpectType<typeof event, CreatedEvent, "strict">;
+	const id = event.id;
+	type _CheckIfId = DCommon.ExpectType<typeof id, string, "strict">;
+}
 
 const result = DObject.discriminate(event, "type", "created");
 
@@ -33,7 +46,7 @@ const id = DCommon.pipe(
 		(createdEvent) => {
 			type _CheckPredicatedInput = DCommon.ExpectType<typeof createdEvent, CreatedEvent, "strict">;
 
-			return DObject.getProperty(createdEvent, "id");
+			return createdEvent.id;
 		},
 	),
 );

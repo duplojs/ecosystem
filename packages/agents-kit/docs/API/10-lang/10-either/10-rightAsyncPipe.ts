@@ -44,6 +44,7 @@ type _CheckFinalRight = DCommon.ExpectType<
 >;
 
 declare const input: Promise<DEither.Success<"saved"> | DEither.Error<"missing">>;
+declare const neverReached: "never-reached";
 
 // Un Left initial est propagé et les étapes suivantes ne sont pas exécutées.
 const propagated = DEither.rightAsyncPipe(
@@ -60,7 +61,7 @@ type _CheckPropagated = DCommon.ExpectType<
 const stopped = DEither.rightAsyncPipe(
 	Promise.resolve(DEither.success("saved")),
 	() => Promise.resolve(DEither.error("not-found")),
-	() => Promise.resolve("never-reached" as const),
+	() => Promise.resolve(neverReached),
 );
 type _CheckStopped = DCommon.ExpectType<
 	typeof stopped,

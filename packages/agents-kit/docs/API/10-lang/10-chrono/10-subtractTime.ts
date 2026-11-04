@@ -15,7 +15,7 @@ type _CheckTime = DCommon.ExpectType<typeof timeResult, DChrono.TheTime, "strict
 
 // La forme curifiée s’applique aussi dans un pipe.
 const piped = DCommon.pipe(
-	"date1000+" as const,
+	"date1000+",
 	DChrono.subtractTime("time500+"),
 );
 type _CheckPiped = DCommon.ExpectType<typeof piped, DChrono.TheDate, "strict">;

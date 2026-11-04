@@ -7,10 +7,7 @@ import * as DArray from "@duplojs/lang/array";
 import * as DChrono from "@duplojs/lang/chrono";
 import * as DCommon from "@duplojs/lang/common";
 
-const dates = [
-	DChrono.createDate("2021-01-15"),
-	DChrono.createDate("2021-01-01"),
-] as const;
+declare const dates: readonly [DChrono.TheDate, DChrono.TheDate];
 const ascending = DChrono.sortDates(dates, "ASC");
 
 // La nouvelle collection est triée du 1er au 15 janvier.
@@ -24,9 +21,10 @@ const descending = DCommon.pipe(
 type _CheckDescending = DCommon.ExpectType<typeof descending, DChrono.TheDate[], "strict">;
 
 // Une collection peut mélanger dates sérialisées et TheDate.
-const mixed = DChrono.sortDates([
-	"date1609545600000+",
-	DChrono.createDate("2021-01-01"),
-] as const, "ASC");
+declare const mixedDates: readonly [
+	DChrono.TheDate | DChrono.SerializedTheDate,
+	DChrono.TheDate | DChrono.SerializedTheDate,
+];
+const mixed = DChrono.sortDates(mixedDates, "ASC");
 type _CheckMixed = DCommon.ExpectType<typeof mixed, DChrono.TheDate[], "strict">;
 

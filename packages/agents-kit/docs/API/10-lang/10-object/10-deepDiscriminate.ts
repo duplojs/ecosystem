@@ -19,10 +19,27 @@ type Event =
 			name: string;
 		};
 	};
-type AdminEvent = Extract<Event, { profile: { role: "admin" } }>;
-type MemberEvent = Extract<Event, { profile: { role: "member" } }>;
+interface AdminEvent {
+	profile: {
+		role: "admin";
+		name: string;
+	};
+}
+
+interface MemberEvent {
+	profile: {
+		role: "member";
+		name: string;
+	};
+}
 
 declare const event: Event;
+
+if (DObject.deepDiscriminate(event, "profile.role", "admin")) {
+	type _CheckIfEvent = DCommon.ExpectType<typeof event, AdminEvent, "strict">;
+	const name = DObject.getDeepProperty(event, "profile.name");
+	type _CheckIfName = DCommon.ExpectType<typeof name, string, "strict">;
+}
 
 const result = DObject.deepDiscriminate(event, "profile.role", "admin");
 

@@ -7,7 +7,7 @@ import * as DCommon from "@duplojs/lang/common";
 
 const result = DCommon.toJSON({
 	toJSON() {
-		return "json" as const;
+		return "json";
 	},
 });
 

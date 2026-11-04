@@ -12,7 +12,7 @@ const input = DEither.left("invalid", "bad-input");
 const direct = DEither.whenHasInformation(
 	input,
 	"invalid",
-	(value) => `reason:${value}` as const,
+	(value) => `reason:${value}`,
 );
 type _CheckDirect = DCommon.ExpectType<typeof direct, "reason:bad-input", "strict">;
 
@@ -21,13 +21,14 @@ const piped = DCommon.pipe(
 	input,
 	DEither.whenHasInformation(
 		"invalid",
-		(value) => `reason:${value}` as const,
+		(value) => `reason:${value}`,
 	),
 );
 type _CheckPiped = DCommon.ExpectType<typeof piped, "reason:bad-input", "strict">;
 
+declare const mixedInput: DEither.Success<"saved"> | DEither.Left<"invalid", string>;
 const unchanged = DEither.whenHasInformation(
-	DEither.success("saved") as DEither.Success<"saved"> | DEither.Left<"invalid", string>,
+	mixedInput,
 	["invalid"],
 	(value) => value,
 );

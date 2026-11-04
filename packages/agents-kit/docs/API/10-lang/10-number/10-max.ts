@@ -6,13 +6,13 @@
 import * as DCommon from "@duplojs/lang/common";
 import * as DNumber from "@duplojs/lang/number";
 
-const result = DNumber.max([3, 8, 2] as const);
+declare const values: readonly [3, 8, 2];
+const result = DNumber.max(values);
 // La valeur obtenue est 8.
 type _CheckResult = DCommon.ExpectType<typeof result, number, "strict">;
 
-const emptySafeInput = [3, 8, 2] as const;
 const piped = DCommon.pipe(
-	emptySafeInput,
+	values,
 	DNumber.max,
 );
 // La valeur obtenue est le maximum de la collection, ici 8.

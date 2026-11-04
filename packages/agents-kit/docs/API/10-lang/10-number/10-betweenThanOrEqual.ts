@@ -13,6 +13,16 @@ type _CheckResult = DCommon.ExpectType<typeof result, boolean, "strict">;
 
 declare const value: number;
 
+if (DNumber.betweenThanOrEqual(value, 5, 10)) {
+	type _CheckIfValue = DCommon.ExpectType<
+		typeof value,
+		number & DNumber.GreaterThanOrEqual<5> & DNumber.LessThanOrEqual<10>,
+		"strict"
+	>;
+	const sum = DNumber.sum([value]);
+	type _CheckSum = DCommon.ExpectType<typeof sum, number, "strict">;
+}
+
 // Appel curifié : passer le predicate directement à DCommon.when.
 const transformed = DCommon.pipe(
 	value,

@@ -8,6 +8,12 @@ import * as DCommon from "@duplojs/lang/common";
 
 declare const input: DEither.Success<"saved"> | DEither.Left<"missing", Error>;
 
+if (DEither.hasInformation(input, "missing")) {
+	type _CheckInput = DCommon.ExpectType<typeof input, DEither.Left<"missing", Error>, "strict">;
+	const reason = DEither.unwrapLeft(input);
+	type _CheckReason = DCommon.ExpectType<typeof reason, Error, "strict">;
+}
+
 // La forme curifiée est directement utilisable comme predicate de DCommon.when.
 const result = DCommon.pipe(
 	input,

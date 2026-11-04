@@ -6,7 +6,7 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
 
-const input = DEither.success("saved") as DEither.Success<"saved"> | DEither.Left<"missing", Error>;
+declare const input: DEither.Success<"saved"> | DEither.Left<"missing", Error>;
 
 // Appel classique : le type est réduit aux informations sélectionnées.
 const direct = DEither.forwardAssertsSelection(input, {

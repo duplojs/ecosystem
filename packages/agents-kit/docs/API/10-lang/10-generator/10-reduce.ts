@@ -7,7 +7,7 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DGenerator from "@duplojs/lang/generator";
 import * as DNumber from "@duplojs/lang/number";
 
-const input = [1, 2, 3] as const;
+const input = [1, 2, 3];
 
 // Appel classique : le nombre initial est directement inféré comme accumulateur numérique.
 const result = DGenerator.reduce(

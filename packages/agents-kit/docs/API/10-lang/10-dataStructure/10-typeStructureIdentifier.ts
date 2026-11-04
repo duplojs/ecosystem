@@ -28,6 +28,6 @@ const result = DCommon.when(
 
 type _CheckResult = DCommon.ExpectType<
 	typeof result,
-	DDataStructure.Structure | typeof DDataStructure.TheNumber,
-	"one-extends-two"
+	DDataStructure.Structure | DDataStructure.FundamentalType,
+	"strict"
 >;

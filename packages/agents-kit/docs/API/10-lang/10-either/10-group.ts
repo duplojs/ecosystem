@@ -53,6 +53,6 @@ type _CheckError = DCommon.ExpectType<
 const tupleResult = DEither.group([
 	DEither.success("Alice"),
 	DEither.success(2),
-] as const);
+]);
 // La forme tuple conserve sa longueur et déballe chaque Right.
 type _CheckTuple = DCommon.ExpectType<typeof tupleResult, DEither.Success<["Alice", 2]>, "strict">;

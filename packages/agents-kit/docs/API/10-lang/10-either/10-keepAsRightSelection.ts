@@ -19,5 +19,5 @@ const piped = DCommon.pipe(
 );
 type _CheckPiped = DCommon.ExpectType<typeof piped, DEither.Right<"validated", "Alice">, "strict">;
 
-const rejected = DEither.keepAsRightSelection(DEither.success("saved"), { success: false } as const);
+const rejected = DEither.keepAsRightSelection(DEither.success("saved"), { success: false });
 type _CheckRejected = DCommon.ExpectType<typeof rejected, DEither.Left<"success", "saved">, "strict">;

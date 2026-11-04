@@ -11,7 +11,7 @@ const source = {
 	version: 1,
 	active: true,
 };
-const result = DObject.pick(source, ["name", "active"] as const);
+const result = DObject.pick(source, ["name", "active"]);
 
 // La valeur obtenue est { name: "Duplo", active: true }.
 type _CheckResult = DCommon.ExpectType<

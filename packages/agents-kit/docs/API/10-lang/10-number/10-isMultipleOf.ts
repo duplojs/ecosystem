@@ -13,6 +13,12 @@ type _CheckResult = DCommon.ExpectType<typeof result, boolean, "strict">;
 
 declare const value: number;
 
+if (DNumber.isMultipleOf(value, 3)) {
+	type _CheckIfValue = DCommon.ExpectType<typeof value, number & DNumber.MultipleOf<3>, "strict">;
+	const sum = DNumber.sum([value]);
+	type _CheckSum = DCommon.ExpectType<typeof sum, number, "strict">;
+}
+
 // Appel curifié : passer le predicate directement à DCommon.when.
 const transformed = DCommon.pipe(
 	value,

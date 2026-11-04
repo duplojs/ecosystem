@@ -15,6 +15,12 @@ interface CompleteSource {
 	version: number;
 }
 
+if (DObject.hasKeys(source, ["name", "version"])) {
+	type _CheckIfSource = DCommon.ExpectType<typeof source, CompleteSource, "strict">;
+	const name = source.name;
+	type _CheckIfName = DCommon.ExpectType<typeof name, string, "strict">;
+}
+
 const result = DObject.hasKeys(source, ["name", "version"]);
 
 // Le test retourne true lorsque les deux propriétés sont définies.
@@ -28,7 +34,7 @@ const name = DCommon.pipe(
 		(completeSource) => {
 			type _CheckPredicatedInput = DCommon.ExpectType<typeof completeSource, CompleteSource, "strict">;
 
-			return DObject.getProperty(completeSource, "name");
+			return completeSource.name;
 		},
 	),
 );

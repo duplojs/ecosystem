@@ -5,7 +5,9 @@ export type CleanObjectEntry<
 		? GenericEntry extends readonly [infer Inferred, infer InferredValue]
 			? Inferred extends any
 				? InferredValue extends any
-					? [Inferred, InferredValue]
+					? GenericEntry extends [string, unknown]
+						? [Inferred, InferredValue]
+						: readonly [Inferred, InferredValue]
 					: never
 				: never
 			: never

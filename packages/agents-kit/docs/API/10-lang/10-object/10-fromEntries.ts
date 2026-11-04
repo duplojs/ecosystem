@@ -9,7 +9,7 @@ import type * as DCommon from "@duplojs/lang/common";
 const entries = [
 	DObject.entry("name", "Duplo"),
 	DObject.entry("version", 1),
-] as const;
+];
 const result = DObject.fromEntries(entries);
 
 // La valeur obtenue est un objet dont les propriétés name et version sont optionnelles dans le type inféré.

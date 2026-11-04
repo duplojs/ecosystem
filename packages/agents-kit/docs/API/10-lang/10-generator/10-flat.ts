@@ -7,7 +7,7 @@ import type * as DCommon from "@duplojs/lang/common";
 import * as DGenerator from "@duplojs/lang/generator";
 
 // Profondeur par défaut : un seul niveau est aplati et la sortie contient [1, 2, 3].
-const result = DGenerator.flat([[1, 2], [3]] as const);
+const result = DGenerator.flat([[1, 2], [3]]);
 
 type _CheckResult = DCommon.ExpectType<
 	typeof result,
@@ -16,7 +16,7 @@ type _CheckResult = DCommon.ExpectType<
 >;
 
 // Une profondeur de deux aplati deux niveaux et produit également [1, 2, 3].
-const deeplyFlattened = DGenerator.flat([[[1], [2]], [[3]]] as const, 2);
+const deeplyFlattened = DGenerator.flat([[[1], [2]], [[3]]], 2);
 
 type _CheckDeeplyFlattened = DCommon.ExpectType<
 	typeof deeplyFlattened,

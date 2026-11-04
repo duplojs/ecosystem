@@ -6,7 +6,7 @@
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 
-const values = ["a", "b", "a"] as const;
+const values = ["a", "b", "a"];
 
 // Appel classique : la recherche commence au début par défaut.
 const result = DArray.indexOf(values, "a");

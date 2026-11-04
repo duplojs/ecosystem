@@ -13,6 +13,12 @@ type _CheckResult = DCommon.ExpectType<typeof result, boolean, "strict">;
 
 declare const value: string;
 
+if (DString.endsWith(value, "api")) {
+	type _CheckIfValue = DCommon.ExpectType<typeof value, `${string}api`, "strict">;
+	const length = DString.length(value);
+	type _CheckLength = DCommon.ExpectType<typeof length, number & DNumber.Positive, "strict">;
+}
+
 const transformed = DCommon.pipe(
 	value,
 	DCommon.when(

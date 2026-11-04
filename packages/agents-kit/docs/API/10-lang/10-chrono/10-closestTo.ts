@@ -6,10 +6,7 @@
 import * as DChrono from "@duplojs/lang/chrono";
 import * as DCommon from "@duplojs/lang/common";
 
-const dates = [
-	DChrono.createDate("2021-01-10"),
-	DChrono.createDate("2021-01-20"),
-] as const;
+declare const dates: readonly [DChrono.TheDate, DChrono.TheDate];
 const target = DChrono.createDate("2021-01-15");
 
 const closest = DChrono.closestTo(dates, target);
@@ -33,10 +30,10 @@ const piped = DCommon.pipe(
 type _CheckPiped = DCommon.ExpectType<typeof piped, DChrono.TheDate | undefined, "strict">;
 
 // Les collections peuvent mélanger TheDate et dates sérialisées.
-const mixedDates = [
-	"date1609459200000+",
-	DChrono.createDate("2021-01-10"),
-] as const;
+declare const mixedDates: readonly [
+	DChrono.TheDate | DChrono.SerializedTheDate,
+	DChrono.TheDate | DChrono.SerializedTheDate,
+];
 const mixedClosest = DChrono.closestTo(
 	mixedDates,
 	"date1609804800000+",

@@ -4,9 +4,9 @@
  * Identifier si une valeur est une instance de TheDate et réduire son type.
  */
 import * as DChrono from "@duplojs/lang/chrono";
-import type * as DCommon from "@duplojs/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 
-const value: unknown = DChrono.createDate("2021-01-15");
+const value: DCommon.AnyValue = DChrono.createDate("2021-01-15");
 const isDate = DChrono.isDate(value);
 
 // Le résultat indique si la valeur est une TheDate.
@@ -21,3 +21,16 @@ if (DChrono.isDate(value)) {
 	type _CheckNarrowed = DCommon.ExpectType<typeof timestamp, number, "strict">;
 }
 
+// Le predicate unaire peut aussi établir TheDate dans le callback d’un pipe.
+const timestamp = DCommon.pipe(
+	value,
+	DCommon.when(
+		DChrono.isDate,
+		(date) => {
+			type _CheckDate = DCommon.ExpectType<typeof date, DChrono.TheDate, "strict">;
+
+			return DChrono.toTimestamp(date);
+		},
+	),
+);
+type _CheckTimestamp = DCommon.ExpectType<typeof timestamp, DCommon.AnyValue, "strict">;

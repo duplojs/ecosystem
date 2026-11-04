@@ -10,12 +10,18 @@ import * as DString from "@duplojs/lang/string";
 const source = {
 	name: "Alice",
 	email: "alice@example.com",
-} as const;
+};
 const result = DString.isKeyof("name", source);
 // La valeur obtenue est true.
 type _CheckResult = DCommon.ExpectType<typeof result, boolean, "strict">;
 
 declare const key: string;
+
+if (DString.isKeyof(key, source)) {
+	type _CheckIfKey = DCommon.ExpectType<typeof key, "name" | "email", "strict">;
+	const length = DString.length(key);
+	type _CheckLength = DCommon.ExpectType<typeof length, number & DNumber.Positive, "strict">;
+}
 
 const transformed = DCommon.pipe(
 	key,

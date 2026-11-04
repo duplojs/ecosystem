@@ -13,6 +13,12 @@ type _CheckResult = DCommon.ExpectType<typeof result, boolean, "strict">;
 
 declare const value: string;
 
+if (DString.maxCharacters(value, 10)) {
+	type _CheckIfValue = DCommon.ExpectType<typeof value, string & DString.MaxCharacters<10>, "strict">;
+	const length = DString.length(value);
+	type _CheckLength = DCommon.ExpectType<typeof length, number & DNumber.Positive, "strict">;
+}
+
 const transformed = DCommon.pipe(
 	value,
 	DCommon.when(

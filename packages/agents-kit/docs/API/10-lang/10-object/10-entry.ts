@@ -6,7 +6,8 @@
 import * as DObject from "@duplojs/lang/object";
 import type * as DCommon from "@duplojs/lang/common";
 
-const result = DObject.entry("name", "Duplo" as const);
+declare const value: "Duplo";
+const result = DObject.entry("name", value);
 
 // La valeur obtenue est l’entrée readonly ["name", "Duplo"].
 type _CheckResult = DCommon.ExpectType<

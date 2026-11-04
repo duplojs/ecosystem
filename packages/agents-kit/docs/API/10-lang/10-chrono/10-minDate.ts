@@ -6,18 +6,14 @@
 import * as DChrono from "@duplojs/lang/chrono";
 import type * as DCommon from "@duplojs/lang/common";
 
-const earliest = DChrono.minDate([
-	DChrono.createDate("2021-01-15"),
-	DChrono.createDate("2021-01-01"),
-] as const);
+declare const dates: [DChrono.TheDate, DChrono.TheDate];
+const earliest = DChrono.minDate(dates);
 
 // La valeur obtenue est la date du 1er janvier.
 type _CheckEarliest = DCommon.ExpectType<typeof earliest, DChrono.TheDate, "strict">;
 
 // Les éléments peuvent être un mélange de TheDate et de dates sérialisées.
-const earliestMixed = DChrono.minDate([
-	"date1609459200000+",
-	DChrono.createDate("2021-01-15"),
-] as const);
+declare const mixedDates: [DChrono.TheDate | DChrono.SerializedTheDate, DChrono.TheDate | DChrono.SerializedTheDate];
+const earliestMixed = DChrono.minDate(mixedDates);
 type _CheckMixed = DCommon.ExpectType<typeof earliestMixed, DChrono.TheDate, "strict">;
 

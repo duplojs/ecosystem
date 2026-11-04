@@ -6,13 +6,15 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
 
-const input = DEither.success("saved") as DEither.Success<"saved"> | DEither.Left<"missing", Error>;
+declare const input: DEither.Success<"saved"> | DEither.Left<"missing", Error>;
+declare const stored: "stored";
+declare const unhandled: "unhandled";
 
 // Appel classique : seules les informations documentées dans le matcher sont ciblées.
 const direct = DEither.matchInformationOtherwise(
 	input,
-	{ success: (value: "saved") => "stored" as const },
-	(value) => "unhandled" as const,
+	{ success: (value: "saved") => stored },
+	(value) => unhandled,
 );
 type _CheckDirect = DCommon.ExpectType<typeof direct, "stored" | "unhandled", "strict">;
 
@@ -20,8 +22,8 @@ type _CheckDirect = DCommon.ExpectType<typeof direct, "stored" | "unhandled", "s
 const piped = DCommon.pipe(
 	input,
 	DEither.matchInformationOtherwise(
-		{ success: (value: "saved") => "stored" as const },
-		(value) => "unhandled" as const,
+		{ success: (value: "saved") => stored },
+		(value) => unhandled,
 	),
 );
 type _CheckPiped = DCommon.ExpectType<typeof piped, "stored" | "unhandled", "strict">;

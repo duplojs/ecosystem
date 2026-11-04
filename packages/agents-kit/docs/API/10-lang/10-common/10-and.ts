@@ -17,6 +17,12 @@ type _CheckResult = DCommon.ExpectType<typeof result, boolean, "strict">;
 
 declare const source: string | number;
 
+if (DCommon.and(source, [DCommon.isType("string"), DCommon.truthy])) {
+	type _CheckIfValue = DCommon.ExpectType<typeof source, string, "strict">;
+	const uppercase = DString.toUpperCase(source);
+	type _CheckUppercase = DCommon.ExpectType<typeof uppercase, Uppercase<string>, "strict">;
+}
+
 // Appel curifié : le predicate composé est passé directement à DCommon.when.
 const transformed = DCommon.pipe(
 	source,

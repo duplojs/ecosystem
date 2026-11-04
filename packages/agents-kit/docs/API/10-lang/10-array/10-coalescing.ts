@@ -13,7 +13,8 @@ const value = DArray.coalescing(42);
 type _CheckValue = DCommon.ExpectType<typeof value, readonly [42], "strict">;
 
 // Un tableau est conservé avec sa forme et ses éléments.
-const array = DArray.coalescing([1, 2] as const);
+declare const input: readonly [1, 2];
+const array = DArray.coalescing(input);
 
 // La valeur obtenue est [1, 2].
-type _CheckArray = DCommon.ExpectType<typeof array, [1, 2], "strict">;
+type _CheckArray = DCommon.ExpectType<typeof array, readonly [1, 2], "strict">;

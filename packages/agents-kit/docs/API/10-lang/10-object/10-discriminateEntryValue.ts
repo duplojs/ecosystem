@@ -9,9 +9,15 @@ import * as DCommon from "@duplojs/lang/common";
 type Entry =
 	| readonly ["name", string]
 	| readonly ["version", number];
-type VersionEntry = Extract<Entry, readonly ["version", number]>;
 
 declare const entry: Entry;
+
+if (DObject.discriminateEntryValue(entry, DCommon.isType("string"))) {
+	type _CheckIfValue = DCommon.ExpectType<typeof entry[1], string, "strict">;
+	const [, name] = entry;
+	type _CheckIfName = DCommon.ExpectType<typeof name, string, "strict">;
+}
+
 const result = DObject.discriminateEntryValue(entry, DCommon.isType("string"));
 
 // La valeur obtenue est true lorsque la valeur de l’entrée est une chaîne.
@@ -25,14 +31,14 @@ const value = DCommon.pipe(
 		(narrowedEntry) => {
 			type _CheckPredicatedValue = DCommon.ExpectType<typeof narrowedEntry[1], string, "strict">;
 
-			return DObject.getProperty(narrowedEntry, 1);
+			return narrowedEntry[1];
 		},
 	),
 );
 
-// La valeur est extraite avec le type string lorsque le predicate réussit ; sinon l’entrée est conservée.
+// La valeur est extraite avec le type string lorsque le predicate réussit ; sinon l’entrée version est conservée.
 type _CheckPreserved = DCommon.ExpectType<
 	typeof value,
-	string | VersionEntry,
-	"one-extends-two"
+	string | readonly ["version", number],
+	"strict"
 >;

@@ -6,12 +6,12 @@
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 
-const colors = ["red", "green", "blue"] as const;
+declare const colors: readonly ["red", "green", "blue"];
 
 // Appel classique : l’index couvert renvoie l’union des éléments du tableau.
 const color = DArray.at(colors, 1);
 
-// La valeur obtenue est « green » au runtime, mais le type conserve les trois valeurs possibles.
+// La valeur obtenue est l’un des trois éléments du tuple.
 type _CheckColor = DCommon.ExpectType<
 	typeof color,
 	"red" | "green" | "blue",
@@ -24,7 +24,7 @@ const firstColor = DCommon.pipe(
 	DArray.at(0),
 );
 
-// La valeur obtenue est « red » au runtime.
+// La valeur obtenue est le premier élément du tuple.
 type _CheckFirstColor = DCommon.ExpectType<
 	typeof firstColor,
 	"red" | "green" | "blue",
@@ -34,7 +34,7 @@ type _CheckFirstColor = DCommon.ExpectType<
 // Un index littéral hors limites est identifié statiquement.
 const missingColor = DArray.at(colors, 3);
 
-// La valeur obtenue est undefined au runtime.
+// Un index connu hors limites produit undefined.
 type _CheckMissingColor = DCommon.ExpectType<
 	typeof missingColor,
 	undefined,

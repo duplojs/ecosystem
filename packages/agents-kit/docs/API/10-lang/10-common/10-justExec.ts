@@ -9,14 +9,14 @@ declare const input: number;
 
 const result = DCommon.justExec(() => {
 	if (input > 10) {
-		return "large" as const;
+		return "large";
 	}
 
 	if (input > 0) {
-		return "positive" as const;
+		return "positive";
 	}
 
-	return "non-positive" as const;
+	return "non-positive";
 });
 
 // Le bloc est exécuté immédiatement : son résultat est directement affecté à `result`.

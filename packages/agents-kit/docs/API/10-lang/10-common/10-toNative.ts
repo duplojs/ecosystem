@@ -7,7 +7,7 @@ import * as DCommon from "@duplojs/lang/common";
 
 const result = DCommon.toNative({
 	toNative() {
-		return "native" as const;
+		return "native";
 	},
 });
 

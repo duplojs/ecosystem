@@ -6,7 +6,7 @@
 import * as DEither from "@duplojs/lang/either";
 import type * as DCommon from "@duplojs/lang/common";
 
-const success = DEither.safeCallback(() => "saved" as const);
+const success = DEither.safeCallback(() => "saved");
 // Une valeur brute devient SafeCallbackSuccess ; la capture d’une exception reste dans le contrat.
 type _CheckSuccess = DCommon.ExpectType<
 	typeof success,

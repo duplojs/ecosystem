@@ -8,7 +8,7 @@ import * as DCommon from "@duplojs/lang/common";
 const toNative = DCommon.createTransformer("toNative");
 const result = toNative({
 	toNative() {
-		return 42 as const;
+		return 42;
 	},
 });
 

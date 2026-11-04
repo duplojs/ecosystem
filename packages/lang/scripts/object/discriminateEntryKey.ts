@@ -9,7 +9,7 @@ export function discriminateEntryKey<
 	entry: GenericEntry,
 ) => entry is Extract<
 	DCommon.CleanObjectEntry<GenericEntry>,
-	[GenericPredicateEntryKey, unknown]
+	readonly [GenericPredicateEntryKey, unknown]
 >;
 
 export function discriminateEntryKey<
@@ -28,7 +28,7 @@ export function discriminateEntryKey<
 	predicate: (key: GenericEntry[0]) => key is GenericPredicateEntryKey,
 ): entry is Extract<
 	DCommon.CleanObjectEntry<GenericEntry>,
-	[GenericPredicateEntryKey, unknown]
+	readonly [GenericPredicateEntryKey, unknown]
 >;
 
 export function discriminateEntryKey<

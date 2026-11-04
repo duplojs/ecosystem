@@ -9,9 +9,9 @@ import * as DGenerator from "@duplojs/lang/generator";
 
 // Appel classique : les valeurs sont produites dans l’ordre [1, 2, 3, 4].
 const result = DGenerator.concat(
-	[1, 2] as const,
-	[3] as const,
-	[4] as const,
+	[1, 2],
+	[3],
+	[4],
 );
 
 type _CheckResult = DCommon.ExpectType<

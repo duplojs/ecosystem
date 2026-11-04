@@ -3,7 +3,7 @@
  *
  * Vérifier qu'une chaîne est une URL valide.
  */
-import type * as DCommon from "@duplojs/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 import * as DString from "@duplojs/lang/string";
 
 declare const value: string;
@@ -15,3 +15,17 @@ if (DString.isUrl(value)) {
 const result = DString.isUrl("https://duplojs.dev");
 // La valeur obtenue est true.
 type _CheckResult = DCommon.ExpectType<typeof result, boolean, "strict">;
+
+// Le predicate unaire s’utilise aussi dans un pipe pour normaliser l’URL validée.
+const normalized = DCommon.pipe(
+	value,
+	DCommon.when(
+		DString.isUrl,
+		(url) => {
+			type _CheckUrl = DCommon.ExpectType<typeof url, string & DString.Url, "strict">;
+
+			return DString.toLowerCase(url);
+		},
+	),
+);
+type _CheckNormalized = DCommon.ExpectType<typeof normalized, string, "strict">;

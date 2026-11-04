@@ -40,5 +40,5 @@ type _CheckError = DCommon.ExpectType<
 const tupleResult = DEither.asyncGroup([
 	() => Promise.resolve(DEither.success("Alice")),
 	() => Promise.resolve(DEither.success(2)),
-] as const);
+]);
 type _CheckTuple = DCommon.ExpectType<typeof tupleResult, Promise<DEither.Success<["Alice", 2]>>, "strict">;

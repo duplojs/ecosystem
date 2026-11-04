@@ -6,7 +6,8 @@
 import * as DEither from "@duplojs/lang/either";
 import type * as DCommon from "@duplojs/lang/common";
 
-const result = DEither.asyncSafeCallback(() => Promise.resolve("saved" as const));
+declare const saved: "saved";
+const result = DEither.asyncSafeCallback(() => Promise.resolve(saved));
 
 // La sortie est toujours une Promise et inclut le Left standard des erreurs capturées.
 type _CheckResult = DCommon.ExpectType<
@@ -15,7 +16,8 @@ type _CheckResult = DCommon.ExpectType<
 	"strict"
 >;
 
-const promiseInput = DEither.asyncSafeCallback(Promise.resolve("saved" as const));
+const savedPromise = Promise.resolve(saved);
+const promiseInput = DEither.asyncSafeCallback(savedPromise);
 type _CheckPromiseInput = DCommon.ExpectType<
 	typeof promiseInput,
 	Promise<DEither.SafeCallbackSuccess<"saved"> | DEither.SafeCallbackError>,

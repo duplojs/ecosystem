@@ -63,7 +63,7 @@ type _CheckPropagated = DCommon.ExpectType<
 const stopped = DEither.rightPipe(
 	DEither.success("saved"),
 	() => DEither.error("not-found"),
-	() => "never-reached" as const,
+	() => "never-reached",
 );
 type _CheckStopped = DCommon.ExpectType<
 	typeof stopped,

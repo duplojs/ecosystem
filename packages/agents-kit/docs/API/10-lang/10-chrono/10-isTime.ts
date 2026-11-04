@@ -4,9 +4,9 @@
  * Identifier si une valeur est une instance de TheTime et réduire son type.
  */
 import * as DChrono from "@duplojs/lang/chrono";
-import type * as DCommon from "@duplojs/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 
-const value: unknown = DChrono.createTimeOrThrow(90_000);
+const value: DCommon.AnyValue = DChrono.createTimeOrThrow(90_000);
 const isTime = DChrono.isTime(value);
 
 // Le résultat indique si la valeur est une TheTime.
@@ -21,3 +21,16 @@ if (DChrono.isTime(value)) {
 	type _CheckNarrowed = DCommon.ExpectType<typeof timeValue, number, "strict">;
 }
 
+// Le predicate unaire peut aussi établir TheTime dans le callback d’un pipe.
+const timeValue = DCommon.pipe(
+	value,
+	DCommon.when(
+		DChrono.isTime,
+		(time) => {
+			type _CheckTime = DCommon.ExpectType<typeof time, DChrono.TheTime, "strict">;
+
+			return DChrono.toTimeValue(time);
+		},
+	),
+);
+type _CheckTimeValue = DCommon.ExpectType<typeof timeValue, DCommon.AnyValue, "strict">;

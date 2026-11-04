@@ -6,7 +6,7 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
 
-const input = DEither.left("invalid", "bad-input") as DEither.Left<"invalid", string> | DEither.Success<"saved">;
+declare const input: DEither.Left<"invalid", string> | DEither.Success<"saved">;
 
 // Appel classique : seule la variante invalid est transformée.
 const direct = DEither.whenIsSelected(
@@ -15,9 +15,9 @@ const direct = DEither.whenIsSelected(
 		invalid: true,
 		success: false,
 	},
-	(value) => `invalid:${value}` as const,
+	(value) => `invalid:${value}`,
 );
-type _CheckDirect = DCommon.ExpectType<typeof direct, "invalid:bad-input" | DEither.Success<"saved">, "one-extends-two">;
+type _CheckDirect = DCommon.ExpectType<typeof direct, `invalid:${string}` | DEither.Success<"saved">, "strict">;
 
 // Appel curifié : la sélection et la callback sont configurées dans le pipe.
 const piped = DCommon.pipe(
@@ -27,7 +27,7 @@ const piped = DCommon.pipe(
 			invalid: true,
 			success: false,
 		},
-		(value) => `invalid:${value}` as const,
+		(value) => `invalid:${value}`,
 	),
 );
-type _CheckPiped = DCommon.ExpectType<typeof piped, "invalid:bad-input" | DEither.Success<"saved">, "one-extends-two">;
+type _CheckPiped = DCommon.ExpectType<typeof piped, `invalid:${string}` | DEither.Success<"saved">, "strict">;

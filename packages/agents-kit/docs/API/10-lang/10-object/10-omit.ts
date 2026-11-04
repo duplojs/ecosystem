@@ -11,7 +11,7 @@ const source = {
 	version: 1,
 	active: true,
 };
-const result = DObject.omit(source, ["version"] as const);
+const result = DObject.omit(source, ["version"]);
 
 // La valeur obtenue est { name: "Duplo", active: true }.
 type _CheckResult = DCommon.ExpectType<

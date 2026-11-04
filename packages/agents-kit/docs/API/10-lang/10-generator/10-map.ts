@@ -8,7 +8,7 @@ import * as DArray from "@duplojs/lang/array";
 import * as DGenerator from "@duplojs/lang/generator";
 import * as DNumber from "@duplojs/lang/number";
 
-const input = [1, 2, 3] as const;
+const input = [1, 2, 3];
 
 // Appel classique : chaque nombre est doublé.
 const result = DGenerator.map(input, (item) => DNumber.sum([item, item]));

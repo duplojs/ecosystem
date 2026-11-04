@@ -12,6 +12,12 @@ declare const input: string | number;
 const result = DCommon.isType(input, "string");
 type _CheckResult = DCommon.ExpectType<typeof result, boolean, "strict">;
 
+if (DCommon.isType(input, "string")) {
+	type _CheckInput = DCommon.ExpectType<typeof input, string, "strict">;
+	const uppercase = DString.toUpperCase(input);
+	type _CheckUppercase = DCommon.ExpectType<typeof uppercase, Uppercase<string>, "strict">;
+}
+
 // Appel curifié : le predicate est passé directement à DCommon.when.
 const transformed = DCommon.pipe(
 	input,

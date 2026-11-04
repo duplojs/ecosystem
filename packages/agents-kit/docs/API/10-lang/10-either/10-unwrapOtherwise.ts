@@ -8,13 +8,13 @@ import * as DCommon from "@duplojs/lang/common";
 
 const direct = DEither.unwrapOtherwise(
 	DEither.left("missing"),
-	() => "fallback" as const,
+	() => "fallback",
 );
 type _CheckDirect = DCommon.ExpectType<typeof direct, "fallback", "strict">;
 
 const piped = DCommon.pipe(
 	DEither.success("saved"),
-	DEither.unwrapOtherwise(() => "fallback" as const),
+	DEither.unwrapOtherwise(() => "fallback"),
 );
 // La callback de remplacement n’est pas utilisée pour un Right.
 type _CheckPiped = DCommon.ExpectType<typeof piped, "saved" | "fallback", "strict">;

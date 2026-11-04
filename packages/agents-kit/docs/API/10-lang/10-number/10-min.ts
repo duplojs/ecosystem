@@ -6,11 +6,11 @@
 import * as DCommon from "@duplojs/lang/common";
 import * as DNumber from "@duplojs/lang/number";
 
-const result = DNumber.min([3, 1, 8] as const);
+declare const values: readonly [3, 1, 8];
+const result = DNumber.min(values);
 // La valeur obtenue est 1.
 type _CheckResult = DCommon.ExpectType<typeof result, number, "strict">;
 
-const values = [3, 1, 8] as const;
 const piped = DCommon.pipe(
 	values,
 	DNumber.min,

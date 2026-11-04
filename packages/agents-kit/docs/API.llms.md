@@ -38,7 +38,7 @@ Prédicats et transformations fonctionnelles pour comparer, vérifier, agréger 
 
 Fonctions fonctionnelles pour lire, discriminer, transformer, fusionner et reconstruire des objets en conservant les informations de typage utiles.
 
-# [DString](API/10-lang/10-string/index.llms.md)
+## [DString](API/10-lang/10-string/index.llms.md)
 
 Fonctions de manipulation, recherche, validation et transformation des chaînes de caractères, avec des formes curifiées et des contraintes de typage lorsque l'API peut les établir.
 

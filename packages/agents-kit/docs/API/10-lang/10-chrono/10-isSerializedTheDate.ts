@@ -4,7 +4,7 @@
  * Vérifier qu’une chaîne respecte le format sérialisé sûr d’une TheDate.
  */
 import * as DChrono from "@duplojs/lang/chrono";
-import type * as DCommon from "@duplojs/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 
 const value = "date1609459200000+";
 const isSerialized = DChrono.isSerializedTheDate(value);
@@ -24,3 +24,18 @@ if (DChrono.isSerializedTheDate(value)) {
 	type _CheckNarrowed = DCommon.ExpectType<typeof timestamp, number, "strict">;
 }
 
+declare const checkedValue: string;
+
+// Le pipe valide la chaîne avant de la convertir en timestamp.
+const timestamp = DCommon.pipe(
+	checkedValue,
+	DCommon.when(
+		DChrono.isSerializedTheDate,
+		(serializedDate) => {
+			type _CheckDate = DCommon.ExpectType<typeof serializedDate, DChrono.SerializedTheDate, "strict">;
+
+			return DChrono.toTimestamp(serializedDate);
+		},
+	),
+);
+type _CheckTimestamp = DCommon.ExpectType<typeof timestamp, string | number, "strict">;

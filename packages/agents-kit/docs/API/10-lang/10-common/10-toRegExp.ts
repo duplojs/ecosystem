@@ -6,7 +6,7 @@
 import * as DCommon from "@duplojs/lang/common";
 
 const fromString = DCommon.toRegExp("file.name");
-const fromTuple = DCommon.toRegExp(["pending", "done"] as const);
+const fromTuple = DCommon.toRegExp(["pending", "done"]);
 const existing = /^(pending|done)$/;
 const fromRegExp = DCommon.toRegExp(existing);
 
