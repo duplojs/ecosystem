@@ -22,3 +22,7 @@ Envelopper des interactions dans une étape Playwright personnalisée.
 
 Construire le contexte du site et naviguer ou vérifier ses pages et composants.
  
+### [Initialiser un client de test Playwright](10-initClient.ts)
+
+Étendre le client Playwright avec une fixture Website DuploJS utilisable dans les tests.
+ 
