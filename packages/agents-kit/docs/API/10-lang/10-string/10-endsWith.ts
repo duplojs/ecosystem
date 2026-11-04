@@ -1,0 +1,27 @@
+/**
+ * @title DString.endsWith
+ *
+ * Tester si une chaîne se termine par une sous-chaîne.
+ */
+import * as DCommon from "@duplojs/lang/common";
+import type * as DNumber from "@duplojs/lang/number";
+import * as DString from "@duplojs/lang/string";
+
+const result = DString.endsWith("user-api", "api");
+// La valeur obtenue est true.
+type _CheckResult = DCommon.ExpectType<typeof result, boolean, "strict">;
+
+declare const value: string;
+
+const transformed = DCommon.pipe(
+	value,
+	DCommon.when(
+		DString.endsWith("api"),
+		(value) => {
+			type _CheckValue = DCommon.ExpectType<typeof value, `${string}api`, "strict">;
+			return DString.length(value);
+		},
+	),
+);
+// La branche vraie peut exploiter la chaîne affinée pour calculer sa longueur.
+type _CheckTransformed = DCommon.ExpectType<typeof transformed, string | (number & DNumber.Positive), "strict">;
