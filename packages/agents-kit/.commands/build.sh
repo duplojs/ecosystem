@@ -19,6 +19,7 @@ pnpm run llms generate-summary --input docs/API/10-lang/10-object --output docs/
 pnpm run llms generate-summary --input docs/API/10-lang/10-path --output docs/API/10-lang/10-path/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-printer --output docs/API/10-lang/10-printer/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-string --output docs/API/10-lang/10-string/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/10-lang/10-tuple --output docs/API/10-lang/10-tuple/index.llms.md --ignore '*.llms.md'
 
 pnpm run llms generate-summary --input docs/API/40-json-web-token/10-tokenHandler --output docs/API/40-json-web-token/10-tokenHandler/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/40-json-web-token/20-signer --output docs/API/40-json-web-token/20-signer/index.llms.md --ignore '*.llms.md'

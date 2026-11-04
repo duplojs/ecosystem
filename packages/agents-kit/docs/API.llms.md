@@ -50,6 +50,10 @@ Fonctions et constantes pour assembler du texte, formater des lignes et paragrap
 
 Fonctions de manipulation, recherche, validation et transformation des chaînes de caractères, avec des formes curifiées et des contraintes de typage lorsque l'API peut les établir.
 
+## [DTuple](API/10-lang/10-tuple/index.llms.md)
+
+Manipulation et typage des tuples : convertir les garanties de cardinalité en positions typées, puis transformer leurs éléments en conservant leur forme.
+
 # @duplojs/json-web-token
 
 Politiques JWT réutilisables, signature, chiffrement facultatif et primitives cryptographiques.
