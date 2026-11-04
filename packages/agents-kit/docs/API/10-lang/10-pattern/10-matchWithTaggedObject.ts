@@ -4,23 +4,40 @@
  * Router une union d’objets marqués vers un callback par valeur de tag.
  */
 import * as DPattern from "@duplojs/lang/pattern";
-import type * as DCommon from "@duplojs/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 import type * as DModeling from "@duplojs/lang/modeling";
 
 interface Success extends DModeling.ObjectTag<"success"> { value: number }
 interface Failure extends DModeling.ObjectTag<"failure"> { reason: string }
-type Outcome = Success | Failure;
-declare const outcome: Outcome;
+declare const outcome: Success | Failure;
 
-const summary = DPattern.matchWithTaggedObject(outcome, {
+// Appel direct : chaque nom de l’union exige une branche, sans clé étrangère.
+const result = DPattern.matchWithTaggedObject(outcome, {
 	success: (value) => {
-		const exact: Success = value;
-		return exact.value;
+		type _CheckValue = DCommon.ExpectType<typeof value, Success, "strict">;
+		return value.value;
 	},
 	failure: (value) => {
-		const exact: Failure = value;
-		return exact.reason;
+		type _CheckValue = DCommon.ExpectType<typeof value, Failure, "strict">;
+		return value.reason;
 	},
 });
-// Success retourne value ; Failure retourne reason.
-type _CheckSummary = DCommon.ExpectType<typeof summary, number | string, "strict">;
+// La sortie est le nombre de réussite ou la raison du refus.
+type _CheckResult = DCommon.ExpectType<typeof result, number | string, "strict">;
+
+// Appel curifié : configurer les branches directement dans le pipe.
+const piped = DCommon.pipe(
+	outcome,
+	DPattern.matchWithTaggedObject({
+		success: (value) => {
+			type _CheckValue = DCommon.ExpectType<typeof value, Success, "strict">;
+			return value.value;
+		},
+		failure: (value) => {
+			type _CheckValue = DCommon.ExpectType<typeof value, Failure, "strict">;
+			return value.reason;
+		},
+	}),
+);
+// Même sélection : le nombre de réussite ou la raison du refus.
+type _CheckPiped = DCommon.ExpectType<typeof piped, number | string, "strict">;

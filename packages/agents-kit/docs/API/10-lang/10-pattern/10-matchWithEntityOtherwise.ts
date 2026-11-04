@@ -4,7 +4,7 @@
  * Router les entités sélectionnées et conserver dans le type du fallback les entités restantes.
  */
 import * as DPattern from "@duplojs/lang/pattern";
-import type * as DCommon from "@duplojs/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 import type * as DModeling from "@duplojs/lang/modeling";
 
 interface User extends DModeling.Entity<"User"> {
@@ -18,15 +18,38 @@ interface Admin extends DModeling.Entity<"Admin"> {
 interface Guest extends DModeling.Entity<"Guest"> { id: string }
 declare const account: User | Admin | Guest;
 
+// Appel direct : traiter certains noms ; le repli reçoit uniquement le reste.
 const result = DPattern.matchWithEntityOtherwise(
 	account,
 	{
-		User: (entity) => entity.name,
+		User: (entity) => {
+			type _CheckValue = DCommon.ExpectType<typeof entity, User, "strict">;
+			return entity.name;
+		},
 	},
 	(entity) => {
-		const remaining: Admin | Guest = entity;
-		return remaining.id;
+		type _CheckRemaining = DCommon.ExpectType<typeof entity, Admin | Guest, "strict">;
+		return entity.id;
 	},
 );
-// User retourne son nom ; Admin et Guest retournent leur id dans le fallback.
+// User produit son résultat ; les autres variantes fournissent leur id.
 type _CheckResult = DCommon.ExpectType<typeof result, string, "strict">;
+
+// Appel curifié dans un pipe : le repli conserve le même affinement.
+const piped = DCommon.pipe(
+	account,
+	DPattern.matchWithEntityOtherwise(
+		{
+			User: (entity) => {
+				type _CheckValue = DCommon.ExpectType<typeof entity, User, "strict">;
+				return entity.name;
+			},
+		},
+		(entity) => {
+			type _CheckRemaining = DCommon.ExpectType<typeof entity, Admin | Guest, "strict">;
+			return entity.id;
+		},
+	),
+);
+// User produit son résultat ; les autres variantes fournissent leur id.
+type _CheckPiped = DCommon.ExpectType<typeof piped, string, "strict">;

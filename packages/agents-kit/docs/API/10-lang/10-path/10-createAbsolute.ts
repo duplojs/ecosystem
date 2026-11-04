@@ -14,3 +14,8 @@ type _CheckResult = DCommon.ExpectType<
 	DEither.Success<string & DPath.Absolute & DPath.Path> | DEither.Error<string>,
 	"strict"
 >;
+
+// Refus : un chemin relatif ne produit pas le chemin demandé.
+const rejected = DPath.createAbsolute("src/index.ts");
+// Error contient la chaîne d’origine, sans normalisation de sa valeur d’erreur.
+type _CheckRejected = DCommon.ExpectType<typeof rejected, DEither.Success<string & DPath.Absolute & DPath.Path> | DEither.Error<string>, "strict">;

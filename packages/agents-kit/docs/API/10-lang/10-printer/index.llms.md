@@ -1,8 +1,8 @@
-# DPrinter
+## DPrinter
 
 Fonctions et constantes pour assembler du texte, formater des lignes et paragraphes, ajouter une indentation ou des styles ANSI.
 
-# [Constantes et types de DPrinter](10-primitives.md)
+### [Constantes et types de DPrinter](10-primitives.md)
 
 Les constantes publiques fournissent les séparateurs textuels usuels, tandis que les types décrivent les couleurs et les valeurs acceptées par les fonctions de rendu.
 

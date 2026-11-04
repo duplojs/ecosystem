@@ -5,6 +5,7 @@
  */
 import * as DPattern from "@duplojs/lang/pattern";
 import * as DCommon from "@duplojs/lang/common";
+import * as DString from "@duplojs/lang/string";
 
 type Input = {
 	kind: "known";
@@ -13,6 +14,7 @@ type Input = {
 	kind: "other";
 	value: string;
 };
+// Les PatternResult issus d’une étape précédente sont transmis sans nouveau test.
 declare const input: Input;
 const result = DPattern.whenNot(
 	input,
@@ -31,4 +33,16 @@ const piped = DCommon.pipe(
 	DPattern.whenNot(DPattern.isMatch({ kind: "known" }), (value) => value.value),
 	DPattern.otherwise((value) => value.id),
 );
+// Other donne son texte ; known donne son id, sans PatternResult dans la sortie.
 type _CheckPiped = DCommon.ExpectType<typeof piped, string | number, "strict">;
+
+// Predicate booléen : le test RegExp ne permet pas d’éliminer une variante du type.
+declare const text: string;
+const conditional = DPattern.whenNot(text, DString.test(/^ready/), DString.toUpperCase);
+// Les textes ne commençant pas par ready sont mis en majuscules ; les autres restent inchangés.
+// Le cas string reste non traité dans les types : terminer avec otherwise.
+type _CheckConditional = DCommon.ExpectType<typeof conditional, string | DPattern.PatternResult<Uppercase<string>>, "strict">;
+
+// Limite actuelle : avec un seuil de type number, l’appel inline
+// whenNot(amount, DNumber.greaterThan(threshold), callback) peut éliminer à tort
+// number du type restant. Ne pas en déduire que la sélection est exhaustive.

@@ -10,6 +10,8 @@ declare const value: string;
 
 if (DPath.isAbsolute(value)) {
 	type _CheckValue = DCommon.ExpectType<typeof value, string & DPath.Absolute, "strict">;
+	const extracted = DPath.getParentFolderPath(value);
+	type _CheckExtracted = DCommon.ExpectType<typeof extracted, (string & DPath.Path & DPath.Absolute) | null, "strict">;
 }
 
 const path = DPath.isAbsolute("/workspace/src");
@@ -33,3 +35,12 @@ type _CheckParent = DCommon.ExpectType<
 	string | (string & DPath.Path & DPath.Absolute) | null,
 	"strict"
 >;
+
+// Sur un littéral déjà valide, le predicate conserve le type littéral sans ajouter de contrainte.
+const known = "/workspace";
+if (DPath.isAbsolute(known)) {
+	type _CheckKnown = DCommon.ExpectType<typeof known, "/workspace", "strict">;
+	// Pour obtenir un chemin contraint depuis cette constante, utiliser sa déclaration sûre.
+	const declared = DPath.declareAbsolutePath(known);
+	type _CheckDeclared = DCommon.ExpectType<typeof declared, "/workspace" & DPath.Absolute & DPath.Path, "strict">;
+}

@@ -1,23 +1,18 @@
 ## DPattern
 
-Correspondre des valeurs à des motifs, affiner les unions discriminées et composer des traitements exhaustifs ou avec branche de repli.
-
+Sélectionner et traiter les variantes d’une union par identité, valeur littérale, motif structurel ou predicate, avec couverture exhaustive ou branche de repli.
 
 ### [DPattern.exhaustive](10-exhaustive.ts)
 
-Récupérer la valeur d’un résultat produit par le moteur de correspondance.
+Terminer un traitement exhaustif en extrayant les valeurs des PatternResult.
 
 ### [DPattern.isMatch](10-isMatch.ts)
 
-Construire un prédicat qui vérifie un motif et affine la valeur correspondante.
-
-### [DPattern.isResult](10-isResult.ts)
-
-Reconnaître au runtime une valeur enveloppée par DPattern.result.
+Vérifier un motif sur une valeur et affiner le type de la partie correspondante.
 
 ### [DPattern.match](10-match.ts)
 
-Traiter une valeur selon un motif structurel et conserver les portions qui ne correspondent pas.
+Traiter une valeur selon un motif et conserver les cas qui ne correspondent pas.
 
 ### [DPattern.matchWithEntity](10-matchWithEntity.ts)
 

@@ -14,3 +14,8 @@ type _CheckResult = DCommon.ExpectType<
 	DEither.Success<string & DPath.Path> | DEither.Error<string>,
 	"strict"
 >;
+
+// Refus : un caractère nul ne produit pas le chemin demandé.
+const rejected = DPath.create("invalid\0path");
+// Error contient la chaîne d’origine, sans normalisation de sa valeur d’erreur.
+type _CheckRejected = DCommon.ExpectType<typeof rejected, DEither.Success<string & DPath.Path> | DEither.Error<string>, "strict">;

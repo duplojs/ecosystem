@@ -11,15 +11,38 @@ class StorageError extends DCommon.DuploJSError.parentClass("storage") {}
 class NetworkError extends DCommon.DuploJSError.parentClass("network") {}
 declare const error: ValidationError | StorageError | NetworkError;
 
-const message = DPattern.matchWithErrorOtherwise(
+// Appel direct : traiter certains noms ; le repli reçoit uniquement le reste.
+const result = DPattern.matchWithErrorOtherwise(
 	error,
 	{
-		validation: (value) => value.message,
+		validation: (value) => {
+			type _CheckValue = DCommon.ExpectType<typeof value, ValidationError, "strict">;
+			return value.message;
+		},
 	},
 	(value) => {
-		const remaining: StorageError | NetworkError = value;
-		return remaining.message;
+		type _CheckRemaining = DCommon.ExpectType<typeof value, StorageError | NetworkError, "strict">;
+		return value.message;
 	},
 );
-// Validation utilise son handler ; StorageError et NetworkError passent au fallback.
-type _CheckMessage = DCommon.ExpectType<typeof message, string, "strict">;
+// validation produit son résultat ; les autres variantes fournissent leur message.
+type _CheckResult = DCommon.ExpectType<typeof result, string, "strict">;
+
+// Appel curifié dans un pipe : le repli conserve le même affinement.
+const piped = DCommon.pipe(
+	error,
+	DPattern.matchWithErrorOtherwise(
+		{
+			validation: (value) => {
+				type _CheckValue = DCommon.ExpectType<typeof value, ValidationError, "strict">;
+				return value.message;
+			},
+		},
+		(value) => {
+			type _CheckRemaining = DCommon.ExpectType<typeof value, StorageError | NetworkError, "strict">;
+			return value.message;
+		},
+	),
+);
+// validation produit son résultat ; les autres variantes fournissent leur message.
+type _CheckPiped = DCommon.ExpectType<typeof piped, string, "strict">;

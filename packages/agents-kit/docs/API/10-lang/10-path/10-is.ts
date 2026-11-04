@@ -10,6 +10,8 @@ declare const value: string;
 
 if (DPath.is(value)) {
 	type _CheckValue = DCommon.ExpectType<typeof value, string & DPath.Path, "strict">;
+	const extracted = DPath.getBaseName(value);
+	type _CheckExtracted = DCommon.ExpectType<typeof extracted, (string & DPath.Segment & DPath.Path) | null, "strict">;
 }
 
 const path = DPath.is("src/index.ts");
@@ -33,3 +35,12 @@ type _CheckBaseName = DCommon.ExpectType<
 	string | (string & DPath.Segment & DPath.Path) | null,
 	"strict"
 >;
+
+// Sur un littéral déjà valide, le predicate conserve le type littéral sans ajouter de contrainte.
+const known = "src/index.ts";
+if (DPath.is(known)) {
+	type _CheckKnown = DCommon.ExpectType<typeof known, "src/index.ts", "strict">;
+	// Pour obtenir un chemin contraint depuis cette constante, utiliser sa déclaration sûre.
+	const declared = DPath.declarePath(known);
+	type _CheckDeclared = DCommon.ExpectType<typeof declared, "src/index.ts" & DPath.Path, "strict">;
+}

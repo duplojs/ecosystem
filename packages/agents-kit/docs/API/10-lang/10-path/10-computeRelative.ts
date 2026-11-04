@@ -12,3 +12,8 @@ const result = DPath.computeRelative(source, destination);
 
 // Le chemin obtenu est ../test/index.ts.
 type _CheckResult = DCommon.ExpectType<typeof result, string & DPath.Path, "strict">;
+
+// Une même origine et destination donnent le chemin courant.
+const same = DPath.computeRelative(source, source);
+// La valeur obtenue est ".". Aucun accès au système de fichiers n’est effectué.
+type _CheckSame = DCommon.ExpectType<typeof same, string & DPath.Path, "strict">;

@@ -17,6 +17,7 @@ type _CheckHandled = DCommon.ExpectType<typeof handled, DPattern.PatternResult<{
 }>, "strict">;
 
 // Le wrapper transporte la valeur sans la confondre avec une branche encore à examiner.
+// La valeur extraite est { kind: "found", id: 42 }.
 const unwrapped = DPattern.exhaustive(handled);
 type _CheckUnwrapped = DCommon.ExpectType<typeof unwrapped, {
 	readonly kind: "found";

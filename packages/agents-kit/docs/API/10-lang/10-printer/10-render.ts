@@ -22,3 +22,8 @@ const compact = DCommon.pipe(
 );
 // La valeur obtenue est "nom · type · statut".
 type _CheckCompact = DCommon.ExpectType<typeof compact, string, "strict">;
+
+// Une chaîne vide est conservée, contrairement à false, null et undefined.
+const emptyField = DPrinter.render(["nom", "", "statut"], "|");
+// La valeur obtenue est "nom||statut" ; un tableau sans élément rendable donnerait "".
+type _CheckEmptyField = DCommon.ExpectType<typeof emptyField, string, "strict">;

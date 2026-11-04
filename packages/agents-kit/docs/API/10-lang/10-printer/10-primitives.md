@@ -1,4 +1,4 @@
-# Constantes et types de DPrinter
+### Constantes et types de DPrinter
 
 Les constantes publiques fournissent les séparateurs textuels usuels, tandis que les types décrivent les couleurs et les valeurs acceptées par les fonctions de rendu.
 

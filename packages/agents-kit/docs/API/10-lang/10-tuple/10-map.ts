@@ -9,15 +9,16 @@ import * as DTuple from "@duplojs/lang/tuple";
 
 // L’index de chaque élément est disponible dans le contexte du callback.
 const positions = DTuple.map(
-	["draft", "ready"] as const,
+	["draft", "ready"],
 	(_value, { index }) => index,
 );
 // La valeur obtenue est [0, 1].
 type _CheckPositions = DCommon.ExpectType<typeof positions, readonly [number, number], "strict">;
 
 // La forme curifiée transforme les éléments dans un pipe, avant de les réunir.
+declare const states: readonly ["draft", "ready"];
 const key = DCommon.pipe(
-	["draft", "ready"] as const,
+	states,
 	DTuple.map(DString.toUpperCase),
 	DString.join("-"),
 );
@@ -28,3 +29,9 @@ type _CheckKey = DCommon.ExpectType<
 	"DRAFT-DRAFT" | "DRAFT-READY" | "READY-DRAFT" | "READY-READY",
 	"strict"
 >;
+
+// Tuple à reste variable : le premier élément reste garanti après transformation.
+declare const names: readonly [string, ...string[]];
+const upperNames = DTuple.map(names, DString.toUpperCase);
+// Chaque nom est converti en majuscules ; au moins une position est conservée.
+type _CheckUpperNames = DCommon.ExpectType<typeof upperNames, readonly [Uppercase<string>, ...Uppercase<string>[]], "strict">;

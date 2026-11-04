@@ -16,8 +16,8 @@ const description = DPattern.matchWithStringOtherwise(
 		sent: () => "Delivered",
 	},
 	(value) => {
-		const remaining: "cancelled" = value;
-		return `Stopped: ${remaining}`;
+		type _CheckRemaining = DCommon.ExpectType<typeof value, "cancelled", "strict">;
+		return DString.prepend(value, "Stopped: ");
 	},
 );
 // Le statut sélectionné fournit son libellé ; cancelled donne « Stopped: cancelled ».

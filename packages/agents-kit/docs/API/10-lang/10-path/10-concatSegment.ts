@@ -3,7 +3,7 @@
  *
  * Assembler un segment avec un ou plusieurs autres segments.
  */
-import type * as DCommon from "@duplojs/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 import * as DPath from "@duplojs/lang/path";
 
 const fileName = DPath.declareSegment("file");
@@ -15,6 +15,14 @@ const result = DPath.concatSegment(fileName, extension);
 type _CheckResult = DCommon.ExpectType<typeof result, string & DPath.Segment, "strict">;
 
 // La forme curifiée configure le segment ajouté avant de recevoir le segment de base.
-const appendExtension = DPath.concatSegment(extension);
-const curriedResult = appendExtension(fileName);
+const curriedResult = DCommon.pipe(
+	fileName,
+	DPath.concatSegment(extension),
+);
+// La valeur obtenue est également file.ts.
 type _CheckCurriedResult = DCommon.ExpectType<typeof curriedResult, string & DPath.Segment, "strict">;
+
+// Plusieurs morceaux : concatSegment n’insère aucun séparateur.
+const testFile = DPath.concatSegment(fileName, DPath.declareSegment(".test"), extension);
+// La valeur obtenue est file.test.ts ; seule la contrainte Segment est conservée.
+type _CheckTestFile = DCommon.ExpectType<typeof testFile, string & DPath.Segment, "strict">;

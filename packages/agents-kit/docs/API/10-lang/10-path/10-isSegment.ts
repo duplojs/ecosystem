@@ -10,6 +10,8 @@ declare const value: string;
 
 if (DPath.isSegment(value)) {
 	type _CheckValue = DCommon.ExpectType<typeof value, string & DPath.Segment, "strict">;
+	const extracted = DPath.concatSegment(DPath.declareSegment("file"), value);
+	type _CheckExtracted = DCommon.ExpectType<typeof extracted, string & DPath.Segment, "strict">;
 }
 
 const segment = DPath.isSegment(".ts");
@@ -29,3 +31,12 @@ const fullPath = DCommon.pipe(
 );
 // Le segment est ajouté au nom de fichier ; une chaîne qui n’est pas un segment reste inchangée.
 type _CheckFullPath = DCommon.ExpectType<typeof fullPath, string | (string & DPath.Segment), "strict">;
+
+// Sur un littéral déjà valide, le predicate conserve le type littéral sans ajouter de contrainte.
+const known = "index.ts";
+if (DPath.isSegment(known)) {
+	type _CheckKnown = DCommon.ExpectType<typeof known, "index.ts", "strict">;
+	// Pour obtenir un chemin contraint depuis cette constante, utiliser sa déclaration sûre.
+	const declared = DPath.declareSegment(known);
+	type _CheckDeclared = DCommon.ExpectType<typeof declared, "index.ts" & DPath.Segment & DPath.Path, "strict">;
+}

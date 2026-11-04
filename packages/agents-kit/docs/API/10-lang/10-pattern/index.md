@@ -1,3 +1,3 @@
 ## DPattern
 
-Correspondre des valeurs à des motifs, affiner les unions discriminées et composer des traitements exhaustifs ou avec branche de repli.
+Sélectionner et traiter les variantes d’une union par identité, valeur littérale, motif structurel ou predicate, avec couverture exhaustive ou branche de repli.

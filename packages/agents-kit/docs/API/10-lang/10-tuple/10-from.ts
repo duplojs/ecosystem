@@ -3,8 +3,8 @@
  *
  * Interpréter les contraintes de cardinalité d’un tableau comme une forme tuple.
  */
-import * as DArray from "@duplojs/lang/array";
-import * as DCommon from "@duplojs/lang/common";
+import type * as DArray from "@duplojs/lang/array";
+import type * as DCommon from "@duplojs/lang/common";
 import * as DTuple from "@duplojs/lang/tuple";
 
 // Sans contrainte de cardinalité, la source reste un tableau de longueur inconnue.
@@ -31,3 +31,20 @@ type _CheckNonEmptyTuple = DCommon.ExpectType<
 >;
 
 // Ces conversions sont statiques : à l’exécution, from renvoie la même source.
+
+// Borne maximale seule : elle ne garantit aucune position présente.
+declare const boundedValues: readonly string[] & DArray.MaxElements<4>;
+const bounded = DTuple.from(boundedValues);
+// La source et sa contrainte restent inchangées.
+type _CheckBounded = DCommon.ExpectType<typeof bounded, readonly string[] & DArray.MaxElements<4>, "strict">;
+
+// Combinaison : les positions minimales et la borne maximale sont conservées.
+declare const rangedValues: readonly string[] & DArray.MinElements<2> & DArray.MaxElements<4>;
+const ranged = DTuple.from(rangedValues);
+type _CheckRanged = DCommon.ExpectType<typeof ranged, readonly [string, string, ...string[]] & DArray.MaxElements<4>, "strict">;
+
+// Un tuple déjà précis est reconstruit à partir de son union d’éléments.
+declare const pair: readonly ["name", 1];
+const rebuilt = DTuple.from(pair);
+// Même valeur et même référence, mais les types propres à chaque position sont perdus.
+type _CheckRebuilt = DCommon.ExpectType<typeof rebuilt, readonly [1 | "name", 1 | "name"], "strict">;

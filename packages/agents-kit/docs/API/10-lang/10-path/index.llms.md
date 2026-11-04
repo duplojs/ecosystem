@@ -1,6 +1,6 @@
-# DPath
+## DPath
 
-Le domaine `DPath` représente des chemins avec des contraintes de type, les normalise, les assemble et vérifie leurs segments. Ses fabriques valident les chaînes runtime avant de produire un chemin typé.
+Chemins Unix typés : déclarer des littéraux, valider et normaliser des chaînes runtime, extraire des segments, résoudre des chemins ou sélectionner des motifs glob, indépendamment du système de fichiers.
 
 ### [DPath.computeRelative](10-computeRelative.ts)
 
@@ -85,4 +85,3 @@ Résoudre des segments depuis une origine absolue, avec une option pour la conse
 ### [DPath.resolveRelative](10-resolveRelative.ts)
 
 Résoudre une suite de chemins relatifs ou absolus en un seul chemin normalisé.
-

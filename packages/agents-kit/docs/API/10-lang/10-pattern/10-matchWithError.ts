@@ -10,15 +10,36 @@ class ValidationError extends DCommon.DuploJSError.parentClass("validation") {}
 class StorageError extends DCommon.DuploJSError.parentClass("storage") {}
 declare const error: ValidationError | StorageError;
 
-const message = DPattern.matchWithError(error, {
+// Appel direct : chaque nom de l’union exige une branche, sans clé étrangère.
+const result = DPattern.matchWithError(error, {
 	validation: (value) => {
-		const exact: ValidationError = value;
-		return exact.message;
+		type _CheckValue = DCommon.ExpectType<typeof value, ValidationError, "strict">;
+		return value.message;
 	},
 	storage: (value) => {
-		const exact: StorageError = value;
-		return exact.message;
+		type _CheckValue = DCommon.ExpectType<typeof value, StorageError, "strict">;
+		return value.message;
 	},
 });
-// Le handler correspondant retourne le message de l’erreur.
-type _CheckMessage = DCommon.ExpectType<typeof message, string, "strict">;
+// La sortie est le message de l’erreur sélectionnée.
+type _CheckResult = DCommon.ExpectType<typeof result, string, "strict">;
+
+// Appel curifié : configurer les branches directement dans le pipe.
+const piped = DCommon.pipe(
+	error,
+	DPattern.matchWithError({
+		validation: (value) => {
+			type _CheckValue = DCommon.ExpectType<typeof value, ValidationError, "strict">;
+			return value.message;
+		},
+		storage: (value) => {
+			type _CheckValue = DCommon.ExpectType<typeof value, StorageError, "strict">;
+			return value.message;
+		},
+	}),
+);
+// Même sélection : le message de l’erreur sélectionnée.
+type _CheckPiped = DCommon.ExpectType<typeof piped, string, "strict">;
+
+// Les clés sont les identifiants fixés par parentClass, pas le nom de classe
+// ni le message. Un Error natif ne porte pas ce contrat de discrimination.
