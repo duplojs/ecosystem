@@ -23,34 +23,50 @@ declare const error: OperationError;
 // impose donc de compléter le matcher.
 // Chaque callback reçoit l'erreur précise, avec ses propriétés et sa cause typées.
 
-// string | Error
 const matchedError = DPattern.matchWithError(
 	error,
 	{
-		// InvalidInputError ; cause est undefined.
-		"invalid-input": (invalidInput) => invalidInput.message,
+		"invalid-input": (invalidInput) => {
+			type _CheckInvalidInput = DCommon.ExpectType<typeof invalidInput, InvalidInputError, "strict">;
+			return invalidInput.message;
+		},
 
-		// UnavailableServiceError ; cause est Error.
-		"unavailable-service": (unavailableService) => unavailableService.cause,
+		"unavailable-service": (unavailableService) => {
+			type _CheckUnavailableService = DCommon.ExpectType<typeof unavailableService, UnavailableServiceError, "strict">;
+			return unavailableService.cause;
+		},
 	},
 );
+type _CheckMatchedErrorLine27 = DCommon.ExpectType<
+	typeof matchedError,
+	string | Error,
+	"strict"
+>;
 
 // matchWithErrorOtherwise sélectionne explicitement une partie des identifiants.
 // Le callback otherwise reçoit uniquement les erreurs non prises en charge.
 // Les deux fonctions existent en forme directe et curried, utilisable dans un pipe.
 
-// string | Error
 const matchedErrorOtherwise = DCommon.pipe(
 	error,
 	DPattern.matchWithErrorOtherwise(
 		{
-			// InvalidInputError
-			"invalid-input": (invalidInput) => invalidInput.message,
+			"invalid-input": (invalidInput) => {
+				type _CheckInvalidInput = DCommon.ExpectType<typeof invalidInput, InvalidInputError, "strict">;
+				return invalidInput.message;
+			},
 		},
-		// UnavailableServiceError
-		(unavailableService) => unavailableService.cause,
+		(unavailableService) => {
+			type _CheckUnavailableService = DCommon.ExpectType<typeof unavailableService, UnavailableServiceError, "strict">;
+			return unavailableService.cause;
+		},
 	),
 );
+type _CheckMatchedErrorOtherwiseLine43 = DCommon.ExpectType<
+	typeof matchedErrorOtherwise,
+	string | Error,
+	"strict"
+>;
 
 // Ces matchers attendent des DuploJSError dont les identifiants sont des types
 // littéraux connus. Conserver l'union précise : Error natif et DuploJSError

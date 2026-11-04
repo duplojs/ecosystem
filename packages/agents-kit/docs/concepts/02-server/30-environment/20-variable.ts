@@ -7,6 +7,8 @@
 import * as DSCommon from "@duplojs/server/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DCommon from "@duplojs/lang/common";
+import type * as DNumber from "@duplojs/lang/number";
+import type * as DString from "@duplojs/lang/string";
 
 // `environmentVariableOrThrow` est adaptée au démarrage d'une application :
 // une configuration invalide interrompt directement l'initialisation.
@@ -32,10 +34,14 @@ const envs = await DSCommon.environmentVariableOrThrow(
 		justRead: true,
 	},
 );
-// {
-//     readonly host: "0.0.0.0" | "127.0.0.1" | "localhost";
-//     readonly name: string;
-//     readonly port: number & Positive;
-//     readonly ENVIRONMENT: "DEV" | "PROD";
-//     readonly DATABASE_URL: string & Url;
-// }
+type _CheckEnvs = DCommon.ExpectType<
+	typeof envs,
+	{
+		readonly host: "0.0.0.0" | "127.0.0.1" | "localhost";
+		readonly name: string;
+		readonly port: number & DNumber.Positive;
+		readonly ENVIRONMENT: "DEV" | "PROD";
+		readonly DATABASE_URL: string & DString.Url;
+	},
+	"strict"
+>;

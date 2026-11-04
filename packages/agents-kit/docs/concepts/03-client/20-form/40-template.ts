@@ -6,6 +6,7 @@
 import { createForm, createTemplate, useMultiLayout, type InputTemplateProperties, type VueComponent } from "@duplojs/form/vue";
 import { templateFormAddButton, templateFormNextButton, templateFormPreviousButton, templateFormRemoveButton, templateFormResetButton, templateFormSelect, useTextareaInput, useTextInput } from "@duplojs/form/vueDesignSystem";
 import { createGridTemplates } from "@duplojs/form/vueGrid";
+import type * as DCommon from "@duplojs/lang/common";
 
 // Un template transforme les props système et les slots en interface Vue.
 // Il reste générique : la connaissance métier appartient au formulaire.
@@ -81,9 +82,13 @@ const { component: TheForm, currentValue } = useForm(
 // `title` utilise le template global, `subtitle` le surcharge localement,
 // `summary` revient au template grid.
 //
-// Ref<{
-//   title: string;
-//   subtitle: string;
-//   summary: string;
-// }>
+type _CheckCurrentValue = DCommon.ExpectType<
+	typeof currentValue.value,
+	{
+		title: string;
+		subtitle: string;
+		summary: string;
+	},
+	"strict"
+>;
 void currentValue;

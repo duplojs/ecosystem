@@ -16,10 +16,6 @@ import * as DEither from "@duplojs/lang/either";
 // Le code métier n'a pas à choisir ni à manipuler la clé utilisée pour
 // enregistrer le tag.
 //
-// DModeling.ObjectTag<"EmailNotification"> & {
-//     readonly email: string;
-//     readonly subject: string;
-// }
 const EmailNotification = DModeling.createTaggedObject(
 	"EmailNotification",
 	{
@@ -28,17 +24,20 @@ const EmailNotification = DModeling.createTaggedObject(
 	},
 );
 type EmailNotification = DDataStructure.StructureValue<typeof EmailNotification>;
+type _CheckEmailNotification = DCommon.ExpectType<
+	EmailNotification,
+	DModeling.ObjectTag<"EmailNotification"> & {
+		readonly email: string;
+		readonly subject: string;
+	},
+	"strict"
+>;
 
 // Les propriétés peuvent être définies directement avec des `DataStructure`.
 //
 // Contrairement à une `Entity`, un `TaggedObject` n'impose pas que ses
 // propriétés soient des `NewType`.
 //
-// DModeling.ObjectTag<"SmsNotification"> & {
-//     readonly phone: string;
-//     readonly message: string;
-//     readonly attempts: number;
-// }
 const SmsNotification = DModeling.createTaggedObject(
 	"SmsNotification",
 	{
@@ -48,6 +47,11 @@ const SmsNotification = DModeling.createTaggedObject(
 	},
 );
 type SmsNotification = DDataStructure.StructureValue<typeof SmsNotification>;
+type _CheckSmsNotification = DCommon.ExpectType<SmsNotification, DModeling.ObjectTag<"SmsNotification"> & {
+	readonly phone: string;
+	readonly message: string;
+	readonly attempts: number;
+}, "strict">;
 
 // Plusieurs `TaggedObject` peuvent former une union discriminée.
 //
@@ -69,29 +73,36 @@ const destination = DPattern.matchWithTaggedObject(
 		SmsNotification: (smsNotification) => smsNotification.phone,
 	},
 );
+type _CheckDestination = DCommon.ExpectType<typeof destination, string, "strict">;
 
 // L'identité peut également être récupérée directement.
 //
-// "EmailNotification" | "SmsNotification"
 const notificationType = DModeling.getTagValue(notification);
+type _CheckNotificationType = DCommon.ExpectType<
+	typeof notificationType,
+	"EmailNotification" | "SmsNotification",
+	"strict"
+>;
 
 // `hasTagValue` permet de tester une identité et affine simultanément
 // le type de la valeur.
 //
 // Dans cette branche, `notification` est précisément un `EmailNotification`.
 if (DModeling.hasTagValue(notification, "EmailNotification")) {
+	type _CheckEmailBranch = DCommon.ExpectType<typeof notification, EmailNotification, "strict">;
 	const subject = notification.subject;
+	type _CheckSubject = DCommon.ExpectType<typeof subject, string, "strict">;
 }
 
 // `new` est utilisé lorsque les propriétés possèdent déjà le typage attendu.
 //
 // Il construit le `TaggedObject` et lui associe son identité.
 //
-// EmailNotification
 const emailNotification = EmailNotification.new({
 	email: "user@example.com",
 	subject: "Account created",
 });
+type _CheckEmailNotificationValue = DCommon.ExpectType<typeof emailNotification, EmailNotification, "strict">;
 
 // L'identité fait partie de la structure du `TaggedObject`.
 //
@@ -115,12 +126,16 @@ declare const externalEmailNotification: {
 //
 // L'hydratation peut échouer, son résultat est donc représenté par un `Either`.
 
-// DEither.Left<"async-error", DDataStructure.ErrorPromise>
-// | DEither.Left<"map-error", DDataStructure.Error>
-// | DEither.Right<"map-success", EmailNotification>
 const maybeEmailNotification = EmailNotification.map(
 	externalEmailNotification,
 );
+type _CheckMaybeEmailNotificationLine121 = DCommon.ExpectType<
+	typeof maybeEmailNotification,
+	DEither.Left<"async-error", DDataStructure.ErrorPromise>
+| DEither.Left<"map-error", DDataStructure.Error>
+| DEither.Right<"map-success", EmailNotification>,
+	"strict"
+>;
 
 // Une fois hydraté, le tag fait partie de la donnée.
 //
@@ -129,12 +144,6 @@ const maybeEmailNotification = EmailNotification.map(
 // Il n'a donc pas besoin d'être hydraté une seconde fois simplement
 // parce qu'il traverse une frontière entre deux services.
 //
-// DEither.Left<"async-error", DDataStructure.ErrorPromise>
-// | DEither.Left<"map-error", DDataStructure.Error>
-// | (DModeling.ObjectTag<"EmailNotification"> & {
-//     readonly email: string;
-//     readonly subject: string;
-// })
 const mappedEmailNotification = DCommon.pipe(
 	EmailNotification.map({
 		email: "user@example.com",
@@ -142,6 +151,16 @@ const mappedEmailNotification = DCommon.pipe(
 	}),
 	DEither.unwrapRight,
 );
+type _CheckMappedEmailNotification = DCommon.ExpectType<
+	typeof mappedEmailNotification,
+	DEither.Left<"async-error", DDataStructure.ErrorPromise>
+		| DEither.Left<"map-error", DDataStructure.Error>
+		| DModeling.ObjectTag<"EmailNotification"> & {
+			readonly email: string;
+			readonly subject: string;
+		},
+	"strict"
+>;
 
 // `decodeMap` suit le même principe que `map`, mais commence par décoder
 // la représentation externe avec les codecs fournis.
@@ -149,9 +168,6 @@ const mappedEmailNotification = DCommon.pipe(
 // Ici, `attempts` provient par exemple d'une représentation string avant
 // de retrouver son type métier `number`.
 
-// DEither.Left<"async-error", DDataStructure.ErrorPromise>
-// | DEither.Left<"map-error", DDataStructure.Error>
-// | DEither.Right<"map-success", SmsNotification>
 const maybeSmsNotification = SmsNotification.decodeMap(
 	DDataStructure.codecsString,
 	{
@@ -160,6 +176,13 @@ const maybeSmsNotification = SmsNotification.decodeMap(
 		attempts: DCommon.cast("1"),
 	},
 );
+type _CheckMaybeSmsNotificationLine155 = DCommon.ExpectType<
+	typeof maybeSmsNotification,
+	DEither.Left<"async-error", DDataStructure.ErrorPromise>
+| DEither.Left<"map-error", DDataStructure.Error>
+| DEither.Right<"map-success", SmsNotification>,
+	"strict"
+>;
 
 // `update` reconstruit un `TaggedObject` possédant la même identité
 // en remplaçant uniquement les propriétés fournies.

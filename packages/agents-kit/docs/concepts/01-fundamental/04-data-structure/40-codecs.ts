@@ -3,8 +3,11 @@
  *
  * Encoder et décoder les données avec un même contrat, selon leur type fondamental.
  */
+import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DString from "@duplojs/lang/string";
+import type * as DEither from "@duplojs/lang/either";
+import type * as DNumber from "@duplojs/lang/number";
 
 // Un codec fait transiter les données entre deux représentations d’une même structure.
 // encode convertit la représentation interne vers l’externe ; decode effectue l’inverse.
@@ -55,16 +58,6 @@ const productStructure = DDataStructure.object({
 	]),
 });
 
-// DEither.Right<
-//     "encode-success",
-//     {
-//         readonly name: string;
-//         readonly price: string & DString.Number;
-//         readonly quantity: string & DString.Number;
-//     }
-// >
-// | DEither.Left<"async-error", DDataStructure.ErrorPromise>
-// | DEither.Left<"encode-error", DDataStructure.Error>
 const encodedProduct = productStructure.encode(
 	codecs,
 	{
@@ -73,6 +66,20 @@ const encodedProduct = productStructure.encode(
 		quantity: 2,
 	},
 );
+type _CheckEncodedProductLine68 = DCommon.ExpectType<
+	typeof encodedProduct,
+	DEither.Right<
+		"encode-success",
+		{
+			readonly name: string;
+			readonly price: string & DString.Number;
+			readonly quantity: string & DString.Number;
+		}
+	>
+| DEither.Left<"async-error", DDataStructure.ErrorPromise>
+| DEither.Left<"encode-error", DDataStructure.Error>,
+	"strict"
+>;
 
 // Pendant l'encode, la structure est parcourue.
 //
@@ -83,16 +90,6 @@ const encodedProduct = productStructure.encode(
 // Le codec associé à `TheNumber` transforme donc automatiquement
 // leurs valeurs de `number` vers `string`.
 
-// DEither.Right<
-//     "decode-success",
-//     {
-//         readonly name: string;
-//         readonly price: number;
-//         readonly quantity: number & DNumber.Integer & DNumber.Positive;
-//     }
-// >
-// | DEither.Left<"async-error", DDataStructure.ErrorPromise>
-// | DEither.Left<"decode-error", DDataStructure.Error>
 const decodedProduct = productStructure.decode(
 	codecs,
 	{
@@ -101,6 +98,20 @@ const decodedProduct = productStructure.decode(
 		quantity: "2",
 	},
 );
+type _CheckDecodedProductLine96 = DCommon.ExpectType<
+	typeof decodedProduct,
+	DEither.Right<
+		"decode-success",
+		{
+			readonly name: string;
+			readonly price: number;
+			readonly quantity: number & DNumber.Integer & DNumber.Positive;
+		}
+	>
+| DEither.Left<"async-error", DDataStructure.ErrorPromise>
+| DEither.Left<"decode-error", DDataStructure.Error>,
+	"strict"
+>;
 
 // Le decode parcourt exactement la même structure dans le sens inverse.
 //

@@ -4,6 +4,8 @@
  * Vérification, conversion et narrowing aux frontières du logiciel, en synchrone ou asynchrone.
  */
 import * as DDataStructure from "@duplojs/lang/dataStructure";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DString from "@duplojs/lang/string";
 
 // La structure décrit la donnée attendue à la fois dans TypeScript et au runtime.
 // Les opérations ci-dessous s’appliquent aux frontières du logiciel, avant de considérer
@@ -22,15 +24,17 @@ const componentStructure = DDataStructure.object({
 // Le type TypeScript correspondant à une structure peut être récupéré
 // avec `StructureValue`.
 //
-// {
-//     readonly id: bigint;
-//     readonly name: string;
-//     readonly alt?: string | undefined;
-//     readonly image: {
-//         readonly src: string & DString.Url;
-//     };
-// }
 type Component = DDataStructure.StructureValue<typeof componentStructure>;
+type _CheckComponent = DCommon.ExpectType<
+	Component,
+	{
+		readonly id: bigint;
+		readonly name: string;
+		readonly alt?: string | undefined;
+		readonly image: { readonly src: string & DString.Url };
+	},
+	"strict"
+>;
 
 declare const unknownComponent: unknown;
 
@@ -78,7 +82,7 @@ declare const value: unknown;
 // Contrairement à `check`, il ne retourne pas les détails de l'erreur.
 // Il agit également comme un type predicate TypeScript.
 if (componentStructure.is(value)) {
-	// Component
+	type _CheckNarrowedComponent = DCommon.ExpectType<typeof value, Component, "strict">;
 	void value;
 }
 

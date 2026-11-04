@@ -3,10 +3,13 @@
  *
  * Initialisation et cycle de vie d’un formulaire Vue typé.
  */
-import { createForm, useCheckLayout, useMultiLayout } from "@duplojs/form/vue";
+import { createForm, useCheckLayout, useMultiLayout, type DetailsError } from "@duplojs/form/vue";
 import { templateFormAddButton, templateFormNextButton, templateFormPreviousButton, templateFormRemoveButton, templateFormResetButton, templateFormSelect, useNumberInput, useTextInput } from "@duplojs/form/vueDesignSystem";
 import { createGridTemplates } from "@duplojs/form/vueGrid";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DEither from "@duplojs/lang/either";
+import type * as DString from "@duplojs/lang/string";
 
 // `createForm` fixe le système de rendu utilisé par cette famille de formulaires.
 // `repeat`, `step` et `union` demandent des composants dédiés pour ajouter,
@@ -64,20 +67,24 @@ const { check, component: TheForm, currentValue, dispose, reset } = useForm(
 );
 
 // Valeur brute synchronisée avec l'état Vue du formulaire.
-// Ref<{
-//   name: string;
-//   email: string;
-//   age: number;
-// }>
+type _CheckCurrentValue = DCommon.ExpectType<
+	typeof currentValue.value,
+	{
+		name: string;
+		email: string;
+		age: number;
+	},
+	"strict"
+>;
 void currentValue;
 
 // `check` applique les validations déclarées et type la valeur validée.
-// DEither.Error<DetailsError> | DEither.Success<{
-//   name: string;
-//   email: string & Email;
-//   age: number;
-// }>
 const checkedValue = await check();
+type _CheckValue = DCommon.ExpectType<typeof checkedValue, DEither.Error<DetailsError> | DEither.Success<{
+	name: string;
+	email: string & DString.Email;
+	age: number;
+}>, "strict">;
 
 void checkedValue;
 

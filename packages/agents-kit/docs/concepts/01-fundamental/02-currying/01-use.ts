@@ -28,6 +28,11 @@ const normalizedTags = DCommon.pipe(
 	DArray.filter(DString.isNotEmpty),
 	DArray.map(DString.toLowerCase),
 );
+type _CheckNormalizedTags = DCommon.ExpectType<
+	typeof normalizedTags,
+	readonly (Lowercase<string> & DString.MinCharacters<1>)[] & DArray.MaxElements<3>,
+	"strict"
+>;
 // Résultat : ["typescript", "duplojs", "functional"].
 // Chaque étape reçoit la sortie précédente ; les types suivent ces transformations.
 // On peut ajouter, retirer ou réordonner les étapes sans restructurer le traitement.

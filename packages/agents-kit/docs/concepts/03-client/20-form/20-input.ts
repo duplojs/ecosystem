@@ -3,10 +3,13 @@
  *
  * Création, intégration et validation des champs de saisie d’un formulaire Vue.
  */
-import { createForm, createInput, useMultiLayout } from "@duplojs/form/vue";
+import { createForm, createInput, type DetailsError, useMultiLayout } from "@duplojs/form/vue";
 import { TextInput, templateFormAddButton, templateFormNextButton, templateFormPreviousButton, templateFormRemoveButton, templateFormResetButton, templateFormSelect, useNumberInput, useTextInput } from "@duplojs/form/vueDesignSystem";
 import { createGridTemplates } from "@duplojs/form/vueGrid";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DEither from "@duplojs/lang/either";
+import type * as DString from "@duplojs/lang/string";
 
 const gridTemplates = createGridTemplates({
 	repeat: {
@@ -50,10 +53,10 @@ const { component: TheForm, currentValue } = useForm(
 	}),
 );
 
-// Ref<{
-//   name: string;
-//   age: number;
-// }>
+type _CheckCurrentValue = DCommon.ExpectType<typeof currentValue.value, {
+	name: string;
+	age: number;
+}, "strict">;
 void currentValue;
 void TheForm;
 
@@ -90,7 +93,11 @@ const { check } = useForm(
 
 // Lors du `check`, la librairie appelle d'abord le `check` exposé par le
 // composant s'il existe, puis applique la `dataStructure` de l'input.
-// DEither.Error<DetailsError> | DEither.Success<string & Email>
 const checkedEmail = await check();
+type _CheckCheckedEmail = DCommon.ExpectType<
+	typeof checkedEmail,
+	DEither.Error<DetailsError> | DEither.Success<string & DString.Email>,
+	"strict"
+>;
 
 void checkedEmail;

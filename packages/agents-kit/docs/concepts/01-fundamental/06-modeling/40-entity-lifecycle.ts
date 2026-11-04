@@ -238,6 +238,11 @@ const createdUser = DCommon.pipe(
 	}),
 	DEither.unwrapRight,
 );
+type _CheckCreatedUser = DCommon.ExpectType<
+	typeof createdUser.state,
+	User.AwaitingValidationState,
+	"strict"
+>;
 
 declare const address: User.Address;
 
@@ -253,17 +258,6 @@ declare const address: User.Address;
 // - `ValidateFlag` prouve le nouvel état ;
 // - `UserCreated` a été remplacée par `ValidateUserFact`.
 //
-// & DModeling.Entity<"User">
-// & {
-//     readonly name: string & DModeling.NewType<"UserName", Trimmed | MinCharacters<3> | MaxCharacters<45>>;
-//     readonly id: string & DModeling.NewType<"UserId", Uuid>;
-//     readonly age: number & DModeling.NewType<"UserAge", Integer | Positive>;
-//     readonly state: User.ValidateState;
-// }
-// & DModeling.Flag<"Validate", User.ValidateState>
-// & DModeling.Fact<"ValidateUserFact", {
-//     state: User.ValidateState;
-// }>
 const validateUser = DCommon.pipe(
 	ValidateUserFact.run(
 		createdUser,
@@ -271,3 +265,8 @@ const validateUser = DCommon.pipe(
 	),
 	DEither.unwrapRight,
 );
+type _CheckValidatedUser = DCommon.ExpectType<
+	typeof validateUser.state,
+	User.ValidateState,
+	"strict"
+>;

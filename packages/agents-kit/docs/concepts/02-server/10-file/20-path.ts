@@ -18,22 +18,33 @@ declare const unsafePath: string;
 const pathResult = DPath.create(unsafePath);
 
 if (DEither.isRight(pathResult)) {
-	// string & DPath.Path
 	const path = DEither.unwrapRight(pathResult);
+	type _CheckPathLine22 = DCommon.ExpectType<
+	typeof path,
+	string & DPath.Path,
+	"strict"
+	>;
 }
 
 // Les helpers extraient des parties contraintes sans retravailler la string.
-// (string & DPath.Segment) | null
 const fileName = DPath.getBaseName(imagePath);
+type _CheckFileName = DCommon.ExpectType<typeof fileName, (string & DPath.Segment & DPath.Path) | null, "strict">;
 
-// (string & DPath.Segment) | null
 const extensionName = DPath.getExtensionName(imagePath);
+type _CheckExtensionNameLine30 = DCommon.ExpectType<
+	typeof extensionName,
+	(string & DPath.Segment & DPath.Path) | null,
+	"strict"
+>;
 
-// (string & DPath.Path) | null
 const parentFolderPath = DPath.getParentFolderPath(imagePath);
+type _CheckParentFolderPathLine33 = DCommon.ExpectType<
+	typeof parentFolderPath,
+	(string & DPath.Path) | null,
+	"strict"
+>;
 
 // Les fonctions de résolution assemblent des `Path` et `Segment` validés.
-// (string & DPath.Absolute) | null
 const resolvedPath = DPath.resolveFrom(
 	rootPath,
 	[
@@ -44,9 +55,13 @@ const resolvedPath = DPath.resolveFrom(
 		stayInOrigin: true,
 	},
 );
+type _CheckResolvedPath = DCommon.ExpectType<
+	typeof resolvedPath,
+	(string & DPath.Path & DPath.Absolute) | null,
+	"strict"
+>;
 
 // Résolution sans origine protectrice.
-// string & DPath.Path & DPath.Absolute
 const relativePath = DPath.resolveRelative(
 	[
 		rootPath,
@@ -54,3 +69,4 @@ const relativePath = DPath.resolveRelative(
 		DCommon.infer("logo1.png"),
 	],
 );
+type _CheckRelativePath = DCommon.ExpectType<typeof relativePath, string & DPath.Path & DPath.Absolute, "strict">;

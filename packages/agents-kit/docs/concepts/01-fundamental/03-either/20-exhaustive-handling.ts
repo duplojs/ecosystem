@@ -14,7 +14,6 @@ declare const myResult: (
 );
 
 // Sélectionner plusieurs variantes avec une décision explicite pour chacune.
-// DEither.Left<"fail-task", Error> | DEither.Fail | "test"
 const resultWhenIsSelected = DCommon.pipe(
 	myResult,
 	DEither.whenIsSelected(
@@ -27,7 +26,11 @@ const resultWhenIsSelected = DCommon.pipe(
 		(value) => "test" as const,
 	),
 );
-// DEither.Success<"result"> | Error | DEither.Left<"fail-task", Error> | DEither.Fail
+type _CheckResultWhenIsSelected = DCommon.ExpectType<
+	typeof resultWhenIsSelected,
+	DEither.Left<"fail-task", Error> | DEither.Fail | "test",
+	"strict"
+>;
 const resultUnwrapSelection = DCommon.pipe(
 	myResult,
 	DEither.unwrapSelection(
@@ -39,6 +42,11 @@ const resultUnwrapSelection = DCommon.pipe(
 		},
 	),
 );
+type _CheckResultUnwrapSelection = DCommon.ExpectType<
+	typeof resultUnwrapSelection,
+	DEither.Success<"result"> | Error | DEither.Left<"fail-task", Error> | DEither.Fail,
+	"strict"
+>;
 // Chaque information doit apparaître dans le sélecteur, même lorsqu’elle vaut false.
 // Ajouter une variante au contrat oblige à réviser la sélection à cet endroit.
 // Cela place la décision dans la couche qui doit la prendre, plutôt que de transmettre
@@ -51,17 +59,26 @@ const resultMatchInformation = DCommon.pipe(
 	myResult,
 	DEither.matchInformation(
 		{
-			// Error
-			"fail-task": (value) => "fail-task" as const,
-			// Error
-			error: (value) => "error" as const,
-			// void
-			fail: (value) => "fail" as const,
-			// "result"
-			success: (value) => "success" as const,
+			"fail-task": (value) => {
+				type _CheckFailTaskValue = DCommon.ExpectType<typeof value, Error, "strict">;
+				return "fail-task" as const;
+			},
+			error: (value) => {
+				type _CheckErrorValue = DCommon.ExpectType<typeof value, Error, "strict">;
+				return "error" as const;
+			},
+			fail: (value) => {
+				type _CheckFailValue = DCommon.ExpectType<typeof value, void, "strict">;
+				return "fail" as const;
+			},
+			success: (value) => {
+				type _CheckSuccessValue = DCommon.ExpectType<typeof value, "result", "strict">;
+				return "success" as const;
+			},
 		},
 	),
 );
+type _CheckResultMatchInformation = DCommon.ExpectType<typeof resultMatchInformation, "fail-task" | "success" | "fail" | "error", "strict">;
 // matchInformationOtherwise autorise un traitement partiel avec une branche de repli.
 const resultWithFallback = DCommon.pipe(
 	myResult,

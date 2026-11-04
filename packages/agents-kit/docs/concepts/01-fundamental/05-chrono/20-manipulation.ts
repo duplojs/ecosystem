@@ -12,39 +12,55 @@ const date = DChrono.createDate("2026-09-30");
 
 // Les unités peuvent être ajoutées ou retirées directement sur une date.
 
-// DChrono.TheDate
 const nextWeek = DCommon.pipe(
 	date,
 	DChrono.addWeeks(1),
 	DChrono.addDays(2),
 	DChrono.subtractHours(3),
 );
+type _CheckNextWeekLine16 = DCommon.ExpectType<
+	typeof nextWeek,
+	DChrono.TheDate,
+	"strict"
+>;
 
 // `TheTime` permet de représenter une durée puis de l'appliquer
 // à une date ou à un autre temps.
 const duration = DChrono.createTime(2, "hour");
 
-// DChrono.TheDate
 const later = DCommon.pipe(
 	date,
 	DChrono.addTime(duration),
 );
+type _CheckLaterLine28 = DCommon.ExpectType<
+	typeof later,
+	DChrono.TheDate,
+	"strict"
+>;
 
-// DChrono.TheTime
 const totalDuration = DCommon.pipe(
 	duration,
 	DChrono.addTime(DChrono.createTime(30, "minute")),
 );
+type _CheckTotalDurationLine34 = DCommon.ExpectType<
+	typeof totalDuration,
+	DChrono.TheTime,
+	"strict"
+>;
 
 // La différence entre deux dates produit un TheTime signé : date moins date de référence.
 const startDate = DChrono.createDate("2026-09-01");
 const endDate = DChrono.createDate("2026-09-30");
 
-// DChrono.TheTime
 const difference = DCommon.pipe(
 	endDate,
 	DChrono.getDifference(startDate),
 );
+type _CheckDifferenceLine44 = DCommon.ExpectType<
+	typeof difference,
+	DChrono.TheTime,
+	"strict"
+>;
 
 // `computeTime` permet d'exprimer un `TheTime` dans une unité donnée.
 

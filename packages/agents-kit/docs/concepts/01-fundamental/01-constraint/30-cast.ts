@@ -52,11 +52,15 @@ declare function createUser<
 
 // infer calcule les contraintes attendues tout en conservant la valeur littérale.
 // Il est adapté aux constantes connues statiquement et ne valide rien au runtime.
-createUser({
+const inferredUser = createUser({
 	name: DCommon.infer("thisIsASuperName"),
 	age: DCommon.infer(18),
 });
-// {
-//     name: "thisIsASuperName" & DString.MinCharacters<10>;
-//     age: 18 & DNumber.GreaterThanOrEqual<18>;
-// }
+type _CheckInferredUser = DCommon.ExpectType<
+	typeof inferredUser,
+	{
+		name: "thisIsASuperName" & DString.MinCharacters<10>;
+		age: 18 & DNumber.GreaterThanOrEqual<18>;
+	},
+	"strict"
+>;

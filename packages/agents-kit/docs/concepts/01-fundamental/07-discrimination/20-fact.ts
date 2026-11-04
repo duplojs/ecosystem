@@ -55,21 +55,25 @@ declare const user: User;
 // correspondant au nom sélectionné. La payload est accessible sur cette valeur avec factKind.
 // Cette lecture fonctionne dans les formes directe et curifiée.
 
-// string | number
 const matchedFact = DPattern.matchWithFact(
 	user,
 	{
-		// UserCreated
-		UserCreated: (createdUser) => (
-			DModeling.factKind.getValue(createdUser).payload.name
-		),
+		UserCreated: (createdUser) => {
+			type _CheckCreatedUser = DCommon.ExpectType<typeof createdUser, UserCreated, "strict">;
+			return DModeling.factKind.getValue(createdUser).payload.name;
+		},
 
-		// UserDeleted
-		UserDeleted: (deletedUser) => (
-			DModeling.factKind.getValue(deletedUser).payload.reason.length
-		),
+		UserDeleted: (deletedUser) => {
+			type _CheckDeletedUser = DCommon.ExpectType<typeof deletedUser, UserDeleted, "strict">;
+			return DModeling.factKind.getValue(deletedUser).payload.reason.length;
+		},
 	},
 );
+type _CheckMatchedFactLine59 = DCommon.ExpectType<
+	typeof matchedFact,
+	string | number,
+	"strict"
+>;
 
 // La sélection exhaustive crée un point d'ancrage dans le typage.
 //
@@ -82,21 +86,25 @@ const matchedFact = DPattern.matchWithFact(
 // `matchWithFact` possède également une forme curried afin d'être
 // directement utilisée dans un pipe.
 
-// string | number
 const matchedFactInPipe = DCommon.pipe(
 	user,
 	DPattern.matchWithFact({
-		// UserCreated
-		UserCreated: (createdUser) => (
-			DModeling.factKind.getValue(createdUser).payload.name
-		),
+		UserCreated: (createdUser) => {
+			type _CheckCreatedUser = DCommon.ExpectType<typeof createdUser, UserCreated, "strict">;
+			return DModeling.factKind.getValue(createdUser).payload.name;
+		},
 
-		// UserDeleted
-		UserDeleted: (deletedUser) => (
-			DModeling.factKind.getValue(deletedUser).payload.reason.length
-		),
+		UserDeleted: (deletedUser) => {
+			type _CheckDeletedUser = DCommon.ExpectType<typeof deletedUser, UserDeleted, "strict">;
+			return DModeling.factKind.getValue(deletedUser).payload.reason.length;
+		},
 	}),
 );
+type _CheckMatchedFactInPipeLine86 = DCommon.ExpectType<
+	typeof matchedFactInPipe,
+	string | number,
+	"strict"
+>;
 
 // `matchWithFactOtherwise` permet de ne sélectionner explicitement
 // qu'une partie des facts.
@@ -104,39 +112,47 @@ const matchedFactInPipe = DCommon.pipe(
 // `otherwise` reçoit uniquement les valeurs portant les facts
 // qui n'ont pas déjà été prises en charge par le matcher.
 
-// string | UserDeleted
 const matchedFactOtherwise = DPattern.matchWithFactOtherwise(
 	user,
 	{
-		// UserCreated
-		UserCreated: (createdUser) => (
-			DModeling.factKind.getValue(createdUser).payload.name
-		),
+		UserCreated: (createdUser) => {
+			type _CheckCreatedUser = DCommon.ExpectType<typeof createdUser, UserCreated, "strict">;
+			return DModeling.factKind.getValue(createdUser).payload.name;
+		},
 	},
-	// UserDeleted
-	(deletedUser) => (
-		deletedUser
-	),
+	(deletedUser) => {
+		type _CheckDeletedUser = DCommon.ExpectType<typeof deletedUser, UserDeleted, "strict">;
+		return deletedUser;
+	},
 );
+type _CheckMatchedFactOtherwiseLine108 = DCommon.ExpectType<
+	typeof matchedFactOtherwise,
+	string | UserDeleted,
+	"strict"
+>;
 
 // La forme curried est également disponible.
 //
 // Le typage de `otherwise` évolue avec les handlers déjà déclarés.
 // Il représente toujours précisément le reste de l'union de facts.
 
-// string | UserDeleted
 const matchedFactOtherwiseInPipe = DCommon.pipe(
 	user,
 	DPattern.matchWithFactOtherwise(
 		{
-			// UserCreated
-			UserCreated: (createdUser) => (
-				DModeling.factKind.getValue(createdUser).payload.name
-			),
+			UserCreated: (createdUser) => {
+				type _CheckCreatedUser = DCommon.ExpectType<typeof createdUser, UserCreated, "strict">;
+				return DModeling.factKind.getValue(createdUser).payload.name;
+			},
 		},
-		// UserDeleted
-		(deletedUser) => (
-			deletedUser
-		),
+		(deletedUser) => {
+			type _CheckDeletedUser = DCommon.ExpectType<typeof deletedUser, UserDeleted, "strict">;
+			return deletedUser;
+		},
 	),
 );
+type _CheckMatchedFactOtherwiseInPipeLine128 = DCommon.ExpectType<
+	typeof matchedFactOtherwiseInPipe,
+	string | UserDeleted,
+	"strict"
+>;

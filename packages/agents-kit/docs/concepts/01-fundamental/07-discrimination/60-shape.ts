@@ -49,7 +49,6 @@ declare const externalProduct: ExternalProduct;
 // La dernière branche peut donc devenir exhaustive même sans discriminant
 // explicite sur la donnée.
 
-// string
 const productLabel = DPattern.match(externalProduct)
 	.with(
 		{
@@ -85,6 +84,11 @@ const productLabel = DPattern.match(externalProduct)
 		(product) => `unavailable:${product.unavailable.reason}`,
 	)
 	.exhaustive();
+type _CheckProductLabelLine53 = DCommon.ExpectType<
+	typeof productLabel,
+	string,
+	"strict"
+>;
 
 // Les patterns peuvent être profondément imbriqués.
 //
@@ -102,7 +106,6 @@ const productLabel = DPattern.match(externalProduct)
 // Chaque étape travaille donc uniquement avec les valeurs qui n'ont pas encore
 // été traitées.
 
-// string
 const productLabelInPipe = DCommon.pipe(
 	externalProduct,
 	DPattern.match(
@@ -137,6 +140,11 @@ const productLabelInPipe = DCommon.pipe(
 	),
 	DPattern.exhaustive,
 );
+type _CheckProductLabelInPipeLine106 = DCommon.ExpectType<
+	typeof productLabelInPipe,
+	`merchant:${string}` | `second-hand:${number}` | "unavailable:deleted" | "unavailable:out-of-stock",
+	"strict"
+>;
 
 // Une sélection partielle peut se terminer par otherwise plutôt que par exhaustive.
 // Le callback de repli reçoit précisément les formes qui restent à traiter.

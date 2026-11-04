@@ -3,10 +3,13 @@
  *
  * Composition de la structure des données et des comportements d’un formulaire.
  */
-import { createForm, useCheckLayout, useDisabledLayout, useMultiLayout, useRepeatLayout, useSectionLayout, useSlotLayout, useStepLayout, useUnionLayout } from "@duplojs/form/vue";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DEither from "@duplojs/lang/either";
+import { createForm, type DetailsError, useCheckLayout, useDisabledLayout, useMultiLayout, useRepeatLayout, useSectionLayout, useSlotLayout, useStepLayout, useUnionLayout } from "@duplojs/form/vue";
 import { templateFormAddButton, templateFormNextButton, templateFormPreviousButton, templateFormRemoveButton, templateFormResetButton, templateFormSelect, useTextareaInput, useTextInput } from "@duplojs/form/vueDesignSystem";
 import { createGridTemplates } from "@duplojs/form/vueGrid";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
+import type * as DString from "@duplojs/lang/string";
 import { ref } from "vue";
 
 const gridTemplates = createGridTemplates({
@@ -66,34 +69,34 @@ const { check: checkStructureForm, component: StructureForm, currentValue: curre
 	),
 );
 
-// Ref<{
-//   identity: {
-//     firstName: string;
-//     lastName: string;
-//   };
-//   contacts: [string, ...string[]];
-//   preferredContact: {
-//     readonly kind: "email" | "phone";
-//     value: string;
-//     updateKind(kind: "email" | "phone", value?: string): void;
-//   };
-//   message: string;
-// }>
+type _CheckContacts = DCommon.ExpectType<typeof currentStructureValue.value.contacts, [string, ...string[]], "strict">;
+type _CheckPreferredContactKind = DCommon.ExpectType<
+	typeof currentStructureValue.value.preferredContact.kind,
+	"email" | "phone",
+	"strict"
+>;
 void currentStructureValue;
 
-// DEither.Error<DetailsError> | DEither.Success<{
-//   identity: {
-//     firstName: string;
-//     lastName: string;
-//   };
-//   contacts: [string, ...string[]];
-//   preferredContact: {
-//     kind: "email" | "phone";
-//     value: string;
-//   };
-//   message: string | undefined;
-// }>
 const checkedStructureValue = await checkStructureForm();
+type _CheckCheckedStructureValueLine96 = DCommon.ExpectType<
+	typeof checkedStructureValue,
+	DEither.Error<DetailsError> | DEither.Success<{
+		identity: {
+			firstName: string;
+			lastName: string;
+		};
+		contacts: [string, ...string[]];
+		preferredContact: {
+			kind: "email";
+			value: string;
+		} | {
+			kind: "phone";
+			value: string;
+		};
+		message: string | undefined;
+	}>,
+	"strict"
+>;
 
 void checkedStructureValue;
 void StructureForm;
@@ -132,29 +135,21 @@ const { check: checkFlowForm, component: FlowForm, currentValue: currentFlowValu
 	),
 );
 
-// Ref<{
-//   currentStep: 0 | 1;
-//   steps: [
-//     {
-//       fullName: string;
-//       email: string;
-//     },
-//     {
-//       company: string;
-//       notes: string;
-//     },
-//   ];
-// }>
+type _CheckCurrentStep = DCommon.ExpectType<typeof currentFlowValue.value.currentStep, 0 | 1, "strict">;
 void currentFlowValue;
 
-// DEither.Error<DetailsError> | DEither.Success<[
-//   {
-//     fullName: string;
-//     email: string & Email;
-//   },
-//   {
-//     company: string | undefined;
-//     notes: string;
-//   },
-// ]>
 const checkedFlowValue = await checkFlowForm();
+type _CheckCheckedFlowValueLine160 = DCommon.ExpectType<
+	typeof checkedFlowValue,
+	DEither.Error<DetailsError> | DEither.Success<readonly [
+		{
+			fullName: string;
+			email: string & DString.Email;
+		},
+		{
+			company: string | undefined;
+			notes: string;
+		},
+	]>,
+	"strict"
+>;

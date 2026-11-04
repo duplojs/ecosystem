@@ -34,17 +34,25 @@ declare const notification: Notification;
 // Chaque callback reçoit directement le `TaggedObject` précis
 // correspondant au tag sélectionné.
 
-// string
 const matchedNotification = DPattern.matchWithTaggedObject(
 	notification,
 	{
-		// EmailNotification
-		EmailNotification: (emailNotification) => emailNotification.email,
+		EmailNotification: (emailNotification) => {
+			type _CheckEmailNotification = DCommon.ExpectType<typeof emailNotification, EmailNotification, "strict">;
+			return emailNotification.email;
+		},
 
-		// SmsNotification
-		SmsNotification: (smsNotification) => smsNotification.phone,
+		SmsNotification: (smsNotification) => {
+			type _CheckSmsNotification = DCommon.ExpectType<typeof smsNotification, SmsNotification, "strict">;
+			return smsNotification.phone;
+		},
 	},
 );
+type _CheckMatchedNotificationLine38 = DCommon.ExpectType<
+	typeof matchedNotification,
+	string,
+	"strict"
+>;
 
 // La sélection exhaustive crée un point d'ancrage dans le typage.
 //
@@ -57,17 +65,25 @@ const matchedNotification = DPattern.matchWithTaggedObject(
 // `matchWithTaggedObject` possède également une forme curried afin d'être
 // directement utilisée dans un pipe.
 
-// string
 const matchedNotificationInPipe = DCommon.pipe(
 	notification,
 	DPattern.matchWithTaggedObject({
-		// EmailNotification
-		EmailNotification: (emailNotification) => emailNotification.email,
+		EmailNotification: (emailNotification) => {
+			type _CheckEmailNotification = DCommon.ExpectType<typeof emailNotification, EmailNotification, "strict">;
+			return emailNotification.email;
+		},
 
-		// SmsNotification
-		SmsNotification: (smsNotification) => smsNotification.phone,
+		SmsNotification: (smsNotification) => {
+			type _CheckSmsNotification = DCommon.ExpectType<typeof smsNotification, SmsNotification, "strict">;
+			return smsNotification.phone;
+		},
 	}),
 );
+type _CheckMatchedNotificationInPipeLine61 = DCommon.ExpectType<
+	typeof matchedNotificationInPipe,
+	string,
+	"strict"
+>;
 
 // `matchWithTaggedObjectOtherwise` permet de ne sélectionner explicitement
 // qu'une partie des tags.
@@ -75,31 +91,47 @@ const matchedNotificationInPipe = DCommon.pipe(
 // `otherwise` reçoit uniquement les `TaggedObject` qui n'ont pas déjà
 // été pris en charge par le matcher.
 
-// string
 const matchedNotificationOtherwise = DPattern.matchWithTaggedObjectOtherwise(
 	notification,
 	{
-		// EmailNotification
-		EmailNotification: (emailNotification) => emailNotification.email,
+		EmailNotification: (emailNotification) => {
+			type _CheckEmailNotification = DCommon.ExpectType<typeof emailNotification, EmailNotification, "strict">;
+			return emailNotification.email;
+		},
 	},
-	// SmsNotification
-	(smsNotification) => smsNotification.phone,
+	(smsNotification) => {
+		type _CheckSmsNotification = DCommon.ExpectType<typeof smsNotification, SmsNotification, "strict">;
+		return smsNotification.phone;
+	},
 );
+type _CheckMatchedNotificationOtherwiseLine79 = DCommon.ExpectType<
+	typeof matchedNotificationOtherwise,
+	string,
+	"strict"
+>;
 
 // La forme curried est également disponible.
 //
 // Le typage de `otherwise` évolue avec les handlers déjà déclarés.
 // Il représente toujours précisément le reste de l'union de `TaggedObject`.
 
-// string
 const matchedNotificationOtherwiseInPipe = DCommon.pipe(
 	notification,
 	DPattern.matchWithTaggedObjectOtherwise(
 		{
-			// EmailNotification
-			EmailNotification: (emailNotification) => emailNotification.email,
+			EmailNotification: (emailNotification) => {
+				type _CheckEmailNotification = DCommon.ExpectType<typeof emailNotification, EmailNotification, "strict">;
+				return emailNotification.email;
+			},
 		},
-		// SmsNotification
-		(smsNotification) => smsNotification.phone,
+		(smsNotification) => {
+			type _CheckSmsNotification = DCommon.ExpectType<typeof smsNotification, SmsNotification, "strict">;
+			return smsNotification.phone;
+		},
 	),
 );
+type _CheckMatchedNotificationOtherwiseInPipeLine95 = DCommon.ExpectType<
+	typeof matchedNotificationOtherwiseInPipe,
+	string,
+	"strict"
+>;

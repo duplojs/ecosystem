@@ -3,6 +3,7 @@
  *
  * Déclaration d'une politique unique pour créer et vérifier une famille de tokens.
  */
+import type * as DCommon from "@duplojs/lang/common";
 import { Cipher, createTokenHandler, Signer } from "@duplojs/json-web-token";
 import * as DChrono from "@duplojs/lang/chrono";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -32,9 +33,6 @@ const tokenHandler = createTokenHandler({
 });
 
 // À la création, les structures du handler typent et valident header/payload.
-// | Right<"token-created", string>
-// | Left<"header-encode-error", Error>
-// | Left<"payload-encode-error", Error>;
 const createdTokenResult = await tokenHandler.create(
 	{
 		userId: "42",
@@ -46,50 +44,64 @@ const createdTokenResult = await tokenHandler.create(
 		},
 	},
 );
+type _CheckCreatedTokenResult = DCommon.ExpectType<
+	typeof createdTokenResult,
+	DEither.Right<"token-created", string> | DEither.Left<"header-encode-error", DDataStructure.Error> | DEither.Left<"payload-encode-error", DDataStructure.Error>,
+	"strict"
+>;
 
 if (DEither.isRight(createdTokenResult)) {
-	// string
 	const token = DEither.unwrapRight(createdTokenResult);
+	type _CheckToken = DCommon.ExpectType<typeof token, string, "strict">;
 }
 
 // `verify` applique la même politique et restitue header/payload typés.
-// | Left<"token-format", unknown>
-// | Left<"header-json-error", unknown>
-// | Left<"header-decode-error", Error>
-// | Left<"payload-json-error", unknown>
-// | Left<"payload-decode-error", Error>
-// | Left<"signature-invalid", unknown>
-// | Left<"issue-invalid", unknown>
-// | Left<"subject-invalid", unknown>
-// | Left<"audience-invalid", unknown>
-// | Left<"expired", unknown>
-// | Right<
-//  "token-verified",
-//  {
-//    readonly header: {
-//      readonly typ: "JWT";
-//      readonly alg: "HS256";
-//      readonly kid?: string | undefined;
-//    };
-//    readonly payload: {
-//      readonly iss: string;
-//      readonly sub: undefined;
-//      readonly aud: string;
-//      readonly exp: number;
-//      readonly iat: number;
-//      readonly userId: string;
-//      readonly role: "admin";
-//    };
-//  }
-// >;
 const verifiedTokenResult = await tokenHandler.verify("receive-token");
+type _CheckVerifiedTokenResult = DCommon.ExpectType<typeof verifiedTokenResult,
+	DEither.Left<"token-format", unknown> | DEither.Left<"header-json-error", unknown> | DEither.Left<"header-decode-error", DDataStructure.Error> | DEither.Left<"payload-json-error", unknown> | DEither.Left<"payload-decode-error", DDataStructure.Error> | DEither.Left<"signature-invalid", unknown> | DEither.Left<"issue-invalid", unknown> | DEither.Left<"subject-invalid", unknown> | DEither.Left<"audience-invalid", unknown> | DEither.Left<"expired", unknown> | DEither.Right<"token-verified", {
+		readonly header: {
+			readonly typ: "JWT";
+			readonly alg: "HS256";
+			readonly kid?: string | undefined;
+		};
+		readonly payload: {
+			readonly iss: string;
+			readonly sub: undefined;
+			readonly aud: string;
+			readonly exp: number;
+			readonly iat: number;
+			readonly userId: string;
+			readonly role: "admin";
+		};
+	}>,
+	"strict"
+>;
 
 if (DEither.isRight(verifiedTokenResult)) {
-	const { payload, header } = DEither.unwrapRight(verifiedTokenResult);
+	const verifiedToken = DEither.unwrapRight(verifiedTokenResult);
+	type _CheckVerifiedToken = DCommon.ExpectType<typeof verifiedToken, {
+		readonly header: {
+			readonly typ: "JWT";
+			readonly alg: "HS256";
+			readonly kid?: string | undefined;
+		};
+		readonly payload: {
+			readonly iss: string;
+			readonly sub: undefined;
+			readonly aud: string;
+			readonly exp: number;
+			readonly iat: number;
+			readonly userId: string;
+			readonly role: "admin";
+		};
+	}, "strict">;
 
-	const userId = payload.userId;
-	const role = payload.role;
-	const kid = header.kid;
+	const userId = verifiedToken.payload.userId;
+	const role = verifiedToken.payload.role;
+	const kid = verifiedToken.header.kid;
+	type _CheckUserId = DCommon.ExpectType<typeof userId, string, "strict">;
+	type _CheckRole = DCommon.ExpectType<typeof role, "admin", "strict">;
+	type _CheckKid = DCommon.ExpectType<typeof kid, string | undefined, "strict">;
 }
 
 // Avec une factory de `Signer` ou `Cipher`, la configuration est fournie

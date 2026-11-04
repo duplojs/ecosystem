@@ -31,11 +31,15 @@ const localDate = DChrono.createDate("2026-09-30", {
 	hour: "09",
 });
 
-// DChrono.TheDate
 const instant = DCommon.pipe(
 	localDate,
 	DChrono.applyTimezone("Europe/Paris"),
 );
+type _CheckInstantLine35 = DCommon.ExpectType<
+	typeof instant,
+	DChrono.TheDate,
+	"strict"
+>;
 
 // `getTimezoneOffset` retourne le décalage du fuseau pour une date donnée.
 // Ce décalage dépend notamment des changements d'heure saisonniers.

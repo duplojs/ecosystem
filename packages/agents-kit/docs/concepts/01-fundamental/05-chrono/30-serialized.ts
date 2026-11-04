@@ -3,6 +3,7 @@
  *
  * Sérialiser, reconnaître et reconstruire les instants et durées en conservant leur valeur.
  */
+import type * as DCommon from "@duplojs/lang/common";
 import * as DChrono from "@duplojs/lang/chrono";
 
 // Chrono possède un format dédié qui conserve la valeur numérique et identifie sa nature.
@@ -13,15 +14,21 @@ const time = DChrono.createTime(2, "hour");
 // Une `TheDate` est sérialisée avec le préfixe `date`,
 // suivi de son timestamp et de son signe.
 
-// DChrono.SerializedTheDate
-// "date1790726400000+"
 const serializedDate = DChrono.serialize(date);
+type _CheckSerializedDateLine18 = DCommon.ExpectType<
+	typeof serializedDate,
+	`date${number}-` | `date${number}+`,
+	"strict"
+>;
 
 // Un `TheTime` utilise le même principe avec le préfixe `time`.
 
-// DChrono.SerializedTheTime
-// "time7200000+"
 const serializedTime = DChrono.serialize(time);
+type _CheckSerializedTimeLine24 = DCommon.ExpectType<
+	typeof serializedTime,
+	`time${number}-` | `time${number}+`,
+	"strict"
+>;
 
 // Le format permet de conserver exactement la valeur transportée,
 // tout en distinguant une date d'un simple nombre ou d'une string classique.
@@ -33,6 +40,7 @@ const payload = JSON.stringify({
 	date,
 	time,
 });
+type _CheckPayload = DCommon.ExpectType<typeof payload, string, "strict">;
 
 // {
 //     "date": "date1790726400000+",
@@ -45,13 +53,21 @@ const payload = JSON.stringify({
 declare const input: string;
 
 if (DChrono.isSerializedTheDate(input)) {
-	// DChrono.SerializedTheDate
 	const serializedDate = input;
+	type _CheckSerializedDateLine49 = DCommon.ExpectType<
+	typeof serializedDate,
+	`date${number}-` | `date${number}+`,
+	"strict"
+	>;
 }
 
 if (DChrono.isSerializedTheTime(input)) {
-	// DChrono.SerializedTheTime
 	const serializedTime = input;
+	type _CheckSerializedTimeLine54 = DCommon.ExpectType<
+	typeof serializedTime,
+	`time${number}-` | `time${number}+`,
+	"strict"
+	>;
 }
 
 // Une valeur sérialisée peut ensuite être reconstruite.

@@ -16,14 +16,26 @@ const textResourcePath: string & DPath.Path = DCommon.cast("/path/to/text/resour
 const readTextResourceResult = await DSFile.readTextFile(textResourcePath);
 
 if (DEither.isRight(readTextResourceResult)) {
-	// DEither.Right<"file-system-read-text-file", string>
+	type _CheckReadTextRight = DCommon.ExpectType<
+		typeof readTextResourceResult,
+		DEither.Right<"file-system-read-text-file", string>,
+		"strict"
+	>;
 	void readTextResourceResult;
 
-	// string
 	const textResource = DEither.unwrapRight(readTextResourceResult);
+	type _CheckTextResourceLine23 = DCommon.ExpectType<
+	typeof textResource,
+	string,
+	"strict"
+	>;
 } else {
 	// Le Left porte l'échec de l'opération ; sa valeur porte l'erreur précise.
-	// DEither.Left<"file-system-read-text-file-error", DSFile.ReadTextFileErrors>
+	type _CheckReadTextLeft = DCommon.ExpectType<
+		typeof readTextResourceResult,
+		DEither.Left<"file-system-read-text-file-error", DSFile.ReadTextFileErrors>,
+		"strict"
+	>;
 	const error = DEither.unwrapLeft(readTextResourceResult);
 
 	type _CheckError = DCommon.ExpectType<typeof error, DSFile.ReadTextFileErrors, "strict">;

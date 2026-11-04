@@ -33,17 +33,25 @@ declare const entity: Entity;
 // Chaque callback reçoit directement le type précis correspondant
 // au nom de l'entité.
 
-// string | number
 const matchedEntity = DPattern.matchWithEntity(
 	entity,
 	{
-		// User
-		User: (user) => user.name,
+		User: (user) => {
+			type _CheckUser = DCommon.ExpectType<typeof user, User, "strict">;
+			return user.name;
+		},
 
-		// Admin
-		Admin: (admin) => admin.permissions.length,
+		Admin: (admin) => {
+			type _CheckAdmin = DCommon.ExpectType<typeof admin, Admin, "strict">;
+			return admin.permissions.length;
+		},
 	},
 );
+type _CheckMatchedEntityLine37 = DCommon.ExpectType<
+	typeof matchedEntity,
+	string | number,
+	"strict"
+>;
 
 // La sélection exhaustive crée un point d'ancrage dans le typage.
 //
@@ -56,17 +64,25 @@ const matchedEntity = DPattern.matchWithEntity(
 // `matchWithEntity` possède également une forme curried afin d'être
 // directement utilisée dans un pipe.
 
-// string | number
 const matchedEntityInPipe = DCommon.pipe(
 	entity,
 	DPattern.matchWithEntity({
-		// User
-		User: (user) => user.name,
+		User: (user) => {
+			type _CheckUser = DCommon.ExpectType<typeof user, User, "strict">;
+			return user.name;
+		},
 
-		// Admin
-		Admin: (admin) => admin.permissions.length,
+		Admin: (admin) => {
+			type _CheckAdmin = DCommon.ExpectType<typeof admin, Admin, "strict">;
+			return admin.permissions.length;
+		},
 	}),
 );
+type _CheckMatchedEntityInPipeLine60 = DCommon.ExpectType<
+	typeof matchedEntityInPipe,
+	string | number,
+	"strict"
+>;
 
 // `matchWithEntityOtherwise` permet de ne sélectionner explicitement
 // qu'une partie des entités.
@@ -74,31 +90,47 @@ const matchedEntityInPipe = DCommon.pipe(
 // `otherwise` reçoit uniquement les entités qui n'ont pas déjà
 // été prises en charge par le matcher.
 
-// string | number
 const matchedEntityOtherwise = DPattern.matchWithEntityOtherwise(
 	entity,
 	{
-		// User
-		User: (user) => user.name,
+		User: (user) => {
+			type _CheckUser = DCommon.ExpectType<typeof user, User, "strict">;
+			return user.name;
+		},
 	},
-	// Admin
-	(admin) => admin.permissions.length,
+	(admin) => {
+		type _CheckAdmin = DCommon.ExpectType<typeof admin, Admin, "strict">;
+		return admin.permissions.length;
+	},
 );
+type _CheckMatchedEntityOtherwiseLine78 = DCommon.ExpectType<
+	typeof matchedEntityOtherwise,
+	string | number,
+	"strict"
+>;
 
 // La forme curried est également disponible.
 //
 // Le typage de `otherwise` évolue avec les handlers déjà déclarés.
 // Il représente toujours précisément le reste de l'union.
 
-// string | number
 const matchedEntityOtherwiseInPipe = DCommon.pipe(
 	entity,
 	DPattern.matchWithEntityOtherwise(
 		{
-			// User
-			User: (user) => user.name,
+			User: (user) => {
+				type _CheckUser = DCommon.ExpectType<typeof user, User, "strict">;
+				return user.name;
+			},
 		},
-		// Admin
-		(admin) => admin.permissions.length,
+		(admin) => {
+			type _CheckAdmin = DCommon.ExpectType<typeof admin, Admin, "strict">;
+			return admin.permissions.length;
+		},
 	),
 );
+type _CheckMatchedEntityOtherwiseInPipeLine94 = DCommon.ExpectType<
+	typeof matchedEntityOtherwiseInPipe,
+	string | number,
+	"strict"
+>;

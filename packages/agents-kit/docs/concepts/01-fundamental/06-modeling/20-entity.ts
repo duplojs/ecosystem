@@ -8,6 +8,8 @@ import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DModeling from "@duplojs/lang/modeling";
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
+import type * as DString from "@duplojs/lang/string";
+import type * as DNumber from "@duplojs/lang/number";
 
 // Une Entity représente un objet métier doté d’une identité explicite.
 // Ses valeurs primitives sont définies par des NewType qui associent un sens métier
@@ -21,15 +23,14 @@ export namespace User {
 	// préfixés par le nom de l'entité.
 	const namespace = DModeling.createEntityNamespace("User");
 
-	// string & DModeling.NewType<"UserId", DString.Uuid>
 	export const Id = namespace.createNewType(
 		"Id",
 		DDataStructure.string(),
 		[DDataStructure.uuid()],
 	);
 	export type Id = DDataStructure.StructureValue<typeof Id>;
+	type _CheckId = DCommon.ExpectType<Id, string & DModeling.NewType<"UserId", DString.Uuid>, "strict">;
 
-	// number & DModeling.NewType<"UserAge", Integer | Positive>
 	export const Age = namespace.createNewType(
 		"Age",
 		DDataStructure.number(),
@@ -39,8 +40,12 @@ export namespace User {
 		],
 	);
 	export type Age = DDataStructure.StructureValue<typeof Age>;
+	type _CheckAge = DCommon.ExpectType<
+		Age,
+		number & DModeling.NewType<"UserAge", DNumber.Integer | DNumber.Positive>,
+		"strict"
+	>;
 
-	// string & DModeling.NewType<"UserName", DString.Trimmed | DString.MinCharacters<3> | DString.MaxCharacters<45>>
 	export const Name = namespace.createNewType(
 		"Name",
 		DDataStructure.string(),
@@ -51,8 +56,12 @@ export namespace User {
 		],
 	);
 	export type Name = DDataStructure.StructureValue<typeof Name>;
+	type _CheckName = DCommon.ExpectType<
+		Name,
+		string & DModeling.NewType<"UserName", DString.Trimmed | DString.MinCharacters<3> | DString.MaxCharacters<45>>,
+		"strict"
+	>;
 
-	// string & DModeling.NewType<"UserTag", DString.Trimmed | DString.MinCharacters<2> | DString.MaxCharacters<20>>
 	export const Tag = namespace.createNewType(
 		"Tag",
 		DDataStructure.string(),
@@ -63,19 +72,10 @@ export namespace User {
 		],
 	);
 	export type Tag = DDataStructure.StructureValue<typeof Tag>;
+	type _CheckTag = DCommon.ExpectType<Tag, string & DModeling.NewType<"UserTag", DString.Trimmed | DString.MinCharacters<2> | DString.MaxCharacters<20>>, "strict">;
 
 	// L'entité est ensuite déclarée à partir de ses différentes propriétés.
 	//
-	// DModeling.Entity<"User"> & {
-	//  readonly name: string
-	//    & DModeling.NewType<"UserName", DString.Trimmed | DString.MinCharacters<3> | DString.MaxCharacters<45>>;
-	//  readonly id: string
-	//    & DModeling.NewType<"UserId", DString.Uuid>;
-	//  readonly age: number & DModeling.NewType<"UserAge", DNumber.Integer | DNumber.Positive>;
-	//  readonly tags: readonly (
-	//    string & DModeling.NewType<"UserTag", DString.Trimmed | DString.MinCharacters<2> | DString.MaxCharacters<20>>
-	// )[];
-	// };
 	export const Entity = namespace.createEntity(
 		() => ({
 			id: Id,
@@ -85,6 +85,12 @@ export namespace User {
 		}),
 	);
 	export type Entity = DDataStructure.StructureValue<typeof Entity>;
+	type _CheckEntity = DCommon.ExpectType<Entity, DModeling.Entity<"User"> & {
+		readonly id: Id;
+		readonly age: Age;
+		readonly name: Name;
+		readonly tags: readonly Tag[];
+	}, "strict">;
 }
 
 // L’hydratation fait entrer dans le modèle métier des données de repository ou de base de données.
@@ -99,21 +105,13 @@ export namespace User {
 // Les contraintes sont vérifiées pendant cette opération.
 // Le mapping pouvant échouer, son résultat est représenté par un `Either`.
 
-// DEither.Left<"async-error", DDataStructure.ErrorPromise> | DEither.Left<"map-error", DDataStructure.Error>
-// | DEither.Right<"map-success", DModeling.Entity<"User"> & {
-//     readonly name: string & DModeling.NewType<"UserName", Trimmed | MinCharacters<3> | MaxCharacters<45>>;
-//     readonly id: string & DModeling.NewType<"UserId", Uuid>;
-//     readonly age: number & DModeling.NewType<"UserAge", Integer | Positive>;
-//     readonly tags: readonly (
-//         DModeling.NewType<"UserTag", DString.Trimmed | DString.MinCharacters<2> | DString.MaxCharacters<20>>
-//     )[];
-// }>
 const maybeMapUser = User.Entity.map({
 	id: "invalid-id",
 	name: "SuperName",
 	age: 12,
 	tags: ["superTag"],
 });
+type _CheckMaybeMapUser = DCommon.ExpectType<typeof maybeMapUser, DEither.Left<"async-error", DDataStructure.ErrorPromise> | DEither.Left<"map-error", DDataStructure.Error> | DEither.Right<"map-success", User.Entity>, "strict">;
 
 // `decodeMap` applique le même principe à une donnée encodée.
 //
@@ -124,21 +122,13 @@ const maybeMapUser = User.Entity.map({
 // L'âge de l'entité est donc ici fourni dans sa représentation encodée
 // plutôt que directement comme un `number`.
 
-// DEither.Left<"async-error", DDataStructure.ErrorPromise> | DEither.Left<"map-error", DDataStructure.Error>
-// | DEither.Right<"map-success", DModeling.Entity<"User"> & {
-//     readonly name: string & DModeling.NewType<"UserName", Trimmed | MinCharacters<3> | MaxCharacters<45>>;
-//     readonly id: string & DModeling.NewType<"UserId", Uuid>;
-//     readonly age: number & DModeling.NewType<"UserAge", Integer | Positive>;
-//     readonly tags: readonly (
-//         DModeling.NewType<"UserTag", DString.Trimmed | DString.MinCharacters<2> | DString.MaxCharacters<20>>
-//     )[];
-// }>
 const maybeDecodeMapUser = User.Entity.decodeMap(DDataStructure.codecsString, {
 	id: "550e8400-e29b-41d4-a716-446655440000",
 	name: "SuperName",
 	age: DCommon.cast("12"),
 	tags: ["superTag"],
 });
+type _CheckMaybeDecodeMapUser = DCommon.ExpectType<typeof maybeDecodeMapUser, DEither.Left<"async-error", DDataStructure.ErrorPromise> | DEither.Left<"map-error", DDataStructure.Error> | DEither.Right<"map-success", User.Entity>, "strict">;
 
 // `new` est utilisé lorsque les propriétés possèdent déjà leur typage métier.
 //
@@ -152,15 +142,6 @@ const maybeDecodeMapUser = User.Entity.decodeMap(DDataStructure.codecsString, {
 // Le résultat du `rightPipe` conserve la monade `Success` produite après
 // regroupement des différentes validations.
 
-// DEither.Left<"async-error", DDataStructure.ErrorPromise> | DEither.Left<"map-error", DDataStructure.Error>
-// | DEither.Success<DModeling.Entity<"User"> & {
-//     readonly id: string & DModeling.NewType<"UserId", Uuid>;
-//     readonly name: string & DModeling.NewType<"UserName", Trimmed | MinCharacters<3> | MaxCharacters<45>>;
-//     readonly age: number & DModeling.NewType<"UserAge", Integer | Positive>;
-//     readonly tags: readonly [
-//         DModeling.NewType<"UserTag", DString.Trimmed | DString.MinCharacters<2> | DString.MaxCharacters<20>>
-//     ];
-// }>
 const maybeUser = DEither.rightPipe(
 	DEither.group({
 		id: User.Id.map("550e8400-e29b-41d4-a716-446655440000"),
@@ -173,17 +154,23 @@ const maybeUser = DEither.rightPipe(
 	}),
 	User.Entity.new,
 );
+type _CheckMaybeUser = DCommon.ExpectType<typeof maybeUser, DEither.Left<"async-error", DDataStructure.ErrorPromise> | DEither.Left<"map-error", DDataStructure.Error> | DEither.Success<DModeling.Entity<"User"> & {
+	readonly id: User.Id;
+	readonly name: User.Name;
+	readonly age: User.Age;
+	readonly tags: readonly [User.Tag];
+}>, "strict">;
 
 declare const user: User.Entity;
 declare const maybeAge: User.Age | undefined;
 
-// User.Entity
 const updatedUser = User.Entity.update(
 	user,
 	{
 		age: maybeAge,
 	},
 );
+type _CheckUpdatedUser = DCommon.ExpectType<typeof updatedUser, User.Entity, "strict">;
 
 // `update` retourne une nouvelle entité en remplaçant uniquement
 // les propriétés dont la nouvelle valeur n'est pas `undefined`.

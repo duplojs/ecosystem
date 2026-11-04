@@ -138,18 +138,22 @@ await client
 	.whenInformation(
 		"post.findMany",
 		({ body }) => {
-			// body: {
-			//   title: string;
-			//   content: string;
-			//   authorId: number;
-			// }[]
+			type _CheckPostBody = DCommon.ExpectType<
+				typeof body,
+				readonly {
+					readonly title: string;
+					readonly content: string;
+					readonly authorId: number;
+				}[],
+				"strict"
+			>;
 			void body;
 		},
 	)
 	.whenCode(
 		"422",
 		({ information }) => {
-			// information: "extract-error"
+			type _CheckErrorInformation = DCommon.ExpectType<typeof information, "extract-error", "strict">;
 			void information;
 		},
 	);
@@ -173,8 +177,7 @@ const maybeCreatedPost = await client
 
 if (DEither.isRight(maybeCreatedPost)) {
 	const response = DEither.unwrapRight(maybeCreatedPost);
-
-	// information: "post.created"
+	type _CheckCreatedInformation = DCommon.ExpectType<typeof response.information, "post.created", "strict">;
 	void response.information;
 }
 
@@ -193,6 +196,11 @@ const createdPostResponse = await client
 		},
 	)
 	.iWantInformationOrThrow("post.created");
+type _CheckCreatedPostInformation = DCommon.ExpectType<
+	typeof createdPostResponse.information,
+	"post.created",
+	"strict"
+>;
 
 // `expected` regroupe les succès `2xx` et erreurs client `4xx`.
 const maybeExpectedResponse = await client
@@ -208,8 +216,11 @@ const maybeExpectedResponse = await client
 
 if (DEither.isRight(maybeExpectedResponse)) {
 	const response = DEither.unwrapRight(maybeExpectedResponse);
-
-	// information: "post.findMany" | "extract-error"
+	type _CheckExpectedInformation = DCommon.ExpectType<
+		typeof response.information,
+		"post.findMany" | "extract-error",
+		"strict"
+	>;
 	void response.information;
 }
 
@@ -230,12 +241,11 @@ const maybePosts = await client
 
 if (DEither.isRight(maybePosts)) {
 	const response = DEither.unwrapRight(maybePosts);
-
-	// body: {
-	//   title: string;
-	//   content: string;
-	//   authorId: number;
-	// }[]
+	type _CheckPostsBody = DCommon.ExpectType<typeof response.body, readonly {
+		readonly title: string;
+		readonly content: string;
+		readonly authorId: number;
+	}[], "strict">;
 	void response.body;
 }
 

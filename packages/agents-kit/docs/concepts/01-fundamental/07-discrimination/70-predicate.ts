@@ -17,7 +17,6 @@ import * as DString from "@duplojs/lang/string";
 
 declare const externalValue: string | number | null;
 
-// string | number | "empty"
 const normalizedValue = DCommon.pipe(
 	externalValue,
 	DPattern.when(
@@ -37,6 +36,11 @@ const normalizedValue = DCommon.pipe(
 	),
 	DPattern.exhaustive,
 );
+type _CheckNormalizedValueLine21 = DCommon.ExpectType<
+	typeof normalizedValue,
+	(string & DString.Trimmed) | number | "empty",
+	"strict"
+>;
 
 // `whenNot` applique le predicate de manière inverse.
 //
@@ -50,21 +54,29 @@ const normalizedValue = DCommon.pipe(
 
 declare const framework: "duplojs" | "other";
 
-// "known" | "unknown"
 const frameworkResult = DCommon.pipe(
 	framework,
 	DPattern.whenNot(
 		DCommon.equal("other"),
-		// "duplojs"
-		() => "known" as const,
+		(value) => {
+			type _CheckKnownFramework = DCommon.ExpectType<typeof value, "duplojs", "strict">;
+			return "known" as const;
+		},
 	),
 	DPattern.when(
 		DCommon.equal("other"),
-		// "other"
-		() => "unknown" as const,
+		(value) => {
+			type _CheckUnknownFramework = DCommon.ExpectType<typeof value, "other", "strict">;
+			return "unknown" as const;
+		},
 	),
 	DPattern.exhaustive,
 );
+type _CheckFrameworkResultLine54 = DCommon.ExpectType<
+	typeof frameworkResult,
+	"known" | "unknown",
+	"strict"
+>;
 
 // `match`, `when` et `whenNot` sont donc principalement utiles lorsque
 // la discrimination doit être déduite de la donnée elle-même.

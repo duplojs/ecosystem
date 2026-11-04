@@ -4,6 +4,8 @@
  * Références différées et cohérence entre un type déclaré et sa structure runtime.
  */
 import * as DDataStructure from "@duplojs/lang/dataStructure";
+import type * as DCommon from "@duplojs/lang/common";
+import type * as DEither from "@duplojs/lang/either";
 
 // Une structure récursive se référence elle-même. Le type attendu est déclaré en amont
 // pour permettre à TypeScript de typer cette dépendance récursive.
@@ -12,13 +14,13 @@ interface Tree {
 	readonly children: readonly Tree[];
 }
 
-// Tree
 const treeStructure: DDataStructure.Structure<Tree> = DDataStructure.object({
 	value: DDataStructure.string(),
 	children: DDataStructure.array(
 		DDataStructure.lazy(() => treeStructure),
 	),
 }).contract();
+type _CheckTreeStructure = DCommon.ExpectType<DDataStructure.StructureValue<typeof treeStructure>, Tree, "strict">;
 
 // `lazy` retarde la résolution de `treeStructure`.
 //
@@ -46,3 +48,10 @@ const tree = {
 };
 
 const result = treeStructure.check(tree);
+type _CheckTreeResult = DCommon.ExpectType<
+	typeof result,
+	DEither.Left<"async-error", DDataStructure.ErrorPromise>
+		| DEither.Left<"check-error", DDataStructure.Error>
+		| DEither.Right<"check-success", Tree>,
+	"strict"
+>;

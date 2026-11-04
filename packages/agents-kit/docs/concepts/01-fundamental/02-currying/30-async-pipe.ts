@@ -10,7 +10,6 @@ import * as DString from "@duplojs/lang/string";
 // `asyncPipe` applique le même principe lorsqu'une ou plusieurs étapes
 // du traitement sont asynchrones.
 //
-// Promise<readonly Lowercase<string>[] & DArray.LengthEqual<2> & DArray.MinElements<2> & DArray.MaxElements<2>>
 const asyncTags = DCommon.asyncPipe(
 	Promise.resolve(" TypeScript, DuploJS " as const),
 	DString.split(","),
@@ -18,11 +17,15 @@ const asyncTags = DCommon.asyncPipe(
 	(tags) => Promise.resolve(tags),
 	DArray.map(DString.toLowerCase),
 );
+type _CheckAsyncTags = DCommon.ExpectType<
+	typeof asyncTags,
+	Promise<readonly Lowercase<string>[] & DArray.LengthEqual<2> & DArray.MinElements<2> & DArray.MaxElements<2>>,
+	"strict"
+>;
 
 // `asyncInnerPipe` permet de composer plusieurs transformations synchrones
 // ou asynchrones lorsqu'une callback asynchrone est attendue.
 //
-// Promise<readonly Promise<Lowercase<string>>[] & DArray.LengthEqual<2>>
 // map produit ici un tableau de promesses ; asyncPipe attend chaque étape, pas chaque élément.
 const values = DCommon.asyncPipe(
 	[" TypeScript ", " DuploJS "] as const,
@@ -34,9 +37,15 @@ const values = DCommon.asyncPipe(
 		),
 	),
 );
+type _CheckValues = DCommon.ExpectType<
+	typeof values,
+	Promise<readonly Promise<Lowercase<string>>[] & DArray.LengthEqual<2>>,
+	"strict"
+>;
 
 // Pour récupérer les valeurs résolues, ajouter une étape qui attend toutes les promesses.
 const resolvedValues = DCommon.asyncPipe(
 	values,
 	DCommon.promiseAll,
 );
+type _CheckResolvedValues = DCommon.ExpectType<typeof resolvedValues, Promise<Lowercase<string>[]>, "strict">;

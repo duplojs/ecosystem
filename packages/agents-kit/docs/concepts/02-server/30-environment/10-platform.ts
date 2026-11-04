@@ -5,6 +5,7 @@
  * applicatif indépendant du runtime.
  */
 import * as DCommon from "@duplojs/lang/common";
+import type * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import * as DSCommon from "@duplojs/server/common";
 import * as DSFile from "@duplojs/server/file";
@@ -14,14 +15,22 @@ import { createHttpServer } from "@duplojs/http/node";
 // Les capacités proches entre runtimes sont exposées par une même API.
 const resourcePath: string & DPath.Path = DCommon.cast("/resources/config.json");
 
-// DEither.Right<file-system-write-json-file, void> | DEither.Left<...> | ...
 const writeJsonResult = await DSFile.writeJsonFile(resourcePath, { version: 1.0 });
+type _CheckWriteJsonResult = DCommon.ExpectType<typeof writeJsonResult, DSFile.WriteJsonFileResult, "strict">;
 
-// DEither.Error<unknown> | DEither.Success<string & DPath.Absolute>
 const currentWorkingDirectoryResult = DSCommon.getCurrentWorkDirectory();
+type _CheckCurrentWorkingDirectoryResultLine21 = DCommon.ExpectType<
+	typeof currentWorkingDirectoryResult,
+	DEither.Error<unknown> | DEither.Success<string & DPath.Absolute>,
+	"strict"
+>;
 
-// string[]
 const processArguments = DSCommon.getProcessArguments();
+type _CheckProcessArgumentsLine24 = DCommon.ExpectType<
+	typeof processArguments,
+	string[],
+	"strict"
+>;
 
 const hub = createHub({
 	environment: "DEV",

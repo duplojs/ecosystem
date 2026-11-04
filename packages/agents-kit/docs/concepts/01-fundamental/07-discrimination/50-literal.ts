@@ -16,24 +16,24 @@ declare const status: "pending" | "ready" | "failed";
 // Chaque valeur possible doit posséder un handler et chaque callback reçoit
 // précisément le literal correspondant.
 
-// "wait" | "run" | "error"
 const matchedStatus = DPattern.matchWithString(
 	status,
 	{
-		// "pending"
 		pending: () => "wait" as const,
 
-		// "ready"
 		ready: () => "run" as const,
 
-		// "failed"
 		failed: () => "error" as const,
 	},
 );
+type _CheckMatchedStatusLine20 = DCommon.ExpectType<
+	typeof matchedStatus,
+	"wait" | "run" | "error",
+	"strict"
+>;
 
 // La forme curried peut être utilisée directement dans un pipe.
 
-// "wait" | "run" | "error"
 const matchedStatusInPipe = DCommon.pipe(
 	status,
 	DPattern.matchWithString({
@@ -42,26 +42,36 @@ const matchedStatusInPipe = DCommon.pipe(
 		failed: () => "error" as const,
 	}),
 );
+type _CheckMatchedStatusInPipeLine37 = DCommon.ExpectType<
+	typeof matchedStatusInPipe,
+	"wait" | "run" | "error",
+	"strict"
+>;
 
 // La variante `otherwise` permet de ne sélectionner qu'une partie de l'union.
 //
 // Le callback `otherwise` reçoit précisément les literals non traités.
 
-// "run" | "not-ready"
 const matchedStatusOtherwise = DPattern.matchWithStringOtherwise(
 	status,
 	{
 		ready: () => "run" as const,
 	},
-	// "pending" | "failed"
-	() => "not-ready" as const,
+	(otherStatus) => {
+		type _CheckOtherwiseStatus = DCommon.ExpectType<typeof otherStatus, "pending" | "failed", "strict">;
+		return "not-ready" as const;
+	},
 );
+type _CheckMatchedStatusOtherwiseLine51 = DCommon.ExpectType<
+	typeof matchedStatusOtherwise,
+	"run" | "not-ready",
+	"strict"
+>;
 
 declare const code: 200 | 404 | 500;
 
 // `matchWithNumber` applique le même principe aux unions de number literals.
 
-// "success" | "not-found" | "error"
 const matchedCode = DPattern.matchWithNumber(
 	code,
 	{
@@ -70,10 +80,14 @@ const matchedCode = DPattern.matchWithNumber(
 		500: () => "error" as const,
 	},
 );
+type _CheckMatchedCodeLine65 = DCommon.ExpectType<
+	typeof matchedCode,
+	"success" | "not-found" | "error",
+	"strict"
+>;
 
 // `matchWithNumberOtherwise` permet également une sélection partielle.
 
-// "success" | "error"
 const matchedCodeOtherwise = DPattern.matchWithNumberOtherwise(
 	code,
 	{
@@ -82,6 +96,11 @@ const matchedCodeOtherwise = DPattern.matchWithNumberOtherwise(
 	// 404 | 500
 	() => "error" as const,
 );
+type _CheckMatchedCodeOtherwiseLine77 = DCommon.ExpectType<
+	typeof matchedCodeOtherwise,
+	"success" | "error",
+	"strict"
+>;
 
 // Un matcher exhaustif doit couvrir chaque valeur possible et refuse les clés étrangères à l’union.
 // Ajouter une valeur au contrat impose de réviser les branches, contrairement à une sélection partielle.
