@@ -38,6 +38,10 @@ Prédicats et transformations fonctionnelles pour comparer, vérifier, agréger 
 
 Fonctions fonctionnelles pour lire, discriminer, transformer, fusionner et reconstruire des objets en conservant les informations de typage utiles.
 
+# [DPath](API/10-lang/10-path/index.llms.md)
+
+Le domaine `DPath` représente des chemins avec des contraintes de type, les normalise, les assemble et vérifie leurs segments. Ses fabriques valident les chaînes runtime avant de produire un chemin typé.
+
 # [DPrinter](API/10-lang/10-printer/index.llms.md)
 
 Fonctions et constantes pour assembler du texte, formater des lignes et paragraphes, ajouter une indentation ou des styles ANSI.
