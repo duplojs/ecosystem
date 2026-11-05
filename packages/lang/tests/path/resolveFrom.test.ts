@@ -152,6 +152,40 @@ describe("resolveFrom", () => {
 			string & DPath.Absolute & DPath.Path,
 			"strict"
 		>;
+
+		const disabledOptions: { stayInOrigin?: false } = {};
+		const result3 = DPath.resolveFrom(
+			DPath.declareAbsolutePath("/alpha"),
+			[DPath.declarePath("beta")],
+			disabledOptions,
+		);
+
+		type _CheckResult3 = DCommon.ExpectType<typeof result3, string & DPath.Absolute & DPath.Path, "strict">;
+	});
+
+	it.each<{
+		stayInOrigin: boolean;
+		expected: string | null;
+	}>([
+		{
+			stayInOrigin: true,
+			expected: null,
+		},
+		{
+			stayInOrigin: false,
+			expected: "/shared",
+		},
+	])("includes null for a runtime boolean option ($stayInOrigin)", ({ stayInOrigin, expected }) => {
+		const origin = DPath.declareAbsolutePath("/workspace");
+		const result = DPath.resolveFrom(origin, [DPath.declarePath("../shared")], { stayInOrigin });
+		const options: DPath.ResolveFromParams = { stayInOrigin };
+		const resultWithOptions = DPath.resolveFrom(origin, [DPath.declarePath("../shared")], options);
+
+		type _CheckResult = DCommon.ExpectType<typeof result, (string & DPath.Absolute & DPath.Path) | null, "strict">;
+		type _CheckResultWithOptions = DCommon.ExpectType<typeof resultWithOptions, (string & DPath.Absolute & DPath.Path) | null, "strict">;
+
+		expect(result).toBe(expected);
+		expect(resultWithOptions).toBe(expected);
 	});
 
 	it("requires an absolute origin", () => {

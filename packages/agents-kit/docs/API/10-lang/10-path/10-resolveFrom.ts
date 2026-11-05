@@ -13,10 +13,13 @@ const result = DPath.resolveFrom(
 	{ stayInOrigin: true },
 );
 // La valeur obtenue est /workspace/src/index.ts. Une résolution qui sort de l’origine vaut null.
-// Fournir stayInOrigin: true directement dans l’appel conserve null dans le type.
-// Limite actuelle : un objet élargi au type ResolveFromParams peut perdre ce null
-// dans l’inférence, alors que le confinement peut toujours refuser le chemin au runtime.
 type _CheckResult = DCommon.ExpectType<typeof result, (string & DPath.Path & DPath.Absolute) | null, "strict">;
+
+// Option runtime : dès que stayInOrigin peut valoir true, le type inclut null.
+declare const stayInOrigin: boolean;
+const configured = DPath.resolveFrom(origin, [DPath.declarePath("../shared")], { stayInOrigin });
+// La valeur obtenue est null si le confinement est activé, sinon /shared.
+type _CheckConfigured = DCommon.ExpectType<typeof configured, (string & DPath.Path & DPath.Absolute) | null, "strict">;
 
 // Sans confinement, .. peut remonter au-dessus de l’origine ; le résultat reste absolu.
 const outside = DPath.resolveFrom(origin, [DPath.declarePath("../shared")]);
