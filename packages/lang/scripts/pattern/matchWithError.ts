@@ -76,7 +76,10 @@ export function matchWithError(
 	if (args.length === 1) {
 		const [matcher] = args;
 
-		return (input: DCommon.DuploJSError) => matcher[DCommon.duploJSErrorKind.getValue(input)]!(input);
+		return (input: DCommon.DuploJSError) => matchWithError(
+			input as never,
+			matcher as never,
+		);
 	}
 
 	const [input, matcher] = args;

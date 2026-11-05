@@ -76,7 +76,10 @@ export function matchWithEntity(
 	if (args.length === 1) {
 		const [matcher] = args;
 
-		return (input: DModeling.Entity) => matcher[DModeling.entityKind.getValue(input)]!(input);
+		return (input: DModeling.Entity) => matchWithEntity(
+			input as never,
+			matcher as never,
+		);
 	}
 
 	const [input, matcher] = args;

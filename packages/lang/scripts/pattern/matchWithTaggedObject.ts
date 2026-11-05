@@ -76,7 +76,10 @@ export function matchWithTaggedObject(
 	if (args.length === 1) {
 		const [matcher] = args;
 
-		return (input: DModeling.ObjectTag) => matcher[DModeling.getTagValue(input)]!(input);
+		return (input: DModeling.ObjectTag) => matchWithTaggedObject(
+			input as never,
+			matcher as never,
+		);
 	}
 
 	const [input, matcher] = args;

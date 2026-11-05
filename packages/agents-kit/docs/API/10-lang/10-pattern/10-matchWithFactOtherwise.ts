@@ -5,7 +5,7 @@
  */
 import * as DPattern from "@duplojs/lang/pattern";
 import * as DCommon from "@duplojs/lang/common";
-import * as DModeling from "@duplojs/lang/modeling";
+import type * as DModeling from "@duplojs/lang/modeling";
 
 interface Created extends DModeling.Fact<"Created", { title: string }> {}
 interface Deleted extends DModeling.Fact<"Deleted", { reason: string }> {}
@@ -16,9 +16,9 @@ declare const event: Created | Deleted | Renamed;
 const result = DPattern.matchWithFactOtherwise(
 	event,
 	{
-		Created: (value) => {
+		Created: (value, payload) => {
 			type _CheckValue = DCommon.ExpectType<typeof value, Created, "strict">;
-			return DModeling.factKind.getValue(value).payload.title;
+			return payload.title;
 		},
 	},
 	(value) => {
@@ -34,9 +34,9 @@ const piped = DCommon.pipe(
 	event,
 	DPattern.matchWithFactOtherwise(
 		{
-			Created: (value) => {
+			Created: (value, payload) => {
 				type _CheckValue = DCommon.ExpectType<typeof value, Created, "strict">;
-				return DModeling.factKind.getValue(value).payload.title;
+				return payload.title;
 			},
 		},
 		(value) => {

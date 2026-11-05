@@ -5,7 +5,7 @@
  */
 import * as DPattern from "@duplojs/lang/pattern";
 import * as DCommon from "@duplojs/lang/common";
-import * as DModeling from "@duplojs/lang/modeling";
+import type * as DModeling from "@duplojs/lang/modeling";
 
 interface Created extends DModeling.Fact<"Created", { title: string }> {}
 interface Deleted extends DModeling.Fact<"Deleted", { reason: string }> {}
@@ -30,18 +30,18 @@ const result = DPattern.matchWithFact(event, {
 type _CheckResult = DCommon.ExpectType<typeof result, string, "strict">;
 
 // Appel curifié : configurer les branches directement dans le pipe.
-// Limite actuelle : cette forme ne transmet pas le second argument au runtime,
-// malgré sa signature. Lire le payload sur la valeur avec factKind comme ci-dessous.
 const piped = DCommon.pipe(
 	event,
 	DPattern.matchWithFact({
-		Created: (value) => {
+		Created: (value, payload) => {
 			type _CheckValue = DCommon.ExpectType<typeof value, Created, "strict">;
-			return DModeling.factKind.getValue(value).payload.title;
+			type _CheckPayload = DCommon.ExpectType<typeof payload, { title: string }, "strict">;
+			return payload.title;
 		},
-		Deleted: (value) => {
+		Deleted: (value, payload) => {
 			type _CheckValue = DCommon.ExpectType<typeof value, Deleted, "strict">;
-			return DModeling.factKind.getValue(value).payload.reason;
+			type _CheckPayload = DCommon.ExpectType<typeof payload, { reason: string }, "strict">;
+			return payload.reason;
 		},
 	}),
 );

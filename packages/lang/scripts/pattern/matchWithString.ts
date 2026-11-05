@@ -59,7 +59,10 @@ export function matchWithString(
 	if (args.length === 1) {
 		const [matcher] = args;
 
-		return (input: string) => matcher[input]!(input);
+		return (input: string) => matchWithString(
+			input as never,
+			matcher as never,
+		);
 	}
 
 	const [input, matcher] = args;

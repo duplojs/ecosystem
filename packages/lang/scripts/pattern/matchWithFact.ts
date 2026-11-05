@@ -79,7 +79,10 @@ export function matchWithFact(
 	if (args.length === 1) {
 		const [matcher] = args;
 
-		return (input: DModeling.Fact) => matcher[DModeling.factKind.getValue(input).name]!(input);
+		return (input: DModeling.Fact) => matchWithFact(
+			input as never,
+			matcher as never,
+		);
 	}
 
 	const [input, matcher] = args;

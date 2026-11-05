@@ -61,7 +61,10 @@ export function matchWithNumber(
 	if (args.length === 1) {
 		const [matcher] = args;
 
-		return (input: number) => matcher[input]!(input);
+		return (input: number) => matchWithNumber(
+			input as never,
+			matcher as never,
+		);
 	}
 
 	const [input, matcher] = args;
