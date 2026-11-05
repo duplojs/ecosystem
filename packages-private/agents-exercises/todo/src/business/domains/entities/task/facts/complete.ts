@@ -9,7 +9,7 @@ export const CompleteTaskFact = DModeling.createFact<
 	},
 	typeof Task.Entity
 >("TaskCompleted")(
-	({ applyFact }) => (task: Task.Entity & Task.PendingFlag) => {
+	({ applyFact }) => (task: Task.Entity & Task.PendingAndAssignedFlag) => {
 		const state = Task.CompletedState.new({});
 		const payload = { state };
 

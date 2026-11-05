@@ -10,7 +10,7 @@ export const completeLinkedTask = DInvocation.createWorkflow(
 	({ commit, resolve }) => function *(
 		likedTask: DInvocation.GetEvidenceResult<
 			typeof refineLinkedTaskState,
-			"pending-task-with-opened-linked-list"
+			"pending-and-Assigned-task-with-opened-linked-list"
 		>,
 	) {
 		const completedTask = DCommon.pipe(

@@ -18,8 +18,8 @@ export function refineLinkedTaskState(
 		],
 		DEither.matchInformationCombinationOtherwise(
 			{
-				"Pending/Open": ([task, list]) => DInvocation.evidenceResult(
-					"pending-task-with-opened-linked-list",
+				"PendingAndAssigned/Open": ([task, list]) => DInvocation.evidenceResult(
+					"pending-and-Assigned-task-with-opened-linked-list",
 					{
 						task,
 						list,

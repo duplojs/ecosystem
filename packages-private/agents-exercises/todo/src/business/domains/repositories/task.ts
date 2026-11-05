@@ -13,11 +13,9 @@ export interface TaskRepository {
 	>;
 	findAllLinkedTask(
 		list: List.Entity
-	): Promise<
-		AsyncGenerator<
-			& Task.Entity
-			& Task.LinkedWithListFlag
-			& DInvocation.Evidence<"linked-task">
-		>
+	): AsyncGenerator<
+		& Task.Entity
+		& Task.LinkedWithListFlag
+		& DInvocation.Evidence<"linked-task">
 	>;
 }

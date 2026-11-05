@@ -4,7 +4,7 @@ import * as DInvocation from "@duplojs/lang/invocation";
 import * as DEither from "@duplojs/lang/either";
 
 export const completeTask = DInvocation.createWorkflow(
-	({ commit }) => function *(task: Task.Entity & Task.PendingFlag) {
+	({ commit }) => function *(task: Task.Entity & Task.NotLinkedWithListFlag & Task.PendingAndAssignedFlag) {
 		const completedTask = DCommon.pipe(
 			task,
 			CompleteTaskFact.run,
