@@ -75,6 +75,36 @@ describe("matchWithFactOtherwise", () => {
 		>;
 	});
 
+	it("passes the payload to a handled fact in curried form", () => {
+		const payload = { name: "Alice" };
+		const input = DModeling.factKind.addTo({}, {
+			name: "UserCreated" as const,
+			payload,
+		});
+		const handler = vi.fn();
+		const otherwise = vi.fn(() => "fallback");
+		const result = DCommon.pipe(
+			input,
+			DPattern.matchWithFactOtherwise(
+				{
+					UserCreated: (value, factPayload) => {
+						type _CheckPayload = DCommon.ExpectType<typeof factPayload, { name: string }, "strict">;
+
+						handler(value, factPayload);
+						return factPayload.name;
+					},
+				},
+				otherwise,
+			),
+		);
+
+		type _CheckResult = DCommon.ExpectType<typeof result, string, "strict">;
+
+		expect(result).toBe("Alice");
+		expect(handler).toHaveBeenCalledExactlyOnceWith(input, payload);
+		expect(otherwise).not.toHaveBeenCalled();
+	});
+
 	it("should delegate an unhandled fact in pipe", () => {
 		const input = DModeling.factKind.addTo(
 			DModeling.entityKind.addTo({ id: "user-id" }, "User"),

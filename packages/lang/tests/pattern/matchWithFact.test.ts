@@ -76,6 +76,49 @@ describe("matchWithFact", () => {
 		>;
 	});
 
+	it("passes the fact and its payload to the handler in both forms", () => {
+		const payload = { name: "Alice" };
+		const input = DModeling.factKind.addTo(
+			DModeling.entityKind.addTo({ id: "user-id" }, "User"),
+			{
+				name: "UserCreated" as const,
+				payload,
+			},
+		);
+		const directHandler = vi.fn();
+		const curriedHandler = vi.fn();
+
+		const direct = DPattern.matchWithFact(input, {
+			UserCreated: (value, factPayload) => {
+				type _CheckValue = DCommon.ExpectType<typeof value, typeof input, "strict">;
+				type _CheckPayload = DCommon.ExpectType<typeof factPayload, { name: string }, "strict">;
+
+				directHandler(value, factPayload);
+				return factPayload.name;
+			},
+		});
+		const curried = DCommon.pipe(
+			input,
+			DPattern.matchWithFact({
+				UserCreated: (value, factPayload) => {
+					type _CheckValue = DCommon.ExpectType<typeof value, typeof input, "strict">;
+					type _CheckPayload = DCommon.ExpectType<typeof factPayload, { name: string }, "strict">;
+
+					curriedHandler(value, factPayload);
+					return factPayload.name;
+				},
+			}),
+		);
+
+		type _CheckDirect = DCommon.ExpectType<typeof direct, string, "strict">;
+		type _CheckCurried = DCommon.ExpectType<typeof curried, string, "strict">;
+
+		expect(direct).toBe("Alice");
+		expect(curried).toBe("Alice");
+		expect(directHandler).toHaveBeenCalledExactlyOnceWith(input, payload);
+		expect(curriedHandler).toHaveBeenCalledExactlyOnceWith(input, payload);
+	});
+
 	it("should work in pipe with the curried form", () => {
 		const input = DModeling.factKind.addTo(
 			DModeling.entityKind.addTo({ id: "user-id" }, "User"),
