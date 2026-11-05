@@ -1,29 +1,54 @@
-import type { AnyPredicate, AnyFunction, IsEqual } from "./types";
+import type { AnyPredicate, AnyFunction, UnionContain, IsEqual, IsUnion, Predicate } from "./types";
+
+type PredicateList<
+	GenericInput extends unknown,
+> = readonly [
+	(input: GenericInput) => input is any,
+	(input: GenericInput) => input is any,
+	...((input: GenericInput) => input is any)[],
+];
 
 type ExtractPredicate<
 	GenericPredicateList extends readonly AnyFunction<any[], boolean>[],
-> = GenericPredicateList extends readonly [
-	(input: any, ...args: any[]) => input is infer InferredPredicate,
-	...infer InferredRest extends readonly AnyPredicate[],
-]
-	? InferredRest extends readonly []
-		? InferredPredicate
-		: ExtractPredicate<InferredRest> extends infer InferredResult
-			? IsEqual<InferredResult, never> extends true
-				? never
-				: InferredPredicate | InferredResult
-			: never
-	: never;
+> = IsUnion<GenericPredicateList> extends true
+	? unknown
+	: number extends GenericPredicateList["length"]
+		? unknown
+		: GenericPredicateList extends readonly [
+			infer InferredFirstPredicate extends AnyPredicate,
+			...infer InferredRest extends readonly AnyPredicate[],
+		]
+			? IsUnion<InferredFirstPredicate> extends true
+				? unknown
+				: InferredRest extends readonly []
+					? Predicate<InferredFirstPredicate>
+					: Predicate<InferredFirstPredicate> | ExtractPredicate<InferredRest>
+			: never;
+
+type IsPredicateOutputCompatible<
+	GenericInput extends unknown,
+	GenericPredicateList extends readonly AnyFunction<any[], boolean>[],
+> = IsEqual<
+	PredicateList<GenericInput>,
+	GenericPredicateList
+> extends true
+	? unknown
+	: ExtractPredicate<GenericPredicateList> extends infer InferredResult
+		? IsEqual<InferredResult, unknown> extends true
+			? never
+			: UnionContain<
+				GenericInput,
+				InferredResult
+			> extends true
+				? unknown
+				: never
+		: never;
 
 export function or<
 	GenericInput extends unknown,
-	const GenericPredicateList extends readonly [
-		(input: GenericInput) => input is any,
-		(input: GenericInput) => input is any,
-		...((input: GenericInput) => input is any)[],
-	],
+	const GenericPredicateList extends PredicateList<GenericInput>,
 >(
-	predicateList: GenericPredicateList,
+	predicateList: GenericPredicateList & IsPredicateOutputCompatible<GenericInput, GenericPredicateList>,
 ): (input: GenericInput) => input is Extract<
 	GenericInput,
 	ExtractPredicate<
@@ -34,7 +59,7 @@ export function or<
 export function or<
 	GenericInput extends unknown,
 >(
-	predicateList: [
+	predicateList: readonly [
 		(input: GenericInput) => boolean,
 		(input: GenericInput) => boolean,
 		...((input: GenericInput) => boolean)[],
@@ -43,14 +68,10 @@ export function or<
 
 export function or<
 	GenericInput extends unknown,
-	const GenericPredicateList extends readonly [
-		(input: GenericInput) => input is any,
-		(input: GenericInput) => input is any,
-		...((input: GenericInput) => input is any)[],
-	],
+	const GenericPredicateList extends PredicateList<GenericInput>,
 >(
 	input: GenericInput,
-	predicateList: GenericPredicateList,
+	predicateList: GenericPredicateList & IsPredicateOutputCompatible<GenericInput, GenericPredicateList>,
 ): input is Extract<
 	GenericInput,
 	ExtractPredicate<
@@ -62,7 +83,7 @@ export function or<
 	GenericInput extends unknown,
 >(
 	input: GenericInput,
-	predicateList: [
+	predicateList: readonly [
 		(input: GenericInput) => boolean,
 		(input: GenericInput) => boolean,
 		...((input: GenericInput) => boolean)[],
@@ -71,8 +92,8 @@ export function or<
 
 export function or(
 	...args:
-		| [input: unknown, predicateList: AnyFunction[]]
-		| [predicateList: AnyFunction[]]
+		| [input: unknown, predicateList: readonly AnyFunction[]]
+		| [predicateList: readonly AnyFunction[]]
 ): any {
 	if (args.length === 1) {
 		const [predicateList] = args;
