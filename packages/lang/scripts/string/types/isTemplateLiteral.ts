@@ -16,8 +16,8 @@ export type IsTemplateLiteral<
 				: DCommon.IsEqual<
 					(
 						InferredClearValue extends (
-					& string
-					& infer InferredRest
+							& string
+							& infer InferredRest
 						)
 							? InferredRest
 							: never
