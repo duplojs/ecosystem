@@ -5,7 +5,7 @@ export function when<
 	GenericPredicatedInput extends GenericInput,
 	GenericOutput extends AnyValue | EscapeVoid,
 >(
-	ifFunction: (input: GenericInput) => input is GenericPredicatedInput,
+	ifFunction: (input: BreakGenericLink<GenericInput>) => input is GenericPredicatedInput,
 	theFunction: (predicatedInput: GenericPredicatedInput) => GenericOutput,
 ): (
 	input: GenericInput,
