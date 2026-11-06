@@ -1,6 +1,26 @@
 import type * as DCommon from "@scripts/common";
 import { isResult, result, type PatternResult } from "./result";
 
+type IsPredicateOutputCompatible<
+	GenericInput extends unknown,
+	GenericPredicatedInput extends GenericInput,
+	GenericPredicate extends unknown,
+> = DCommon.IsEqual<GenericPredicatedInput, any> extends true
+	? never
+	: DCommon.IsUnion<GenericPredicate> extends true
+		? never
+		: unknown;
+
+type ComputeCallbackInput<
+	GenericInput extends unknown,
+	GenericPredicate extends unknown,
+	GenericPredicatedInput extends GenericInput,
+> = GenericPredicate extends (input: GenericInput) => input is GenericPredicatedInput
+	? DCommon.IsEqual<DCommon.Predicate<GenericPredicate>, any> extends true
+		? GenericInput
+		: Exclude<GenericInput, GenericPredicatedInput>
+	: GenericInput;
+
 export function whenNot<
 	GenericInput extends unknown,
 	GenericInputValue extends Exclude<
@@ -12,11 +32,23 @@ export function whenNot<
 	GenericInputPatternResult extends Extract<GenericInput, PatternResult>,
 	GenericPredicatedInput extends GenericInputValue,
 	GenericOutput extends DCommon.AnyValue | DCommon.EscapeVoid,
+	GenericPredicate extends unknown = (
+		input: DCommon.BreakGenericLink<GenericInputValue>,
+	) => input is GenericPredicatedInput,
 >(
 	predicate: (
-		input: GenericInputValue,
-	) => input is GenericPredicatedInput,
-	theFunction: (predicatedInput: Exclude<GenericInputValue, GenericPredicatedInput>) => GenericOutput,
+		& ((input: DCommon.BreakGenericLink<GenericInputValue>) => input is GenericPredicatedInput)
+		& DCommon.FixDeepFunctionInfer<
+			(input: DCommon.BreakGenericLink<GenericInputValue>) => input is GenericPredicatedInput,
+			GenericPredicate
+		>
+		& IsPredicateOutputCompatible<GenericInputValue, GenericPredicatedInput, GenericPredicate>
+	),
+	theFunction: (predicatedInput: ComputeCallbackInput<
+		GenericInputValue,
+		GenericPredicate,
+		GenericPredicatedInput
+	>) => GenericOutput,
 ): (
 	input: (
 		| GenericInput
@@ -25,10 +57,7 @@ export function whenNot<
 	),
 ) => (
 	| GenericInputPatternResult
-	| Exclude<
-		DCommon.BreakGenericLink<GenericInput>,
-		Exclude<GenericInputValue, GenericPredicatedInput> | PatternResult
-	>
+	| GenericPredicatedInput
 	| PatternResult<GenericOutput>
 );
 
@@ -44,9 +73,9 @@ export function whenNot<
 	GenericOutput extends DCommon.AnyValue | DCommon.EscapeVoid,
 >(
 	predicate: (
-		input: GenericInputValue,
+		input: DCommon.BreakGenericLink<GenericInputValue>,
 	) => boolean,
-	theFunction: (predicatedInput: GenericInputValue) => GenericOutput,
+	theFunction: (predicatedInput: DCommon.BreakGenericLink<GenericInputValue>) => GenericOutput,
 ): (
 	input: (
 		| GenericInput
@@ -70,6 +99,9 @@ export function whenNot<
 	GenericInputPatternResult extends Extract<GenericInput, PatternResult>,
 	GenericPredicatedInput extends GenericInputValue,
 	GenericOutput extends DCommon.AnyValue | DCommon.EscapeVoid,
+	GenericPredicate extends unknown = (
+		input: DCommon.BreakGenericLink<GenericInputValue>,
+	) => input is GenericPredicatedInput,
 >(
 	input: (
 		| GenericInput
@@ -77,15 +109,21 @@ export function whenNot<
 		| GenericInputValue
 	),
 	predicate: (
-		input: GenericInputValue,
-	) => input is GenericPredicatedInput,
-	theFunction: (predicatedInput: Exclude<GenericInputValue, GenericPredicatedInput>) => GenericOutput,
+		& ((input: DCommon.BreakGenericLink<GenericInputValue>) => input is GenericPredicatedInput)
+		& DCommon.FixDeepFunctionInfer<
+			(input: DCommon.BreakGenericLink<GenericInputValue>) => input is GenericPredicatedInput,
+			GenericPredicate
+		>
+		& IsPredicateOutputCompatible<GenericInputValue, GenericPredicatedInput, GenericPredicate>
+	),
+	theFunction: (predicatedInput: ComputeCallbackInput<
+		GenericInputValue,
+		GenericPredicate,
+		GenericPredicatedInput
+	>) => GenericOutput,
 ): (
 	| GenericInputPatternResult
-	| Exclude<
-		DCommon.BreakGenericLink<GenericInput>,
-		Exclude<GenericInputValue, GenericPredicatedInput> | PatternResult
-	>
+	| GenericPredicatedInput
 	| PatternResult<GenericOutput>
 );
 
@@ -106,9 +144,9 @@ export function whenNot<
 		| GenericInputValue
 	),
 	predicate: (
-		input: GenericInputValue,
+		input: DCommon.BreakGenericLink<GenericInputValue>,
 	) => boolean,
-	theFunction: (predicatedInput: GenericInputValue) => GenericOutput,
+	theFunction: (predicatedInput: DCommon.BreakGenericLink<GenericInputValue>) => GenericOutput,
 ): (
 	| GenericInputPatternResult
 	| GenericInputValue

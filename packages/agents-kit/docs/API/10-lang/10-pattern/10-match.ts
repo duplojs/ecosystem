@@ -6,6 +6,7 @@
 import * as DPattern from "@duplojs/lang/pattern";
 import * as DCommon from "@duplojs/lang/common";
 import * as DString from "@duplojs/lang/string";
+import * as DNumber from "@duplojs/lang/number";
 
 type Input = {
 	status: "created";
@@ -84,23 +85,47 @@ const selected = DCommon.pipe(
 		DString.toUpperCase,
 	),
 	DPattern.otherwise(
-		(value) => value,
+		DCommon.forward,
 	),
 );
 // Les chaînes sont mises en majuscules ; number et null restent inchangés.
 type _CheckSelected = DCommon.ExpectType<typeof selected, Uppercase<string> | number | null, "strict">;
 
-// Le builder expose aussi when et whenNot pour composer les predicates.
-const byPredicates = DPattern.match(scalar)
-	.when(DCommon.isType("string"), DString.toUpperCase)
-	.whenNot(DCommon.isType("number"), () => "absent")
-	.with(DCommon.isType("number"), (value) => value)
+// Sélection inverse dans le builder : traiter les états en lecture seule avant les états actifs.
+declare const state: "ready" | "draft" | "archived";
+const byPredicates = DPattern.match(state)
+	.whenNot(
+		DCommon.or([DCommon.equal("ready"), DCommon.equal("draft")]),
+		DString.prepend("Lecture seule : "),
+	)
+	.when(DCommon.equal("ready"), DString.toUpperCase)
+	.with("draft", DString.prepend("À compléter : "))
 	.exhaustive();
-// Les chaînes sont mises en majuscules, null devient "absent", le nombre est conservé.
-type _CheckByPredicates = DCommon.ExpectType<typeof byPredicates, string | number, "strict">;
+// whenNot traite archived ; seuls ready et draft doivent encore être couverts.
+type _CheckByPredicates = DCommon.ExpectType<
+	typeof byPredicates,
+	"Lecture seule : archived" | "READY" | "À compléter : draft",
+	"strict"
+>;
+
+// Test booléen dans whenNot : le montant reste à traiter lorsque la livraison est offerte.
+declare const orderTotal: number;
+declare const freeShippingThreshold: number;
+declare const shippingFee: number;
+const withShipping = DPattern.match(orderTotal)
+	.whenNot(DNumber.greaterThanOrEqual(freeShippingThreshold), (value) => {
+		type _CheckValue = DCommon.ExpectType<typeof value, number, "strict">;
+
+		return DNumber.sum([value, shippingFee]);
+	});
+// Le seuil dynamique ne retire pas number des cas restants : exhaustive n'est pas disponible.
+type _CheckWithShipping = DCommon.ExpectType<typeof withShipping, DPattern.MatchBuilder<number, number>, "strict">;
+
+const pricedTotal = withShipping.otherwise(DCommon.forward);
+// Les petites commandes reçoivent les frais ; les autres conservent leur montant initial.
+type _CheckPricedTotal = DCommon.ExpectType<typeof pricedTotal, number, "strict">;
 
 // Motifs littéraux combinés : union regroupe plusieurs valeurs dans une même branche.
-declare const state: "ready" | "draft" | "archived";
 const byValue = DPattern.match(state)
 	.with(DPattern.union("ready", "draft"), DString.toUpperCase)
 	.otherwise(DString.toUpperCase);

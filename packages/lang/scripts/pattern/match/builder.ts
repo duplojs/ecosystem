@@ -2,6 +2,26 @@ import * as DCommon from "@scripts/common";
 import { type ComplexMatchedValue, type ComplexUnMatchedValue, type Pattern, type PatternValue } from "../types";
 import { isMatch } from "../isMatch";
 
+type IsPredicateOutputCompatible<
+	GenericInput extends unknown,
+	GenericPredicatedInput extends GenericInput,
+	GenericPredicate extends unknown,
+> = DCommon.IsEqual<GenericPredicatedInput, any> extends true
+	? never
+	: DCommon.IsUnion<GenericPredicate> extends true
+		? never
+		: unknown;
+
+type ComputeCallbackInput<
+	GenericInput extends unknown,
+	GenericPredicate extends unknown,
+	GenericPredicatedInput extends GenericInput,
+> = GenericPredicate extends (input: GenericInput) => input is GenericPredicatedInput
+	? DCommon.IsEqual<DCommon.Predicate<GenericPredicate>, any> extends true
+		? GenericInput
+		: Exclude<GenericInput, GenericPredicatedInput>
+	: GenericInput;
+
 export interface BuilderMatcher {
 	isMatch(value: unknown): boolean;
 	theFunction(value: unknown): unknown;
@@ -66,13 +86,23 @@ export interface MatchBuilder<
 	whenNot<
 		GenericPredicatedInput extends GenericValue,
 		GenericOutput extends unknown,
+		GenericPredicate extends unknown = (input: GenericValue) => input is GenericPredicatedInput,
 	>(
 		predicate: (
-			input: GenericValue,
-		) => input is GenericPredicatedInput,
-		theFunction: (predicatedInput: Exclude<GenericValue, GenericPredicatedInput>) => GenericOutput
+			& ((input: GenericValue) => input is GenericPredicatedInput)
+			& DCommon.FixDeepFunctionInfer<
+				(input: GenericValue) => input is GenericPredicatedInput,
+				GenericPredicate
+			>
+			& IsPredicateOutputCompatible<GenericValue, GenericPredicatedInput, GenericPredicate>
+		),
+		theFunction: (predicatedInput: ComputeCallbackInput<
+			GenericValue,
+			GenericPredicate,
+			GenericPredicatedInput
+		>) => GenericOutput
 	): MatchBuilder<
-		Extract<GenericValue, GenericPredicatedInput>,
+		GenericPredicatedInput,
 		GenericOutput | GenericResult
 	>;
 

@@ -15,85 +15,109 @@ type Input = {
 	kind: "other";
 	value: string;
 };
-// Les PatternResult issus d’une étape précédente sont transmis sans nouveau test.
 declare const input: Input;
-// « other » passe au callback, puis otherwise traite la branche known restée disponible.
+
+// Appel classique : traiter la branche other et conserver known pour la suite.
+const selected = DPattern.whenNot(input, DPattern.isMatch({ kind: "known" }), (value) => {
+	type _CheckValue = DCommon.ExpectType<typeof value, {
+		kind: "other";
+		value: string;
+	}, "strict">;
+
+	return DString.toUpperCase(value.value);
+});
+// Other produit un texte enveloppé ; known reste une valeur non traitée.
+type _CheckSelected = DCommon.ExpectType<
+	typeof selected,
+	{
+		kind: "known";
+		id: number;
+	} | DPattern.PatternResult<Uppercase<string>>,
+	"strict"
+>;
+
+// Appel curifié : préserver les résultats précédents, puis terminer les cas restants.
+declare const partiallyHandled: Input | DPattern.PatternResult<Uppercase<string>>;
 const piped = DCommon.pipe(
-	input,
+	partiallyHandled,
 	DPattern.whenNot(
 		DPattern.isMatch({ kind: "known" }),
-		(value) => value.value,
+		(value) => DString.toUpperCase(value.value),
 	),
 	DPattern.otherwise(
 		(value) => value.id,
 	),
 );
-// Other donne son texte ; known donne son id, sans PatternResult dans la sortie.
-type _CheckPiped = DCommon.ExpectType<typeof piped, string | number, "strict">;
+// Les résultats précédents sont transmis ; other est normalisé et known fournit son id.
+// otherwise déballe le résultat final : aucun PatternResult ne subsiste dans la sortie.
+type _CheckPiped = DCommon.ExpectType<typeof piped, Uppercase<string> | number, "strict">;
 
-// Predicate booléen : le test RegExp ne permet pas d’éliminer une variante du type.
-declare const text: string;
-const conditional = DCommon.pipe(
-	text,
-	DPattern.whenNot(
-		DString.test(/^ready/),
-		DString.toUpperCase,
-	),
-	DPattern.otherwise(
-		DString.toUpperCase,
-	),
+// Predicates imbriqués : étiqueter les états tout en conservant leurs littéraux.
+declare const state: "ready" | "queued" | "blocked";
+const pendingState = DPattern.whenNot(
+	state,
+	DCommon.or([DCommon.equal("ready"), DCommon.equal("queued")]),
+	DString.prepend("Attention : "),
 );
-// Les textes ne commençant pas par ready sont mis en majuscules ; les autres restent inchangés.
-type _CheckConditional = DCommon.ExpectType<typeof conditional, Uppercase<string>, "strict">;
+type _CheckPendingState = DCommon.ExpectType<
+	typeof pendingState,
+	"ready" | "queued" | DPattern.PatternResult<"Attention : blocked">,
+	"strict"
+>;
 
-// Un seuil dynamique conserve number dans la callback et parmi les valeurs non traitées.
-declare const amount: number;
-declare const threshold: number;
-const dynamicThreshold = DCommon.pipe(
-	amount,
-	DPattern.whenNot(
-		DNumber.greaterThan(threshold),
-		(value) => {
-			type _CheckValue = DCommon.ExpectType<typeof value, number, "strict">;
-
-			return DNumber.sum([value, 1]);
-		},
-	),
-	DPattern.otherwise(
-		(value) => DNumber.sum([value, 1]),
-	),
-);
-// Chaque valeur finit incrémentée : whenNot et otherwise couvrent les deux côtés du seuil.
-// Le typage de whenNot peut mal représenter la branche conservée avec un predicate à seuil dynamique.
-
-// Si le garde accepte tout le type d'entrée, la callback reçoit never et n'est jamais appelée.
-const handledText = DCommon.pipe(
-	text,
-	DPattern.whenNot(
-		DCommon.isType("string"),
-		(value) => {
-			type _CheckValue = DCommon.ExpectType<typeof value, never, "strict">;
-
-			return value;
-		},
-	),
+const labeledState = DCommon.pipe(
+	pendingState,
 	DPattern.when(
-		DCommon.isType("string"),
+		DCommon.equal("ready"),
 		DString.toUpperCase,
 	),
-	DPattern.exhaustive,
-);
-// whenNot ne sélectionne rien ici ; when traite la chaîne restante.
-type _CheckHandledText = DCommon.ExpectType<typeof handledText, Uppercase<string>, "strict">;
-
-// Avec un garde de type, les valeurs non traitées conservent la contrainte prouvée.
-const positive = DCommon.pipe(
-	amount,
-	DPattern.whenNot(
-		DNumber.isPositive,
-		(value) => DNumber.sum([value, 1]),
+	DPattern.otherwise(
+		DString.prepend("En attente : "),
 	),
 );
-// Les nombres positifs restent non traités ; les autres sont incrémentés dans un PatternResult.
-// La callback reçoit number : TypeScript ne représente pas précisément le complément de Positive.
-type _CheckPositive = DCommon.ExpectType<typeof positive, (number & DNumber.Positive) | DPattern.PatternResult<number>, "strict">;
+// Une branche déjà enveloppée n'est pas traitée une seconde fois par les étapes suivantes.
+type _CheckLabeledState = DCommon.ExpectType<
+	typeof labeledState,
+	"Attention : blocked" | "READY" | "En attente : queued",
+	"strict"
+>;
+
+// Test booléen : ajouter les frais de livraison seulement sous un seuil dynamique.
+declare const orderTotal: number;
+declare const freeShippingThreshold: number;
+declare const shippingFee: number;
+const shippingApplied = DPattern.whenNot(
+	orderTotal,
+	DNumber.greaterThanOrEqual(freeShippingThreshold),
+	(value) => {
+		type _CheckValue = DCommon.ExpectType<typeof value, number, "strict">;
+
+		return DNumber.sum([value, shippingFee]);
+	},
+);
+// Les petites commandes sont enveloppées après ajout des frais ; les autres restent brutes.
+type _CheckShippingApplied = DCommon.ExpectType<
+	typeof shippingApplied,
+	number | DPattern.PatternResult<number>,
+	"strict"
+>;
+
+const pricedTotal = DCommon.pipe(
+	shippingApplied,
+	DPattern.otherwise(
+		DCommon.forward,
+	),
+);
+// otherwise conserve le total des commandes sans frais ou déballe le total avec frais.
+// Le test booléen laisse number parmi les cas restants : exhaustive ne conviendrait pas.
+type _CheckPricedTotal = DCommon.ExpectType<typeof pricedTotal, number, "strict">;
+
+// Contrainte préservée : signaler les découverts et garder les soldes positifs ou nuls.
+declare const balance: number;
+const checkedBalance = DPattern.whenNot(balance, DNumber.isPositive, DCommon.justReturn("à découvert"));
+// Un solde négatif donne un PatternResult ; zéro et les soldes positifs restent des nombres.
+type _CheckCheckedBalance = DCommon.ExpectType<
+	typeof checkedBalance,
+	(number & DNumber.Positive) | DPattern.PatternResult<"à découvert">,
+	"strict"
+>;
