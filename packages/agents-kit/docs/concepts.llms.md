@@ -299,6 +299,28 @@ Sélectionner les variantes sans identité explicite par des patterns, y compris
 
 Affiner les branches et réduire les cas restants, avec sélection positive ou inverse.
  
+## Kind
+
+Identité et métadonnées internes des objets de l'écosystème, reconnaissables au typage et au runtime.
+
+### Identité des objets avec les kinds
+
+De nombreux objets DuploJS portent des kinds pour être reconnus et distingués malgré le typage structurel de TypeScript.
+
+Ces clés textuelles au runtime, représentées sous un symbole dans les types, portent identité et métadonnées. Leur reconnaissance survit au transport si la sérialisation les préserve.
+
+Les kinds servent surtout à construire les outils ; utiliser DuploJS ne demande généralement pas de les manipuler directement.
+
+### [Métadonnées internes des kinds](concepts/01-fundamental/08-kind/20-metadata.md)
+
+Un petit store attaché à l'objet, exploitable dans les types ou au runtime selon son contrat.
+
+
+### [Transport de l'identité entre programmes](concepts/01-fundamental/08-kind/30-transport.md)
+
+Reconnaître une donnée après désérialisation sans dépendre du constructeur de son runtime d'origine.
+
+
 # Serveur
 
 ## Manipuler des fichiers
