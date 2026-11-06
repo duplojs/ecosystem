@@ -81,16 +81,21 @@ describe("isComposedOf", () => {
 				(value) => {
 					type _CheckValue = DCommon.ExpectType<
 						typeof value,
-						string & DString.AllowedCharacters<"0-9" | "A-Z">,
+						"ABC123",
 						"strict"
 					>;
 
-					return "uppercase-code";
+					return "uppercase-code" as const;
 				},
 			),
 		);
 
 		expect(result).toBe("uppercase-code");
+		type _Check = DCommon.ExpectType<
+			typeof result,
+			"abc123" | "uppercase-code",
+			"strict"
+		>;
 	});
 
 	it("should accept a more restrictive allowed characters constraint", () => {
