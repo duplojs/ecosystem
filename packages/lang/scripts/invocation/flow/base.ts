@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/max-params */
 import * as DCommon from "@scripts/common";
+import * as DArray from "@scripts/array";
 import type * as DKind from "@scripts/kind";
-import { type FlowControllerExit, type FlowController, type FlowControllerResult, flowControllerExitKind, type FlowControllerPreviousFunctionResult, flowControllerKind, type UnwrapFlowControllerResult } from "./controller";
+import { type FlowControllerExit, type FlowController, type FlowControllerResult, flowControllerExitKind, type FlowControllerPreviousFunctionResult, flowControllerKind, type UnwrapFlowControllerResult, type FlowControllerHooks } from "./controller";
 
 type ComputeLastUsableValue<
 	GenericAccumulator extends DCommon.AnyTuple,
@@ -33,59 +34,22 @@ type Pipe<
 	argument: GenericAccumulator[0],
 ) => GenericOutput;
 
-type IsMaybePromise<
-	GenericAccumulator extends DCommon.AnyTuple,
-> = {
-	[Index in keyof GenericAccumulator]: UnwrapFlowControllerResult<
-		GenericAccumulator[Index]
-	> extends infer InferredResult
-		? DCommon.IsExtends<
-			InferredResult,
-			Promise<unknown>
-		> extends true
-			? false
-			: DCommon.ContainExtends<InferredResult, Promise<any>>
-		: never
-}[number] extends false
-	? false
-	: true;
-
 type ComputeTypeOutput<
 	GenericAccumulator extends DCommon.AnyTuple,
-> = Extract<
-	(
+> = Promise<
+	Awaited<
 		| ComputeLastUsableValue<GenericAccumulator>
 		| (
-			UnwrapFlowControllerResult<GenericAccumulator[number]> extends infer InferredResult
+			Awaited<UnwrapFlowControllerResult<GenericAccumulator[number]>> extends infer InferredResult
 				? InferredResult extends FlowControllerExit
 					? DKind.GetValue<
 						typeof flowControllerExitKind,
 						InferredResult
 					>
-					: InferredResult extends Promise<infer InferredValue>
-						? DCommon.IsNever<InferredValue> extends true
-							? Promise<never>
-							: InferredValue extends FlowControllerExit
-								? Promise<
-									DKind.GetValue<
-									typeof flowControllerExitKind,
-									InferredValue
-									>
-								>
-								: Promise<never>
-						: never
+					: never
 				: never
 		)
-	) extends infer InferredResult
-		? DCommon.Or<[
-			DCommon.ContainExtends<InferredResult, Promise<any>>,
-		]> extends true
-			? IsMaybePromise<GenericAccumulator> extends true
-				? DCommon.MaybePromise<Awaited<InferredResult>>
-				: Promise<Awaited<InferredResult>>
-			: InferredResult
-		: never,
-	any
+	>
 >;
 
 export function flow<
@@ -1821,18 +1785,19 @@ export function flow<
 export function flow(
 	...args: (DCommon.AnyFunction<[any, any]> | FlowController<any, any>)[]
 ): any {
-	const accumulateFunction = args.reduce<DCommon.AnyFunction<[any, any]>>(
+	const accumulateFunction = args.reduce<DCommon.AnyFunction<[any, any, FlowControllerHooks]>>(
 		(accumulator, currentValue) => {
 			if (flowControllerKind.has(currentValue)) {
-				return (input, argument) => currentValue.exec(
-					() => accumulator(input, argument),
+				return (input, argument, hooks) => currentValue.exec(
+					() => accumulator(input, argument, hooks),
+					hooks,
 				);
 			} else {
 				const preparedResultTreatment = (result: any, argument: any) => flowControllerExitKind.has(result)
 					? result
 					: currentValue(result, argument);
-				return (input, argument) => DCommon.callThen(
-					accumulator(input, argument),
+				return (input, argument, hooks) => DCommon.callThen(
+					accumulator(input, argument, hooks),
 					(result) => preparedResultTreatment(result, argument),
 				);
 			}
@@ -1843,8 +1808,30 @@ export function flow(
 	const preparedResultTreatment = (result: any) => flowControllerExitKind.has(result)
 		? flowControllerExitKind.getValue(result)
 		: result;
-	return (input: unknown) => DCommon.callThen(
-		accumulateFunction(input, input),
-		preparedResultTreatment,
-	);
+	return (input: unknown) => {
+		let flowEndCallbacks: readonly (() => void)[] = [];
+		const hooks: FlowControllerHooks = {
+			onFlowEnd: (callback) => {
+				flowEndCallbacks = DArray.push(flowEndCallbacks, callback);
+			},
+		};
+		const emitFlowEnd = () => {
+			const callbacks = flowEndCallbacks;
+			flowEndCallbacks = [];
+			for (const callback of callbacks) {
+				callback();
+			}
+		};
+		return DCommon.callThen(
+			() => accumulateFunction(input, input, hooks),
+			(result) => {
+				emitFlowEnd();
+				return Promise.resolve(preparedResultTreatment(result));
+			},
+			(error) => new Promise((_resolve, reject) => {
+				emitFlowEnd();
+				reject(error as Error);
+			}),
+		);
+	};
 }

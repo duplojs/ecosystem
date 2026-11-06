@@ -4,7 +4,7 @@ import * as DInvocation from "@scripts/invocation";
 import type * as DKind from "@scripts/kind";
 
 describe("createFlowController", () => {
-	it("should create a controller that can exit the flow", () => {
+	it("should create a controller that can exit the flow", async() => {
 		const testFlowControllerKind = DInvocation.createKind("test-flow-controller");
 		type TestFlowController = DCommon.UnionToIntersection<
 			& DInvocation.FlowController<
@@ -31,17 +31,17 @@ describe("createFlowController", () => {
 
 		expect(DInvocation.flowControllerKind.has(stopFlow())).toBe(true);
 		expect(testFlowControllerKind.has(stopFlow())).toBe(true);
-		expect(result).toStrictEqual(DEither.left("stopped", undefined));
+		expect(result).toBeInstanceOf(Promise);
+		await expect(result).resolves.toStrictEqual(DEither.left("stopped", undefined));
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			| DEither.Left<"stopped">
-			| `value-${number}`,
+			Promise<DEither.Left<"stopped"> | `value-${number}`>,
 			"strict"
 		>;
 	});
 
-	it("should pass only the previous function to a custom controller", () => {
+	it("should pass the previous function and hooks to a custom controller", async() => {
 		const testFlowControllerKind = DInvocation.createKind("test-flow-controller-without-argument");
 		type TestFlowController = (
 			& DInvocation.FlowController<number, string>
@@ -67,8 +67,10 @@ describe("createFlowController", () => {
 		);
 		const result = useFlow(41);
 
-		expect(result).toBe("value-controlled");
-		expect(exec).toHaveBeenCalledExactlyOnceWith(expect.any(Function));
+		await expect(result).resolves.toBe("value-controlled");
+		expect(exec).toHaveBeenCalledExactlyOnceWith(expect.any(Function), {
+			onFlowEnd: expect.any(Function),
+		});
 
 		type _CheckControllerParameters = DCommon.ExpectType<
 			Parameters<TestFlowController>,
@@ -77,14 +79,37 @@ describe("createFlowController", () => {
 		>;
 		type _CheckExecParameters = DCommon.ExpectType<
 			Parameters<TestFlowController["exec"]>,
-			[previousFunction: () => DInvocation.FlowControllerPreviousFunctionResult],
+			[
+				previousFunction: () => DInvocation.FlowControllerPreviousFunctionResult,
+				hooks: DInvocation.FlowControllerHooks,
+			],
 			"strict"
 		>;
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			`value-${string}`,
+			Promise<`value-${string}`>,
 			"strict"
 		>;
+	});
+
+	it("returns a promise when a controller bypasses asynchronous previous steps", async() => {
+		const controllerKind = DInvocation.createKind("test-bypass-async-previous");
+		const controller = DInvocation.createFlowController(
+			controllerKind,
+			({ init }) => () => init<
+				& DInvocation.FlowController<number, string>
+				& DKind.Kind<typeof controllerKind>
+			>(() => "controlled"),
+		);
+		const previous = vi.fn((input: number) => Promise.resolve(input + 1));
+		const useFlow = DInvocation.flow(previous, controller());
+		const result = useFlow(1);
+
+		expect(previous).not.toHaveBeenCalled();
+		expect(result).toBeInstanceOf(Promise);
+		await expect(result).resolves.toBe("controlled");
+
+		type _CheckResult = DCommon.ExpectType<typeof result, Promise<string>, "strict">;
 	});
 });

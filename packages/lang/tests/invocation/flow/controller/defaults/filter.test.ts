@@ -3,7 +3,7 @@ import * as DEither from "@scripts/either";
 import * as DInvocation from "@scripts/invocation";
 
 describe("filter", () => {
-	it("should continue the flow with a raw filtered value", () => {
+	it("should continue the flow with a raw filtered value", async() => {
 		const useFlow = DInvocation.flow(
 			(input: string) => input.length,
 			DInvocation.filter((input) => {
@@ -19,11 +19,11 @@ describe("filter", () => {
 		);
 		const result = useFlow("test");
 
-		expect(result).toBe("value-5");
+		await expect(result).resolves.toBe("value-5");
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			`value-${number}`,
+			Promise<`value-${number}`>,
 			"strict"
 		>;
 	});
@@ -72,7 +72,7 @@ describe("filter", () => {
 		>;
 	});
 
-	it("should type the flow as maybe async when a filter returns a sync or async raw value", () => {
+	it("should type the flow as async when a filter returns a sync or async raw value", async() => {
 		const useFlow = DInvocation.flow(
 			(input: string) => input.length,
 			DInvocation.filter((input) => input % 2 === 0
@@ -82,11 +82,11 @@ describe("filter", () => {
 		);
 		const result = useFlow("test");
 
-		expect(result).toBe("value-5");
+		await expect(result).resolves.toBe("value-5");
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			DCommon.MaybePromise<`value-${number}`>,
+			Promise<`value-${number}`>,
 			"strict"
 		>;
 	});
@@ -99,7 +99,7 @@ describe("filter", () => {
 		);
 	});
 
-	it("should continue the flow with the right value", () => {
+	it("should continue the flow with the right value", async() => {
 		const useFlow = DInvocation.flow(
 			(input: string) => input.length,
 			DInvocation.filter((input) => DEither.result("accepted", input + 1)),
@@ -107,16 +107,16 @@ describe("filter", () => {
 		);
 		const result = useFlow("test");
 
-		expect(result).toBe("value-5");
+		await expect(result).resolves.toBe("value-5");
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			`value-${number}`,
+			Promise<`value-${number}`>,
 			"strict"
 		>;
 	});
 
-	it("should exit the flow with the left value", () => {
+	it("should exit the flow with the left value", async() => {
 		const useFlow = DInvocation.flow(
 			(input: string) => input.length,
 			DInvocation.filter((input) => input > 4
@@ -126,12 +126,14 @@ describe("filter", () => {
 		);
 		const result = useFlow("test");
 
-		expect(result).toStrictEqual(DEither.left("too-short", 4));
+		await expect(result).resolves.toStrictEqual(DEither.left("too-short", 4));
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			| `value-${number}`
-			| DEither.Left<"too-short", number>,
+			Promise<
+				| `value-${number}`
+				| DEither.Left<"too-short", number>
+			>,
 			"strict"
 		>;
 	});
@@ -160,7 +162,7 @@ describe("filter", () => {
 		>;
 	});
 
-	it("should type the flow as maybe async when a filter returns a sync or async either value", async() => {
+	it("should type the flow as async when a filter returns a sync or async either value", async() => {
 		const useFlow = DInvocation.flow(
 			(input: string) => input.length,
 			DInvocation.filter((input) => input > 4
@@ -174,7 +176,7 @@ describe("filter", () => {
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			DCommon.MaybePromise<
+			Promise<
 				| `value-${number}`
 				| DEither.Left<"too-short", number>
 			>,
@@ -182,7 +184,7 @@ describe("filter", () => {
 		>;
 	});
 
-	it("should keep an existing flow exit", () => {
+	it("should keep an existing flow exit", async() => {
 		const stopFlowKind = DInvocation.createKind("test-filter-stop-flow");
 		const stopFlow = DInvocation.createFlowController(
 			stopFlowKind,
@@ -197,6 +199,54 @@ describe("filter", () => {
 		);
 		const result = useFlow(undefined);
 
-		expect(result).toStrictEqual(DEither.left("stopped", undefined));
+		await expect(result).resolves.toStrictEqual(DEither.left("stopped", undefined));
+	});
+
+	it("includes a synchronous exit when the following asynchronous step is skipped", async() => {
+		const next = vi.fn((input: number) => Promise.resolve(input + 1));
+		const useFlow = DInvocation.flow(
+			DInvocation.filter((input: number) => input > 0
+				? DEither.success(input)
+				: DEither.left("rejected", input)),
+			next,
+		);
+		const rejected = useFlow(0);
+
+		expect(rejected).toBeInstanceOf(Promise);
+		expect(DEither.unwrapByInformationOrThrow(await rejected, "rejected")).toBe(0);
+		expect(next).not.toHaveBeenCalled();
+		const accepted = useFlow(1);
+		expect(accepted).toBeInstanceOf(Promise);
+		await expect(accepted).resolves.toBe(2);
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof rejected,
+			Promise<number | DEither.Left<"rejected", number>>,
+			"strict"
+		>;
+	});
+
+	it("includes a synchronous exit when a following asynchronous filter is skipped", async() => {
+		const next = vi.fn((input: number) => Promise.resolve(input + 1));
+		const useFlow = DInvocation.flow(
+			DInvocation.filter((input: number) => input > 0
+				? DEither.success(input)
+				: DEither.left("rejected", input)),
+			DInvocation.filter(next),
+		);
+		const rejected = useFlow(0);
+
+		expect(rejected).toBeInstanceOf(Promise);
+		expect(DEither.unwrapByInformationOrThrow(await rejected, "rejected")).toBe(0);
+		expect(next).not.toHaveBeenCalled();
+		const accepted = useFlow(1);
+		expect(accepted).toBeInstanceOf(Promise);
+		await expect(accepted).resolves.toBe(2);
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof rejected,
+			Promise<number | DEither.Left<"rejected", number>>,
+			"strict"
+		>;
 	});
 });
