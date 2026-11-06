@@ -495,7 +495,13 @@ describe("EntityStructure", () => {
 		);
 	});
 
-	it("returns map errors when runtime mapping receives a non object input", async() => {
+	it.each([
+		{ input: null },
+		{ input: undefined },
+		{ input: "value" },
+		{ input: [] },
+		{ input: new Date() },
+	])("returns map errors for a non simple input $input", async({ input }) => {
 		const structure = DModeling.EntityStructure(
 			"user",
 			() => ({
@@ -508,10 +514,10 @@ describe("EntityStructure", () => {
 		);
 		const codecs = DDataStructure.createCodecs({});
 
-		expect(DEither.isLeft(structure.map(null as never))).toBe(true);
-		expect(DEither.isLeft(structure.decodeMap(codecs, null as never))).toBe(true);
-		expect(DEither.isLeft(await structure.asyncDecodeMap(codecs, null as never))).toBe(true);
-		expect(DEither.isLeft(await structure.asyncMap(null as never))).toBe(true);
+		expect(DEither.isLeft(structure.map(input as never))).toBe(true);
+		expect(DEither.isLeft(structure.decodeMap(codecs, input as never))).toBe(true);
+		expect(DEither.isLeft(await structure.asyncDecodeMap(codecs, input as never))).toBe(true);
+		expect(DEither.isLeft(await structure.asyncMap(input as never))).toBe(true);
 	});
 
 	it("asynchronously maps a raw property object to an entity", async() => {

@@ -327,7 +327,7 @@ export const EntityStructure = DDataStructure.createStructure(
 
 				const result = self.executeDecode(
 					codecs.context.value,
-					DObject.isSimple(data)
+					DObject.is(data) && DObject.isSimple(data)
 						? {
 							...data,
 							[entityKind.runTimeKey]: name,
@@ -352,7 +352,7 @@ export const EntityStructure = DDataStructure.createStructure(
 			): any => {
 				const errorHandler = DDataStructure.createGetErrorHandler();
 
-				const formattedData = DObject.isSimple(data)
+				const formattedData = DObject.is(data) && DObject.isSimple(data)
 					? {
 						...data,
 						[entityKind.runTimeKey]: name,
@@ -389,7 +389,7 @@ export const EntityStructure = DDataStructure.createStructure(
 
 					const result = await self.executeDecode(
 						codecs.context.value,
-						DObject.isSimple(data)
+						DObject.is(data) && DObject.isSimple(data)
 							? {
 								...data,
 								[entityKind.runTimeKey]: name,
@@ -411,7 +411,7 @@ export const EntityStructure = DDataStructure.createStructure(
 			) => {
 				const errorHandler = DDataStructure.createGetErrorHandler();
 
-				const formattedData = DObject.isSimple(data)
+				const formattedData = DObject.is(data) && DObject.isSimple(data)
 					? {
 						...data,
 						[entityKind.runTimeKey]: name,

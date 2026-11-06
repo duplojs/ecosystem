@@ -123,7 +123,8 @@ export const RecordStructure = createStructure(
 		{
 			executeCheck: (self, data, errorHandler) => {
 				if (
-					!DObject.isSimple(data)
+					!DObject.is(data)
+					|| !DObject.isSimple(data)
 					|| Object.getOwnPropertySymbols(data).length !== 0
 				) {
 					return errorHandler?.().addIssue(self, data) ?? ErrorSymbol;
@@ -171,7 +172,8 @@ export const RecordStructure = createStructure(
 			},
 			executeEncode: (self, codecContext, data, errorHandler) => {
 				if (
-					!DObject.isSimple(data)
+					!DObject.is(data)
+					|| !DObject.isSimple(data)
 					|| Object.getOwnPropertySymbols(data).length !== 0
 				) {
 					return errorHandler?.().addIssue(self, data) ?? ErrorSymbol;
@@ -235,7 +237,8 @@ export const RecordStructure = createStructure(
 			},
 			executeDecode: (self, codecContext, data, errorHandler) => {
 				if (
-					!DObject.isSimple(data)
+					!DObject.is(data)
+					|| !DObject.isSimple(data)
 					|| Object.getOwnPropertySymbols(data).length !== 0
 				) {
 					return errorHandler?.().addIssue(self, data) ?? ErrorSymbol;
@@ -298,7 +301,7 @@ export const RecordStructure = createStructure(
 				);
 			},
 			executeParse: (self, codecContext, data, errorHandler) => {
-				if (!DObject.isSimple(data)) {
+				if (!DObject.is(data) || !DObject.isSimple(data)) {
 					return errorHandler?.().addIssue(self, data) ?? ErrorSymbol;
 				}
 

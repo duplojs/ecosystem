@@ -1,41 +1,38 @@
 /**
  * @title DObject.isSimple
  *
- * Identifier les objets simples utilisables comme enregistrements de propriétés.
+ * Vérifier si un objet est simple sans affiner son type.
  */
 import * as DObject from "@duplojs/lang/object";
 import * as DCommon from "@duplojs/lang/common";
 
-declare const input: object | string;
+// La fonction reçoit un objet déjà identifié et indique s’il est simple.
+declare const input: { name: string } | Date;
 const result = DObject.isSimple(input);
 
-// Le test runtime produit un booléen.
 type _CheckResult = DCommon.ExpectType<typeof result, boolean, "strict">;
 
+// Le booléen ne réduit le type d’entrée dans aucune des deux branches.
 if (DObject.isSimple(input)) {
-	type _CheckInput = DCommon.ExpectType<typeof input, object, "strict">;
+	type _CheckInput = DCommon.ExpectType<typeof input, { name: string } | Date, "strict">;
+} else {
+	// Une instance de Date reste un objet même si elle n’est pas simple.
+	type _CheckInput = DCommon.ExpectType<typeof input, { name: string } | Date, "strict">;
+}
 
-	const count = DObject.countKeys(input);
+// Depuis unknown, DObject.is identifie l’objet avant de vérifier s’il est simple.
+declare const externalInput: unknown;
+if (DObject.is(externalInput) && DObject.isSimple(externalInput)) {
+	const count = DObject.countKeys(externalInput);
 
-	// Dans cette branche, input est reconnu comme un objet et son nombre de clés est calculé.
+	type _CheckInput = DCommon.ExpectType<typeof externalInput, object, "strict">;
 	type _CheckCount = DCommon.ExpectType<typeof count, number, "strict">;
 }
 
-// Le predicate unaire peut aussi être donné directement à DCommon.when.
-const keyCount = DCommon.pipe(
+// La fonction unaire peut servir d’étape produisant un booléen dans un pipe.
+const isSimple = DCommon.pipe(
 	input,
-	DCommon.when(
-		DObject.isSimple,
-		(simpleObject) => {
-			type _CheckObject = DCommon.ExpectType<typeof simpleObject, object, "strict">;
-
-			return DObject.countKeys(simpleObject);
-		},
-	),
+	DObject.isSimple,
 );
-// Si le predicate échoue, le pipe conserve les valeurs primitives possibles.
-type _CheckKeyCount = DCommon.ExpectType<
-	typeof keyCount,
-	string | number | bigint | boolean | symbol | null | undefined,
-	"strict"
->;
+// Le résultat indique si l’objet fourni est simple.
+type _CheckIsSimple = DCommon.ExpectType<typeof isSimple, boolean, "strict">;

@@ -1,10 +1,6 @@
-export function isSimple(input: unknown): input is object {
+export function isSimple(input: object): boolean {
 	return (
-		typeof input === "object"
-		&& input !== null
-		&& (
-			input.constructor === undefined
-			|| input.constructor?.name === "Object"
-		)
+		input.constructor === undefined
+		|| input.constructor?.name === "Object"
 	);
 }

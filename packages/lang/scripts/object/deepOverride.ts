@@ -1,7 +1,8 @@
 import * as DCommon from "@scripts/common";
 import type * as DKind from "@scripts/kind";
 import { isSimple } from "./isSimple";
-import { type Values, type HasKeySignature, type keyofWithoutSignature } from "./types";
+import { is } from "./is";
+import { type HasKeySignature, type keyofWithoutSignature } from "./types";
 
 type DeepOverrideParameter<
 	GenericValue extends unknown,
@@ -110,8 +111,8 @@ export function deepOverride(
 
 				return result;
 			}
-			if (isSimple(value)) {
-				if (!isSimple(currentValue)) {
+			if (is(value) && isSimple(value)) {
+				if (!is(currentValue) || !isSimple(currentValue)) {
 					return currentValue;
 				}
 

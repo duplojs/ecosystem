@@ -56,7 +56,7 @@ Vérifier la présence de propriétés définies et affiner leur caractère obli
  
 ### [DObject.isSimple](10-isSimple.ts)
 
-Identifier les objets simples utilisables comme enregistrements de propriétés.
+Vérifier si un objet est simple sans affiner son type.
  
 ### [DObject.keys](10-keys.ts)
 

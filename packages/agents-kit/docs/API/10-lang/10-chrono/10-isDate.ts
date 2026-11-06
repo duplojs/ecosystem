@@ -6,7 +6,7 @@
 import * as DChrono from "@duplojs/lang/chrono";
 import * as DCommon from "@duplojs/lang/common";
 
-const value: DCommon.AnyValue = DChrono.createDate("2021-01-15");
+declare const value: DCommon.AnyValue;
 const isDate = DChrono.isDate(value);
 
 // Le résultat indique si la valeur est une TheDate.

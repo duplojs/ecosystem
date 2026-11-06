@@ -6,7 +6,7 @@
 import * as DChrono from "@duplojs/lang/chrono";
 import * as DCommon from "@duplojs/lang/common";
 
-const value: DCommon.AnyValue = DChrono.createTimeOrThrow(90_000);
+declare const value: DCommon.AnyValue;
 const isTime = DChrono.isTime(value);
 
 // Le résultat indique si la valeur est une TheTime.
