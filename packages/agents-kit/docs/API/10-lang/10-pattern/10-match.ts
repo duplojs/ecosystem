@@ -8,29 +8,26 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DString from "@duplojs/lang/string";
 
 type Input = {
-	kind: "created";
+	status: "created";
 	id: number;
 } | {
-	kind: "deleted";
+	status: "deleted";
 	id: number;
 	reason: string;
 };
 declare const input: Input;
 
-// Forme directe : le callback reçoit la partie de l’objet garantie par le motif.
-const direct = DPattern.match(input, { kind: "created" }, (value) => value.id);
-// La branche traitée devient PatternResult<number> ; la variante deleted reste l’entrée à examiner.
-type _CheckDirect = DCommon.ExpectType<typeof direct, DPattern.PatternResult<number> | {
-	kind: "deleted";
-	id: number;
-	reason: string;
-}, "strict">;
-
 // Appel curifié : les étapes suivantes ignorent une branche déjà enveloppée.
 const piped = DCommon.pipe(
 	input,
-	DPattern.match({ kind: "created" }, (value) => value.id),
-	DPattern.match({ kind: "deleted" }, (value) => value.reason),
+	DPattern.match(
+		{ status: "created" },
+		(value) => value.id,
+	),
+	DPattern.match(
+		{ status: "deleted" },
+		(value) => value.reason,
+	),
 	DPattern.exhaustive,
 );
 // La sortie est l’id créé ou la raison de suppression, sans wrapper.
@@ -38,18 +35,18 @@ type _CheckPiped = DCommon.ExpectType<typeof piped, number | string, "strict">;
 
 // Le builder retire chaque branche traitée du domaine restant, puis exige son épuisement.
 const built = DPattern.match(input)
-	.with({ kind: "created" }, (value) => value.id)
-	.with({ kind: "deleted" }, (value) => value.reason)
+	.with({ status: "created" }, (value) => value.id)
+	.with({ status: "deleted" }, (value) => value.reason)
 	.exhaustive();
 // Après couverture des deux variantes, exhaustive retourne directement number | string.
 type _CheckBuilt = DCommon.ExpectType<typeof built, number | string, "strict">;
 
 // Builder avec repli : seule la première branche correspondante est exécutée.
 const withFallback = DPattern.match(input)
-	.with({ kind: "created" }, (value) => value.id)
+	.with({ status: "created" }, (value) => value.id)
 	.otherwise((remaining) => {
 		type _CheckRemaining = DCommon.ExpectType<typeof remaining, {
-			kind: "deleted";
+			status: "deleted";
 			id: number;
 			reason: string;
 		}, "strict">;
@@ -60,18 +57,38 @@ type _CheckWithFallback = DCommon.ExpectType<typeof withFallback, number | strin
 
 // Tableau imbriqué : le motif décrit un préfixe, pas une longueur exacte.
 declare const packet: { items: ["text", string] | ["count", number] };
-const nested = DPattern.match(packet, { items: ["text"] }, (value) => {
-	type _CheckValue = DCommon.ExpectType<typeof value, { items: ["text", string] }, "strict">;
-	return value.items[1];
-});
-// Le préfixe text donne sa chaîne ; le paquet count reste non traité.
-type _CheckNested = DCommon.ExpectType<typeof nested, DPattern.PatternResult<string> | { items: ["count", number] }, "strict">;
+const nested = DCommon.pipe(
+	packet,
+	DPattern.match(
+		{ items: ["text"] },
+		(value) => {
+			type _CheckValue = DCommon.ExpectType<typeof value, { items: ["text", string] }, "strict">;
+			return value.items[1];
+		},
+	),
+	DPattern.match(
+		{ items: ["count"] },
+		(value) => value.items[1],
+	),
+	DPattern.exhaustive,
+);
+// Les deux préfixes imbriqués sont traités ; la sortie est le texte ou le nombre du tuple.
+type _CheckNested = DCommon.ExpectType<typeof nested, string | number, "strict">;
 
 // Motif predicate : une garantie peut remplacer un motif objet ou tableau.
 declare const scalar: string | number | null;
-const selected = DPattern.match(scalar, DCommon.isType("string"), DString.toUpperCase);
-// Les chaînes deviennent des résultats, number et null restent à traiter.
-type _CheckSelected = DCommon.ExpectType<typeof selected, DPattern.PatternResult<Uppercase<string>> | number | null, "strict">;
+const selected = DCommon.pipe(
+	scalar,
+	DPattern.match(
+		DCommon.isType("string"),
+		DString.toUpperCase,
+	),
+	DPattern.otherwise(
+		(value) => value,
+	),
+);
+// Les chaînes sont mises en majuscules ; number et null restent inchangés.
+type _CheckSelected = DCommon.ExpectType<typeof selected, Uppercase<string> | number | null, "strict">;
 
 // Le builder expose aussi when et whenNot pour composer les predicates.
 const byPredicates = DPattern.match(scalar)

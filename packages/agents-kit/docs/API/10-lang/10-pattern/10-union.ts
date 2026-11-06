@@ -4,7 +4,7 @@
  * Combiner plusieurs motifs en un seul motif correspondant à l’un d’eux.
  */
 import * as DPattern from "@duplojs/lang/pattern";
-import type * as DCommon from "@duplojs/lang/common";
+import * as DCommon from "@duplojs/lang/common";
 import * as DString from "@duplojs/lang/string";
 
 type Input = {
@@ -18,19 +18,30 @@ type Input = {
 	id: number;
 };
 declare const input: Input;
-const result = DPattern.when(input, DPattern.isMatch(DPattern.union({ kind: "draft" }, { kind: "published" })), (value) => value.id);
-// Draft et published partagent le traitement ; archived reste non traité.
-type _CheckResult = DCommon.ExpectType<typeof result, DPattern.PatternResult<number> | {
-	kind: "archived";
-	id: number;
-}, "strict">;
+const result = DCommon.pipe(
+	input,
+	DPattern.when(
+		DPattern.isMatch(DPattern.union({ kind: "draft" }, { kind: "published" })),
+		(value) => value.id,
+	),
+	DPattern.otherwise(
+		(value) => value.id,
+	),
+);
+// Draft, published et archived fournissent leur id numérique.
+type _CheckResult = DCommon.ExpectType<typeof result, number, "strict">;
 
 // Motifs de valeurs : union exprime un OU, y compris avec un predicate fourni.
 declare const status: "ready" | "draft" | "archived";
-const label = DPattern.match(
+const label = DCommon.pipe(
 	status,
-	DPattern.union("ready", DString.startsWith("draft")),
-	DString.toUpperCase,
+	DPattern.match(
+		DPattern.union("ready", DString.startsWith("draft")),
+		DString.toUpperCase,
+	),
+	DPattern.otherwise(
+		(value) => value,
+	),
 );
-// Ready et draft donnent leur majuscule ; archived reste à traiter.
-type _CheckLabel = DCommon.ExpectType<typeof label, DPattern.PatternResult<"READY" | "DRAFT"> | "archived", "strict">;
+// Ready et draft donnent leur majuscule ; archived reste inchangé.
+type _CheckLabel = DCommon.ExpectType<typeof label, "READY" | "DRAFT" | "archived", "strict">;

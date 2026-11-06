@@ -66,10 +66,6 @@ Router les tags explicitement traités et transmettre les variantes restantes au
 
 Traiter la valeur non reconnue restante ou déballer un résultat déjà traité.
 
-### [DPattern.result](10-result.ts)
-
-Marquer une valeur comme résultat traité par un motif pour la distinguer de l’entrée restante.
-
 ### [DPattern.union](10-union.ts)
 
 Combiner plusieurs motifs en un seul motif correspondant à l’un d’eux.

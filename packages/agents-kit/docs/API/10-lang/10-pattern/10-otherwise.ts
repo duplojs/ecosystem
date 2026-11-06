@@ -14,16 +14,15 @@ type Input = {
 	task: string;
 };
 declare const input: Input;
-const ready = DPattern.when(input, DPattern.isMatch({ kind: "ready" }), (value) => value.value);
-const output = DPattern.otherwise(ready, (remaining) => remaining.task);
+const output = DCommon.pipe(
+	input,
+	DPattern.when(
+		DPattern.isMatch({ kind: "ready" }),
+		(value) => value.value,
+	),
+	DPattern.otherwise(
+		(remaining) => remaining.task,
+	),
+);
 // La branche déjà traitée fournit un nombre ; pending fournit son identifiant de tâche.
 type _CheckOutput = DCommon.ExpectType<typeof output, number | string, "strict">;
-
-// En forme curifiée, otherwise s’insère après les étapes qui ont marqué une branche traitée.
-const piped = DCommon.pipe(
-	input,
-	DPattern.when(DPattern.isMatch({ kind: "ready" }), (value) => value.value),
-	DPattern.otherwise((remaining) => remaining.task),
-);
-// La forme curifiée produit la même union de nombre et de texte.
-type _CheckPiped = DCommon.ExpectType<typeof piped, number | string, "strict">;
