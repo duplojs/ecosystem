@@ -2,3 +2,4 @@ src/business/applications/**/*.ts
 src/infrastructure/adapters/**/*.ts
 src/infrastructure/useCases/**/*.ts
 src/infrastructure/http/routes/**/*.ts
+!src/infrastructure/http/routes/index.ts
