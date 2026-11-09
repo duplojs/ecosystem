@@ -91,6 +91,26 @@ export function taggedObject(
 	};
 }
 
+export function createTaggedObjectFactory<
+	GenericTaggedObject extends ObjectTag = never,
+>(
+	tag: (
+		& GetTagValue<GenericTaggedObject>
+		& DCommon.ForbiddenUnion<GenericTaggedObject>
+	),
+) {
+	return (
+		properties: DCommon.SimplifyTopLevel<
+			DKind.Remove<
+				GenericTaggedObject
+			>
+		>,
+	): GenericTaggedObject => ({
+		...properties,
+		[objectTagKind.runTimeKey]: tag,
+	}) as never;
+}
+
 export type RequireTaggedObjectSameShape<
 	GenericTaggedObject extends ObjectTag,
 	GenericTaggedObjectShape extends ShapeTaggedObjectStructure,
