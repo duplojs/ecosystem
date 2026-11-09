@@ -4,8 +4,6 @@ export * from "./colorized";
 export * from "./colorizedBold";
 export * from "./dash";
 export * from "./indent";
-export * from "./render";
 export * from "./renderLine";
 export * from "./renderParagraph";
-export * from "./tab";
 export type * from "./types";

@@ -28,8 +28,13 @@ const constraintLabel = (input: string) => DPrinter.colorized(input, "magenta");
 
 function renderInline(
 	input: readonly DPrinter.RenderInput[],
+	depth = 0,
 ) {
-	return DPrinter.render(input, "");
+	return DPrinter.renderLine(input, {
+		joinCharacter: "",
+		indent: DPrinter.Indent.tab,
+		indentLevel: depth,
+	});
 }
 
 function formatLiteral(value: unknown) {
@@ -461,7 +466,7 @@ function renderConstraintLines(
 ) {
 	return DArray.map(
 		constraints,
-		(constraint) => renderInline([DPrinter.indent(depth), secondary("↳ "), constraint]),
+		(constraint) => renderInline([secondary("↳ "), constraint], depth),
 	);
 }
 
@@ -470,7 +475,7 @@ function renderDescriptionLine(
 	depth: number,
 ) {
 	return description
-		? renderInline([DPrinter.indent(depth), secondary(description)])
+		? renderInline([secondary(description)], depth)
 		: null;
 }
 
@@ -507,7 +512,7 @@ function renderOptionDetails(
 
 		return DArray.filter(
 			[
-				renderInline([DPrinter.indent(depth), renderMetadata(help, option.required ? "required" : "optional")]),
+				renderInline([renderMetadata(help, option.required ? "required" : "optional")], depth),
 				...renderConstraintLines(help.constraints, depth),
 				renderDescriptionLine(option.description, depth),
 			],
@@ -518,7 +523,7 @@ function renderOptionDetails(
 	if (booleanOptionKind.has(option)) {
 		return DArray.filter(
 			[
-				renderInline([DPrinter.indent(depth), typeLabel("boolean")]),
+				renderInline([typeLabel("boolean")], depth),
 				renderDescriptionLine(option.description, depth),
 			],
 			DCommon.truthy,
@@ -533,11 +538,11 @@ export function renderOptionsHelp(
 	depth: number,
 ) {
 	return DPrinter.renderParagraph([
-		renderInline([DPrinter.indent(depth), section("OPTIONS", "magenta")]),
+		renderInline([section("OPTIONS", "magenta")], depth),
 		DArray.map(
 			options,
 			(option) => DPrinter.renderParagraph([
-				renderInline([DPrinter.indent(depth + 1), renderOptionSignature(option)]),
+				renderInline([renderOptionSignature(option)], depth + 1),
 				renderOptionDetails(option, depth + 2),
 			]),
 		),
@@ -549,7 +554,7 @@ export function renderArgumentsHelp(
 	depth: number,
 ) {
 	return DPrinter.renderParagraph([
-		renderInline([DPrinter.indent(depth), section("ARGUMENTS", "cyan")]),
+		renderInline([section("ARGUMENTS", "cyan")], depth),
 		DArray.map(
 			args,
 			(argument) => {
@@ -557,10 +562,9 @@ export function renderArgumentsHelp(
 
 				return DPrinter.renderParagraph([
 					renderInline([
-						DPrinter.indent(depth + 1),
 						name(argument.name.padEnd(12)),
 						renderMetadata(help, argument.optional ? "optional" : "required"),
-					]),
+					], depth + 1),
 					renderConstraintLines(help.constraints, depth + 2),
 					renderDescriptionLine(argument.description, depth + 2),
 				]);
@@ -574,14 +578,13 @@ function renderSubCommandsHelp(
 	depth: number,
 ) {
 	return DPrinter.renderParagraph([
-		renderInline([DPrinter.indent(depth), section("COMMANDS", "green")]),
+		renderInline([section("COMMANDS", "green")], depth),
 		DArray.map(
 			commands,
 			(command) => renderInline([
-				DPrinter.indent(depth + 1),
 				name(command.name.padEnd(16)),
 				command.description ? secondary(command.description) : null,
-			]),
+			], depth + 1),
 		),
 	]);
 }
@@ -593,11 +596,11 @@ export function renderCommandHelp(
 	return [
 		...DArray.filter(
 			[
-				renderInline([DPrinter.indent(depth), section("COMMAND", "green"), "  ", DPrinter.colorizedBold(command.name, "cyan")]),
+				renderInline([section("COMMAND", "green"), "  ", DPrinter.colorizedBold(command.name, "cyan")], depth),
 				renderDescriptionLine(command.description, depth + 1),
 				DPrinter.renderParagraph([
-					renderInline([DPrinter.indent(depth), section("USAGE", "blue")]),
-					renderInline([DPrinter.indent(depth + 1), syntax(renderUsage(command))]),
+					renderInline([section("USAGE", "blue")], depth),
+					renderInline([syntax(renderUsage(command))], depth + 1),
 				]),
 				command.subject?.type === "argument" ? renderArgumentsHelp(command.subject.args, depth) : null,
 				command.subject?.type === "subCommand" ? renderSubCommandsHelp(command.subject.subCommands, depth) : null,
@@ -624,7 +627,7 @@ export function renderExecOptionHelp(
 	depth: number,
 ) {
 	return [
-		renderInline([DPrinter.indent(depth), section("EXEC OPTIONS", "green")]),
+		renderInline([section("EXEC OPTIONS", "green")], depth),
 		renderOptionsHelp(options, depth),
 	];
 }

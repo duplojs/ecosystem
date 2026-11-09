@@ -1,21 +1,10 @@
 import type * as DCommon from "@scripts/common";
 import * as DPrinter from "@scripts/printer";
 
-describe("indent", () => {
-	it("returns repeated tabs for a finite positive level", () => {
-		const result = DPrinter.indent(2);
+describe("Indent", () => {
+	it("exposes tab and the four space widths", () => {
+		type _Check = DCommon.ExpectType<DPrinter.Indent, "tab" | "space1" | "space2" | "space3" | "space4", "strict">;
 
-		type _CheckResult = DCommon.ExpectType<
-			typeof result,
-			string,
-			"strict"
-		>;
-
-		expect(result).toBe("\t\t");
-	});
-
-	it("returns an empty string for invalid levels", () => {
-		expect(DPrinter.indent(-1)).toBe("");
-		expect(DPrinter.indent(Number.POSITIVE_INFINITY)).toBe("");
+		expect(DPrinter.Indent.toTuple()).toStrictEqual(["tab", "space1", "space2", "space3", "space4"]);
 	});
 });

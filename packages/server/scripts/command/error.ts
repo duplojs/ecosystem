@@ -285,9 +285,8 @@ export function interpretDataStructureError(
 	return DCommon.pipe(
 		dataStructureErrorInterpreter(error),
 		DArray.map(
-			({ interpretedMessage, path }) => DPrinter.render(
+			({ interpretedMessage, path }) => DPrinter.renderLine(
 				[
-					DPrinter.indent(1),
 					"↳ ",
 					DPrinter.colorizedBold(path || "<value>", "cyan"),
 					" : ",
@@ -300,7 +299,11 @@ export function interpretDataStructureError(
 						"red",
 					),
 				],
-				"",
+				{
+					joinCharacter: "",
+					indent: DPrinter.Indent.tab,
+					indentLevel: 1,
+				},
 			),
 		),
 	);
@@ -316,96 +319,144 @@ export function interpretErrorIssues(
 				issues,
 				DPattern.matchWithTaggedObject({
 					UnknownOptionIssue: ({ optionTokens }) => [
-						DPrinter.render(
+						DPrinter.renderLine(
 							[
-								DPrinter.indent(1),
 								DPrinter.colorizedBold("OPTION: ", "blue"),
 								DString.join(optionTokens, ", "),
 							],
-							"",
+							{
+								joinCharacter: "",
+								indent: DPrinter.Indent.tab,
+								indentLevel: 1,
+							},
 						),
-						`${DPrinter.indent(1)}↳ Unknown Option`,
+						DPrinter.renderLine(["↳ Unknown Option"], {
+							indent: DPrinter.Indent.tab,
+							indentLevel: 1,
+						}),
 					],
 					UnknownSubCommandIssue: ({ subCommandName }) => [
-						DPrinter.render(
+						DPrinter.renderLine(
 							[
-								DPrinter.indent(1),
 								DPrinter.colorizedBold("SUB-COMMAND: ", "cyan"),
 								subCommandName,
 							],
-							"",
+							{
+								joinCharacter: "",
+								indent: DPrinter.Indent.tab,
+								indentLevel: 1,
+							},
 						),
-						`${DPrinter.indent(1)}↳ Unknown Sub-command`,
+						DPrinter.renderLine(["↳ Unknown Sub-command"], {
+							indent: DPrinter.Indent.tab,
+							indentLevel: 1,
+						}),
 					],
 					DataStructureArgumentIssue: ({ argumentName, dataStructureError }) => [
-						DPrinter.render(
+						DPrinter.renderLine(
 							[
-								DPrinter.indent(1),
 								DPrinter.colorizedBold("ARGUMENT: ", "magenta"),
 								`--${argumentName}`,
 							],
-							"",
+							{
+								joinCharacter: "",
+								indent: DPrinter.Indent.tab,
+								indentLevel: 1,
+							},
 						),
 						interpretDataStructureError(dataStructureError, dataStructureErrorInterpreter),
 					],
 					RequiredArgumentIssue: ({ argumentName }) => [
-						DPrinter.render(
+						DPrinter.renderLine(
 							[
-								DPrinter.indent(1),
 								DPrinter.colorizedBold("ARGUMENT: ", "magenta"),
 								argumentName,
 							],
-							"",
+							{
+								joinCharacter: "",
+								indent: DPrinter.Indent.tab,
+								indentLevel: 1,
+							},
 						),
-						`${DPrinter.indent(1)}↳ Missing Argument`,
+						DPrinter.renderLine(["↳ Missing Argument"], {
+							indent: DPrinter.Indent.tab,
+							indentLevel: 1,
+						}),
 					],
 					DataStructureOptionIssue: ({ optionName, dataStructureError }) => [
-						DPrinter.render(
+						DPrinter.renderLine(
 							[
-								DPrinter.indent(1),
 								DPrinter.colorizedBold("OPTION: ", "blue"),
 								`--${optionName}`,
 							],
-							"",
+							{
+								joinCharacter: "",
+								indent: DPrinter.Indent.tab,
+								indentLevel: 1,
+							},
 						),
 						interpretDataStructureError(dataStructureError, dataStructureErrorInterpreter),
 					],
 					RequiredOptionIssue: ({ optionName }) => [
-						DPrinter.render(
+						DPrinter.renderLine(
 							[
-								DPrinter.indent(1),
 								DPrinter.colorizedBold("OPTION: ", "blue"),
 								`--${optionName}`,
 							],
-							"",
+							{
+								joinCharacter: "",
+								indent: DPrinter.Indent.tab,
+								indentLevel: 1,
+							},
 						),
-						`${DPrinter.indent(1)}↳ Missing Option`,
+						DPrinter.renderLine(["↳ Missing Option"], {
+							indent: DPrinter.Indent.tab,
+							indentLevel: 1,
+						}),
 					],
 					RequiredOptionValueIssue: ({ optionName }) => [
-						DPrinter.render(
+						DPrinter.renderLine(
 							[
-								DPrinter.indent(1),
 								DPrinter.colorizedBold("OPTION: ", "blue"),
 								`--${optionName}`,
 							],
-							"",
+							{
+								joinCharacter: "",
+								indent: DPrinter.Indent.tab,
+								indentLevel: 1,
+							},
 						),
-						`${DPrinter.indent(1)}↳ Missing Option Value`,
+						DPrinter.renderLine(["↳ Missing Option Value"], {
+							indent: DPrinter.Indent.tab,
+							indentLevel: 1,
+						}),
 					],
 					UnexpectedOptionValueIssue: ({ optionName }) => [
-						DPrinter.render(
+						DPrinter.renderLine(
 							[
-								DPrinter.indent(1),
 								DPrinter.colorizedBold("OPTION: ", "blue"),
 								`--${optionName}`,
 							],
-							"",
+							{
+								joinCharacter: "",
+								indent: DPrinter.Indent.tab,
+								indentLevel: 1,
+							},
 						),
-						`${DPrinter.indent(1)}↳ Unexpected Value At This Option`,
+						DPrinter.renderLine(["↳ Unexpected Value At This Option"], {
+							indent: DPrinter.Indent.tab,
+							indentLevel: 1,
+						}),
 					],
 					TooMuchCommandArgumentIssue: ({ expect, receive }) => [
-						`${DPrinter.indent(1)} Too Much Arguments`,
-						`${DPrinter.indent(1)} expect: ${expect} receive: ${receive}`,
+						DPrinter.renderLine([" Too Much Arguments"], {
+							indent: DPrinter.Indent.tab,
+							indentLevel: 1,
+						}),
+						DPrinter.renderLine([` expect: ${expect} receive: ${receive}`], {
+							indent: DPrinter.Indent.tab,
+							indentLevel: 1,
+						}),
 					],
 				}),
 			),
@@ -425,15 +476,17 @@ export function interpretExecCommandError(
 ): string {
 	return DPrinter.renderParagraph(
 		[
-			DPrinter.render(
+			DPrinter.colorizedBold("Command failed", "red"),
+			DPrinter.renderLine(
 				[
-					DPrinter.colorizedBold("Command failed", "red"),
-					DPrinter.back,
-					DPrinter.indent(1),
 					DPrinter.colorizedBold("COMMAND: ", "cyan"),
 					DString.join(error.currentPath, " "),
 				],
-				"",
+				{
+					joinCharacter: "",
+					indent: DPrinter.Indent.tab,
+					indentLevel: 1,
+				},
 			),
 			interpretErrorIssues(error.issues, dataStructureErrorInterpreter ?? defaultDataStructureErrorInterpreter),
 		],
@@ -447,7 +500,7 @@ export function interpretExecOptionsError(
 	return DPrinter.renderParagraph(
 		[
 			DPrinter.colorizedBold("Invalid options", "red"),
-			DPrinter.back,
+			["", ""],
 			interpretErrorIssues(error.issues, dataStructureErrorInterpreter ?? defaultDataStructureErrorInterpreter),
 		],
 	);

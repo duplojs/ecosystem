@@ -1,11 +1,5 @@
-import { tab } from "./tab";
+import * as DCommon from "@scripts/common";
 
-export function indent(level: number): string;
+export const Indent = DCommon.createEnum(["tab", "space1", "space2", "space3", "space4"]);
 
-export function indent(level: number) {
-	if (level < 0 || !Number.isFinite(level)) {
-		return "";
-	}
-
-	return tab.repeat(level);
-}
+export type Indent = DCommon.GetEnumValue<typeof Indent>;
