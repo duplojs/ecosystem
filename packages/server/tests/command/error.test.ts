@@ -1,3 +1,5 @@
+import { stripVTControlCharacters } from "node:util";
+import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
@@ -119,15 +121,7 @@ describe("error", () => {
 		const result = DSCommand.interpretDataStructureError(dataStructureError, dataStructureErrorInterpreter);
 
 		expect(dataStructureErrorInterpreter).toHaveBeenCalledWith(dataStructureError);
-		expect(result).toHaveLength(5);
-		expect(result[0]).toContain("value");
-		expect(result[0]).toContain("sub source");
-		expect(result[1]).toContain("nested");
-		expect(result[1]).toContain("interpreted sub source");
-		expect(result[2]).toContain("source");
-		expect(result[3]).toContain("<value>");
-		expect(result[3]).toContain("interpreted source");
-		expect(result[4]).toContain("unknown data structure error.");
+		expect(DArray.map(result, stripVTControlCharacters)).toMatchSnapshot();
 	});
 
 	it("renders all command issue kinds", () => {
@@ -155,22 +149,7 @@ describe("error", () => {
 		const result = DSCommand.interpretErrorIssues(error.issues, dataStructureErrorInterpreter);
 
 		expect(dataStructureErrorInterpreter).toHaveBeenCalledTimes(2);
-		expect(result).toContain("ARGUMENT:");
-		expect(result).toContain("--id");
-		expect(result).toContain("Missing Argument");
-		expect(result).toContain("OPTION:");
-		expect(result).toContain("--count");
-		expect(result).toContain("Missing Option");
-		expect(result).toContain("Missing Option Value");
-		expect(result).toContain("Unexpected Value At This Option");
-		expect(result).toContain("Too Much Arguments");
-		expect(result).toContain("expect: 1 receive: 2");
-		expect(result).toContain("Unknown Option");
-		expect(result).toContain("--prot, --hots=localhost, -x");
-		expect(result).toContain("SUB-COMMAND:");
-		expect(result).toContain("Unknown Sub-command");
-		expect(result).toContain("chlid");
-		expect(result).toContain("invalid value");
+		expect(stripVTControlCharacters(result)).toMatchSnapshot();
 	});
 
 	it("renders a message when no issue exists", () => {
@@ -179,7 +158,7 @@ describe("error", () => {
 			vi.fn().mockReturnValue([]),
 		);
 
-		expect(result).toContain("No issue found");
+		expect(stripVTControlCharacters(result)).toMatchSnapshot();
 	});
 
 	it("renders command execution errors with the default interpreter", () => {
@@ -202,11 +181,7 @@ describe("error", () => {
 
 		const result = DSCommand.interpretExecCommandError(error);
 
-		expect(result).toContain("Command failed");
-		expect(result).toContain("COMMAND:");
-		expect(result).toContain("root child");
-		expect(result).toContain("ARGUMENT:");
-		expect(result).toContain("Expected a finite number.");
+		expect(stripVTControlCharacters(result)).toMatchSnapshot();
 	});
 
 	it("renders command execution errors with a custom interpreter", () => {
@@ -226,7 +201,7 @@ describe("error", () => {
 		const result = DSCommand.interpretExecCommandError(error, dataStructureErrorInterpreter);
 
 		expect(dataStructureErrorInterpreter).toHaveBeenCalledWith(dataStructureError);
-		expect(result).toContain("custom command error");
+		expect(stripVTControlCharacters(result)).toMatchSnapshot();
 	});
 
 	it("renders options execution errors with the default interpreter", () => {
@@ -236,10 +211,7 @@ describe("error", () => {
 
 		const result = DSCommand.interpretExecOptionsError(error);
 
-		expect(result).toContain("Invalid options");
-		expect(result).toContain("OPTION:");
-		expect(result).toContain("--token");
-		expect(result).toContain("Missing Option");
+		expect(stripVTControlCharacters(result)).toMatchSnapshot();
 	});
 
 	it("renders options execution errors with a custom interpreter", () => {
@@ -259,7 +231,6 @@ describe("error", () => {
 		const result = DSCommand.interpretExecOptionsError(error, dataStructureErrorInterpreter);
 
 		expect(dataStructureErrorInterpreter).toHaveBeenCalledWith(dataStructureError);
-		expect(result).toContain("Invalid options");
-		expect(result).toContain("custom option error");
+		expect(stripVTControlCharacters(result)).toMatchSnapshot();
 	});
 });

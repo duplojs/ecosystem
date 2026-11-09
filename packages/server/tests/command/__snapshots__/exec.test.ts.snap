@@ -1,0 +1,24 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`exec > logs interpreted command errors and returns them 1`] = `
+"Command failed
+	COMMAND: read
+	ARGUMENT: --id
+	↳ <value> : Expected a string representing a number for the string number codec."
+`;
+
+exports[`exec > returns and logs all option errors in a single command failure 1`] = `
+"Command failed
+	COMMAND: read
+	OPTION: --name
+	↳ Missing Option
+	OPTION: --count
+	↳ Missing Option"
+`;
+
+exports[`exec > uses the custom data structure error interpreter 1`] = `
+"Command failed
+	COMMAND: root
+	ARGUMENT: --id
+	↳ <value> : custom message"
+`;

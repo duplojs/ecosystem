@@ -1,0 +1,32 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`execOptions > logs malformed help option errors and returns them 1`] = `
+"Invalid options
+
+
+	OPTION: --help
+	↳ Unexpected Value At This Option"
+`;
+
+exports[`execOptions > logs option help and returns a log-help right 1`] = `
+"EXEC OPTIONS
+OPTIONS
+	--verbose
+		boolean"
+`;
+
+exports[`execOptions > logs option parsing errors and returns them 1`] = `
+"Invalid options
+
+
+	OPTION: --count
+	↳ <value> : Expected a string representing a number for the string number codec."
+`;
+
+exports[`execOptions > uses the custom data structure error interpreter 1`] = `
+"Invalid options
+
+
+	OPTION: --count
+	↳ <value> : custom option message"
+`;

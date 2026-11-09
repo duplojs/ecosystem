@@ -1,3 +1,4 @@
+import { stripVTControlCharacters } from "node:util";
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
@@ -99,7 +100,7 @@ describe("command feature on bun", () => {
 				path: "read",
 			}),
 		]);
-		expect(String(consoleErrorSpy.mock.calls[0]?.[0])).toContain("Command failed");
+		expect(stripVTControlCharacters(String(consoleErrorSpy.mock.calls[0]?.[0]))).toContain("Command failed");
 	});
 
 	it("prints command help without executing the command", async() => {
@@ -120,9 +121,11 @@ describe("command feature on bun", () => {
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(executeSpy).not.toHaveBeenCalled();
-		expect(String(consoleLogSpy.mock.calls[0]?.[0])).toContain("COMMAND");
-		expect(String(consoleLogSpy.mock.calls[0]?.[0])).toContain("cli");
-		expect(String(consoleLogSpy.mock.calls[0]?.[0])).toContain("--");
-		expect(String(consoleLogSpy.mock.calls[0]?.[0])).toContain("verbose");
+		const output = stripVTControlCharacters(String(consoleLogSpy.mock.calls[0]?.[0]));
+
+		expect(output).toContain("COMMAND");
+		expect(output).toContain("cli");
+		expect(output).toContain("--");
+		expect(output).toContain("verbose");
 	});
 });

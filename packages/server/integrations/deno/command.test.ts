@@ -1,4 +1,6 @@
+import { stripVTControlCharacters } from "node:util";
 import * as DCommon from "@duplojs/lang/common";
+import * as DString from "@duplojs/lang/string";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import { TESTImplementation, setEnvironment } from "@duplojs/server";
@@ -118,9 +120,11 @@ void describe("command feature on deno", () => {
 
 		assert.equal(executeCalled, false);
 		assert.equal(DEither.unwrapLeft(result).issues.length, 1);
-		assert.equal(consoleErrorOutput.includes("Command failed"), true);
-		assert.equal(consoleErrorOutput.includes("--id"), true);
-		assert.equal(consoleErrorOutput.includes("number"), true);
+		const output = stripVTControlCharacters(consoleErrorOutput);
+
+		assert.equal(DString.includes(output, "Command failed"), true);
+		assert.equal(DString.includes(output, "--id"), true);
+		assert.equal(DString.includes(output, "number"), true);
 	});
 
 	void it("prints command help without executing the command", async() => {
@@ -141,9 +145,11 @@ void describe("command feature on deno", () => {
 
 		assert.equal(DEither.isRight(result), true);
 		assert.equal(executeCalled, false);
-		assert.equal(consoleLogOutput.includes("COMMAND"), true);
-		assert.equal(consoleLogOutput.includes("cli"), true);
-		assert.equal(consoleLogOutput.includes("--"), true);
-		assert.equal(consoleLogOutput.includes("verbose"), true);
+		const output = stripVTControlCharacters(consoleLogOutput);
+
+		assert.equal(DString.includes(output, "COMMAND"), true);
+		assert.equal(DString.includes(output, "cli"), true);
+		assert.equal(DString.includes(output, "--"), true);
+		assert.equal(DString.includes(output, "verbose"), true);
 	});
 });

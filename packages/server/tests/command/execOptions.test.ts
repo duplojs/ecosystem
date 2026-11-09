@@ -1,3 +1,4 @@
+import { stripVTControlCharacters } from "node:util";
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
@@ -108,8 +109,7 @@ describe("execOptions", () => {
 		expect(DEither.isRight(result)).toBe(true);
 		expect(DEither.unwrapRight(result)).toBeUndefined();
 		expect(consoleLogSpy).toHaveBeenCalledTimes(1);
-		expect(String(consoleLogSpy.mock.calls[0]?.[0])).toContain("EXEC OPTIONS");
-		expect(String(consoleLogSpy.mock.calls[0]?.[0])).toContain("verbose");
+		expect(stripVTControlCharacters(String(consoleLogSpy.mock.calls[0]?.[0]))).toMatchSnapshot();
 	});
 
 	it("logs malformed help option errors and returns them", async() => {
@@ -132,7 +132,7 @@ describe("execOptions", () => {
 			}),
 		]);
 		expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
-		expect(String(consoleErrorSpy.mock.calls[0]?.[0])).toContain("Invalid options");
+		expect(stripVTControlCharacters(String(consoleErrorSpy.mock.calls[0]?.[0]))).toMatchSnapshot();
 	});
 
 	it("logs option parsing errors and returns them", async() => {
@@ -155,7 +155,7 @@ describe("execOptions", () => {
 			}),
 		]);
 		expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
-		expect(String(consoleErrorSpy.mock.calls[0]?.[0])).toContain("Invalid options");
+		expect(stripVTControlCharacters(String(consoleErrorSpy.mock.calls[0]?.[0]))).toMatchSnapshot();
 	});
 
 	it("uses the custom data structure error interpreter", async() => {
@@ -182,7 +182,7 @@ describe("execOptions", () => {
 		}
 
 		expect(dataStructureErrorInterpreter).toHaveBeenCalledTimes(1);
-		expect(String(consoleErrorSpy.mock.calls[0]?.[0])).toContain("custom option message");
+		expect(stripVTControlCharacters(String(consoleErrorSpy.mock.calls[0]?.[0]))).toMatchSnapshot();
 	});
 
 	it("forbids duplicate option names", async() => {

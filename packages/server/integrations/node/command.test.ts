@@ -1,13 +1,11 @@
 import assert from "node:assert/strict";
 import { afterEach, describe, it, mock } from "node:test";
+import { stripVTControlCharacters } from "node:util";
 import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import { TESTImplementation, setEnvironment } from "@duplojs/server";
 import * as DSCommand from "@duplojs/server/command";
-
-const escapeCode = String.fromCharCode(27);
-const ansiEscapeCodePattern = new RegExp(`${escapeCode}\\[[0-9;]*m`, "g");
 
 void describe("command feature on node", () => {
 	afterEach(() => {
@@ -107,10 +105,10 @@ void describe("command feature on node", () => {
 			path: "read",
 		});
 		assert.equal(
-			String(consoleErrorSpy.mock.calls[0]?.arguments[0])
-				.replace(ansiEscapeCodePattern, ""),
+			stripVTControlCharacters(String(consoleErrorSpy.mock.calls[0]?.arguments[0])),
 			[
-				"Command failed\tCOMMAND: read",
+				"Command failed",
+				"\tCOMMAND: read",
 				"\tARGUMENT: --id",
 				"\t↳ <value> : Expected a string representing a number for the string number codec.",
 			].join("\n"),
@@ -165,8 +163,7 @@ void describe("command feature on node", () => {
 		assert.equal(DEither.isRight(result), true);
 		assert.equal(executeSpy.mock.callCount(), 0);
 		assert.equal(
-			String(consoleLogSpy.mock.calls[0]?.arguments[0])
-				.replace(ansiEscapeCodePattern, ""),
+			stripVTControlCharacters(String(consoleLogSpy.mock.calls[0]?.arguments[0])),
 			[
 				"COMMAND  cli",
 				"\tIntegration command.",

@@ -1,3 +1,4 @@
+import { stripVTControlCharacters } from "node:util";
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
@@ -110,9 +111,7 @@ describe("exec", () => {
 		]);
 		expect(getProcessArgumentsSpy).toHaveBeenCalledTimes(1);
 		expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
-		expect(String(consoleErrorSpy.mock.calls[0]?.[0])).toContain("Command failed");
-		expect(String(consoleErrorSpy.mock.calls[0]?.[0])).toContain("COMMAND:");
-		expect(String(consoleErrorSpy.mock.calls[0]?.[0])).toContain("read");
+		expect(stripVTControlCharacters(String(consoleErrorSpy.mock.calls[0]?.[0]))).toMatchSnapshot();
 	});
 
 	it("returns and logs all option errors in a single command failure", async() => {
@@ -141,8 +140,7 @@ describe("exec", () => {
 			}),
 		]);
 		expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
-		expect(String(consoleErrorSpy.mock.calls[0]?.[0])).toContain("--name");
-		expect(String(consoleErrorSpy.mock.calls[0]?.[0])).toContain("--count");
+		expect(stripVTControlCharacters(String(consoleErrorSpy.mock.calls[0]?.[0]))).toMatchSnapshot();
 		expect(executeSpy).not.toHaveBeenCalled();
 	});
 
@@ -173,6 +171,6 @@ describe("exec", () => {
 		}
 
 		expect(dataStructureErrorInterpreter).toHaveBeenCalledTimes(1);
-		expect(String(consoleErrorSpy.mock.calls[0]?.[0])).toContain("custom message");
+		expect(stripVTControlCharacters(String(consoleErrorSpy.mock.calls[0]?.[0]))).toMatchSnapshot();
 	});
 });

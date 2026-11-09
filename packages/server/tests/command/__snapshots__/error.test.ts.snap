@@ -1,0 +1,64 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`error > interprets data structure errors with message priority and fallback 1`] = `
+[
+  "	↳ value : sub source",
+  "	↳ nested : interpreted sub source",
+  "	↳ source : source",
+  "	↳ <value> : interpreted source",
+  "	↳ <value> : unknown data structure error.",
+]
+`;
+
+exports[`error > renders a message when no issue exists 1`] = `"No issue found"`;
+
+exports[`error > renders all command issue kinds 1`] = `
+"	ARGUMENT: --id
+	↳ <value> : invalid value
+	ARGUMENT: name
+	↳ Missing Argument
+	OPTION: --count
+	↳ <value> : invalid value
+	OPTION: --token
+	↳ Missing Option
+	OPTION: --config
+	↳ Missing Option Value
+	OPTION: --verbose
+	↳ Unexpected Value At This Option
+	 Too Much Arguments
+	 expect: 1 receive: 2
+	OPTION: --prot, --hots=localhost, -x
+	↳ Unknown Option
+	SUB-COMMAND: chlid
+	↳ Unknown Sub-command"
+`;
+
+exports[`error > renders command execution errors with a custom interpreter 1`] = `
+"Command failed
+	COMMAND: root
+	ARGUMENT: --id
+	↳ <value> : custom command error"
+`;
+
+exports[`error > renders command execution errors with the default interpreter 1`] = `
+"Command failed
+	COMMAND: root child
+	ARGUMENT: --id
+	↳ <value> : Expected a finite number."
+`;
+
+exports[`error > renders options execution errors with a custom interpreter 1`] = `
+"Invalid options
+
+
+	OPTION: --count
+	↳ <value> : custom option error"
+`;
+
+exports[`error > renders options execution errors with the default interpreter 1`] = `
+"Invalid options
+
+
+	OPTION: --token
+	↳ Missing Option"
+`;
