@@ -2,7 +2,7 @@ import { type Path, type Segment } from "./constraints";
 import { type RequireLiteralSegmentPath } from "./types";
 
 export function declareSegment<
-	GenericValue extends string,
+	const GenericValue extends string,
 >(
 	value: (
 		& GenericValue

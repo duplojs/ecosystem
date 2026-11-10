@@ -2,7 +2,7 @@ import { type Path } from "./constraints";
 import { type RequireLiteralPath } from "./types";
 
 export function declarePath<
-	GenericValue extends string,
+	const GenericValue extends string,
 >(
 	value: (
 		& GenericValue
