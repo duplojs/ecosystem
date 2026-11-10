@@ -1,52 +1,55 @@
-import * as DCommon from "@scripts/common";
-
-type DiscriminateValue<
-	GenericInput extends object,
-	GenericKey extends keyof GenericInput,
-> = Extract<GenericInput[GenericKey], DCommon.EligibleEqual>;
+import type * as DCommon from "@scripts/common";
 
 export function discriminate<
 	GenericInput extends object,
 	GenericKey extends keyof GenericInput,
-	GenericValue extends DiscriminateValue<GenericInput, GenericKey>,
+	GenericPredicatedValue extends GenericInput[GenericKey],
 >(
 	key: GenericKey,
-	value: DCommon.MaybeArray<GenericValue>,
+	predicate: (value: GenericInput[GenericKey]) => value is GenericPredicatedValue,
 ): (
 	input: GenericInput,
-) => input is Extract<
-	GenericInput,
-	{ [Prop in GenericKey]: GenericValue }
->;
+) => input is GenericInput & { [Prop in GenericKey]: GenericPredicatedValue };
 
 export function discriminate<
 	GenericInput extends object,
 	GenericKey extends keyof GenericInput,
-	GenericValue extends DiscriminateValue<GenericInput, GenericKey>,
+>(
+	key: GenericKey,
+	predicate: (value: GenericInput[GenericKey]) => boolean,
+): (input: GenericInput) => boolean;
+
+export function discriminate<
+	GenericInput extends object,
+	GenericKey extends keyof GenericInput,
+	GenericPredicatedValue extends GenericInput[GenericKey],
 >(
 	input: GenericInput,
 	key: GenericKey,
-	value: DCommon.MaybeArray<GenericValue>,
-): input is Extract<
-	GenericInput,
-	{ [Prop in GenericKey]: GenericValue }
->;
+	predicate: (value: GenericInput[GenericKey]) => value is GenericPredicatedValue,
+): input is GenericInput & { [Prop in GenericKey]: GenericPredicatedValue };
+
+export function discriminate<
+	GenericInput extends object,
+	GenericKey extends keyof GenericInput,
+>(
+	input: GenericInput,
+	key: GenericKey,
+	predicate: (value: GenericInput[GenericKey]) => boolean,
+): boolean;
 
 export function discriminate(
 	...args:
-		| [key: DCommon.ObjectKey, value: DCommon.MaybeArray<DCommon.EligibleEqual>]
-		| [input: object, key: DCommon.ObjectKey, value: DCommon.MaybeArray<DCommon.EligibleEqual>]
+		| [key: DCommon.ObjectKey, predicate: DCommon.AnyFunction]
+		| [input: object, key: DCommon.ObjectKey, predicate: DCommon.AnyFunction]
 ) {
 	if (args.length === 2) {
-		const [key, value] = args;
+		const [key, predicate] = args;
 
-		return (input: object) => discriminate(input, key as never, value as never);
+		return (input: object) => discriminate(input, key as never, predicate as never);
 	}
 
-	const [input, key, value] = args;
+	const [input, key, predicate] = args;
 
-	return DCommon.equal(
-		(input as DCommon.AnyObject)[key],
-		value as never,
-	);
+	return predicate((input as DCommon.AnyObject)[key]);
 }

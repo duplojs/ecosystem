@@ -10,17 +10,13 @@ Fusionner les propriétés d’un objet dans une nouvelle valeur.
 
 Compter les clés runtime d’un objet.
  
-### [DObject.deepDiscriminate](10-deepDiscriminate.ts)
-
-Discriminer une union d’objets à partir d’une propriété imbriquée.
- 
 ### [DObject.deepOverride](10-deepOverride.ts)
 
 Remplacer récursivement les valeurs définies d’un objet sans modifier la source.
  
 ### [DObject.discriminate](10-discriminate.ts)
 
-Discriminer une union d’objets à partir d’une propriété.
+Tester une propriété avec un predicate et affiner l’objet par intersection.
  
 ### [DObject.discriminateEntryKey](10-discriminateEntryKey.ts)
 
