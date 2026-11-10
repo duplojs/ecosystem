@@ -3,6 +3,8 @@ import type * as DCommon from "@scripts/common";
 import type * as DDataStructure from "@scripts/dataStructure";
 import type * as DObject from "@scripts/object";
 import { type ExtractByTagValue, type GetTagValue, objectTagKind, type ShapeTaggedObjectStructure, TaggedObjectStructure, type ObjectTag } from "./base";
+import * as DString from "@scripts/string";
+import * as DArray from "@scripts/array";
 
 export function getTagValue<
 	GenericObjectTag extends ObjectTag,
@@ -59,6 +61,87 @@ export function hasTagValue(
 	return Array.isArray(value)
 		? value.includes(tagValue)
 		: tagValue === value;
+}
+
+type ComputeGroups<
+	GenericGroups extends readonly string[],
+> = GenericGroups extends readonly []
+	? ""
+	: GenericGroups extends readonly [
+		infer InferredFirst extends string,
+		...infer InferredRest extends readonly string[],
+	]
+		? `[${InferredFirst}]${ComputeGroups<InferredRest>}`
+		: string;
+
+export interface ObjectTagWithGroups<
+	GenericGroups extends readonly string[] = readonly [],
+	GenericValue extends string = string,
+> extends DKind.Kind<
+	typeof objectTagKind,
+	`${ComputeGroups<GenericGroups>}:${GenericValue}`
+	> {
+
+}
+
+export function createTagNameWithGroup<
+	GenericName extends string,
+	const GenericGroups extends readonly string[],
+>(
+	name: GenericName,
+	groups: GenericGroups,
+): `${ComputeGroups<GenericGroups>}:${GenericName}` {
+	const formattedGroups = DArray.map(groups, (group) => `[${group}]`);
+
+	return `${DString.join(formattedGroups, "")}:${name}` as never;
+}
+
+type ExtractTagGroups<
+	GenericTagValue extends string,
+> = string extends GenericTagValue
+	? string
+	: GenericTagValue extends `${string}[${infer InferredGroup}]${infer InferredRest}`
+		? InferredGroup | ExtractTagGroups<InferredRest>
+		: never;
+
+export function hasTagGroup<
+	GenericInput extends ObjectTag,
+	GenericGroup extends ExtractTagGroups<GetTagValue<GenericInput>>,
+>(
+	group: DCommon.MaybeArray<GenericGroup>,
+): (input: GenericInput) => input is Extract<
+	GenericInput,
+	ObjectTag<`${string}[${GenericGroup}]${string}`>
+>;
+
+export function hasTagGroup<
+	GenericInput extends ObjectTag,
+	GenericGroup extends ExtractTagGroups<GetTagValue<GenericInput>>,
+>(
+	input: GenericInput,
+	group: DCommon.MaybeArray<GenericGroup>,
+): input is Extract<
+	GenericInput,
+	ObjectTag<`${string}[${GenericGroup}]${string}`>
+>;
+
+export function hasTagGroup(
+	...args:
+		| [group: DCommon.MaybeArray<string>]
+		| [input: ObjectTag, group: DCommon.MaybeArray<string>]
+): any {
+	if (args.length === 1) {
+		const [group] = args;
+
+		return (input: ObjectTag) => hasTagGroup(input, group);
+	}
+
+	const [input, group] = args;
+	const tagValue = getTagValue(input);
+
+	return DArray.is(group)
+		? DArray.some(group, (value) => DString.includes(tagValue, `[${value}]`))
+		: DString.includes(tagValue, `[${group}]`);
 }
 
 export function taggedObject<
