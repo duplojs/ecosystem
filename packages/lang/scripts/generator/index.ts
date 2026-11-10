@@ -4,6 +4,8 @@ export * from "./kind";
 export * from "./execute";
 export * from "./loop";
 export * from "./asyncLoop";
+export * from "./loopAccumulator";
+export * from "./asyncLoopAccumulator";
 export * from "./map";
 export * from "./asyncMap";
 export * from "./filter";

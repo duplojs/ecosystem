@@ -13,7 +13,11 @@ Pour un autre itérable, utiliser `DGenerator.reduce`. `DGenerator.asyncReduce` 
 
 ## Répéter jusqu'à une condition
 
-`DCommon.loop` fournit `count` depuis zéro et `previousOutput`, initialement `undefined`, puis égal au dernier `next`. Initialiser l'état au premier appel ; `exit` donne le résultat final. Les génériques décrivent sortie puis état intermédiaire. `DCommon.asyncLoop` attend les étapes asynchrones.
+`DCommon.loop` fournit `count` depuis zéro. `next()` continue et `exit(valeur)` retourne le résultat final. La donnée optionnelle de `next` n'est pas transmise au tour suivant ; utiliser `DCommon.loopAccumulator(initial, callback)` lorsque les tours doivent partager un état. Sa callback reçoit `accumulator`, `count`, `next(nouvelAccumulateur)` et `exit(résultat)`. `DCommon.asyncLoop` et `DCommon.asyncLoopAccumulator` offrent les mêmes comportements en attendant la callback asynchrone.
+
+`DGenerator.loop(callback)` produit une séquence : chaque `next(...valeurs)` émet les valeurs définies et poursuit la boucle ; `exit(...valeurs)` émet sa dernière séquence puis termine. La callback reçoit `count`, pas la valeur du tour précédent. `DGenerator.asyncLoop` attend les callbacks et résout les valeurs promises avant de les émettre.
+
+Les variantes `DGenerator.loopAccumulator(initial, callback)` et `DGenerator.asyncLoopAccumulator(initial, callback)` font circuler un accumulateur avec `next(nouvelAccumulateur, ...valeursÀÉmettre)`. `exit(...valeursÀÉmettre)` termine en émettant les dernières valeurs. Utiliser `DGenerator.loopAccumulatorFrom<Type>(valeur)` pour préserver un type d'accumulateur structuré ou une union.
 
 Conserver la condition avant le traitement d'un `while`, après celui d'un `do...while`. Pour une répétition par compteur, utiliser aussi `loop`, sans fabriquer un tableau.
 

@@ -2,16 +2,16 @@
 import * as DCommon from "@scripts/common";
 
 describe("loop", () => {
-	it("loops until exit and forwards the previous output", () => {
-		const visited: unknown[] = [];
+	it("loops until exit", () => {
+		const visited: number[] = [];
 		const result = DCommon.loop<string, number>((params) => {
-			visited.push(params.previousOutput);
+			visited.push(params.count);
 
 			if (params.count === 3) {
-				return params.exit(`done-${params.previousOutput}`);
+				return params.exit(`done-${params.count}`);
 			}
 
-			return params.next((params.previousOutput ?? 0) + 1);
+			return params.next(params.count + 1);
 		});
 
 		type _CheckResult = DCommon.ExpectType<
@@ -21,6 +21,6 @@ describe("loop", () => {
 		>;
 
 		expect(result).toBe("done-3");
-		expect(visited).toStrictEqual([undefined, 1, 2, 3]);
+		expect(visited).toStrictEqual([0, 1, 2, 3]);
 	});
 });

@@ -1,75 +1,71 @@
-import type * as DCommon from "@scripts/common";
 
 export interface LoopOutputExistResult<
 	GenericOutput extends unknown = unknown,
 > {
-	"-exitData": GenericOutput;
+	"-exitData": readonly GenericOutput[];
 }
 
 export interface LoopOutputNextResult<
 	GenericOutput extends unknown = unknown,
 > {
-	"-nextData": GenericOutput;
+	"-nextData": readonly GenericOutput[];
 }
 
 export interface LoopParams<
-	GenericRawNextOutput extends any,
+	GenericRawNextOutput extends unknown,
 > {
 	count: number;
-	previousOutput: GenericRawNextOutput | undefined;
-	next<
-		GenericValue extends GenericRawNextOutput | undefined = undefined,
-	>(
-		output?: GenericValue
-	): LoopOutputNextResult<GenericValue>;
-	exit<
-		GenericOutput extends DCommon.AnyValue = undefined,
-	>(
-		output?: GenericOutput
-	): LoopOutputExistResult<GenericOutput>;
+	next<const GenericOutputs extends readonly (GenericRawNextOutput | undefined)[]>(
+		...outputs: GenericOutputs
+	): LoopOutputNextResult<GenericOutputs[number]>;
+	exit<const GenericOutputs extends readonly (GenericRawNextOutput | undefined)[]>(
+		...outputs: GenericOutputs
+	): LoopOutputExistResult<GenericOutputs[number]>;
 }
 
-export function *loop<
-	GenericRawExitOutput extends DCommon.AnyValue = undefined,
-	GenericRawNextOutput extends DCommon.AnyValue = undefined,
->(
-	loop: (
-		params: LoopParams<GenericRawNextOutput>,
-	) => (
-		| LoopOutputNextResult<GenericRawNextOutput>
-		| LoopOutputNextResult<undefined>
-		| LoopOutputExistResult<GenericRawExitOutput>
-		| LoopOutputExistResult<undefined>
-	),
-): Generator<
-	Exclude<
-		GenericRawExitOutput | GenericRawNextOutput,
-		undefined
-	>,
-	unknown,
-	unknown
-> {
-	let previousOutput: any = undefined;
+export type LoopResult<
+	GenericOutput extends unknown = unknown,
+> = LoopOutputNextResult<GenericOutput> | LoopOutputExistResult<GenericOutput>;
 
+export type LoopOutputValue<
+	GenericResult extends unknown,
+> = GenericResult extends (
+	| LoopOutputNextResult<infer InferredOutput>
+	| LoopOutputExistResult<infer InferredOutput>
+)
+	? InferredOutput
+	: never;
+
+export function loop<
+	GenericRawNextOutput extends unknown,
+	GenericResult extends LoopResult<GenericRawNextOutput | undefined>,
+>(
+	loop: (params: LoopParams<GenericRawNextOutput>) => GenericResult,
+): Generator<Exclude<LoopOutputValue<GenericResult>, undefined>, unknown, unknown>;
+
+export function *loop(
+	loop: (params: LoopParams<unknown>) => LoopResult,
+): Generator<unknown, unknown, unknown> {
 	for (let count = 0; true; count++) {
 		const result = loop({
-			previousOutput,
 			count,
-			next: (data) => ({ "-nextData": data as any }),
-			exit: (data) => ({ "-exitData": data as any }),
+			next: (...outputs) => ({ "-nextData": outputs }),
+			exit: (...outputs) => ({ "-exitData": outputs }),
 		});
 
 		if ("-exitData" in result) {
-			if (result["-exitData"] !== undefined) {
-				yield result["-exitData"] as never;
+			for (const output of result["-exitData"]) {
+				if (output !== undefined) {
+					yield output;
+				}
 			}
 			break;
 		}
 
-		previousOutput = result["-nextData"];
-
-		if (previousOutput !== undefined) {
-			yield previousOutput;
+		for (const output of result["-nextData"]) {
+			if (output !== undefined) {
+				yield output;
+			}
 		}
 	}
 

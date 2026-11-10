@@ -16,7 +16,11 @@ Construire une fonction qui enchaîne des opérations synchrones ou asynchrones.
  
 ### [DCommon.asyncLoop](10-asyncLoop.ts)
 
-Contrôler une boucle asynchrone avec un compteur et une sortie typée.
+Répéter une callback asynchrone jusqu’à `exit`, avec un compteur et une valeur de retour typée.
+ 
+### [DCommon.asyncLoopAccumulator](10-asyncLoopAccumulator.ts)
+
+Répéter une callback asynchrone en faisant circuler un accumulateur et retourner la valeur de `exit`.
  
 ### [DCommon.asyncPipe](10-asyncPipe.ts)
 
@@ -120,7 +124,15 @@ Fournir une valeur déjà calculée à une étape de pipe sans écrire de callba
  
 ### [DCommon.loop](10-loop.ts)
 
-Contrôler une boucle synchrone avec un compteur et une sortie typée.
+Répéter une callback synchrone jusqu’à `exit`, avec un compteur et une valeur de retour typée.
+ 
+### [DCommon.loopAccumulator](10-loopAccumulator.ts)
+
+Répéter une callback synchrone en faisant circuler un accumulateur et retourner la valeur de `exit`.
+ 
+### [DCommon.loopAccumulatorFrom](10-loopAccumulatorFrom.ts)
+
+Marquer une valeur initiale pour fixer précisément le type de l’accumulateur d’une boucle.
  
 ### [DCommon.memo](10-memo.ts)
 

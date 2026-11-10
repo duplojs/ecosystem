@@ -1,20 +1,18 @@
 /**
  * @title DCommon.loop
  *
- * Contrôler une boucle synchrone avec un compteur et une sortie typée.
+ * Répéter une callback synchrone jusqu’à `exit`, avec un compteur et une valeur de retour typée.
  */
 import * as DCommon from "@duplojs/lang/common";
 
-const result = DCommon.loop<"done", number>(({ count, previousOutput, next, exit }) => {
-	const current = previousOutput ?? 0;
-
+const result = DCommon.loop<"done">(({ count, next, exit }) => {
 	if (count === 3) {
 		return exit("done");
 	}
 
-	return next(current + 1);
+	return next();
 });
 
-// `count` commence à 0 ; `previousOutput` vaut undefined à la première itération.
-// `next` poursuit la boucle avec une nouvelle sortie, tandis que `exit` la termine.
+// `count` commence à 0. `next()` poursuit la boucle ; les valeurs d'une itération à l'autre
+// doivent être portées par loopAccumulator, car `loop` ne conserve pas les données de `next`.
 type _CheckResult = DCommon.ExpectType<typeof result, "done", "strict">;

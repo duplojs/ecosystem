@@ -16,7 +16,6 @@ export interface LoopParams<
 	GenericNextOutput extends AnyValue,
 > {
 	count: number;
-	previousOutput: GenericNextOutput | undefined;
 	next<
 		GenericValue extends GenericNextOutput | undefined = undefined,
 	>(output?: GenericValue): LoopOutputNextResult<GenericValue>;
@@ -39,11 +38,8 @@ export function loop(
 		| LoopOutputNextResult<AnyValue>
 		| LoopOutputExitResult<AnyValue>,
 ): AnyValue {
-	let previousOutput: AnyValue = undefined;
-
 	for (let count = 0; true; count++) {
 		const result = callback({
-			previousOutput,
 			count,
 			next: (data) => ({ "-nextData": data as never }),
 			exit: (data) => ({ "-exitData": data as never }),
@@ -52,7 +48,5 @@ export function loop(
 		if ("-exitData" in result) {
 			return result["-exitData"];
 		}
-
-		previousOutput = result["-nextData"];
 	}
 }

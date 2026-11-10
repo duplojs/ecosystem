@@ -29,11 +29,8 @@ export async function asyncLoop(
 		| LoopOutputExitResult<AnyValue>
 	>,
 ): Promise<AnyValue> {
-	let previousOutput: AnyValue = undefined;
-
 	for (let count = 0; true; count++) {
 		const result = await callback({
-			previousOutput,
 			count,
 			next: (data) => ({ "-nextData": data as never }),
 			exit: (data) => ({ "-exitData": data as never }),
@@ -42,7 +39,5 @@ export async function asyncLoop(
 		if ("-exitData" in result) {
 			return result["-exitData"];
 		}
-
-		previousOutput = result["-nextData"];
 	}
 }

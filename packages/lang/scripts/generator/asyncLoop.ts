@@ -1,53 +1,42 @@
 import type * as DCommon from "@scripts/common";
-import type { LoopOutputExistResult, LoopOutputNextResult, LoopParams } from "./loop";
+import type { LoopResult, LoopOutputValue, LoopParams } from "./loop";
 
-export async function *asyncLoop<
+export interface AsyncLoopParams<
+	GenericOutput extends unknown,
+> extends LoopParams<DCommon.MaybePromise<GenericOutput | undefined>> {}
+
+export function asyncLoop<
 	GenericRawNextOutput extends unknown,
-	GenericOutput extends DCommon.MaybePromise<
-		| LoopOutputNextResult<GenericRawNextOutput>
-		| LoopOutputExistResult<unknown>
-		| LoopOutputNextResult<undefined>
-		| LoopOutputExistResult<undefined>
-	>,
+	GenericResult extends DCommon.MaybePromise<LoopResult<DCommon.MaybePromise<GenericRawNextOutput | undefined>>>,
 >(
-	loop: (
-		params: LoopParams<GenericRawNextOutput>,
-	) => GenericOutput,
-): AsyncGenerator<
-	Exclude<
-		Awaited<GenericOutput> extends infer InferredOutput
-			? InferredOutput extends LoopOutputNextResult
-				? InferredOutput["-nextData"]
-				: InferredOutput extends LoopOutputExistResult
-					? InferredOutput["-exitData"]
-					: never
-			: never,
-		undefined
-	>,
-	unknown,
-	unknown
-> {
-	let previousOutput: any = undefined;
+	loop: (params: AsyncLoopParams<GenericRawNextOutput>) => GenericResult,
+): AsyncGenerator<Exclude<Awaited<LoopOutputValue<Awaited<GenericResult>>>, undefined>, unknown, unknown>;
 
+export async function *asyncLoop(
+	loop: (params: AsyncLoopParams<unknown>) => DCommon.MaybePromise<LoopResult>,
+): AsyncGenerator<unknown, unknown, unknown> {
 	for (let count = 0; true; count++) {
 		const result = await loop({
-			previousOutput,
 			count,
-			next: (data) => ({ "-nextData": data as any }),
-			exit: (data) => ({ "-exitData": data as any }),
+			next: (...outputs) => ({ "-nextData": outputs }),
+			exit: (...outputs) => ({ "-exitData": outputs }),
 		});
 
 		if ("-exitData" in result) {
-			if (result["-exitData"] !== undefined) {
-				yield result["-exitData"] as never;
+			for (const output of result["-exitData"]) {
+				const resolvedOutput = await output;
+				if (resolvedOutput !== undefined) {
+					yield resolvedOutput;
+				}
 			}
 			break;
 		}
 
-		previousOutput = result["-nextData"];
-
-		if (previousOutput !== undefined) {
-			yield previousOutput;
+		for (const output of result["-nextData"]) {
+			const resolvedOutput = await output;
+			if (resolvedOutput !== undefined) {
+				yield resolvedOutput;
+			}
 		}
 	}
 

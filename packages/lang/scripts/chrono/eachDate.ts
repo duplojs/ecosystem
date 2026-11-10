@@ -35,34 +35,39 @@ export function eachDate(
 	const direction: 1 | -1 = startTimestamp <= endTimestamp ? 1 : -1;
 	const advanceTimestamp = stepMapper[unit];
 
-	return DGenerator.loop<TheDate, TheDate>(({
-		exit,
-		next,
-		previousOutput,
-	}) => {
-		if (!previousOutput) {
-			return range.start instanceof TheDate
-				? next(range.start)
-				: next(TheDate.new(toTimestamp(range.start)));
-		}
+	return DGenerator.loopAccumulator(
+		startTimestamp,
+		({
+			exit,
+			next,
+			accumulator,
+			count,
+		}) => {
+			if (count === 0) {
+				const startDate = range.start instanceof TheDate
+					? range.start
+					: TheDate.new(toTimestamp(range.start));
+				return next(toTimestamp(startDate), startDate);
+			}
 
-		const currentTimestamp = advanceTimestamp(
-			toTimestamp(previousOutput),
-			direction,
-		);
-
-		const isWithinRange = direction === 1
-			? currentTimestamp < endTimestamp
-			: currentTimestamp > endTimestamp;
-
-		if (!isWithinRange) {
-			return exit(
-				currentTimestamp === endTimestamp
-					? TheDate.new(currentTimestamp)
-					: undefined,
+			const currentTimestamp = advanceTimestamp(
+				accumulator,
+				direction,
 			);
-		}
 
-		return next(TheDate.new(currentTimestamp));
-	});
+			const isWithinRange = direction === 1
+				? currentTimestamp < endTimestamp
+				: currentTimestamp > endTimestamp;
+
+			if (!isWithinRange) {
+				return exit(
+					currentTimestamp === endTimestamp
+						? TheDate.new(currentTimestamp)
+						: undefined,
+				);
+			}
+
+			return next(currentTimestamp, TheDate.new(currentTimestamp));
+		},
+	);
 }

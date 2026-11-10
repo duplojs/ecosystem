@@ -24,7 +24,11 @@ Regrouper les valeurs d’un itérable asynchrone selon les sorties nommées d�
  
 ### [DGenerator.asyncLoop](10-asyncLoop.ts)
 
-Produire une séquence asynchrone dans un pipe en distinguant l’arrêt avec ou sans dernière valeur émise.
+Produire une séquence asynchrone en distinguant les valeurs de `next` et celles de la sortie `exit`.
+ 
+### [DGenerator.asyncLoopAccumulator](10-asyncLoopAccumulator.ts)
+
+Produire une séquence asynchrone en mettant à jour un accumulateur à chaque itération.
  
 ### [DGenerator.asyncMap](10-asyncMap.ts)
 
@@ -68,7 +72,15 @@ Construire une sortie nommée destinée à la fonction de regroupement.
  
 ### [DGenerator.loop](10-loop.ts)
 
-Produire une séquence dans un pipe en distinguant l’arrêt avec ou sans dernière valeur émise.
+Produire une séquence synchrone en distinguant les valeurs de `next` et celles de la sortie `exit`.
+ 
+### [DGenerator.loopAccumulator](10-loopAccumulator.ts)
+
+Produire une séquence synchrone en mettant à jour un accumulateur à chaque itération.
+ 
+### [DGenerator.loopAccumulatorFrom](10-loopAccumulatorFrom.ts)
+
+Marquer une valeur initiale pour fixer précisément le type de l’accumulateur d’une boucle.
  
 ### [DGenerator.map](10-map.ts)
 

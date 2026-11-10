@@ -3,15 +3,15 @@ import * as DCommon from "@scripts/common";
 
 describe("asyncLoop", () => {
 	it("awaits every loop step until exit", async() => {
-		const visited: unknown[] = [];
+		const visited: number[] = [];
 		const result = DCommon.asyncLoop<string, number>((params) => {
-			visited.push(params.previousOutput);
+			visited.push(params.count);
 
 			if (params.count === 2) {
-				return Promise.resolve(params.exit(`done-${params.previousOutput}`));
+				return Promise.resolve(params.exit(`done-${params.count}`));
 			}
 
-			return Promise.resolve(params.next((params.previousOutput ?? 0) + 1));
+			return Promise.resolve(params.next(params.count + 1));
 		});
 
 		type _CheckResult = DCommon.ExpectType<
@@ -21,6 +21,6 @@ describe("asyncLoop", () => {
 		>;
 
 		await expect(result).resolves.toBe("done-2");
-		expect(visited).toStrictEqual([undefined, 1, 2]);
+		expect(visited).toStrictEqual([0, 1, 2]);
 	});
 });

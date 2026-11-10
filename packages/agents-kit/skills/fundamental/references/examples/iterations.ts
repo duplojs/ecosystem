@@ -63,37 +63,50 @@ const loadedTotal = await DCommon.asyncPipe(
 // Chaque chargement est attendu avant le suivant ; la source peut aussi être un AsyncIterable.
 type _CheckLoadedTotal = DCommon.ExpectType<typeof loadedTotal, number, "strict">;
 
-const reachedValue = DCommon.loop<number, number>(({ previousOutput, next, exit }) => {
-	const current = previousOutput ?? 0;
-
+const reachedValue = DCommon.loopAccumulator(0, ({ accumulator, next, exit }) => {
 	// La condition est vérifiée avant le traitement, comme dans un while.
-	if (current >= 3) {
-		return exit(current);
+	if (accumulator >= 3) {
+		return exit(accumulator);
 	}
 
-	return next(DNumber.sum([current, 1]));
+	return next(DNumber.sum([accumulator, 1]));
 });
 
-// Résultat : 3. L'état circule dans next sans compteur externe mutable.
+// Résultat : 3. L'état circule dans l'accumulateur de la boucle.
 type _CheckReachedValue = DCommon.ExpectType<typeof reachedValue, number, "strict">;
 
 declare function readBatchSize(index: number): Promise<number>;
 
-const processedTotal = await DCommon.asyncLoop<number, number>(async({
+const processedTotal = await DCommon.asyncLoopAccumulator(0, async({
 	count,
-	previousOutput,
+	accumulator,
 	next,
 	exit,
 }) => {
-	const current = previousOutput ?? 0;
 	const size = await readBatchSize(count);
 
-	// La première taille nulle termine la lecture ; le dernier total devient le résultat.
+	// La première taille nulle termine la lecture ; exit retourne le total accumulé.
 	if (size === 0) {
-		return exit(current);
+		return exit(accumulator);
 	}
 
-	return next(DNumber.sum([current, size]));
+	return next(DNumber.sum([accumulator, size]));
 });
 
 type _CheckProcessedTotal = DCommon.ExpectType<typeof processedTotal, number, "strict">;
+
+const emitted = DArray.from(DGenerator.loop(({ count, next, exit }) => count === 3
+	? exit("done")
+	: next(count)));
+
+// DGenerator.loop émet les sorties de next puis celles de exit.
+type _CheckEmitted = DCommon.ExpectType<typeof emitted, readonly (number | "done")[], "strict">;
+
+const emittedWithAccumulator = DArray.from(
+	DGenerator.loopAccumulator(0, ({ accumulator, count, next, exit }) => count === 3
+		? exit(accumulator)
+		: next(accumulator + 1, accumulator)),
+);
+
+// Chaque sortie peut être produite au même moment que le nouvel accumulateur est choisi.
+type _CheckEmittedWithAccumulator = DCommon.ExpectType<typeof emittedWithAccumulator, readonly number[], "strict">;

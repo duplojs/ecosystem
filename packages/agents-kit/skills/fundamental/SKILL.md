@@ -48,8 +48,10 @@ Ne pas écrire de `for`, de `while` ni leurs variantes. Utiliser :
 - `DArray.reduce` pour parcourir un tableau avec un accumulateur ; `DGenerator.reduce` pour un autre itérable.
 - `DGenerator.asyncReduce` pour un parcours asynchrone, y compris sur un tableau.
 - `DCommon.loop` pour une répétition conditionnelle ; `DCommon.asyncLoop` en asynchrone.
+- `DCommon.loopAccumulator` et `DCommon.asyncLoopAccumulator` pour transporter un accumulateur entre les tours d’une répétition conditionnelle.
+- `DGenerator.loop` et `DGenerator.asyncLoop` pour produire une séquence ; leurs variantes `loopAccumulator` transportent aussi un accumulateur.
 
-Transmettre l'état sans mutation externe avec `next`, terminer avec `exit`. Avant de créer ou remplacer une boucle, lire [Itérations](references/iterations.md) pour les contrats de ces callbacks. Pour une simple transformation ou sélection, utiliser directement `DArray.map` ou `DArray.filter`.
+Dans les variantes `loopAccumulator`, transmettre l'état avec `next(nouvelAccumulateur)` ; `DGenerator.loop` et `DGenerator.asyncLoop` utilisent `next` pour émettre des valeurs. Dans `DCommon.loop` et `DCommon.asyncLoop`, `next` poursuit la boucle sans transmettre son argument au tour suivant. Terminer avec `exit`. Avant de créer ou remplacer une boucle, lire [Itérations](references/iterations.md) pour les contrats de ces callbacks. Pour une simple transformation ou sélection, utiliser directement `DArray.map` ou `DArray.filter`.
 
 ## Valider les entrées et conserver les garanties
 

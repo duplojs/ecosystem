@@ -1,53 +1,44 @@
 /**
  * @title DGenerator.loop
  *
- * Produire une séquence dans un pipe en distinguant l’arrêt avec ou sans dernière valeur émise.
+ * Produire une séquence synchrone en distinguant les valeurs de `next` et celles de la sortie `exit`.
  */
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
 import * as DGenerator from "@duplojs/lang/generator";
-import * as DNumber from "@duplojs/lang/number";
 
-// Arrêt sans dernière valeur : `exit()` termine la boucle sans émettre d’élément supplémentaire.
+// `count` est le seul état fourni à chaque tour ; `next` émet des valeurs et continue.
 const withoutExitValue = DCommon.pipe(
-	DGenerator.loop(({ previousOutput, next, exit }: DGenerator.LoopParams<number>) => {
-		if (previousOutput === 3) {
+	DGenerator.loop(({ count, next, exit }: DGenerator.LoopParams<number>) => {
+		if (count === 3) {
 			return exit();
 		}
 
-		return next(
-			previousOutput === undefined
-				? 1
-				: DNumber.sum([previousOutput, 1]),
-		);
+		return next(count + 1);
 	}),
 	DArray.from,
 );
 
-// La sortie vaut [1, 2, 3] : `next` émet les valeurs intermédiaires, mais `exit()` n’en émet aucune.
+// La sortie vaut [1, 2, 3] : `exit()` termine sans ajouter de valeur.
 type _CheckWithoutExitValue = DCommon.ExpectType<
 	typeof withoutExitValue,
 	readonly number[],
 	"strict"
 >;
 
-// Arrêt avec dernière valeur : `exit(value)` termine la boucle en émettant cette valeur.
+// `exit(value)` termine la boucle et émet sa valeur après celles émises par `next`.
 const withExitValue = DCommon.pipe(
-	DGenerator.loop(({ previousOutput, next, exit }: DGenerator.LoopParams<number>) => {
-		if (previousOutput === 3) {
+	DGenerator.loop(({ count, next, exit }: DGenerator.LoopParams<number>) => {
+		if (count === 3) {
 			return exit(4);
 		}
 
-		return next(
-			previousOutput === undefined
-				? 1
-				: DNumber.sum([previousOutput, 1]),
-		);
+		return next(count + 1);
 	}),
 	DArray.from,
 );
 
-// La sortie vaut [1, 2, 3, 4] : `exit(4)` ajoute la dernière valeur à la séquence.
+// La sortie vaut [1, 2, 3, 4] : les valeurs multiples de `next` et `exit` forment la séquence.
 type _CheckWithExitValue = DCommon.ExpectType<
 	typeof withExitValue,
 	readonly number[],

@@ -6,7 +6,6 @@ import { type Effect, workflowBreakIfLeftGenerator, type WorkflowEffectBreakIfLe
 import * as DArray from "@scripts/array";
 import * as DEither from "@scripts/either";
 import * as DPattern from "@scripts/pattern";
-import type * as DNumber from "@scripts/number";
 import type { RequireWorkflowEffects } from "./types";
 
 export interface CreateWorkflowInitParams {
@@ -177,8 +176,9 @@ export async function consumeWorkflow<
 	GenericGenerator,
 	GenericEffects
 > {
-	return DCommon.asyncLoop(
-		async({ next, exit, previousOutput }: DCommon.LoopParams<Effect>) => {
+	return DCommon.asyncLoopAccumulator(
+		DCommon.loopAccumulatorFrom<Effect | undefined>(undefined),
+		async({ next, exit, accumulator: previousOutput }) => {
 			const result = await DCommon.pipe(
 				previousOutput,
 				DPattern.when(
