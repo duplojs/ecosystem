@@ -16,7 +16,7 @@ const allSkills: readonly string[] = await DCommon.asyncPipe(
 	DEither.unwrapByInformationOrThrow("file-system-read-directory"),
 );
 
-describe("install-skill integration", () => {
+describe("skills integration", () => {
 	beforeEach(async() => {
 		await DCommon.asyncPipe(
 			workspace,
@@ -39,12 +39,12 @@ describe("install-skill integration", () => {
 	});
 
 	it.each([
-		[["install-skill", "fundamental"], ".agents", ["fundamental"], true],
-		[["install-skill", "http-server", "--copy"], ".agents", ["http-server"], false],
-		[["install-skill", "http-server", "--type", "claude", "--copy"], ".claude", ["http-server"], false],
-		[["install-skill", "fundamental", "--type", "codex"], ".codex", ["fundamental"], true],
-		[["install-skill"], ".agents", allSkills, true],
-		[["install-skill", "--copy"], ".agents", allSkills, false],
+		[["skills", "install", "fundamental"], ".agents", ["fundamental"], true],
+		[["skills", "install", "http-server", "--copy"], ".agents", ["http-server"], false],
+		[["skills", "install", "http-server", "--type", "claude", "--copy"], ".claude", ["http-server"], false],
+		[["skills", "install", "fundamental", "--type", "codex"], ".codex", ["fundamental"], true],
+		[["skills", "install"], ".agents", allSkills, true],
+		[["skills", "install", "--copy"], ".agents", allSkills, false],
 	] as const)("installs skills for %j into %s", async(args, agentFolder, skills, expectedSymlink) => {
 		execFileSync("pnpm", ["exec", "duplojs-agents-kit", ...args], { cwd: workspace });
 
@@ -149,7 +149,7 @@ describe("install-skill integration", () => {
 			DEither.unwrapByInformationOrThrow("file-system-write-text-file"),
 		);
 
-		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "install-skill", "http-server", "--type", agent], { cwd: workspace });
+		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "install", "http-server", "--type", agent], { cwd: workspace });
 
 		const installedEntries = await DCommon.asyncPipe(
 			installedDirectory,
@@ -195,8 +195,8 @@ describe("install-skill integration", () => {
 			expectedSymlink: false,
 		},
 	])("replaces an installation from $initialOptions with $options", async({ initialOptions, options, expectedSymlink }) => {
-		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "install-skill", "http-server", ...initialOptions], { cwd: workspace });
-		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "install-skill", "http-server", ...options], { cwd: workspace });
+		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "install", "http-server", ...initialOptions], { cwd: workspace });
+		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "install", "http-server", ...options], { cwd: workspace });
 
 		const destination = DPath.resolveRelative([workspace, DPath.declarePath(".agents/skills/duplojs-http-server")]);
 		const installedStat = await DCommon.asyncPipe(
@@ -230,7 +230,7 @@ describe("install-skill integration", () => {
 			DEither.unwrapByInformationOrThrow("file-system-write-text-file"),
 		);
 
-		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "install-skill", "http-server", ...options], { cwd: workspace });
+		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "install", "http-server", ...options], { cwd: workspace });
 
 		const installedStat = await DCommon.asyncPipe(
 			destination,
@@ -296,7 +296,7 @@ describe("install-skill integration", () => {
 			DEither.unwrapByInformationOrThrow("file-system-symlink"),
 		);
 
-		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "install-skill", "http-server", ...options], { cwd: workspace });
+		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "install", "http-server", ...options], { cwd: workspace });
 
 		const installedStat = await DCommon.asyncPipe(
 			destination,
@@ -326,9 +326,9 @@ describe("install-skill integration", () => {
 	});
 
 	it.each([
-		["install-skill", "unknown"],
-		["install-skill", "http-server", "--type", "unknown"],
-		["install-skill", "http-server", "--copy=false"],
+		["skills", "install", "unknown"],
+		["skills", "install", "http-server", "--type", "unknown"],
+		["skills", "install", "http-server", "--copy=false"],
 	])("does not install skills for invalid arguments %j", async(...args) => {
 		const result = spawnSync("pnpm", ["exec", "duplojs-agents-kit", ...args], {
 			cwd: workspace,
@@ -343,5 +343,110 @@ describe("install-skill integration", () => {
 			DEither.unwrapByInformationOrThrow("file-system-read-directory"),
 		);
 		expect(workspaceEntries).toEqual(["node_modules"]);
+	});
+
+	it.each([
+		{
+			agent: "default",
+			folder: ".agents",
+			target: "previous-package",
+		},
+		{
+			agent: "default",
+			folder: ".agents",
+			target: "missing-package",
+		},
+		{
+			agent: "codex",
+			folder: ".codex",
+			target: "previous-package",
+		},
+		{
+			agent: "codex",
+			folder: ".codex",
+			target: "missing-package",
+		},
+		{
+			agent: "claude",
+			folder: ".claude",
+			target: "previous-package",
+		},
+		{
+			agent: "claude",
+			folder: ".claude",
+			target: "missing-package",
+		},
+	])("updates $agent links to $target and copied skills while preserving other entries and link targets", async({ agent, folder, target }) => {
+		const installedDirectory = DPath.resolveRelative([workspace, DPath.createSegmentOrThrow(folder), DPath.declarePath("skills")]);
+		const previousDirectory = DPath.resolveRelative([workspace, DPath.declarePath("previous-package")]);
+		const previousFile = DPath.resolveRelative([previousDirectory, DPath.declarePath("SKILL.md")]);
+		const copiedDirectory = DPath.resolveRelative([installedDirectory, DPath.declarePath("duplojs-http-client")]);
+		const copiedFile = DPath.resolveRelative([copiedDirectory, DPath.declarePath("SKILL.md")]);
+		const obsoleteFile = DPath.resolveRelative([copiedDirectory, DPath.declarePath("obsolete.txt")]);
+		for (const directory of [installedDirectory, previousDirectory, copiedDirectory]) {
+			await DCommon.asyncPipe(DSFile.ensureDirectory(directory), DEither.unwrapByInformationOrThrow("file-system-ensure-directory"));
+		}
+		for (const file of [previousFile, copiedFile, obsoleteFile]) {
+			await DCommon.asyncPipe(DSFile.writeTextFile(file, "preserve this content"), DEither.unwrapByInformationOrThrow("file-system-write-text-file"));
+		}
+		const previousTarget = DPath.resolveRelative([workspace, DPath.createSegmentOrThrow(target)]);
+		const missingTarget = DPath.resolveRelative([workspace, DPath.declarePath("missing-package")]);
+		const currentTarget = DPath.resolveRelative([skillsDirectory, DPath.declarePath("command")]);
+		for (const [name, source] of [
+			["duplojs-fundamental", previousTarget],
+			["duplojs-command", currentTarget],
+			["duplojs-unknown", missingTarget],
+			["another-skill", missingTarget],
+		] as const) {
+			const destination = DPath.resolveRelative([installedDirectory, DPath.createSegmentOrThrow(name)]);
+			await DCommon.asyncPipe(DSFile.symlink(source, destination, { type: "dir" }), DEither.unwrapByInformationOrThrow("file-system-symlink"));
+		}
+
+		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "update", "--type", agent], { cwd: workspace });
+
+		const entries = await DCommon.asyncPipe(
+			DSFile.readDirectory(installedDirectory),
+			DEither.unwrapByInformationOrThrow("file-system-read-directory"),
+			DString.sort("ASC"),
+		);
+		expect(entries).toEqual(["another-skill", "duplojs-command", "duplojs-fundamental", "duplojs-http-client", "duplojs-unknown"]);
+		for (const skill of ["fundamental", "command"]) {
+			const destination = DPath.resolveRelative([installedDirectory, DPath.createSegmentOrThrow(`duplojs-${skill}`)]);
+			const source = DPath.resolveRelative([skillsDirectory, DPath.createSegmentOrThrow(skill)]);
+			const link = await DCommon.asyncPipe(DSFile.readLink(destination), DEither.unwrapByInformationOrThrow("file-system-read-link"));
+			expect(link).toBe(source);
+			const skillFile = DPath.resolveRelative([destination, DPath.declarePath("SKILL.md")]);
+			const exists = await DCommon.asyncPipe(DSFile.exists(skillFile), DEither.unwrapByInformationOrThrow("file-system-exists"));
+			expect(exists).toBeUndefined();
+		}
+		const previousContent = await DCommon.asyncPipe(DSFile.readTextFile(previousFile), DEither.unwrapByInformationOrThrow("file-system-read-text-file"));
+		expect(previousContent).toBe("preserve this content");
+		const copiedStat = await DCommon.asyncPipe(DSFile.linkStat(copiedDirectory), DEither.unwrapByInformationOrThrow("file-system-link-stat"));
+		expect(copiedStat.isSymlink).toBe(false);
+		expect(copiedStat.isDirectory).toBe(true);
+		const sourceDirectory = DPath.resolveRelative([skillsDirectory, DPath.declarePath("http-client")]);
+		const sourceFile = DPath.resolveRelative([sourceDirectory, DPath.declarePath("SKILL.md")]);
+		const copiedContent = await DCommon.asyncPipe(DSFile.readTextFile(copiedFile), DEither.unwrapByInformationOrThrow("file-system-read-text-file"));
+		const sourceContent = await DCommon.asyncPipe(DSFile.readTextFile(sourceFile), DEither.unwrapByInformationOrThrow("file-system-read-text-file"));
+		expect(copiedContent).toBe(sourceContent);
+		const copiedEntries = await DCommon.asyncPipe(DSFile.readDirectory(copiedDirectory, { recursive: true }), DEither.unwrapByInformationOrThrow("file-system-read-directory"), DString.sort("ASC"));
+		const sourceEntries = await DCommon.asyncPipe(DSFile.readDirectory(sourceDirectory, { recursive: true }), DEither.unwrapByInformationOrThrow("file-system-read-directory"), DString.sort("ASC"));
+		expect(copiedEntries).toEqual(sourceEntries);
+		expect(copiedEntries).not.toContain("obsolete.txt");
+		for (const name of ["duplojs-unknown", "another-skill"]) {
+			const destination = DPath.resolveRelative([installedDirectory, DPath.createSegmentOrThrow(name)]);
+			const link = await DCommon.asyncPipe(DSFile.readLink(destination), DEither.unwrapByInformationOrThrow("file-system-read-link"));
+			expect(link).toBe(missingTarget);
+		}
+	});
+
+	it("skips absent skills without creating an agent folder", async() => {
+		const result = spawnSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "update"], { cwd: workspace });
+
+		const entries = await DCommon.asyncPipe(DSFile.readDirectory(workspace), DEither.unwrapByInformationOrThrow("file-system-read-directory"));
+
+		expect(result.error).toBeUndefined();
+		expect(result.status).toBe(0);
+		expect(entries).toEqual(["node_modules"]);
 	});
 });

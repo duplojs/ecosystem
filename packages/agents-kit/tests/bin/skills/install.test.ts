@@ -1,4 +1,4 @@
-import { installSkillCommand } from "@scripts/bin/installSkill";
+import { installSkillCommand } from "@scripts/bin/skills";
 import { getPackagePath } from "@scripts/bin/packagePath";
 import * as DArray from "@duplojs/lang/array";
 import * as DCommon from "@duplojs/lang/common";
@@ -56,7 +56,7 @@ describe("installSkillCommand", () => {
 		TESTImplementation.set("ensureDirectory", () => Promise.resolve(DEither.right("file-system-ensure-directory")));
 		TESTImplementation.set("symlink", symlink);
 		TESTImplementation.set("copy", copy);
-		const error = DSCommand.createError("install-skill");
+		const error = DSCommand.createError("install");
 
 		const result = await installSkillCommand.execute(args, error);
 
@@ -74,11 +74,11 @@ describe("installSkillCommand", () => {
 		const readDirectory = vi.fn();
 		TESTImplementation.set("copy", copy);
 		TESTImplementation.set("readDirectory", readDirectory);
-		const error = DSCommand.createError("install-skill");
+		const error = DSCommand.createError("install");
 
 		const result = await installSkillCommand.execute([skill, "--copy"], error);
 
-		type _CheckCommand = DCommon.ExpectType<typeof installSkillCommand, DSCommand.Command<"install-skill">, "strict">;
+		type _CheckCommand = DCommon.ExpectType<typeof installSkillCommand, DSCommand.Command<"install">, "strict">;
 		type _CheckResult = DCommon.ExpectType<typeof result, undefined | DSCommand.SymbolCommandError, "strict">;
 
 		expect(result).toBeUndefined();
@@ -94,7 +94,7 @@ describe("installSkillCommand", () => {
 	])("installs into the %s agent folder", async(agent, folder) => {
 		const copy = vi.fn(() => Promise.resolve(DEither.right("file-system-copy")));
 		TESTImplementation.set("copy", copy);
-		const error = DSCommand.createError("install-skill");
+		const error = DSCommand.createError("install");
 
 		await expect(installSkillCommand.execute(["http-server", "--type", agent, "--copy"], error)).resolves.toBeUndefined();
 
@@ -111,7 +111,7 @@ describe("installSkillCommand", () => {
 		const copy = vi.fn(() => Promise.resolve(DEither.right("file-system-copy")));
 		TESTImplementation.set("readDirectory", readDirectory);
 		TESTImplementation.set("copy", copy);
-		const error = DSCommand.createError("install-skill");
+		const error = DSCommand.createError("install");
 
 		await expect(installSkillCommand.execute([...args, "--copy"], error)).resolves.toBeUndefined();
 
@@ -128,7 +128,7 @@ describe("installSkillCommand", () => {
 		const copy = vi.fn();
 		TESTImplementation.set("readDirectory", readDirectory);
 		TESTImplementation.set("copy", copy);
-		const error = DSCommand.createError("install-skill");
+		const error = DSCommand.createError("install");
 
 		await expect(installSkillCommand.execute(["--copy"], error)).resolves.toBeUndefined();
 
@@ -143,7 +143,7 @@ describe("installSkillCommand", () => {
 		const copy = vi.fn();
 		TESTImplementation.set("readDirectory", readDirectory);
 		TESTImplementation.set("copy", copy);
-		const error = DSCommand.createError("install-skill");
+		const error = DSCommand.createError("install");
 
 		await expect(installSkillCommand.execute(["--copy"], error)).resolves.toBeUndefined();
 
@@ -160,7 +160,7 @@ describe("installSkillCommand", () => {
 		const readDirectory = vi.fn();
 		TESTImplementation.set("copy", copy);
 		TESTImplementation.set("readDirectory", readDirectory);
-		const error = DSCommand.createError("install-skill");
+		const error = DSCommand.createError("install");
 
 		await expect(installSkillCommand.execute([...args, "--copy"], error)).resolves.toBe(DSCommand.SymbolCommandError);
 
@@ -173,7 +173,7 @@ describe("installSkillCommand", () => {
 		const pending = Promise.withResolvers<DSFile.CopyResult>();
 		const copy = vi.fn(() => pending.promise);
 		TESTImplementation.set("copy", copy);
-		const error = DSCommand.createError("install-skill");
+		const error = DSCommand.createError("install");
 		const finished = vi.fn();
 
 		const execution = installSkillCommand.execute(["http-server", "--copy"], error).then(finished);
@@ -191,6 +191,6 @@ describe("installSkillCommand", () => {
 		const failure = new Error("Copy failed");
 		TESTImplementation.set("copy", vi.fn().mockRejectedValue(failure));
 
-		await expect(installSkillCommand.execute(["http-server", "--copy"], DSCommand.createError("install-skill"))).rejects.toThrow(failure);
+		await expect(installSkillCommand.execute(["http-server", "--copy"], DSCommand.createError("install"))).rejects.toThrow(failure);
 	});
 });

@@ -30,20 +30,26 @@ const agentTypeFolderMapper = {
 	default: ".agents",
 } as const satisfies Record<AgentTypeEnum, string>;
 
-function getSkillPaths(
+export function getSkillsFolder(agentType: AgentTypeEnum) {
+	return DEither.rightPipe(
+		DSCommon.getCurrentWorkDirectory(),
+		(directory) => DPath.resolveRelative([
+			directory,
+			DCommon.cast(agentTypeFolderMapper[agentType]),
+			DCommon.cast("skills"),
+		]),
+	);
+}
+
+export function getSkillPaths(
 	agentType: AgentTypeEnum,
 	skill: SkillEnum,
 ) {
 	const selectedSkillPath = DPath.resolveRelative([getPackagePath(), DPath.declarePath("skills"), DCommon.cast(skill)]);
 
 	return DEither.rightPipe(
-		DSCommon.getCurrentWorkDirectory(),
-		(directory) => {
-			const skillsFolder = DPath.resolveRelative([
-				directory,
-				DCommon.cast(agentTypeFolderMapper[agentType]),
-				DCommon.cast("skills"),
-			]);
+		getSkillsFolder(agentType),
+		(skillsFolder) => {
 			const currentSkillFolder = DPath.resolveRelative([skillsFolder, DCommon.cast(`duplojs-${skill}`)]);
 
 			return {
