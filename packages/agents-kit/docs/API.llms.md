@@ -58,6 +58,26 @@ Fonctions de manipulation, recherche, validation et transformation des chaînes 
 
 Manipulation et typage des tuples : convertir les garanties de cardinalité en positions typées, puis transformer leurs éléments en conservant leur forme.
 
+# @duplojs/server
+
+Capacités portables de fichiers, environnement, validation de ressources et commandes CLI.
+
+## [File](API/20-server/10-file/index.llms.md)
+
+Lire et modifier les ressources du système de fichiers, leurs chemins et leurs métadonnées.
+
+## [Common](API/20-server/20-common/index.llms.md)
+
+Accéder à la configuration, aux arguments et aux capacités du processus.
+
+## [DataStructure](API/20-server/30-dataStructure/index.llms.md)
+
+Décoder et valider les interfaces de fichiers et dossiers avec les contraintes serveur.
+
+## [Command](API/20-server/40-command/index.llms.md)
+
+Déclarer et exécuter des commandes CLI et leurs entrées typées.
+
 # @duplojs/json-web-token
 
 Politiques JWT réutilisables, signature, chiffrement facultatif et primitives cryptographiques.

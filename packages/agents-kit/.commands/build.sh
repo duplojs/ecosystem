@@ -22,6 +22,11 @@ pnpm run llms generate-summary --input docs/API/10-lang/10-printer --output docs
 pnpm run llms generate-summary --input docs/API/10-lang/10-string --output docs/API/10-lang/10-string/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-tuple --output docs/API/10-lang/10-tuple/index.llms.md --ignore '*.llms.md'
 
+pnpm run llms generate-summary --input docs/API/20-server/10-file --output docs/API/20-server/10-file/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/20-server/20-common --output docs/API/20-server/20-common/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/20-server/30-dataStructure --output docs/API/20-server/30-dataStructure/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/20-server/40-command --output docs/API/20-server/40-command/index.llms.md --ignore '*.llms.md'
+
 pnpm run llms generate-summary --input docs/API/40-json-web-token/10-tokenHandler --output docs/API/40-json-web-token/10-tokenHandler/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/40-json-web-token/20-signer --output docs/API/40-json-web-token/20-signer/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/40-json-web-token/30-cipher --output docs/API/40-json-web-token/30-cipher/index.llms.md --ignore '*.llms.md'
