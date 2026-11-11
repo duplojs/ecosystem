@@ -183,27 +183,27 @@ describe("objectTag", () => {
 		it("infers a single group and the tag name as literals", () => {
 			const result = DModeling.createTagNameWithGroup("pending", ["user"]);
 
-			expect(result).toBe("[user]:pending");
+			expect(result).toBe("[user]pending");
 
-			type _CheckResult = DCommon.ExpectType<typeof result, "[user]:pending", "strict">;
+			type _CheckResult = DCommon.ExpectType<typeof result, "[user]pending", "strict">;
 		});
 
 		it("preserves the order of multiple readonly groups", () => {
 			const groups = ["user", "account", "creation"] as const;
 			const result = DModeling.createTagNameWithGroup("pending", groups);
 
-			expect(result).toBe("[user][account][creation]:pending");
+			expect(result).toBe("[user][account][creation]pending");
 			expect(groups).toStrictEqual(["user", "account", "creation"]);
 
-			type _CheckResult = DCommon.ExpectType<typeof result, "[user][account][creation]:pending", "strict">;
+			type _CheckResult = DCommon.ExpectType<typeof result, "[user][account][creation]pending", "strict">;
 		});
 
-		it("keeps the separator for an empty group tuple", () => {
+		it("returns the tag name for an empty group tuple", () => {
 			const result = DModeling.createTagNameWithGroup("ready", []);
 
-			expect(result).toBe(":ready");
+			expect(result).toBe("ready");
 
-			type _CheckResult = DCommon.ExpectType<typeof result, ":ready", "strict">;
+			type _CheckResult = DCommon.ExpectType<typeof result, "ready", "strict">;
 			type _CheckTag = DCommon.ExpectType<typeof result, DModeling.GetTagValue<DModeling.ObjectTagWithGroups<readonly [], "ready">>, "strict">;
 		});
 
@@ -211,9 +211,9 @@ describe("objectTag", () => {
 			const groups: readonly string[] = ["user", "account"];
 			const result = DModeling.createTagNameWithGroup("pending", groups);
 
-			expect(result).toBe("[user][account]:pending");
+			expect(result).toBe("[user][account]pending");
 
-			type _CheckResult = DCommon.ExpectType<typeof result, `${string}:pending`, "strict">;
+			type _CheckResult = DCommon.ExpectType<typeof result, `${string}pending`, "strict">;
 			type _CheckTag = DCommon.ExpectType<typeof result, DModeling.GetTagValue<DModeling.ObjectTagWithGroups<readonly string[], "pending">>, "strict">;
 		});
 
@@ -221,9 +221,9 @@ describe("objectTag", () => {
 			const name = "pending" as string;
 			const result = DModeling.createTagNameWithGroup(name, ["user"]);
 
-			expect(result).toBe("[user]:pending");
+			expect(result).toBe("[user]pending");
 
-			type _CheckResult = DCommon.ExpectType<typeof result, `[user]:${string}`, "strict">;
+			type _CheckResult = DCommon.ExpectType<typeof result, `[user]${string}`, "strict">;
 		});
 
 		it("creates names accepted by the tagged object helpers", () => {
@@ -270,37 +270,37 @@ describe("objectTag", () => {
 
 		type Event = UserCreated | UserDeleted | OrderCreated;
 
-		it("formats multiple groups before the colon-separated status", () => {
+		it("formats multiple groups before the tag name", () => {
 			type Pending = DModeling.ObjectTagWithGroups<readonly ["user", "account", "creation"], "pending">;
-			const input = DModeling.taggedObject<Pending>("[user][account][creation]:pending", {});
+			const input = DModeling.taggedObject<Pending>("[user][account][creation]pending", {});
 			const result = DModeling.getTagValue(input);
 
-			expect(result).toBe("[user][account][creation]:pending");
+			expect(result).toBe("[user][account][creation]pending");
 			expect(DModeling.hasTagGroup(input, "user")).toBe(true);
 			expect(DModeling.hasTagGroup(input, "account")).toBe(true);
 			expect(DModeling.hasTagGroup(input, "creation")).toBe(true);
 
-			type _CheckResult = DCommon.ExpectType<typeof result, "[user][account][creation]:pending", "strict">;
+			type _CheckResult = DCommon.ExpectType<typeof result, "[user][account][creation]pending", "strict">;
 		});
 
 		it.each([
 			{
-				tag: "[user][created]:event",
+				tag: "[user][created]event",
 				group: "user",
 				expected: true,
 			},
 			{
-				tag: "[deleted][user]:event",
+				tag: "[deleted][user]event",
 				group: "user",
 				expected: true,
 			},
 			{
-				tag: "[order][created]:event",
+				tag: "[order][created]event",
 				group: "user",
 				expected: false,
 			},
 			{
-				tag: "user:event",
+				tag: "user-event",
 				group: "user",
 				expected: false,
 			},
@@ -310,12 +310,12 @@ describe("objectTag", () => {
 				expected: false,
 			},
 			{
-				tag: "[super-user]:event",
+				tag: "[super-user]event",
 				group: "user",
 				expected: false,
 			},
 			{
-				tag: "[user-admin]:event",
+				tag: "[user-admin]event",
 				group: "user",
 				expected: false,
 			},
@@ -325,7 +325,7 @@ describe("objectTag", () => {
 				expected: true,
 			},
 			{
-				tag: "event:[user]",
+				tag: "event[user]",
 				group: "user",
 				expected: true,
 			},
@@ -335,12 +335,12 @@ describe("objectTag", () => {
 				expected: false,
 			},
 			{
-				tag: "[]:event",
+				tag: "[]event",
 				group: "",
 				expected: true,
 			},
 			{
-				tag: "[a.b]:event",
+				tag: "[a.b]event",
 				group: "a.b",
 				expected: true,
 			},
@@ -354,7 +354,7 @@ describe("objectTag", () => {
 		});
 
 		it("narrows both branches of a tagged union", () => {
-			const input = DModeling.taggedObject<UserCreated>("[user][created]:event", { id: 1 }) as Event;
+			const input = DModeling.taggedObject<UserCreated>("[user][created]event", { id: 1 }) as Event;
 
 			if (DModeling.hasTagGroup(input, "user")) {
 				type _CheckInput = DCommon.ExpectType<typeof input, UserCreated | UserDeleted, "strict">;
@@ -368,7 +368,7 @@ describe("objectTag", () => {
 		});
 
 		it("infers groups and narrows in a pipe", () => {
-			const input = DModeling.taggedObject<OrderCreated>("[order][created]:event", { id: 3 }) as Event;
+			const input = DModeling.taggedObject<OrderCreated>("[order][created]event", { id: 3 }) as Event;
 			const result = DCommon.pipe(
 				input,
 				DCommon.when(
@@ -387,7 +387,7 @@ describe("objectTag", () => {
 		});
 
 		it("matches any of the selected groups", () => {
-			const input = DModeling.taggedObject<UserCreated>("[user][created]:event", { id: 1 }) as Event;
+			const input = DModeling.taggedObject<UserCreated>("[user][created]event", { id: 1 }) as Event;
 
 			if (DModeling.hasTagGroup(input, ["order", "user"])) {
 				type _CheckInput = DCommon.ExpectType<typeof input, Event, "strict">;
@@ -402,7 +402,7 @@ describe("objectTag", () => {
 		});
 
 		it("narrows a selection of groups in a pipe", () => {
-			const input = DModeling.taggedObject<UserDeleted>("[deleted][user]:event", { id: 2 }) as Event;
+			const input = DModeling.taggedObject<UserDeleted>("[deleted][user]event", { id: 2 }) as Event;
 			const result = DCommon.pipe(
 				input,
 				DCommon.when(
@@ -421,9 +421,9 @@ describe("objectTag", () => {
 		});
 
 		it("filters a tagged union by group", () => {
-			const userCreated = DModeling.taggedObject<UserCreated>("[user][created]:event", { id: 1 });
-			const userDeleted = DModeling.taggedObject<UserDeleted>("[deleted][user]:event", { id: 2 });
-			const orderCreated = DModeling.taggedObject<OrderCreated>("[order][created]:event", { id: 3 });
+			const userCreated = DModeling.taggedObject<UserCreated>("[user][created]event", { id: 1 });
+			const userDeleted = DModeling.taggedObject<UserDeleted>("[deleted][user]event", { id: 2 });
+			const orderCreated = DModeling.taggedObject<OrderCreated>("[order][created]event", { id: 3 });
 			const input: readonly Event[] = [userCreated, orderCreated, userDeleted];
 			const result = DCommon.pipe(
 				input,
@@ -440,7 +440,7 @@ describe("objectTag", () => {
 				readonly id: 4;
 			}
 
-			const input = DModeling.taggedObject<SuperUser>("[super-user]:event", { id: 4 }) as Event | SuperUser;
+			const input = DModeling.taggedObject<SuperUser>("[super-user]event", { id: 4 }) as Event | SuperUser;
 
 			if (DModeling.hasTagGroup(input, "user")) {
 				type _CheckInput = DCommon.ExpectType<typeof input, UserCreated | UserDeleted, "strict">;
@@ -454,7 +454,7 @@ describe("objectTag", () => {
 		});
 
 		it("only accepts groups present in the input tag types", () => {
-			const input = DModeling.taggedObject<UserCreated>("[user][created]:event", { id: 1 }) as Event;
+			const input = DModeling.taggedObject<UserCreated>("[user][created]event", { id: 1 }) as Event;
 
 			// @ts-expect-error This group does not occur in the input union.
 			DModeling.hasTagGroup(input, "missing");

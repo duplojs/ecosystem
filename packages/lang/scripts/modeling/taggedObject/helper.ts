@@ -71,7 +71,9 @@ type ComputeGroups<
 		infer InferredFirst extends string,
 		...infer InferredRest extends readonly string[],
 	]
-		? `[${InferredFirst}]${ComputeGroups<InferredRest>}`
+		? DCommon.IsNever<InferredFirst> extends true
+			? ComputeGroups<InferredRest>
+			: `[${InferredFirst}]${ComputeGroups<InferredRest>}`
 		: string;
 
 export interface ObjectTagWithGroups<
@@ -79,7 +81,7 @@ export interface ObjectTagWithGroups<
 	GenericValue extends string = string,
 > extends DKind.Kind<
 	typeof objectTagKind,
-	`${ComputeGroups<GenericGroups>}:${GenericValue}`
+	`${ComputeGroups<GenericGroups>}${GenericValue}`
 	> {
 
 }
@@ -90,10 +92,10 @@ export function createTagNameWithGroup<
 >(
 	name: GenericName,
 	groups: GenericGroups,
-): `${ComputeGroups<GenericGroups>}:${GenericName}` {
+): `${ComputeGroups<GenericGroups>}${GenericName}` {
 	const formattedGroups = DArray.map(groups, (group) => `[${group}]`);
 
-	return `${DString.join(formattedGroups, "")}:${name}` as never;
+	return `${DString.join(formattedGroups, "")}${name}` as never;
 }
 
 type ExtractTagGroups<
