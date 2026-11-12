@@ -179,174 +179,199 @@ describe("objectTag", () => {
 		expect(result).toBe(42);
 	});
 
-	describe("createTagNameWithGroup", () => {
-		it("infers a single group and the tag name as literals", () => {
-			const result = DModeling.createTagNameWithGroup("pending", ["user"]);
+	describe("ObjectTagWithGroup", () => {
+		interface UserGroup extends DModeling.ObjectTagGroup<"user", {
+			readonly id: number;
+			readonly name: string & DString.MinCharacters<3>;
+		}> {}
 
-			expect(result).toBe("[user]pending");
+		interface AccountGroup extends DModeling.ObjectTagGroup<"account", {
+			readonly id: number;
+			readonly active?: boolean;
+		}> {}
 
-			type _CheckResult = DCommon.ExpectType<typeof result, "[user]pending", "strict">;
+		interface CreationGroup extends DModeling.ObjectTagGroup<"creation"> {}
+
+		it("adds a single group and its properties to a tag", () => {
+			interface Pending extends DModeling.ObjectTagWithGroup<"pending", UserGroup> {
+				readonly attempts: number;
+			}
+
+			const input = DModeling.taggedObject<Pending>("[user]pending", {
+				id: 1,
+				name: DCommon.infer("Jane"),
+				attempts: 0,
+			});
+			const tag = DModeling.getTagValue(input);
+
+			expect(input).toStrictEqual({
+				id: 1,
+				name: "Jane",
+				attempts: 0,
+				[DModeling.objectTagKind.runTimeKey]: "[user]pending",
+			});
+			expect(DModeling.hasTagGroup(input, "user")).toBe(true);
+
+			type _CheckInput = DCommon.ExpectType<typeof input, Pending, "strict">;
+			type _CheckTag = DCommon.ExpectType<typeof tag, "[user]pending", "strict">;
+			type _CheckName = DCommon.ExpectType<typeof input.name, string & DString.MinCharacters<3>, "strict">;
 		});
 
-		it("preserves the order of multiple readonly groups", () => {
-			const groups = ["user", "account", "creation"] as const;
-			const result = DModeling.createTagNameWithGroup("pending", groups);
+		it("combines properties and preserves the order of multiple readonly groups", () => {
+			type Pending = DModeling.ObjectTagWithGroup<"pending", readonly [UserGroup, AccountGroup, CreationGroup]>;
+			const input = DModeling.taggedObject<Pending>("[user][account][creation]pending", {
+				id: 1,
+				name: DCommon.infer("Jane"),
+			});
+			const tag = DModeling.getTagValue(input);
 
-			expect(result).toBe("[user][account][creation]pending");
-			expect(groups).toStrictEqual(["user", "account", "creation"]);
+			expect(tag).toBe("[user][account][creation]pending");
+			expect(input.id).toBe(1);
+			expect(input.name).toBe("Jane");
+			expect(input.active).toBeUndefined();
+			expect(DModeling.hasTagGroup(input, "user")).toBe(true);
+			expect(DModeling.hasTagGroup(input, "account")).toBe(true);
+			expect(DModeling.hasTagGroup(input, "creation")).toBe(true);
 
-			type _CheckResult = DCommon.ExpectType<typeof result, "[user][account][creation]pending", "strict">;
+			type _CheckTag = DCommon.ExpectType<typeof tag, "[user][account][creation]pending", "strict">;
+			type _CheckId = DCommon.ExpectType<typeof input.id, number, "strict">;
+			type _CheckActive = DCommon.ExpectType<typeof input.active, boolean | undefined, "strict">;
 		});
 
-		it("returns the tag name for an empty group tuple", () => {
-			const result = DModeling.createTagNameWithGroup("ready", []);
-
-			expect(result).toBe("ready");
-
-			type _CheckResult = DCommon.ExpectType<typeof result, "ready", "strict">;
-			type _CheckTag = DCommon.ExpectType<typeof result, DModeling.GetTagValue<DModeling.ObjectTagWithGroups<readonly [], "ready">>, "strict">;
-		});
-
-		it("accepts groups whose length is only known at runtime", () => {
-			const groups: readonly string[] = ["user", "account"];
-			const result = DModeling.createTagNameWithGroup("pending", groups);
-
-			expect(result).toBe("[user][account]pending");
-
-			type _CheckResult = DCommon.ExpectType<typeof result, `${string}pending`, "strict">;
-			type _CheckTag = DCommon.ExpectType<typeof result, DModeling.GetTagValue<DModeling.ObjectTagWithGroups<readonly string[], "pending">>, "strict">;
-		});
-
-		it("preserves known groups when the tag name is dynamic", () => {
-			const name = "pending" as string;
-			const result = DModeling.createTagNameWithGroup(name, ["user"]);
-
-			expect(result).toBe("[user]pending");
-
-			type _CheckResult = DCommon.ExpectType<typeof result, `[user]${string}`, "strict">;
-		});
-
-		it("creates names accepted by the tagged object helpers", () => {
-			interface Pending extends DModeling.ObjectTagWithGroups<readonly ["user", "account"], "pending"> {
+		it("groups tags without requiring common properties", () => {
+			interface Created extends DModeling.ObjectTagWithGroup<"created", CreationGroup> {
 				readonly id: number;
 			}
 
-			const name = DModeling.createTagNameWithGroup("pending", ["user", "account"]);
-			const object = DModeling.taggedObject<Pending>(name, { id: 1 });
-			const factory = DModeling.createTaggedObjectFactory<Pending>(name);
-			const structure = DModeling.createTaggedObject<Pending>(name)({ id: DDataStructure.number() });
-			const result = factory({ id: 1 });
+			interface Failed extends DModeling.ObjectTagWithGroup<"failed", CreationGroup> {
+				readonly reason: string;
+			}
 
-			expect(result).toStrictEqual(object);
-			expect(structure.name).toBe(name);
-			expect(DModeling.getTagValue(result)).toBe(name);
-			expect(DModeling.hasTagValue(result, name)).toBe(true);
-			expect(DModeling.hasTagGroup(result, "account")).toBe(true);
+			const created = DModeling.taggedObject<Created>("[creation]created", { id: 1 });
+			const failed = DModeling.taggedObject<Failed>("[creation]failed", { reason: "missing" });
+			const input: readonly (Created | Failed)[] = [created, failed];
+			const result = DCommon.pipe(input, DArray.filter(DModeling.hasTagGroup("creation")));
 
-			type _CheckName = DCommon.ExpectType<typeof name, DModeling.GetTagValue<Pending>, "strict">;
-			type _CheckResult = DCommon.ExpectType<typeof result, Pending, "strict">;
+			expect(result).toStrictEqual([created, failed]);
+
+			type _CheckResult = DCommon.ExpectType<typeof result, readonly (Created | Failed)[], "strict">;
 		});
 
-		it("requires string names and groups", () => {
-			// @ts-expect-error The tag name must be a string.
-			DModeling.createTagNameWithGroup(42, ["user"]);
-			// @ts-expect-error Every group must be a string.
-			DModeling.createTagNameWithGroup("pending", [42]);
+		it("keeps the original tag when the group tuple is empty", () => {
+			type Ready = DModeling.ObjectTagWithGroup<"ready", readonly []>;
+			const input = DModeling.taggedObject<Ready>("ready", {});
+			const tag = DModeling.getTagValue(input);
+
+			expect(tag).toBe("ready");
+
+			type _CheckTag = DCommon.ExpectType<typeof tag, "ready", "strict">;
+		});
+
+		it("accepts grouped tags in factories and structures", () => {
+			interface Pending extends DModeling.ObjectTagWithGroup<"pending", readonly [UserGroup, AccountGroup]> {}
+
+			const object = DModeling.taggedObject<Pending>("[user][account]pending", {
+				id: 1,
+				name: DCommon.infer("Jane"),
+				active: true,
+			});
+			const factory = DModeling.createTaggedObjectFactory<Pending>("[user][account]pending");
+			const structure = DModeling.createTaggedObject<Pending>("[user][account]pending")({
+				id: DDataStructure.number(),
+				name: DDataStructure.string([DDataStructure.minCharacters(3)]),
+				active: DDataStructure.optional(DDataStructure.boolean()),
+			});
+			const result = factory({
+				id: 1,
+				name: DCommon.infer("Jane"),
+				active: true,
+			});
+
+			expect(result).toStrictEqual(object);
+			expect(structure.name).toBe("[user][account]pending");
+			expect(DEither.unwrapByInformationOrThrow(structure.check(result), "check-success")).toStrictEqual(result);
+			expect(DModeling.hasTagValue(result, "[user][account]pending")).toBe(true);
+			expect(DModeling.hasTagGroup(result, "account")).toBe(true);
+
+			type _CheckResult = DCommon.ExpectType<typeof result, Pending, "strict">;
+			type _CheckStructure = DCommon.ExpectType<DDataStructure.StructureValue<typeof structure>, Pending, "strict">;
+		});
+
+		it("requires declared groups and the complete tag in group order", () => {
+			type Pending = DModeling.ObjectTagWithGroup<"pending", UserGroup>;
+			type MultipleGroups = DModeling.ObjectTagWithGroup<"pending", readonly [UserGroup, AccountGroup]>;
+
+			// @ts-expect-error A group must be declared with ObjectTagGroup.
+			type _InvalidGroup = DModeling.ObjectTagWithGroup<"pending", "user">;
+			// @ts-expect-error Each group must be declared with ObjectTagGroup.
+			type _InvalidGroups = DModeling.ObjectTagWithGroup<"pending", readonly [UserGroup, "account"]>;
+			// @ts-expect-error A group name must be a string.
+			type _InvalidName = DModeling.ObjectTagGroup<42>;
+			const name: Pending["name"] = DCommon.infer("Jane");
+			const properties = {
+				id: 1,
+				name,
+			};
+
+			// @ts-expect-error The tag must include the declared group.
+			DModeling.taggedObject<Pending>("pending", properties);
+			// @ts-expect-error Every declared group must appear in the tag.
+			DModeling.taggedObject<MultipleGroups>("[user]pending", properties);
+			// @ts-expect-error The tag must preserve the declared group order.
+			DModeling.taggedObject<MultipleGroups>("[account][user]pending", properties);
+		});
+
+		it("requires the properties and constraints inherited from groups", () => {
+			type Pending = DModeling.ObjectTagWithGroup<"pending", readonly [UserGroup, AccountGroup]>;
+			const unconstrainedProperties = {
+				id: 1,
+				name: "Jane",
+			};
+
+			// @ts-expect-error Group properties must be objects.
+			type _InvalidProperties = DModeling.ObjectTagGroup<"user", string>;
+			// @ts-expect-error The id property inherited from the group is required.
+			DModeling.taggedObject<Pending>("[user][account]pending", { name: DCommon.infer("Jane") });
+			// @ts-expect-error The inherited name property must carry the group constraint.
+			DModeling.taggedObject<Pending>("[user][account]pending", unconstrainedProperties);
 		});
 	});
 
 	describe("hasTagGroup", () => {
-		interface UserCreated extends DModeling.ObjectTagWithGroups<readonly ["user", "created"], "event"> {
+		interface UserGroup extends DModeling.ObjectTagGroup<"user"> {}
+		interface CreatedGroup extends DModeling.ObjectTagGroup<"created"> {}
+		interface DeletedGroup extends DModeling.ObjectTagGroup<"deleted"> {}
+		interface OrderGroup extends DModeling.ObjectTagGroup<"order"> {}
+
+		interface UserCreated extends DModeling.ObjectTagWithGroup<"event", readonly [UserGroup, CreatedGroup]> {
 			readonly id: 1;
 		}
 
-		interface UserDeleted extends DModeling.ObjectTagWithGroups<readonly ["deleted", "user"], "event"> {
+		interface UserDeleted extends DModeling.ObjectTagWithGroup<"event", readonly [DeletedGroup, UserGroup]> {
 			readonly id: 2;
 		}
 
-		interface OrderCreated extends DModeling.ObjectTagWithGroups<readonly ["order", "created"], "event"> {
+		interface OrderCreated extends DModeling.ObjectTagWithGroup<"event", readonly [OrderGroup, CreatedGroup]> {
 			readonly id: 3;
 		}
 
 		type Event = UserCreated | UserDeleted | OrderCreated;
 
-		it("formats multiple groups before the tag name", () => {
-			type Pending = DModeling.ObjectTagWithGroups<readonly ["user", "account", "creation"], "pending">;
-			const input = DModeling.taggedObject<Pending>("[user][account][creation]pending", {});
-			const result = DModeling.getTagValue(input);
-
-			expect(result).toBe("[user][account][creation]pending");
-			expect(DModeling.hasTagGroup(input, "user")).toBe(true);
-			expect(DModeling.hasTagGroup(input, "account")).toBe(true);
-			expect(DModeling.hasTagGroup(input, "creation")).toBe(true);
-
-			type _CheckResult = DCommon.ExpectType<typeof result, "[user][account][creation]pending", "strict">;
-		});
-
 		it.each([
 			{
-				tag: "[user][created]event",
-				group: "user",
+				input: DModeling.taggedObject<UserCreated>("[user][created]event", { id: 1 }) as Event,
 				expected: true,
 			},
 			{
-				tag: "[deleted][user]event",
-				group: "user",
+				input: DModeling.taggedObject<UserDeleted>("[deleted][user]event", { id: 2 }) as Event,
 				expected: true,
 			},
 			{
-				tag: "[order][created]event",
-				group: "user",
+				input: DModeling.taggedObject<OrderCreated>("[order][created]event", { id: 3 }) as Event,
 				expected: false,
 			},
-			{
-				tag: "user-event",
-				group: "user",
-				expected: false,
-			},
-			{
-				tag: "(user)|event",
-				group: "user",
-				expected: false,
-			},
-			{
-				tag: "[super-user]event",
-				group: "user",
-				expected: false,
-			},
-			{
-				tag: "[user-admin]event",
-				group: "user",
-				expected: false,
-			},
-			{
-				tag: "prefix[user]suffix",
-				group: "user",
-				expected: true,
-			},
-			{
-				tag: "event[user]",
-				group: "user",
-				expected: true,
-			},
-			{
-				tag: "[user:event",
-				group: "user",
-				expected: false,
-			},
-			{
-				tag: "[]event",
-				group: "",
-				expected: true,
-			},
-			{
-				tag: "[a.b]event",
-				group: "a.b",
-				expected: true,
-			},
-		])("checks the exact group $group in $tag", ({ tag, group, expected }) => {
-			const input = DModeling.taggedObject<DModeling.ObjectTag>(tag, {});
-			const result = DModeling.hasTagGroup(input, group);
+		])("checks a declared group in $input", ({ input, expected }) => {
+			const result = DModeling.hasTagGroup(input, "user");
 
 			expect(result).toBe(expected);
 
@@ -436,7 +461,8 @@ describe("objectTag", () => {
 		});
 
 		it("only extracts variants containing the exact group", () => {
-			interface SuperUser extends DModeling.ObjectTagWithGroups<readonly ["super-user"], "event"> {
+			interface SuperUserGroup extends DModeling.ObjectTagGroup<"super-user"> {}
+			interface SuperUser extends DModeling.ObjectTagWithGroup<"event", SuperUserGroup> {
 				readonly id: 4;
 			}
 
@@ -453,6 +479,41 @@ describe("objectTag", () => {
 			}
 		});
 
+		it("keeps ungrouped variants in the negative branch of a mixed union", () => {
+			interface Ungrouped extends DModeling.ObjectTag<"event"> {
+				readonly reason: string;
+			}
+
+			const input = DModeling.taggedObject<Ungrouped>("event", { reason: "ungrouped" }) as Event | Ungrouped;
+
+			if (DModeling.hasTagGroup(input, "user")) {
+				type _CheckInput = DCommon.ExpectType<typeof input, UserCreated | UserDeleted, "strict">;
+
+				expect.fail("an ungrouped variant should not match");
+			} else {
+				type _CheckInput = DCommon.ExpectType<typeof input, OrderCreated | Ungrouped, "strict">;
+
+				expect(input).toStrictEqual(DModeling.taggedObject<Ungrouped>("event", { reason: "ungrouped" }));
+			}
+		});
+
+		it("rejects group selection when no group can be inferred", () => {
+			const ungrouped = DModeling.taggedObject<DModeling.ObjectTag<"event">>("event", {});
+			const broad = ungrouped as DModeling.ObjectTag;
+			const empty = DModeling.taggedObject<DModeling.ObjectTagWithGroup<"ready", readonly []>>("ready", {});
+
+			// @ts-expect-error An ungrouped tag has no available groups.
+			DModeling.hasTagGroup(ungrouped, "event");
+			// @ts-expect-error An ungrouped tag also has no available groups in a pipe.
+			DCommon.pipe(ungrouped, DModeling.hasTagGroup("user"));
+			// @ts-expect-error A broad string tag does not establish any group membership.
+			DModeling.hasTagGroup(broad, "user");
+			// @ts-expect-error A broad string tag also has no inferred groups in a pipe.
+			DCommon.pipe(broad, DModeling.hasTagGroup("user"));
+			// @ts-expect-error An empty group tuple does not introduce any available groups.
+			DModeling.hasTagGroup(empty, "user");
+		});
+
 		it("only accepts groups present in the input tag types", () => {
 			const input = DModeling.taggedObject<UserCreated>("[user][created]event", { id: 1 }) as Event;
 
@@ -466,9 +527,6 @@ describe("objectTag", () => {
 			DModeling.hasTagGroup(input, ["user", "missing"]);
 			// @ts-expect-error The group must also exist when used in a pipe.
 			DCommon.pipe(input, DModeling.hasTagGroup("missing"));
-			const ungrouped = DModeling.taggedObject<DModeling.ObjectTag<"event">>("event", {});
-			// @ts-expect-error An ungrouped tag has no available groups.
-			DModeling.hasTagGroup(ungrouped, "event");
 		});
 	});
 

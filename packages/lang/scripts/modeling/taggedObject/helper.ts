@@ -5,6 +5,8 @@ import type * as DObject from "@scripts/object";
 import { type ExtractByTagValue, type GetTagValue, objectTagKind, type ShapeTaggedObjectStructure, TaggedObjectStructure, type ObjectTag } from "./base";
 import * as DString from "@scripts/string";
 import * as DArray from "@scripts/array";
+import { type createKind } from "../kind";
+import * as DEither from "@scripts/either";
 
 export function getTagValue<
 	GenericObjectTag extends ObjectTag,
@@ -63,45 +65,62 @@ export function hasTagValue(
 		: tagValue === value;
 }
 
-type ComputeGroups<
-	GenericGroups extends readonly string[],
-> = GenericGroups extends readonly []
-	? ""
-	: GenericGroups extends readonly [
-		infer InferredFirst extends string,
-		...infer InferredRest extends readonly string[],
-	]
-		? DCommon.IsNever<InferredFirst> extends true
-			? ComputeGroups<InferredRest>
-			: `[${InferredFirst}]${ComputeGroups<InferredRest>}`
-		: string;
+type ObjectTagGroupKindHandler = ReturnType<
+	typeof createKind<
+		"object-tag-group",
+		{
+			name: string;
+			properties: object;
+		}
+	>
+>;
 
-export interface ObjectTagWithGroups<
-	GenericGroups extends readonly string[] = readonly [],
-	GenericValue extends string = string,
+export interface ObjectTagGroup<
+	GenericName extends string = string,
+	GenericProperties extends object = {},
 > extends DKind.Kind<
-	typeof objectTagKind,
-	`${ComputeGroups<GenericGroups>}${GenericValue}`
+		ObjectTagGroupKindHandler,
+		{
+			name: GenericName;
+			properties: GenericProperties;
+		}
 	> {
 
 }
 
-export function createTagNameWithGroup<
-	GenericName extends string,
-	const GenericGroups extends readonly string[],
->(
-	name: GenericName,
-	groups: GenericGroups,
-): `${ComputeGroups<GenericGroups>}${GenericName}` {
-	const formattedGroups = DArray.map(groups, (group) => `[${group}]`);
+type ComputeGroupTag<
+	GenericGroups extends readonly ObjectTagGroup[],
+> = GenericGroups extends readonly []
+	? ""
+	: GenericGroups extends readonly [
+		infer InferredFirst extends ObjectTagGroup,
+		...infer InferredRest extends readonly ObjectTagGroup[],
+	]
+		? `[${DKind.GetValue<ObjectTagGroupKindHandler, InferredFirst>["name"]}]${ComputeGroupTag<InferredRest>}`
+		: never;
 
-	return `${DString.join(formattedGroups, "")}${name}` as never;
-}
+type ComputeGroupShape<
+	GenericGroups extends readonly ObjectTagGroup[],
+> = DCommon.UnionToIntersection<
+	DArray.Unwrap<GenericGroups> extends infer InferredElement
+		? InferredElement extends ObjectTagGroup
+			? DKind.GetValue<ObjectTagGroupKindHandler, InferredElement>["properties"]
+			: never
+		: never
+>;
+
+export type ObjectTagWithGroup<
+	GenericValue extends string = string,
+	GenericGroup extends ObjectTagGroup | readonly ObjectTagGroup[] = ObjectTagGroup,
+> = (
+	& ObjectTag<`${ComputeGroupTag<DArray.Coalescing<GenericGroup>>}${GenericValue}`>
+	& ComputeGroupShape<DArray.Coalescing<GenericGroup>>
+);
 
 type ExtractTagGroups<
 	GenericTagValue extends string,
 > = string extends GenericTagValue
-	? string
+	? never
 	: GenericTagValue extends `${string}[${infer InferredGroup}]${infer InferredRest}`
 		? InferredGroup | ExtractTagGroups<InferredRest>
 		: never;
@@ -135,7 +154,7 @@ export function hasTagGroup(
 	if (args.length === 1) {
 		const [group] = args;
 
-		return (input: ObjectTag) => hasTagGroup(input, group);
+		return (input: ObjectTag) => hasTagGroup(input, group as never);
 	}
 
 	const [input, group] = args;
