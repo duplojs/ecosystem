@@ -179,6 +179,123 @@ describe("objectTag", () => {
 		expect(result).toBe(42);
 	});
 
+	describe("ObjectTagWithGroup with nested groups", () => {
+		interface UserGroup extends DModeling.ObjectTagGroup<"user", { readonly id: number }> {}
+		interface AccountGroup extends DModeling.ObjectTagGroup<"account", { readonly accountId: number }> {}
+		interface CreationGroup extends DModeling.ObjectTagGroup<"creation"> {}
+
+		it("flattens mutable and readonly tuples in first appearance order", () => {
+			type Pending = DModeling.ObjectTagWithGroup<"pending", readonly [
+				UserGroup,
+				[AccountGroup, readonly [readonly [], CreationGroup]],
+			]>;
+			const input = DModeling.taggedObject<Pending>("[user][account][creation]pending", {
+				id: 1,
+				accountId: 2,
+			});
+			const tag = DModeling.getTagValue(input);
+
+			expect(tag).toBe("[user][account][creation]pending");
+			expect(input.id).toBe(1);
+			expect(input.accountId).toBe(2);
+
+			type _CheckTag = DCommon.ExpectType<typeof tag, "[user][account][creation]pending", "strict">;
+		});
+
+		it("removes duplicate groups from a flat tuple", () => {
+			type Pending = DModeling.ObjectTagWithGroup<"pending", readonly [UserGroup, UserGroup, AccountGroup, UserGroup, AccountGroup]>;
+			const properties = {
+				id: 1,
+				accountId: 2,
+			};
+			const input = DModeling.taggedObject<Pending>("[user][account]pending", properties);
+			const tag = DModeling.getTagValue(input);
+
+			expect(tag).toBe("[user][account]pending");
+
+			type _CheckTag = DCommon.ExpectType<typeof tag, "[user][account]pending", "strict">;
+
+			// @ts-expect-error Duplicate groups are not repeated in the computed tag.
+			DModeling.taggedObject<Pending>("[user][user][account]pending", properties);
+		});
+
+		it("removes duplicates across nested and reusable tuples", () => {
+			type UserAccountGroups = readonly [UserGroup, AccountGroup];
+			type Pending = DModeling.ObjectTagWithGroup<"pending", readonly [
+				CreationGroup,
+				UserAccountGroups,
+				readonly [AccountGroup, readonly [CreationGroup, UserGroup]],
+				UserAccountGroups,
+			]>;
+			const input = DModeling.taggedObject<Pending>("[creation][user][account]pending", {
+				id: 1,
+				accountId: 2,
+			});
+			const tag = DModeling.getTagValue(input);
+
+			expect(tag).toBe("[creation][user][account]pending");
+			expect(DModeling.hasTagGroup(input, "user")).toBe(true);
+
+			type _CheckTag = DCommon.ExpectType<typeof tag, "[creation][user][account]pending", "strict">;
+		});
+
+		it("preserves properties of groups sharing a name without repeating the name", () => {
+			interface UserDetails extends DModeling.ObjectTagGroup<"user", {
+				readonly name: string & DString.MinCharacters<3>;
+				readonly active?: boolean;
+			}> {}
+
+			interface UserIdentifier extends DModeling.ObjectTagGroup<"user", { readonly id: 1 }> {}
+			interface AccountDetails extends DModeling.ObjectTagGroup<"account", { readonly label?: string }> {}
+
+			interface Pending extends DModeling.ObjectTagWithGroup<"pending", readonly [
+				UserGroup,
+				AccountGroup,
+				readonly [UserDetails, CreationGroup, UserIdentifier, UserDetails, AccountDetails],
+			]> {}
+
+			const name: Pending["name"] = DCommon.infer("Jane");
+			const result = DCommon.pipe(
+				{
+					id: 1 as const,
+					name,
+					accountId: 2,
+				},
+				DModeling.createTaggedObjectFactory<Pending>("[user][account][creation]pending"),
+			);
+
+			expect(result).toStrictEqual({
+				id: 1,
+				name: "Jane",
+				accountId: 2,
+				[DModeling.objectTagKind.runTimeKey]: "[user][account][creation]pending",
+			});
+			expect(result.active).toBeUndefined();
+			expect(result.label).toBeUndefined();
+
+			type _CheckResult = DCommon.ExpectType<typeof result, Pending, "strict">;
+			type _CheckId = DCommon.ExpectType<typeof result.id, 1, "strict">;
+			type _CheckName = DCommon.ExpectType<typeof result.name, string & DString.MinCharacters<3>, "strict">;
+			type _CheckActive = DCommon.ExpectType<typeof result.active, boolean | undefined, "strict">;
+			type _CheckLabel = DCommon.ExpectType<typeof result.label, string | undefined, "strict">;
+		});
+
+		it("supports empty tuples at every nesting level", () => {
+			type Ready = DModeling.ObjectTagWithGroup<"ready", readonly [readonly [], [[], readonly []]]>;
+			type _CheckReady = DCommon.ExpectType<Ready, DModeling.ObjectTag<"ready">, "strict">;
+			const input = DModeling.taggedObject<Ready>("ready", {});
+
+			expect(DModeling.getTagValue(input)).toBe("ready");
+		});
+
+		it("requires groups at every nesting level and known tuple positions", () => {
+			// @ts-expect-error Nested tuples may only contain declared groups or other tuples.
+			type _InvalidNestedGroup = DModeling.ObjectTagWithGroup<"pending", readonly [UserGroup, readonly [42]]>;
+			type _CheckDynamicArray = DCommon.ExpectType<DModeling.GetTagValue<DModeling.ObjectTagWithGroup<"pending", readonly UserGroup[]>>, never, "strict">;
+			type _CheckNestedDynamicArray = DCommon.ExpectType<DModeling.GetTagValue<DModeling.ObjectTagWithGroup<"pending", readonly [AccountGroup, readonly UserGroup[]]>>, never, "strict">;
+		});
+	});
+
 	describe("ObjectTagWithGroup", () => {
 		interface UserGroup extends DModeling.ObjectTagGroup<"user", {
 			readonly id: number;

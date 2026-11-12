@@ -88,33 +88,48 @@ export interface ObjectTagGroup<
 
 }
 
+type ObjectTagGroupInput = ObjectTagGroup | readonly ObjectTagGroupInput[];
+
 type ComputeGroupTag<
-	GenericGroups extends readonly ObjectTagGroup[],
+	GenericGroups extends readonly ObjectTagGroupInput[],
+	GenericSeenNames extends string = never,
 > = GenericGroups extends readonly []
 	? ""
 	: GenericGroups extends readonly [
-		infer InferredFirst extends ObjectTagGroup,
-		...infer InferredRest extends readonly ObjectTagGroup[],
+		infer InferredFirst extends ObjectTagGroupInput,
+		...infer InferredRest extends readonly ObjectTagGroupInput[],
 	]
-		? `[${DKind.GetValue<ObjectTagGroupKindHandler, InferredFirst>["name"]}]${ComputeGroupTag<InferredRest>}`
+		? InferredFirst extends readonly ObjectTagGroupInput[]
+			? ComputeGroupTag<readonly [...InferredFirst, ...InferredRest], GenericSeenNames>
+			: InferredFirst extends ObjectTagGroup
+				? DKind.GetValue<ObjectTagGroupKindHandler, InferredFirst>["name"] extends GenericSeenNames
+					? ComputeGroupTag<InferredRest, GenericSeenNames>
+					: `[${DKind.GetValue<ObjectTagGroupKindHandler, InferredFirst>["name"]}]${ComputeGroupTag<
+						InferredRest,
+						GenericSeenNames | DKind.GetValue<ObjectTagGroupKindHandler, InferredFirst>["name"]
+					>}`
+				: never
 		: never;
 
 type ComputeGroupShape<
-	GenericGroups extends readonly ObjectTagGroup[],
-> = DCommon.UnionToIntersection<
-	DArray.Unwrap<GenericGroups> extends infer InferredElement
-		? InferredElement extends ObjectTagGroup
-			? DKind.GetValue<ObjectTagGroupKindHandler, InferredElement>["properties"]
-			: never
-		: never
->;
+	GenericGroup extends ObjectTagGroupInput,
+> = GenericGroup extends ObjectTagGroup
+	? DKind.GetValue<ObjectTagGroupKindHandler, GenericGroup>["properties"]
+	: GenericGroup extends readonly []
+		? unknown
+		: GenericGroup extends readonly [
+			infer InferredFirst extends ObjectTagGroupInput,
+			...infer InferredRest extends readonly ObjectTagGroupInput[],
+		]
+			? ComputeGroupShape<InferredFirst> & ComputeGroupShape<InferredRest>
+			: never;
 
 export type ObjectTagWithGroup<
 	GenericValue extends string = string,
-	GenericGroup extends ObjectTagGroup | readonly ObjectTagGroup[] = ObjectTagGroup,
+	GenericGroup extends ObjectTagGroupInput = ObjectTagGroup,
 > = (
 	& ObjectTag<`${ComputeGroupTag<DArray.Coalescing<GenericGroup>>}${GenericValue}`>
-	& ComputeGroupShape<DArray.Coalescing<GenericGroup>>
+	& DCommon.UnionToIntersection<ComputeGroupShape<GenericGroup>>
 );
 
 type ExtractTagGroups<
