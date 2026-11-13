@@ -40,6 +40,7 @@ export * from "./pipe";
 export * from "./pipeCall";
 export * from "./prepareAsyncPipe";
 export * from "./preparePipe";
+export * from "./print";
 export * from "./promiseAll";
 export * from "./promiseObject";
 export * from "./queue";
