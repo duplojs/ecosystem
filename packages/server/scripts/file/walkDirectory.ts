@@ -1,5 +1,7 @@
+import { normalizePlatformPathOrThrow, toPlatformPathOrThrow } from "@scripts/common";
 import * as DCommon from "@duplojs/lang/common";
 import * as DPath from "@duplojs/lang/path";
+import * as DArray from "@duplojs/lang/array";
 import * as DGenerator from "@duplojs/lang/generator";
 import * as DEither from "@duplojs/lang/either";
 import * as DPattern from "@duplojs/lang/pattern";
@@ -84,25 +86,25 @@ declare module "@scripts/implementor" {
 export const walkDirectory = implementFunction(
 	"walkDirectory",
 	{
-		NODE: async(path, params) => nodeFileSystem.value.readdir(
-			path,
+		NODE: async(path, params) => Promise.resolve().then(() => nodeFileSystem.value.readdir(
+			toPlatformPathOrThrow(path),
 			{
 				recursive: params?.recursive ?? false,
 				withFileTypes: true,
 			},
-		)
+		))
 			.then(
 				(result) => {
 					const currentWorkDirectory = DSCommon.getCurrentWorkDirectoryOrThrow();
 
 					return DCommon.pipe(
 						result,
-						DGenerator.map(
+						DArray.map(
 							(dirent) => ({
 								dirent,
 								path: DPath.resolveFrom(
 									currentWorkDirectory,
-									[DPath.normalize(`${dirent.parentPath}/${dirent.name}`)!],
+									[normalizePlatformPathOrThrow(`${dirent.parentPath}/${dirent.name}`)],
 								),
 							}),
 						),

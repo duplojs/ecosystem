@@ -1,3 +1,4 @@
+import { toPlatformPathOrThrow } from "./platformPath";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction } from "@scripts/implementor";
@@ -14,12 +15,12 @@ export const setCurrentWorkingDirectory = implementFunction(
 	"setCurrentWorkingDirectory",
 	{
 		NODE: (path) => DEither.whenIsRightOtherwise(
-			DEither.safeCallback(() => void process.chdir(path)),
+			DEither.safeCallback(() => void process.chdir(toPlatformPathOrThrow(path))),
 			DEither.ok,
 			DEither.fail,
 		),
 		DENO: (path) => DEither.whenIsRightOtherwise(
-			DEither.safeCallback(() => void Deno.chdir(path)),
+			DEither.safeCallback(() => void Deno.chdir(toPlatformPathOrThrow(path))),
 			DEither.ok,
 			DEither.fail,
 		),

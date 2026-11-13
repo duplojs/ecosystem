@@ -55,10 +55,27 @@ describe("normalize", () => {
 		[".git/config", ".git/config"],
 		["src/index.ts", "src/index.ts"],
 		["..foo/bar", "..foo/bar"],
+		["file:report", "file:report"],
+		["file:tmp/fichier", "file:tmp/fichier"],
+		["./file:report", "file:report"],
+		["FILE:report", "FILE:report"],
+		["file:/foo/bar", "/foo/bar"],
+		["file:./tmp/fichier", "/tmp/fichier"],
+		["FILE:./tmp/fichier", "/tmp/fichier"],
+		["file:../tmp/fichier", "file:../tmp/fichier"],
+		["file:.tmp/fichier", "file:.tmp/fichier"],
+		["file:.env", "file:.env"],
+		["file:.", "file:."],
+		["./file:///foo/bar", "/foo/bar"],
+		["/file:///foo/bar", "/foo/bar"],
+		["./FILE:///foo%20bar", "/foo bar"],
+		["a/file:///foo/bar", "a/file:/foo/bar"],
+		["/a/file:///foo/bar", "/a/file:/foo/bar"],
+		["file:report%20name", "file:report%20name"],
 
 		["file:///", "/"],
 		["file:///foo/bar", "/foo/bar"],
-		["file:/foo/bar", "/foo/bar"],
+		["file:///C:/project/main.mjs", "/C:/project/main.mjs"],
 		["FILE:///foo/bar", "/foo/bar"],
 		["file://localhost/foo/bar", "/foo/bar"],
 		["file:///foo//bar/../baz/", "/foo/baz"],
@@ -79,6 +96,23 @@ describe("normalize", () => {
 		},
 	);
 
+	it("keeps relative names prefixed with file: stable", () => {
+		const result = DPath.normalize("./file:tmp/fichier");
+
+		expect(result).toBe("file:tmp/fichier");
+		expect(DPath.normalize(result!)).toBe("file:tmp/fichier");
+	});
+
+	it.each([
+		"./file:///foo/bar",
+		"/file:///foo/bar",
+	])("normalizes the prefixed URL %j in one pass", (path) => {
+		const result = DPath.normalize(path);
+
+		expect(result).toBe("/foo/bar");
+		expect(DPath.normalize(result!)).toBe(result);
+	});
+
 	it.each([
 		"file:///foo\0bar",
 		"file:///foo%00bar",
@@ -90,6 +124,8 @@ describe("normalize", () => {
 		"file://remote-host/foo/bar",
 		"file://user@localhost/foo",
 		"file://localhost:80/foo",
+		"./file://remote-host/foo/bar",
+		"/file:///foo%2Fbar",
 	])("returns null for an invalid file URL: %j", (path) => {
 		expect(DPath.normalize(path)).toBeNull();
 	});

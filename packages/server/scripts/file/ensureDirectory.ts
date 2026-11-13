@@ -1,3 +1,4 @@
+import { toPlatformPathOrThrow } from "@scripts/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -94,20 +95,20 @@ declare module "@scripts/implementor" {
 export const ensureDirectory = implementFunction(
 	"ensureDirectory",
 	{
-		NODE: async(path) => nodeFileSystem.value.mkdir(
-			path,
+		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.mkdir(
+			toPlatformPathOrThrow(path),
 			{
 				recursive: true,
 			},
-		)
+		))
 			.then(() => DEither.right("file-system-ensure-directory"))
 			.catch(handleNodeEnsureDirectoryError),
-		DENO: (path) => Deno.mkdir(
-			path,
+		DENO: (path) => Promise.resolve().then(() => Deno.mkdir(
+			toPlatformPathOrThrow(path),
 			{
 				recursive: true,
 			},
-		)
+		))
 			.then(() => DEither.right("file-system-ensure-directory"))
 			.catch(handleDenoEnsureDirectoryError),
 	},

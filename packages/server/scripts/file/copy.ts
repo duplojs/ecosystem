@@ -1,3 +1,4 @@
+import { toPlatformPathOrThrow } from "@scripts/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -82,11 +83,11 @@ declare module "@scripts/implementor" {
 const copyImplementation = implementFunction(
 	"copy",
 	{
-		NODE: async(fromPath, toPath) => nodeFileSystem.value.cp(
-			fromPath,
-			toPath,
+		NODE: async(fromPath, toPath) => Promise.resolve().then(() => nodeFileSystem.value.cp(
+			toPlatformPathOrThrow(fromPath),
+			toPlatformPathOrThrow(toPath),
 			{ recursive: true },
-		)
+		))
 			.then(() => DEither.right("file-system-copy"))
 			.catch(handleNodeCopyError),
 	},

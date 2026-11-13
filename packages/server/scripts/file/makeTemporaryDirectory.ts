@@ -1,3 +1,6 @@
+import * as DPath from "@duplojs/lang/path";
+import * as DString from "@duplojs/lang/string";
+import { normalizePlatformPathOrThrow, toPlatformPathOrThrow } from "@scripts/common";
 import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
@@ -86,11 +89,11 @@ declare module "@scripts/implementor" {
 export const makeTemporaryDirectory = implementFunction(
 	"makeTemporaryDirectory",
 	{
-		NODE: async(prefix) => nodeFileSystem.value.mkdtemp(prefix)
-			.then((value) => DEither.right("file-system-make-temporary-directory", value))
+		NODE: async(prefix) => Promise.resolve().then(() => nodeFileSystem.value.mkdtemp(DString.slice(toPlatformPathOrThrow(DPath.createOrThrow(`${prefix}duplo`)), 0, -5)))
+			.then((value) => DEither.right("file-system-make-temporary-directory", normalizePlatformPathOrThrow(value)))
 			.catch(handleNodeMakeTemporaryDirectoryError),
-		DENO: (prefix) => Deno.makeTempDir({ prefix })
-			.then((value) => DEither.right("file-system-make-temporary-directory", value))
+		DENO: (prefix) => Promise.resolve().then(() => Deno.makeTempDir({ prefix }))
+			.then((value) => DEither.right("file-system-make-temporary-directory", normalizePlatformPathOrThrow(value)))
 			.catch(handleDenoMakeTemporaryDirectoryError),
 	},
 );

@@ -1,3 +1,4 @@
+import { toPlatformPathOrThrow } from "@scripts/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -113,20 +114,20 @@ declare module "@scripts/implementor" {
 export const makeDirectory = implementFunction(
 	"makeDirectory",
 	{
-		NODE: async(path, params) => nodeFileSystem.value.mkdir(
-			path,
+		NODE: async(path, params) => Promise.resolve().then(() => nodeFileSystem.value.mkdir(
+			toPlatformPathOrThrow(path),
 			{
 				recursive: params?.recursive,
 			},
-		)
+		))
 			.then(() => DEither.right("file-system-make-directory"))
 			.catch(handleNodeMakeDirectoryError),
-		DENO: (path, params) => Deno.mkdir(
-			path,
+		DENO: (path, params) => Promise.resolve().then(() => Deno.mkdir(
+			toPlatformPathOrThrow(path),
 			{
 				recursive: params?.recursive,
 			},
-		)
+		))
 			.then(() => DEither.right("file-system-make-directory"))
 			.catch(handleDenoMakeDirectoryError),
 	},

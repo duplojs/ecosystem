@@ -26,6 +26,27 @@ describe("readLink", () => {
 		}
 	});
 
+	it.each(["alias/../victim.txt", "file:report", "C:\\folder\\..\\target"])("preserves NODE target text %s", async(target) => {
+		setEnvironment("NODE");
+		setFsPromisesMock({ readlink: vi.fn().mockResolvedValue(target) });
+
+		const result = await DSFile.readLink(DCommon.infer("/tmp/link"));
+		const value = DEither.unwrapByInformationOrThrow(result, "file-system-read-link");
+
+		type _CheckTarget = DCommon.ExpectType<typeof value, string, "strict">;
+		expect(value).toBe(target);
+	});
+
+	it.each(["alias/../victim.txt", "file:report", "C:\\folder\\..\\target"])("preserves DENO target text %s", async(target) => {
+		setEnvironment("DENO");
+		setDenoMock({ readLink: vi.fn().mockResolvedValue(target) });
+
+		const result = await DSFile.readLink(DCommon.infer("/tmp/link"));
+		const value = DEither.unwrapByInformationOrThrow(result, "file-system-read-link");
+
+		expect(value).toBe(target);
+	});
+
 	it("returns fail when NODE readLink rejects", async() => {
 		setEnvironment("NODE");
 		setFsPromisesMock({

@@ -1,3 +1,4 @@
+import { toPlatformPathOrThrow } from "@scripts/common";
 import type * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -112,16 +113,16 @@ declare module "@scripts/implementor" {
 const moveImplementation = implementFunction(
 	"move",
 	{
-		NODE: async(fromPath, toPath) => nodeFileSystem.value.rename(
-			fromPath,
-			toPath,
-		)
+		NODE: async(fromPath, toPath) => Promise.resolve().then(() => nodeFileSystem.value.rename(
+			toPlatformPathOrThrow(fromPath),
+			toPlatformPathOrThrow(toPath),
+		))
 			.then(() => DEither.right("file-system-move"))
 			.catch(handleNodeMoveError),
-		DENO: (fromPath, toPath) => Deno.rename(
-			fromPath,
-			toPath,
-		)
+		DENO: (fromPath, toPath) => Promise.resolve().then(() => Deno.rename(
+			toPlatformPathOrThrow(fromPath),
+			toPlatformPathOrThrow(toPath),
+		))
 			.then(() => DEither.right("file-system-move"))
 			.catch(handleDenoMoveError),
 	},

@@ -1,3 +1,4 @@
+import { normalizePlatformPathOrThrow, toPlatformPathOrThrow } from "@scripts/common";
 import * as DCommon from "@duplojs/lang/common";
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
@@ -97,24 +98,24 @@ declare module "@scripts/implementor" {
 export const makeTemporaryFile = implementFunction(
 	"makeTemporaryFile",
 	{
-		NODE: async(prefix, suffix) => {
-			const tempPath = DCommon.forwardAsserts(nodeOs.value.tmpdir(), DPath.is);
+		NODE: (prefix, suffix) => Promise.resolve().then(() => {
+			const tempPath = normalizePlatformPathOrThrow(nodeOs.value.tmpdir());
 			const fileName = DCommon.forwardAsserts(`${prefix}${nodeCrypto.value.randomUUID()}${suffix ?? ""}`, DPath.isSegment);
 
 			const fileTemporaryPath = DPath.resolveRelative([
 				tempPath,
 				fileName,
 			]);
-			return nodeFileSystem.value.open(fileTemporaryPath, "wx")
+			return Promise.resolve().then(() => nodeFileSystem.value.open(toPlatformPathOrThrow(fileTemporaryPath), "wx"))
 				.then((fh) => fh.close())
-				.then(() => DEither.right("file-system-make-temporary-file", fileTemporaryPath))
-				.catch(handleNodeMakeTemporaryFileError);
-		},
-		DENO: (prefix, suffix) => Deno.makeTempFile({
+				.then(() => DEither.right("file-system-make-temporary-file", fileTemporaryPath));
+		})
+			.catch(handleNodeMakeTemporaryFileError),
+		DENO: (prefix, suffix) => Promise.resolve().then(() => Deno.makeTempFile({
 			prefix,
 			suffix,
-		})
-			.then((value) => DEither.right("file-system-make-temporary-file", value))
+		}))
+			.then((value) => DEither.right("file-system-make-temporary-file", normalizePlatformPathOrThrow(value)))
 			.catch(handleDenoMakeTemporaryFileError),
 	},
 );

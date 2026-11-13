@@ -6,6 +6,22 @@ export interface ServerFunction {}
 export const SupportedEnvironment = DCommon.createEnum(["BUN", "DENO", "NODE", "TEST"]);
 export type SupportedEnvironment = DCommon.GetEnumValue<typeof SupportedEnvironment>;
 
+export const OS = DCommon.createEnum([
+	"aix",
+	"android",
+	"cygwin",
+	"darwin",
+	"freebsd",
+	"haiku",
+	"illumos",
+	"linux",
+	"netbsd",
+	"openbsd",
+	"solaris",
+	"windows",
+]);
+export type OS = DCommon.GetEnumValue<typeof OS>;
+
 const SymbolEnvironmentStore = Symbol("environmentStore");
 type SymbolEnvironmentStore = typeof SymbolEnvironmentStore;
 
@@ -114,4 +130,27 @@ export const nodeCrypto = DCommon.memo(
 
 export const nodeOs = DCommon.memo(
 	() => requireModule.value("node:os"),
+);
+
+export const nodePath = DCommon.memo(
+	() => requireModule.value("node:path"),
+);
+
+export const currentOS = DCommon.memo<OS>(
+	() => DPattern.matchWithStringOtherwise(
+		environmentStoreHandler.value,
+		{
+			DENO: () => Deno.build.os,
+		},
+		() => {
+			const platform = process.platform;
+			if (platform === "win32") {
+				return OS.windows;
+			}
+			if (platform === "sunos") {
+				return OS.solaris;
+			}
+			return platform;
+		},
+	),
 );

@@ -1,3 +1,4 @@
+import { toPlatformPathOrThrow } from "@scripts/common";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
@@ -116,19 +117,19 @@ declare module "@scripts/implementor" {
 const symlinkImplementation = implementFunction(
 	"symlink",
 	{
-		NODE: async(oldPath, newPath, params) => nodeFileSystem.value.symlink(
-			oldPath,
-			newPath,
+		NODE: async(oldPath, newPath, params) => Promise.resolve().then(() => nodeFileSystem.value.symlink(
+			toPlatformPathOrThrow(oldPath),
+			toPlatformPathOrThrow(newPath),
 			params ? symlinkTypeMapper[params.type] : undefined,
-		)
+		))
 			.then(() => DEither.right("file-system-symlink"))
 			.catch(handleNodeSymlinkError),
-		DENO: (oldPath, newPath, params) => Deno
+		DENO: (oldPath, newPath, params) => Promise.resolve().then(() => Deno
 			.symlink(
-				oldPath,
-				newPath,
+				toPlatformPathOrThrow(oldPath),
+				toPlatformPathOrThrow(newPath),
 				params ? { type: symlinkTypeMapper[params.type] } : undefined,
-			)
+			))
 			.then(() => DEither.right("file-system-symlink"))
 			.catch(handleDenoSymlinkError),
 	},

@@ -1,3 +1,4 @@
+import { toPlatformPathOrThrow } from "@scripts/common";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
@@ -127,12 +128,12 @@ const writeJsonFileImplementation = implementFunction(
 					"file-system-write-json-file-error",
 					new WriteJsonFileError(value as never),
 				),
-				"safe-callback-success": (value) => nodeFileSystem.value
+				"safe-callback-success": (value) => Promise.resolve().then(() => nodeFileSystem.value
 					.writeFile(
-						path,
+						toPlatformPathOrThrow(path),
 						value,
 						{ encoding: "utf-8" },
-					)
+					))
 					.then(() => DEither.right("file-system-write-json-file"))
 					.catch(handleNodeWriteJsonFileError),
 			}),
@@ -150,11 +151,11 @@ const writeJsonFileImplementation = implementFunction(
 					"file-system-write-json-file-error",
 					new WriteJsonFileError(value as never),
 				),
-				"safe-callback-success": (value) => Deno
+				"safe-callback-success": (value) => Promise.resolve().then(() => Deno
 					.writeTextFile(
-						path,
+						toPlatformPathOrThrow(path),
 						value,
-					)
+					))
 					.then(() => DEither.right("file-system-write-json-file"))
 					.catch(handleDenoWriteJsonFileError),
 			}),
@@ -172,8 +173,8 @@ const writeJsonFileImplementation = implementFunction(
 					"file-system-write-json-file-error",
 					new WriteJsonFileError(value as never),
 				),
-				"safe-callback-success": (value) => Bun.file(path)
-					.write(value)
+				"safe-callback-success": (value) => Promise.resolve().then(() => Bun.file(toPlatformPathOrThrow(path))
+					.write(value))
 					.then(() => DEither.right("file-system-write-json-file"))
 					.catch(handleNodeWriteJsonFileError),
 			}),

@@ -1,3 +1,4 @@
+import { normalizePlatformPath } from "./platformPath";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
@@ -18,7 +19,7 @@ export const getCurrentWorkDirectory = implementFunction(
 		NODE: () => DCommon.pipe(
 			DEither.safeCallback(
 				() => DCommon.whenElse(
-					DPath.normalize(process.cwd()),
+					normalizePlatformPath(process.cwd()),
 					(value) => DCommon.isType(value, "string") && DPath.isAbsolute(value),
 					DEither.success,
 					DEither.error,
@@ -29,7 +30,7 @@ export const getCurrentWorkDirectory = implementFunction(
 		DENO: () => DCommon.pipe(
 			DEither.safeCallback(
 				() => DCommon.whenElse(
-					DPath.normalize(Deno.cwd()),
+					normalizePlatformPath(Deno.cwd()),
 					(value) => DCommon.isType(value, "string") && DPath.isAbsolute(value),
 					DEither.success,
 					DEither.error,

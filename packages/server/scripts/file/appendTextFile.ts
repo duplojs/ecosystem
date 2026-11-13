@@ -1,3 +1,4 @@
+import { toPlatformPathOrThrow } from "@scripts/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -113,17 +114,17 @@ declare module "@scripts/implementor" {
 const appendTextFileImplementation = implementFunction(
 	"appendTextFile",
 	{
-		NODE: async(path, data) => nodeFileSystem.value.appendFile(
-			path,
+		NODE: async(path, data) => Promise.resolve().then(() => nodeFileSystem.value.appendFile(
+			toPlatformPathOrThrow(path),
 			data,
-		)
+		))
 			.then(() => DEither.right("file-system-append-text-file"))
 			.catch(handleNodeAppendTextFileError),
-		DENO: (path, data) => Deno.writeTextFile(
-			path,
+		DENO: (path, data) => Promise.resolve().then(() => Deno.writeTextFile(
+			toPlatformPathOrThrow(path),
 			data,
 			{ append: true },
-		)
+		))
 			.then(() => DEither.right("file-system-append-text-file"))
 			.catch(handleDenoAppendTextFileError),
 	},

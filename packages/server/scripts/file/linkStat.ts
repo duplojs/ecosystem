@@ -1,3 +1,4 @@
+import { toPlatformPathOrThrow } from "@scripts/common";
 import * as DCommon from "@duplojs/lang/common";
 import type * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
@@ -161,7 +162,7 @@ declare module "@scripts/implementor" {
 export const linkStat = implementFunction(
 	"linkStat",
 	{
-		NODE: async(path) => nodeFileSystem.value.lstat(path)
+		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.lstat(toPlatformPathOrThrow(path)))
 			.then(
 				DCommon.innerPipe(
 					createStatInfoWithFsSource,
@@ -169,8 +170,8 @@ export const linkStat = implementFunction(
 				),
 			)
 			.catch(handleNodeLinkStatError),
-		DENO: (path) => Deno
-			.lstat(path)
+		DENO: (path) => Promise.resolve().then(() => Deno
+			.lstat(toPlatformPathOrThrow(path)))
 			.then(
 				DCommon.innerPipe(
 					createStatInfoWithDeno,

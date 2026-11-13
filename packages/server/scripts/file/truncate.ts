@@ -1,6 +1,7 @@
+import { toPlatformPathOrThrow } from "@scripts/common";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
-import type * as DPath from "@duplojs/lang/path";
+import * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 
 export class TruncateErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-truncate-not-found", Error) {}
@@ -109,17 +110,19 @@ declare module "@scripts/implementor" {
 export const truncate = implementFunction(
 	"truncate",
 	{
-		NODE: async(path, size) => nodeFileSystem.value.truncate(path, size)
+		NODE: async(path, size) => Promise.resolve()
+			.then(() => nodeFileSystem.value.truncate(toPlatformPathOrThrow(path), size))
 			.then(() => DEither.right("file-system-truncate"))
 			.catch(handleNodeTruncateError),
 		DENO: (path, size) => DCommon.pipe(
 			path,
 			DCommon.when(
 				DCommon.instanceOf(URL),
-				({ pathname }) => decodeURIComponent(pathname),
+				({ pathname }) => DPath.createOrThrow(decodeURIComponent(pathname)),
 			),
-			(stringPath) => Deno
-				.truncate(stringPath, size)
+			(stringPath) => Promise.resolve()
+				.then(() => Deno
+					.truncate(toPlatformPathOrThrow(stringPath), size))
 				.then(() => DEither.right("file-system-truncate"))
 				.catch(handleDenoTruncateError),
 		),

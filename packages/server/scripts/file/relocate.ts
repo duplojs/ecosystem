@@ -1,3 +1,4 @@
+import { toPlatformPathOrThrow } from "@scripts/common";
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -124,10 +125,10 @@ const relocateImplementation = implementFunction(
 
 			const newPath = DPath.resolveRelative([newParentPath, baseName]);
 
-			return nodeFileSystem.value.rename(
-				fromPath,
-				newPath,
-			)
+			return Promise.resolve().then(() => nodeFileSystem.value.rename(
+				toPlatformPathOrThrow(fromPath),
+				toPlatformPathOrThrow(newPath),
+			))
 				.then(() => DEither.right("file-system-relocate", newPath))
 				.catch(handleNodeRelocateError);
 		},
@@ -145,10 +146,10 @@ const relocateImplementation = implementFunction(
 
 			const newPath = DPath.resolveRelative([newParentPath, baseName]);
 
-			return Deno.rename(
-				fromPath,
-				newPath,
-			)
+			return Promise.resolve().then(() => Deno.rename(
+				toPlatformPathOrThrow(fromPath),
+				toPlatformPathOrThrow(newPath),
+			))
 				.then(() => DEither.right("file-system-relocate", newPath))
 				.catch(handleDenoRelocateError);
 		},

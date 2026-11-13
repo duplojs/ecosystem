@@ -1,5 +1,5 @@
+import { normalizePlatformPathOrThrow } from "../platformPath";
 import * as DPath from "@duplojs/lang/path";
-import * as DCommon from "@duplojs/lang/common";
 import { implementFunction } from "@scripts/implementor";
 
 declare module "@scripts/implementor" {
@@ -11,9 +11,12 @@ declare module "@scripts/implementor" {
 export const getCurrentDirectoryName = implementFunction(
 	"getCurrentDirectoryName",
 	{
-		NODE: (importMeta) => DCommon.pipe(
-			importMeta.dirname,
-			DPath.createAbsoluteOrThrow,
-		),
+		NODE: (importMeta) => {
+			const path = normalizePlatformPathOrThrow(importMeta.dirname);
+			if (!DPath.isAbsolute(path)) {
+				throw new DPath.CreateAbsolutePathError(importMeta.dirname);
+			}
+			return path;
+		},
 	},
 );

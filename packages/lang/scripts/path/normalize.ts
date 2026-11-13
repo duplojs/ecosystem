@@ -10,9 +10,11 @@ export function normalize(
 
 	let normalizedPath = path;
 
-	if (DString.test(path, /^file:/i)) {
+	if (DString.test(path, /^(\.\/|\/)?file:\.?\//i)) {
 		try {
-			const url = new URL(path);
+			const url = new URL(
+				DString.replace(path, /^(\.\/|\/)/, ""),
+			);
 
 			if (url.hostname !== "" || DString.test(url.pathname, /%2f/i)) {
 				return null;

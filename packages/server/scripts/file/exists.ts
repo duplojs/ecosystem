@@ -1,3 +1,4 @@
+import { toPlatformPathOrThrow } from "@scripts/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -80,15 +81,15 @@ declare module "@scripts/implementor" {
 export const exists = implementFunction(
 	"exists",
 	{
-		NODE: async(path) => nodeFileSystem.value.access(path)
+		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.access(toPlatformPathOrThrow(path)))
 			.then(() => DEither.right("file-system-exists"))
 			.catch(handleNodeExistsError),
-		DENO: (path) => Deno
-			.stat(path)
+		DENO: (path) => Promise.resolve().then(() => Deno
+			.stat(toPlatformPathOrThrow(path)))
 			.then(() => DEither.right("file-system-exists"))
 			.catch(handleDenoExistsError),
-		BUN: (path) => Bun.file(path)
-			.exists()
+		BUN: (path) => Promise.resolve().then(() => Bun.file(toPlatformPathOrThrow(path))
+			.exists())
 			.then(
 				(value) => value
 					? DEither.right("file-system-exists")

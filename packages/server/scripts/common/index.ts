@@ -7,3 +7,4 @@ export * from "./environmentVariableOrThrow";
 export * from "./exitProcess";
 export * from "./getProcessArguments";
 export * from "./meta";
+export * from "./platformPath";

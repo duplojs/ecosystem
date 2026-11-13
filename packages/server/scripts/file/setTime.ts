@@ -1,3 +1,4 @@
+import { toPlatformPathOrThrow } from "@scripts/common";
 import * as DEither from "@duplojs/lang/either";
 import * as DChrono from "@duplojs/lang/chrono";
 import type * as DPath from "@duplojs/lang/path";
@@ -92,19 +93,19 @@ declare module "@scripts/implementor" {
 const setTimeImplementation = implementFunction(
 	"setTime",
 	{
-		NODE: async(path, { accessTime, modifiedTime }) => nodeFileSystem.value.utimes(
-			path,
+		NODE: async(path, { accessTime, modifiedTime }) => Promise.resolve().then(() => nodeFileSystem.value.utimes(
+			toPlatformPathOrThrow(path),
 			DChrono.toTimestamp(accessTime),
 			DChrono.toTimestamp(modifiedTime),
-		)
+		))
 			.then(() => DEither.right("file-system-set-time"))
 			.catch(handleNodeSetTimeError),
-		DENO: (path, { accessTime, modifiedTime }) => Deno
+		DENO: (path, { accessTime, modifiedTime }) => Promise.resolve().then(() => Deno
 			.utime(
-				path,
+				toPlatformPathOrThrow(path),
 				DChrono.toTimestamp(accessTime),
 				DChrono.toTimestamp(modifiedTime),
-			)
+			))
 			.then(() => DEither.right("file-system-set-time"))
 			.catch(handleDenoSetTimeError),
 	},

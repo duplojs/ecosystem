@@ -1,3 +1,4 @@
+import { toPlatformPathOrThrow } from "@scripts/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -99,15 +100,15 @@ declare module "@scripts/implementor" {
 export const ensureFile = implementFunction(
 	"ensureFile",
 	{
-		NODE: async(path) => nodeFileSystem.value.open(path, "a")
+		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.open(toPlatformPathOrThrow(path), "a"))
 			.then((fh) => fh.close())
 			.then(() => DEither.right("file-system-ensure-file"))
 			.catch(handleNodeEnsureFileError),
-		DENO: (path) => Deno.open(path, {
+		DENO: (path) => Promise.resolve().then(() => Deno.open(toPlatformPathOrThrow(path), {
 			write: true,
 			create: true,
 			append: true,
-		})
+		}))
 			.then((fh) => void fh.close())
 			.then(() => DEither.right("file-system-ensure-file"))
 			.catch(handleDenoEnsureFileError),

@@ -46,6 +46,19 @@ describe("readDirectory", () => {
 		expect(paths).toStrictEqual(["a", "b"]);
 	});
 
+	it("preserves filenames beginning with file: when resolving a destination", async() => {
+		setEnvironment("NODE");
+		setFsPromisesMock({ readdir: vi.fn().mockResolvedValue(["file:report"]) });
+		const destination = DPath.createAbsoluteOrThrow("/tmp/output");
+
+		const result = await DSFile.readDirectory(DCommon.infer("/tmp/mock"));
+		const paths = DEither.unwrapByInformationOrThrow(result, "file-system-read-directory");
+		const destinations = DArray.map(paths, (path) => DPath.resolveFrom(destination, [path]));
+
+		expect(paths).toStrictEqual(["file:report"]);
+		expect(destinations).toStrictEqual(["/tmp/output/file:report"]);
+	});
+
 	it("returns names without recursion with absolute disabled", async() => {
 		setEnvironment("NODE");
 		const fs = setFsPromisesMock({

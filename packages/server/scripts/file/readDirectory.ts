@@ -1,9 +1,9 @@
+import { normalizePlatformPathOrThrow, toPlatformPathOrThrow, getCurrentWorkDirectoryOrThrow } from "@scripts/common";
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
-import { getCurrentWorkDirectoryOrThrow } from "@scripts/common";
 
 export class ReadDirectoryErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-read-directory-not-found", Error) {}
 export class ReadDirectoryErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-read-directory-permission-denied", Error) {}
@@ -94,28 +94,28 @@ export const readDirectory = implementFunction(
 		NODE: (path, params) => {
 			const result = (
 				params?.absolute
-					? nodeFileSystem.value.readdir(
-						path,
+					? Promise.resolve().then(() => nodeFileSystem.value.readdir(
+						toPlatformPathOrThrow(path),
 						{
 							recursive: params.recursive,
 							withFileTypes: true,
 						},
-					).then(
+					)).then(
 						(value) => DArray.map(
 							value,
 							({ name, parentPath }) => DPath.resolveFrom(
 								getCurrentWorkDirectoryOrThrow(),
-								[DPath.normalize(`${parentPath}/${name}`)!],
+								[normalizePlatformPathOrThrow(`${parentPath}/${name}`)],
 							),
 						),
 					)
-					: nodeFileSystem.value.readdir(
-						path,
+					: Promise.resolve().then(() => nodeFileSystem.value.readdir(
+						toPlatformPathOrThrow(path),
 						{ recursive: params?.recursive },
-					).then(
+					)).then(
 						(value) => DArray.map(
 							value,
-							(subPath) => DPath.normalize(subPath)!,
+							(subPath) => normalizePlatformPathOrThrow(subPath),
 						),
 					)
 			)
