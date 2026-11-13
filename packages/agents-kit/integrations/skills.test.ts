@@ -4,6 +4,7 @@ import * as DPath from "@duplojs/lang/path";
 import * as DSFile from "@duplojs/server/file";
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
+import * as DGenerator from "@duplojs/lang/generator";
 import * as DString from "@duplojs/lang/string";
 
 const integrationsDirectory = DPath.createAbsoluteOrThrow(import.meta.dirname);
@@ -12,8 +13,12 @@ const workspace = DPath.resolveRelative([integrationsDirectory, DPath.declarePat
 
 // Un inventaire partagé couvre les nouveaux skills sans multiplier les scénarios.
 const allSkills: readonly string[] = await DCommon.asyncPipe(
-	DSFile.readDirectory(skillsDirectory),
-	DEither.unwrapByInformationOrThrow("file-system-read-directory"),
+	DSFile.walkDirectory(skillsDirectory),
+	DEither.unwrapByInformationOrThrow("file-system-walk-directory"),
+	DGenerator.filter(DSFile.isFolderInterface),
+	DGenerator.map((folder) => folder.getName()),
+	DGenerator.filter(DCommon.isType("string")),
+	DArray.from,
 );
 
 describe("skills integration", () => {
