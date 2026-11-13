@@ -95,7 +95,8 @@ describe("updateSkillsCommand", () => {
 			expect(linkStat).toHaveBeenCalledWith(`/project/${folder}/skills/duplojs-${skill}`);
 		}
 		expect(remove).toHaveBeenCalledExactlyOnceWith(`/project/${folder}/skills/duplojs-fundamental`, { recursive: true });
-		expect(symlink).toHaveBeenCalledExactlyOnceWith(`${skillsPath}/fundamental`, `/project/${folder}/skills/duplojs-fundamental`, { type: "dir" });
+		const relativeSkillsPath = DPath.computeRelative(DPath.createAbsoluteOrThrow(`/project/${folder}/skills`), skillsPath);
+		expect(symlink).toHaveBeenCalledExactlyOnceWith(`${relativeSkillsPath}/fundamental`, `/project/${folder}/skills/duplojs-fundamental`);
 		expect(copy).not.toHaveBeenCalled();
 	});
 
@@ -157,7 +158,8 @@ describe("updateSkillsCommand", () => {
 
 		await expect(updateSkillsCommand.execute([], DSCommand.createError("update"))).resolves.toBeUndefined();
 
-		expect(symlink).toHaveBeenCalledExactlyOnceWith(`${skillsPath}/http-server`, "/project/.agents/skills/duplojs-http-server", { type: "dir" });
+		const relativeSkillsPath = DPath.computeRelative(DPath.declareAbsolutePath("/project/.agents/skills"), skillsPath);
+		expect(symlink).toHaveBeenCalledExactlyOnceWith(`${relativeSkillsPath}/http-server`, "/project/.agents/skills/duplojs-http-server");
 	});
 
 	it("does not create a link when removal fails", async() => {

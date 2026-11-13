@@ -6,7 +6,7 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
 import * as DString from "@duplojs/lang/string";
 
-const integrationsDirectory = DPath.createOrThrow(import.meta.dirname);
+const integrationsDirectory = DPath.createAbsoluteOrThrow(import.meta.dirname);
 const skillsDirectory = DPath.resolveRelative([integrationsDirectory, DPath.declarePath("../skills")]);
 const workspace = DPath.resolveRelative([integrationsDirectory, DPath.declarePath("test-output.generate/project with spaces")]);
 
@@ -26,7 +26,7 @@ describe("skills integration", () => {
 		const sourceModules = DPath.resolveRelative([integrationsDirectory, DPath.declarePath("node_modules")]);
 		const targetModules = DPath.resolveRelative([workspace, DPath.declarePath("node_modules")]);
 		await DCommon.asyncPipe(
-			DSFile.symlink(sourceModules, targetModules, { type: "dir" }),
+			DSFile.symlink(sourceModules, targetModules, { type: "directory" }),
 			DEither.unwrapByInformationOrThrow("file-system-symlink"),
 		);
 	});
@@ -84,7 +84,7 @@ describe("skills integration", () => {
 					DSFile.readLink,
 					DEither.unwrapByInformationOrThrow("file-system-read-link"),
 				);
-				expect(target).toBe(sourceDirectory);
+				expect(target).toBe(DPath.computeRelative(installedDirectory, sourceDirectory));
 			}
 			const sourceEntries = await DCommon.asyncPipe(
 				DSFile.readDirectory(sourceDirectory, { recursive: true }),
@@ -292,7 +292,7 @@ describe("skills integration", () => {
 			DEither.unwrapByInformationOrThrow("file-system-write-text-file"),
 		);
 		await DCommon.asyncPipe(
-			DSFile.symlink(linkTarget, destination, { type: "dir" }),
+			DSFile.symlink(linkTarget, destination, { type: "directory" }),
 			DEither.unwrapByInformationOrThrow("file-system-symlink"),
 		);
 
@@ -399,7 +399,7 @@ describe("skills integration", () => {
 			["another-skill", missingTarget],
 		] as const) {
 			const destination = DPath.resolveRelative([installedDirectory, DPath.createSegmentOrThrow(name)]);
-			await DCommon.asyncPipe(DSFile.symlink(source, destination, { type: "dir" }), DEither.unwrapByInformationOrThrow("file-system-symlink"));
+			await DCommon.asyncPipe(DSFile.symlink(source, destination, { type: "directory" }), DEither.unwrapByInformationOrThrow("file-system-symlink"));
 		}
 
 		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "update", "--type", agent], { cwd: workspace });
@@ -414,7 +414,7 @@ describe("skills integration", () => {
 			const destination = DPath.resolveRelative([installedDirectory, DPath.createSegmentOrThrow(`duplojs-${skill}`)]);
 			const source = DPath.resolveRelative([skillsDirectory, DPath.createSegmentOrThrow(skill)]);
 			const link = await DCommon.asyncPipe(DSFile.readLink(destination), DEither.unwrapByInformationOrThrow("file-system-read-link"));
-			expect(link).toBe(source);
+			expect(link).toBe(DPath.computeRelative(installedDirectory, source));
 			const skillFile = DPath.resolveRelative([destination, DPath.declarePath("SKILL.md")]);
 			const exists = await DCommon.asyncPipe(DSFile.exists(skillFile), DEither.unwrapByInformationOrThrow("file-system-exists"));
 			expect(exists).toBeUndefined();

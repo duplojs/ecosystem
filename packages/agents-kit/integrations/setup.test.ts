@@ -36,7 +36,7 @@ describe.each([
 		const sourceModules = DPath.resolveRelative([integrationsDirectory, DPath.declarePath("node_modules")]);
 		const targetModules = DPath.resolveRelative([workspace, DPath.declarePath("node_modules")]);
 		await DCommon.asyncPipe(
-			DSFile.symlink(sourceModules, targetModules, { type: "dir" }),
+			DSFile.symlink(sourceModules, targetModules, { type: "directory" }),
 			DEither.unwrapByInformationOrThrow("file-system-symlink"),
 		);
 	});

@@ -111,7 +111,8 @@ describe("symlinkSkill", () => {
 		type _CheckResult = DCommon.ExpectType<typeof result, DSFile.SymlinkResult | Extract<DSFile.EnsureDirectoryResult | DSFile.RemoveResult, DEither.Left> | DEither.Error<unknown>, "strict">;
 
 		expect(DEither.unwrapByInformationOrThrow(result, "file-system-symlink")).toBeUndefined();
-		expect(symlink).toHaveBeenCalledExactlyOnceWith(`${skillsPath}/${skill}`, `/project/${folder}/skills/duplojs-${skill}`, { type: "dir" });
+		const relativeSkillsPath = DPath.computeRelative(DPath.createAbsoluteOrThrow(`/project/${folder}/skills`), skillsPath);
+		expect(symlink).toHaveBeenCalledExactlyOnceWith(`${relativeSkillsPath}/${skill}`, `/project/${folder}/skills/duplojs-${skill}`);
 	});
 
 	it("preserves a directory creation error without creating a link", async() => {

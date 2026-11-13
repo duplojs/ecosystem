@@ -97,7 +97,10 @@ export function symlinkSkill(
 		({ selectedSkillPath, skillsFolder, currentSkillFolder }) => DEither.rightAsyncPipe(
 			DSFile.ensureDirectory(skillsFolder),
 			() => removeSkill(currentSkillFolder),
-			() => DSFile.symlink(selectedSkillPath, currentSkillFolder, { type: "dir" }),
+			() => DSFile.symlink(
+				DPath.computeRelative(skillsFolder, selectedSkillPath),
+				currentSkillFolder,
+			),
 		),
 	);
 }

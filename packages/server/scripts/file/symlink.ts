@@ -4,14 +4,14 @@ import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
 
 export interface SymlinkParams {
-
-	/**
-	 * @remarks
-	 * Specify the symbolic link type as file, directory or NTFS junction.
-	 * This option only applies to Windows and is ignored on other operating systems.
-	 */
-	type: "file" | "dir" | "junction";
+	type: "file" | "directory" | "junction";
 }
+
+const symlinkTypeMapper = {
+	file: "file",
+	directory: "dir",
+	junction: "junction",
+} as const satisfies Record<SymlinkParams["type"], Deno.SymlinkOptions["type"]>;
 
 export class SymlinkErrorNotFound extends DCommon.DuploJSError.parentClass("file-system-symlink-not-found", Error) {}
 export class SymlinkErrorPermissionDenied extends DCommon.DuploJSError.parentClass("file-system-symlink-permission-denied", Error) {}
@@ -119,7 +119,7 @@ const symlinkImplementation = implementFunction(
 		NODE: async(oldPath, newPath, params) => nodeFileSystem.value.symlink(
 			oldPath,
 			newPath,
-			params?.type,
+			params ? symlinkTypeMapper[params.type] : undefined,
 		)
 			.then(() => DEither.right("file-system-symlink"))
 			.catch(handleNodeSymlinkError),
@@ -127,7 +127,7 @@ const symlinkImplementation = implementFunction(
 			.symlink(
 				oldPath,
 				newPath,
-				params,
+				params ? { type: symlinkTypeMapper[params.type] } : undefined,
 			)
 			.then(() => DEither.right("file-system-symlink"))
 			.catch(handleDenoSymlinkError),

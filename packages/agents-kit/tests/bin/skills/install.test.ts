@@ -64,8 +64,9 @@ describe("installSkillCommand", () => {
 		expect(error.issues).toEqual([]);
 		expect(copy).not.toHaveBeenCalled();
 		expect(symlink).toHaveBeenCalledTimes(skills.length);
+		const relativeSkillsPath = DPath.computeRelative(DPath.createAbsoluteOrThrow(`/project/${folder}/skills`), skillsPath);
 		for (const skill of skills) {
-			expect(symlink).toHaveBeenCalledWith(`${skillsPath}/${skill}`, `/project/${folder}/skills/duplojs-${skill}`, { type: "dir" });
+			expect(symlink).toHaveBeenCalledWith(`${relativeSkillsPath}/${skill}`, `/project/${folder}/skills/duplojs-${skill}`);
 		}
 	});
 

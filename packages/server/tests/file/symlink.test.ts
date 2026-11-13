@@ -10,16 +10,29 @@ describe("symlink", () => {
 		vi.clearAllMocks();
 	});
 
-	it("creates symlink in NODE env", async() => {
+	it.each([
+		{
+			type: "file",
+			expectedType: "file",
+		},
+		{
+			type: "directory",
+			expectedType: "dir",
+		},
+		{
+			type: "junction",
+			expectedType: "junction",
+		},
+	] as const)("creates a $type symlink in NODE env", async({ type, expectedType }) => {
 		setEnvironment("NODE");
 		const fs = setFsPromisesMock({
 			symlink: vi.fn().mockResolvedValue(undefined),
 		});
 
-		const result = await DSFile.symlink(DCommon.infer("/tmp/old"), DCommon.infer("/tmp/new"), { type: "file" });
+		const result = await DSFile.symlink(DCommon.infer("/tmp/old"), DCommon.infer("/tmp/new"), { type });
 
 		expect(DEither.isRight(result)).toBe(true);
-		expect(fs.symlink).toHaveBeenCalledWith("/tmp/old", "/tmp/new", "file");
+		expect(fs.symlink).toHaveBeenCalledWith("/tmp/old", "/tmp/new", expectedType);
 	});
 
 	it("returns fail when NODE symlink rejects", async() => {
@@ -33,12 +46,12 @@ describe("symlink", () => {
 		expect(DEither.isLeft(result)).toBe(true);
 	});
 
-	it("creates symlink in DENO env", async() => {
+	it("creates a directory symlink in DENO env", async() => {
 		setEnvironment("DENO");
 		const symlink = vi.fn().mockResolvedValue(undefined);
 		setDenoMock({ symlink });
 
-		const result = await DSFile.symlink(DCommon.infer("/tmp/old"), DCommon.infer("/tmp/new"), { type: "dir" });
+		const result = await DSFile.symlink(DCommon.infer("/tmp/old"), DCommon.infer("/tmp/new"), { type: "directory" });
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(symlink).toHaveBeenCalledWith("/tmp/old", "/tmp/new", { type: "dir" });
