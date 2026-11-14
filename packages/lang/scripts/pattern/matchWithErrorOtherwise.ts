@@ -11,7 +11,7 @@ type ComputeMatcher<
 
 type ForbiddenMoreKey<
 	GenericError extends DCommon.DuploJSError,
-	GenericMatcher extends ComputeMatcher<GenericError>,
+	GenericMatcher extends object,
 > = DObject.ForbiddenKey<
 	GenericMatcher,
 	Extract<
@@ -46,15 +46,23 @@ type RequireSimpleIdentifier<
 
 export function matchWithErrorOtherwise<
 	GenericError extends DCommon.DuploJSError,
-	GenericMatcher extends ComputeMatcher<GenericError>,
+	GenericOutput,
+>(
+	input: GenericError & RequireSimpleIdentifier<GenericError>,
+	matcher: Record<string, never>,
+	otherwise: (value: GenericError) => GenericOutput,
+): GenericOutput;
+
+export function matchWithErrorOtherwise<
+	GenericError extends DCommon.DuploJSError,
+	GenericMatcher extends object,
 	GenericOutput,
 >(
 	matcher: (
-		& DCommon.FixDeepFunctionInfer<
-			ComputeMatcher<GenericError>,
-			GenericMatcher
-		>
+		& NoInfer<ComputeMatcher<GenericError>>
+		& GenericMatcher
 		& ForbiddenMoreKey<NoInfer<GenericError>, GenericMatcher>
+		& DObject.ForbiddenUndefinedProps<GenericMatcher>
 	),
 	otherwise: (
 		value: DCommon.BreakGenericLink<UnhandledError<GenericError, GenericMatcher>>,
@@ -73,16 +81,23 @@ export function matchWithErrorOtherwise<
 
 export function matchWithErrorOtherwise<
 	GenericError extends DCommon.DuploJSError,
-	GenericMatcher extends ComputeMatcher<GenericError>,
+	GenericOutput,
+>(
+	matcher: Record<string, never>,
+	otherwise: (value: DCommon.BreakGenericLink<GenericError>) => GenericOutput,
+): (input: GenericError & RequireSimpleIdentifier<GenericError>) => GenericOutput;
+
+export function matchWithErrorOtherwise<
+	GenericError extends DCommon.DuploJSError,
+	GenericMatcher extends object,
 	GenericOutput,
 >(
 	input: GenericError & RequireSimpleIdentifier<GenericError>,
 	matcher: (
-		& DCommon.FixDeepFunctionInfer<
-			ComputeMatcher<GenericError>,
-			GenericMatcher
-		>
+		& NoInfer<ComputeMatcher<GenericError>>
+		& GenericMatcher
 		& ForbiddenMoreKey<GenericError, GenericMatcher>
+		& DObject.ForbiddenUndefinedProps<GenericMatcher>
 	),
 	otherwise: (
 		value: DCommon.BreakGenericLink<UnhandledError<GenericError, GenericMatcher>>,

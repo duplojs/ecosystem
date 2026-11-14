@@ -11,7 +11,7 @@ type ComputeMatcher<
 
 type ForbiddenMoreKey<
 	GenericTaggedObject extends DModeling.ObjectTag,
-	GenericMatcher extends ComputeMatcher<GenericTaggedObject>,
+	GenericMatcher extends object,
 > = DObject.ForbiddenKey<
 	GenericMatcher,
 	Extract<
@@ -46,15 +46,14 @@ type RequireLiteralTag<
 
 export function matchWithTaggedObjectOtherwise<
 	GenericTaggedObject extends DModeling.ObjectTag,
-	GenericMatcher extends ComputeMatcher<GenericTaggedObject>,
+	GenericMatcher extends object,
 	GenericOutput,
 >(
 	matcher: (
-		& DCommon.FixDeepFunctionInfer<
-			ComputeMatcher<GenericTaggedObject>,
-			GenericMatcher
-		>
+		& NoInfer<ComputeMatcher<GenericTaggedObject>>
+		& GenericMatcher
 		& ForbiddenMoreKey<NoInfer<GenericTaggedObject>, GenericMatcher>
+		& DObject.ForbiddenUndefinedProps<GenericMatcher>
 	),
 	otherwise: (
 		value: DCommon.BreakGenericLink<UnhandledTaggedObject<GenericTaggedObject, GenericMatcher>>,
@@ -73,16 +72,15 @@ export function matchWithTaggedObjectOtherwise<
 
 export function matchWithTaggedObjectOtherwise<
 	GenericTaggedObject extends DModeling.ObjectTag,
-	GenericMatcher extends ComputeMatcher<GenericTaggedObject>,
+	GenericMatcher extends object,
 	GenericOutput,
 >(
 	input: GenericTaggedObject & RequireLiteralTag<GenericTaggedObject>,
 	matcher: (
-		& DCommon.FixDeepFunctionInfer<
-			ComputeMatcher<GenericTaggedObject>,
-			GenericMatcher
-		>
+		& NoInfer<ComputeMatcher<GenericTaggedObject>>
+		& GenericMatcher
 		& ForbiddenMoreKey<GenericTaggedObject, GenericMatcher>
+		& DObject.ForbiddenUndefinedProps<GenericMatcher>
 	),
 	otherwise: (
 		value: DCommon.BreakGenericLink<UnhandledTaggedObject<GenericTaggedObject, GenericMatcher>>,

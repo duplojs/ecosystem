@@ -78,8 +78,9 @@ describe("matchWithNumberOtherwise", () => {
 	});
 
 	it("should reject matcher keys outside the input union", () => {
+		const input = 1 as 1 | 2;
 		DPattern.matchWithNumberOtherwise(
-			1 as 1 | 2,
+			input,
 			// @ts-expect-error matcher cannot contain unknown number cases
 			{
 				1: () => "one",
@@ -87,6 +88,18 @@ describe("matchWithNumberOtherwise", () => {
 			},
 			() => "fallback",
 		);
+
+		if (false) {
+			// @ts-expect-error matcher callbacks cannot be undefined
+			DPattern.matchWithNumberOtherwise(input, { 1: undefined }, () => "fallback");
+
+			DCommon.pipe(
+				input,
+				// @ts-expect-error curried matcher callbacks cannot be undefined
+				DPattern.matchWithNumberOtherwise({ 1: undefined }, () => "fallback"),
+			);
+		}
+
 		expect(true).toBe(true);
 	});
 });

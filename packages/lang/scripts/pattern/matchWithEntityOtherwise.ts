@@ -11,7 +11,7 @@ type ComputeMatcher<
 
 type ForbiddenMoreKey<
 	GenericEntity extends DModeling.Entity,
-	GenericMatcher extends ComputeMatcher<GenericEntity>,
+	GenericMatcher extends object,
 > = DObject.ForbiddenKey<
 	GenericMatcher,
 	Extract<
@@ -49,15 +49,14 @@ type RequireSimpleName<
 
 export function matchWithEntityOtherwise<
 	GenericEntity extends DModeling.Entity,
-	GenericMatcher extends ComputeMatcher<GenericEntity>,
+	GenericMatcher extends object,
 	GenericOutput,
 >(
 	matcher: (
-		& DCommon.FixDeepFunctionInfer<
-			ComputeMatcher<GenericEntity>,
-			GenericMatcher
-		>
+		& NoInfer<ComputeMatcher<GenericEntity>>
+		& GenericMatcher
 		& ForbiddenMoreKey<NoInfer<GenericEntity>, GenericMatcher>
+		& DObject.ForbiddenUndefinedProps<GenericMatcher>
 	),
 	otherwise: (value: DCommon.BreakGenericLink<UnhandledEntity<GenericEntity, GenericMatcher>>) => GenericOutput,
 ): (
@@ -74,16 +73,15 @@ export function matchWithEntityOtherwise<
 
 export function matchWithEntityOtherwise<
 	GenericEntity extends DModeling.Entity,
-	GenericMatcher extends ComputeMatcher<GenericEntity>,
+	GenericMatcher extends object,
 	GenericOutput,
 >(
 	input: GenericEntity & RequireSimpleName<GenericEntity>,
 	matcher: (
-		& DCommon.FixDeepFunctionInfer<
-			ComputeMatcher<GenericEntity>,
-			GenericMatcher
-		>
+		& NoInfer<ComputeMatcher<GenericEntity>>
+		& GenericMatcher
 		& ForbiddenMoreKey<GenericEntity, GenericMatcher>
+		& DObject.ForbiddenUndefinedProps<GenericMatcher>
 	),
 	otherwise: (value: DCommon.BreakGenericLink<UnhandledEntity<GenericEntity, GenericMatcher>>) => GenericOutput,
 ): (

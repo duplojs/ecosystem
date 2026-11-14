@@ -215,4 +215,27 @@ describe("matchWithFactOtherwise", () => {
 
 		expect(true).toBe(true);
 	});
+
+	it("should reject undefined handlers in direct and curried forms", () => {
+		const input = DModeling.factKind.addTo(
+			DModeling.entityKind.addTo({ id: "user-id" }, "User"),
+			{
+				name: "UserCreated",
+				payload: { name: "Alice" },
+			},
+		) as Input;
+
+		if (false) {
+			// @ts-expect-error matcher handlers cannot be undefined
+			DPattern.matchWithFactOtherwise(input, { UserCreated: undefined }, () => 0);
+
+			DCommon.pipe(
+				input,
+				// @ts-expect-error curried matcher handlers cannot be undefined
+				DPattern.matchWithFactOtherwise({ UserCreated: undefined }, () => 0),
+			);
+		}
+
+		expect(true).toBe(true);
+	});
 });

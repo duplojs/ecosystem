@@ -128,18 +128,78 @@ describe("matchWithErrorOtherwise", () => {
 		expect(otherwise).toHaveBeenCalledExactlyOnceWith(input);
 	});
 
-	it("keeps an explicitly undefined handler in the fallback union", () => {
-		const input = new MessageError("Invalid value.") as Input;
-		const result = DPattern.matchWithErrorOtherwise(input, {
-			message: undefined,
-			caused: (error) => error.cause,
-		}, (error) => {
-			type _CheckError = DCommon.ExpectType<typeof error, MessageError, "strict">;
-			return error.message;
-		});
+	it("ignores the inherited constructor handler in curried form", () => {
+		class ConstructorError extends DCommon.DuploJSError.parentClass("constructor") {}
+		const input = new ConstructorError("Invalid constructor.");
+		const otherwise = vi.fn();
+		const result = DCommon.pipe(
+			input,
+			DPattern.matchWithErrorOtherwise({}, (error) => {
+				type _CheckError = DCommon.ExpectType<typeof error, ConstructorError, "strict">;
 
-		type _CheckResult = DCommon.ExpectType<typeof result, Error | string, "strict">;
-		expect(result).toBe("Invalid value.");
+				otherwise(error);
+				return error.message;
+			}),
+		);
+
+		type _CheckResult = DCommon.ExpectType<typeof result, string, "strict">;
+		expect(result).toBe("Invalid constructor.");
+		expect(otherwise).toHaveBeenCalledExactlyOnceWith(input);
+	});
+
+	it("infers an own constructor handler in direct and curried forms", () => {
+		class ConstructorError extends DCommon.DuploJSError.parentClass("constructor") {}
+		const input = new ConstructorError("Invalid constructor.");
+		const directResult = DPattern.matchWithErrorOtherwise(input, {
+			constructor: (error) => {
+				type _CheckError = DCommon.ExpectType<typeof error, ConstructorError, "strict">;
+
+				return error.message;
+			},
+		}, () => false as const);
+		const curriedResult = DCommon.pipe(
+			input,
+			DPattern.matchWithErrorOtherwise({
+				constructor: (error) => {
+					type _CheckError = DCommon.ExpectType<typeof error, ConstructorError, "strict">;
+
+					return error.message;
+				},
+			}, () => false as const),
+		);
+
+		type _CheckDirectResult = DCommon.ExpectType<typeof directResult, string | false, "strict">;
+		type _CheckCurriedResult = DCommon.ExpectType<typeof curriedResult, string | false, "strict">;
+		expect(directResult).toBe("Invalid constructor.");
+		expect(curriedResult).toBe("Invalid constructor.");
+	});
+
+	it("rejects undefined handlers in direct and curried forms", () => {
+		const input = new MessageError("Invalid value.") as Input;
+		class ConstructorError extends DCommon.DuploJSError.parentClass("constructor") {}
+		const constructorInput = new ConstructorError("Invalid constructor.");
+
+		if (false) {
+			// @ts-expect-error matcher handlers cannot be undefined
+			DPattern.matchWithErrorOtherwise(input, { message: undefined }, () => "fallback");
+
+			DCommon.pipe(
+				input,
+				// @ts-expect-error curried matcher handlers cannot be undefined
+				DPattern.matchWithErrorOtherwise({ message: undefined }, () => "fallback"),
+			);
+
+			// @ts-expect-error the empty matcher overload must reject an undefined constructor handler
+			DPattern.matchWithErrorOtherwise(constructorInput, { constructor: undefined }, () => "fallback");
+
+			DCommon.pipe(
+				constructorInput,
+				// @ts-expect-error the curried empty matcher overload must reject an undefined constructor handler
+				DPattern.matchWithErrorOtherwise({ constructor: undefined }, () => "fallback"),
+			);
+		}
+
+		expect(true).toBe(true);
 	});
 
 	it("narrows the fallback to never when all errors are handled", () => {
@@ -167,16 +227,14 @@ describe("matchWithErrorOtherwise", () => {
 			},
 			() => "fallback",
 		);
+		const unknownMatcher = {
+			message: () => 42,
+			unexpected: () => false,
+		};
 		DCommon.pipe(
 			input,
-			DPattern.matchWithErrorOtherwise(
-				// @ts-expect-error only piped input identifiers are allowed
-				{
-					message: () => 42,
-					unexpected: () => false,
-				},
-				() => "fallback",
-			),
+			// @ts-expect-error only piped input identifiers are allowed
+			DPattern.matchWithErrorOtherwise(unknownMatcher, () => "fallback"),
 		);
 
 		// @ts-expect-error native Error does not carry the DuploJS error kind

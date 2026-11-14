@@ -78,8 +78,9 @@ describe("matchWithStringOtherwise", () => {
 	});
 
 	it("should reject matcher keys outside the input union", () => {
+		const input = "success" as "success" | "failure";
 		DPattern.matchWithStringOtherwise(
-			"success" as "success" | "failure",
+			input,
 			// @ts-expect-error matcher cannot contain unknown string cases
 			{
 				success: () => 42,
@@ -87,6 +88,18 @@ describe("matchWithStringOtherwise", () => {
 			},
 			() => "fallback",
 		);
+
+		if (false) {
+			// @ts-expect-error matcher callbacks cannot be undefined
+			DPattern.matchWithStringOtherwise(input, { success: undefined }, () => "fallback");
+
+			DCommon.pipe(
+				input,
+				// @ts-expect-error curried matcher callbacks cannot be undefined
+				DPattern.matchWithStringOtherwise({ success: undefined }, () => "fallback"),
+			);
+		}
+
 		expect(true).toBe(true);
 	});
 });

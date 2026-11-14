@@ -10,7 +10,7 @@ type ComputeMatcher<
 
 type ForbiddenMoreKey<
 	GenericInput extends number,
-	GenericMatcher extends ComputeMatcher<GenericInput>,
+	GenericMatcher extends object,
 > = Exclude<keyof GenericMatcher, GenericInput> extends infer InferredKey
 	? DCommon.IsEqual<InferredKey, never> extends true
 		? unknown
@@ -25,12 +25,14 @@ type HandledKeys<GenericMatcher extends object> = Extract<
 export function matchWithNumberOtherwise<
 	GenericInput extends number,
 	GenericClearInput extends Extract<DCommon.RemoveConstraint<GenericInput>, number>,
-	GenericMatcher extends ComputeMatcher<GenericClearInput>,
+	GenericMatcher extends object,
 	GenericOutput extends unknown,
 >(
 	matcher: (
-		& DCommon.FixDeepFunctionInfer<ComputeMatcher<GenericClearInput>, GenericMatcher>
+		& NoInfer<ComputeMatcher<GenericClearInput>>
+		& GenericMatcher
 		& ForbiddenMoreKey<GenericClearInput, GenericMatcher>
+		& DObject.ForbiddenUndefinedProps<GenericMatcher>
 	),
 	otherwise: (value: DCommon.BreakGenericLink<Exclude<GenericInput, HandledKeys<GenericMatcher>>>) => GenericOutput,
 ): (
@@ -43,13 +45,15 @@ export function matchWithNumberOtherwise<
 export function matchWithNumberOtherwise<
 	GenericInput extends number,
 	GenericClearInput extends Extract<DCommon.RemoveConstraint<GenericInput>, number>,
-	GenericMatcher extends ComputeMatcher<GenericClearInput>,
+	GenericMatcher extends object,
 	GenericOutput extends unknown,
 >(
 	input: GenericInput & DNumber.RequireSimpleLiteral<GenericClearInput>,
 	matcher: (
-		& DCommon.FixDeepFunctionInfer<ComputeMatcher<GenericClearInput>, GenericMatcher>
+		& NoInfer<ComputeMatcher<GenericClearInput>>
+		& GenericMatcher
 		& ForbiddenMoreKey<GenericClearInput, GenericMatcher>
+		& DObject.ForbiddenUndefinedProps<GenericMatcher>
 	),
 	otherwise: (value: DCommon.BreakGenericLink<Exclude<GenericInput, HandledKeys<GenericMatcher>>>) => GenericOutput,
 ): (

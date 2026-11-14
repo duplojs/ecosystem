@@ -14,7 +14,7 @@ type ComputeMatcher<
 
 type ForbiddenMoreKey<
 	GenericFact extends DModeling.Fact,
-	GenericMatcher extends ComputeMatcher<GenericFact>,
+	GenericMatcher extends object,
 > = DObject.ForbiddenKey<
 	GenericMatcher,
 	Extract<
@@ -50,15 +50,14 @@ type RequireSimpleName<
 
 export function matchWithFactOtherwise<
 	GenericFact extends DModeling.Fact,
-	GenericMatcher extends ComputeMatcher<GenericFact>,
+	GenericMatcher extends object,
 	GenericOutput,
 >(
 	matcher: (
-		& DCommon.FixDeepFunctionInfer<
-			ComputeMatcher<GenericFact>,
-			GenericMatcher
-		>
+		& NoInfer<ComputeMatcher<GenericFact>>
+		& GenericMatcher
 		& ForbiddenMoreKey<NoInfer<GenericFact>, GenericMatcher>
+		& DObject.ForbiddenUndefinedProps<GenericMatcher>
 	),
 	otherwise: (value: DCommon.BreakGenericLink<UnhandledFact<GenericFact, GenericMatcher>>) => GenericOutput,
 ): (
@@ -75,16 +74,15 @@ export function matchWithFactOtherwise<
 
 export function matchWithFactOtherwise<
 	GenericFact extends DModeling.Fact,
-	GenericMatcher extends ComputeMatcher<GenericFact>,
+	GenericMatcher extends object,
 	GenericOutput,
 >(
 	input: GenericFact & RequireSimpleName<GenericFact>,
 	matcher: (
-		& DCommon.FixDeepFunctionInfer<
-			ComputeMatcher<GenericFact>,
-			GenericMatcher
-		>
+		& NoInfer<ComputeMatcher<GenericFact>>
+		& GenericMatcher
 		& ForbiddenMoreKey<GenericFact, GenericMatcher>
+		& DObject.ForbiddenUndefinedProps<GenericMatcher>
 	),
 	otherwise: (value: DCommon.BreakGenericLink<UnhandledFact<GenericFact, GenericMatcher>>) => GenericOutput,
 ): (

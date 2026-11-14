@@ -31,9 +31,7 @@ type ComputeMatcher<
 
 type ForbiddenMoreKey<
 	GenericInput extends unknown,
-	GenericMatcher extends ComputeMatcher<
-		Extract<GenericInput, Either>
-	>,
+	GenericMatcher extends object,
 > = DObject.ForbiddenKey<
 	GenericMatcher,
 	Extract<
@@ -45,36 +43,40 @@ type ForbiddenMoreKey<
 	>
 >;
 
+type UnhandledInput<
+	GenericInput extends unknown,
+	GenericMatcher extends object,
+> = DCommon.BreakGenericLink<
+	Exclude<
+		GenericInput,
+		DKind.Kind<
+			typeof informationKind,
+			Extract<
+				DObject.GetPropsWithValueExtends<
+					GenericMatcher,
+					DCommon.AnyFunction
+				>,
+				string
+			>
+		>
+	>
+>;
+
 export function matchInformationOtherwise<
 	GenericInput extends unknown,
-	GenericMatcher extends ComputeMatcher<
-		Extract<GenericInput, Either>
-	>,
+	GenericMatcher extends object,
 	GenericOutput extends unknown,
-	GenericError extends ForbiddenMoreKey<GenericInput, GenericMatcher>,
+	GenericError extends (
+		& ForbiddenMoreKey<GenericInput, GenericMatcher>
+		& DObject.ForbiddenUndefinedProps<GenericMatcher>
+	),
 >(
 	matcher: (
-		& ComputeMatcher<
-			Extract<NoInfer<GenericInput>, Either>
-		>
+		& NoInfer<ComputeMatcher<Extract<GenericInput, Either>>>
 		& GenericMatcher
 		& NoInfer<GenericError>
 	),
-	otherwise: (
-		value: Exclude<
-			GenericInput,
-			DKind.Kind<
-				typeof informationKind,
-				Extract<
-					DObject.GetPropsWithValueExtends<
-						GenericMatcher,
-						DCommon.AnyFunction
-					>,
-					string
-				>
-			>
-		>,
-	) => GenericOutput,
+	otherwise: (value: UnhandledInput<GenericInput, GenericMatcher>) => GenericOutput,
 ): (input: GenericInput) => (
 	| ReturnType<
 		NoInfer<
@@ -89,37 +91,19 @@ export function matchInformationOtherwise<
 
 export function matchInformationOtherwise<
 	GenericInput extends unknown,
-	GenericMatcher extends ComputeMatcher<
-		Extract<GenericInput, Either>
-	>,
+	GenericMatcher extends object,
 	GenericOutput extends unknown,
 >(
 	input: GenericInput,
 	matcher: (
-		& DCommon.FixDeepFunctionInfer<
-			ComputeMatcher<
-				Extract<GenericInput, Either>
-			>,
-			GenericMatcher
-		>
+		& NoInfer<ComputeMatcher<
+			Extract<GenericInput, Either>
+		>>
+		& GenericMatcher
 		& ForbiddenMoreKey<GenericInput, GenericMatcher>
 		& DObject.ForbiddenUndefinedProps<GenericMatcher>
 	),
-	otherwise: (
-		value: Exclude<
-			GenericInput,
-			DKind.Kind<
-				typeof informationKind,
-				Extract<
-					DObject.GetPropsWithValueExtends<
-						GenericMatcher,
-						DCommon.AnyFunction
-					>,
-					string
-				>
-			>
-		>,
-	) => GenericOutput,
+	otherwise: (value: UnhandledInput<GenericInput, GenericMatcher>) => GenericOutput,
 ): (
 	| ReturnType<
 		NoInfer<
