@@ -8,11 +8,18 @@ import { testHub } from "@test-utils/hub";
 import * as DCommon from "@duplojs/lang/common";
 import { setEnvironment, TESTImplementation } from "@duplojs/server";
 import * as DPath from "@duplojs/lang/path";
+import * as DSPath from "@duplojs/server/path";
 
 describe("makeNodeHook", () => {
 	beforeEach(() => {
 		setEnvironment("TEST");
 		TESTImplementation.clear();
+	});
+
+	afterEach(() => {
+		TESTImplementation.clear();
+		setEnvironment("NODE");
+		vi.restoreAllMocks();
 	});
 	const baseServerParams: HttpServerParams = {
 		interface: "node",
@@ -141,6 +148,27 @@ describe("makeNodeHook", () => {
 			} as any);
 
 			expect(fsSpy.createReadStream).toBeCalledWith("test.txt");
+		});
+
+		it("streams a platform path while preserving the file interface path", async() => {
+			const path = DPath.declareAbsolutePath("/DRV-C:/files/test.txt");
+			const body = DSFile.createFileInterface(path);
+			vi.spyOn(DSPath, "toPlatformPathOrThrow").mockReturnValueOnce("C:\\files\\test.txt");
+			const request = createFakeRequest({
+				raw: { response: { eventEmitter: EventEmitter } },
+			});
+			fsSpy.createReadStream.mockImplementation(() => ({
+				pipe: () => request.raw.response.emit("close"),
+			}));
+
+			await hooks.sendResponse({
+				request,
+				currentResponse: { body },
+				exit: exitHookFunction,
+			} as any);
+
+			expect(fsSpy.createReadStream).toHaveBeenLastCalledWith("C:\\files\\test.txt");
+			expect(body.path).toBe(path);
 		});
 		describe("serverSentEvent", () => {
 			it("send events", async() => {

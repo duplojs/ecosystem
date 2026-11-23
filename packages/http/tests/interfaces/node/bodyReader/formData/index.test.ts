@@ -6,6 +6,8 @@ import * as DEither from "@duplojs/lang/either";
 import { createFakeRequest } from "@test-utils/request";
 import * as DSFile from "@duplojs/server/file";
 import type { HttpServerParams } from "@core";
+import * as DSPath from "@duplojs/server/path";
+import * as DPath from "@duplojs/lang/path";
 
 describe("createFormDataBodyReaderImplementation", () => {
 	const boundary = "duplo-boundary";
@@ -33,6 +35,10 @@ describe("createFormDataBodyReaderImplementation", () => {
 		spyStreamEnd.mockReset();
 		spyCreateStream.mockClear();
 		fspSpyResetMock();
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
 	});
 
 	it("returns WrongContentTypeError when content-type is unsupported", async() => {
@@ -215,14 +221,46 @@ describe("createFormDataBodyReaderImplementation", () => {
 
 		expect(fspSpy.open).toHaveBeenCalledTimes(1);
 		const [filePath] = (fspSpy.open.mock.calls[0] as [string]);
-		expect(fspSpy.open).toHaveBeenCalledWith(request.filesAttache?.[0], "wx");
 		expect(spyStreamWrite).toHaveBeenCalled();
 		expect(spyStreamEnd).toHaveBeenCalled();
 
 		expect(DEither.hasInformation(result, "success")).toBe(true);
 		const body = DEither.unwrapRight(result) as Record<string, unknown>;
 		expect(DSFile.isFileInterface(body.file)).toBe(true);
-		expect((body.file as DSFile.FileInterface).path).toBe(filePath);
+		expect((body.file as DSFile.FileInterface).path).toBe(request.filesAttache?.[0]);
+		expect(filePath).toBe(DSPath.toPlatformPathOrThrow((body.file as DSFile.FileInterface).path));
+		expect(fspSpy.open).toHaveBeenCalledWith(filePath, "wx");
+	});
+
+	it("opens uploads with a platform path while retaining the internal path", async() => {
+		spyStreamWrite.mockImplementation((__: Buffer, cb?: (err?: Error | null) => void) => cb?.(null));
+		fspSpy.open.mockImplementation(() => ({ createWriteStream: spyCreateStream }));
+		vi.spyOn(DSPath, "toPlatformPathOrThrow").mockReturnValueOnce("C:\\upload\\uploaded.txt");
+		const request = createFakeRequest({
+			headers: { "content-type": contentType },
+			raw: {
+				request: {
+					headers: { "content-type": contentType },
+					bodyChunks: [Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="a.txt"\r\n\r\nDATA\r\n--${boundary}--`)],
+				},
+			},
+		});
+		const reader = createFormDataBodyReaderImplementation({
+			...serverParams,
+			uploadFolder: DPath.declareAbsolutePath("/DRV-C:/upload"),
+		});
+
+		const result = await reader.read(request, {
+			maxFileQuantity: 1,
+			maxBufferSize: 10000,
+			maxKeyLength: 100,
+			maxIndexArray: 2500,
+		});
+
+		const body = DEither.unwrapByInformationOrThrow(result, "success") as Record<string, DSFile.FileInterface>;
+		expect(fspSpy.open).toHaveBeenCalledExactlyOnceWith("C:\\upload\\uploaded.txt", "wx");
+		expect(body.file?.path).toBe(request.filesAttache?.[0]);
+		expect(body.file?.path).toMatch(/^\/DRV-C:\/upload\/[^/]+\.txt$/);
 	});
 
 	it("writes file stream without extension in filename", async() => {

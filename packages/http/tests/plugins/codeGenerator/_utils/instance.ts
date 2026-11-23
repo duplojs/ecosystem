@@ -1,3 +1,4 @@
+import * as DSPath from "@duplojs/server/path";
 import * as AST from "@typescript/native-API/ast";
 import * as DEither from "@duplojs/lang/either";
 import * as DInvocation from "@duplojs/lang/invocation";
@@ -9,7 +10,7 @@ export type TypescriptInstance = DInvocation.GetEvidenceResult<typeof createType
 export type RoutesFiles = DInvocation.GetEvidenceResult<typeof createContentRoutesFiles, "updated-route-files">;
 
 export function fixturePath(fileName: string) {
-	const path = DPath.normalize(new URL(`./project/${fileName}`, import.meta.url).href);
+	const path = DSPath.normalize(new URL(`./project/${fileName}`, import.meta.url).href);
 	if (!path || !DPath.isAbsolute(path)) {
 		throw new Error("Expected an absolute fixture path");
 	}

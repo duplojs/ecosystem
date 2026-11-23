@@ -1,3 +1,4 @@
+import * as DSPath from "@duplojs/server/path";
 import * as DCommon from "@duplojs/lang/common";
 import * as DSCommon from "@duplojs/server/common";
 import * as DSFile from "@duplojs/server/file";
@@ -13,7 +14,7 @@ import "@routes";
 const sourceFile = DSFile.createFileInterface(DPath.declarePath("files/fakeFiles/superTextFile.txt"));
 const sourceFolder = DSFile.createFolderInterface(DPath.declarePath("files/fakeFiles"));
 
-DSCommon.setCurrentWorkingDirectoryOrThrow(DPath.resolveRelative([DPath.createAbsoluteOrThrow(import.meta.dirname), DCommon.cast("..")]));
+DSCommon.setCurrentWorkingDirectoryOrThrow(DPath.resolveRelative([DSPath.createAbsoluteOrThrow(import.meta.dirname), DCommon.cast("..")]));
 
 export const hub = createHub({ environment: "DEV" })
 	.register(routeStore.getAll())

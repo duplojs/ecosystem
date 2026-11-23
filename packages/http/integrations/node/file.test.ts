@@ -1,3 +1,4 @@
+import * as DSPath from "@duplojs/server/path";
 import { hub } from "@core";
 import { createHttpServer } from "@duplojs/http/node";
 import * as DSFile from "@duplojs/server/file";
@@ -10,7 +11,7 @@ describe("file", async() => {
 	const server = await createHttpServer(hub, {
 		host: "0.0.0.0",
 		port: 8961,
-		uploadFolder: DPath.resolveRelative([DPath.createOrThrow(import.meta.dirname), DCommon.cast("../files/upload")]),
+		uploadFolder: DPath.resolveRelative([DSPath.createAbsoluteOrThrow(import.meta.dirname), DCommon.cast("../files/upload")]),
 	});
 
 	afterAll(() => {

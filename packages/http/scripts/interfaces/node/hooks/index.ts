@@ -1,3 +1,4 @@
+import * as DSPath from "@duplojs/server/path";
 import { type Hub } from "@core/hub";
 import { ServerSentEventsPredictedResponse, StreamPredictedResponse, StreamTextPredictedResponse } from "@core/response";
 import { createHookRouteLifeCycle } from "@core/route";
@@ -89,7 +90,7 @@ export function initNodeHook(
 				);
 			} else if (DSFile.isFileInterfaceFromUnknown(body)) {
 				await new Promise<void>((resolve, reject) => {
-					createReadStream(body.path)
+					createReadStream(DSPath.toPlatformPathOrThrow(body.path))
 						.pipe(
 							request.raw.response
 								.once("error", reject)

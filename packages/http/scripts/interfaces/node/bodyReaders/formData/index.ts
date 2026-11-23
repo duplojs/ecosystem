@@ -1,3 +1,4 @@
+import * as DSPath from "@duplojs/server/path";
 import { FormDataBodyController } from "@core/request";
 import { type HttpServerParams } from "@core/types";
 import * as DSFile from "@duplojs/server/file";
@@ -26,10 +27,10 @@ export function createFormDataBodyReaderImplementation(serverParams: HttpServerP
 			try {
 				const path = DPath.resolveRelative([
 					serverParams.uploadFolder,
-					DPath.createOrThrow(`${randomUUID()}${extension}`),
+					DSPath.createOrThrow(`${randomUUID()}${extension}`),
 				]);
 
-				const handle = await open(path, "wx");
+				const handle = await open(DSPath.toPlatformPathOrThrow(path), "wx");
 
 				return {
 					path,

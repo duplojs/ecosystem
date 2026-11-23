@@ -1,3 +1,5 @@
+import * as DSCommon from "@duplojs/server/common";
+import * as DSPath from "@duplojs/server/path";
 import { hub } from "@core";
 import { type FindRouteContract } from "@duplojs/http";
 import { createHttpServer } from "@duplojs/http/node";
@@ -14,10 +16,10 @@ describe("client", async() => {
 	const server = await createHttpServer(hub, {
 		host: "0.0.0.0",
 		port: 8946,
-		uploadFolder: DPath.resolveRelative([DPath.createOrThrow(import.meta.dirname), DCommon.cast("../files/upload")]),
+		uploadFolder: DPath.resolveRelative([DSPath.createAbsoluteOrThrow(import.meta.dirname), DCommon.cast("../files/upload")]),
 	});
 
-	process.chdir(DPath.resolveRelative([DPath.createOrThrow(import.meta.dirname), DCommon.cast("..")]));
+	DSCommon.setCurrentWorkingDirectoryOrThrow(DPath.resolveRelative([DSPath.createAbsoluteOrThrow(import.meta.dirname), DCommon.cast("..")]));
 
 	afterAll(() => {
 		server.close();

@@ -1,3 +1,4 @@
+import * as DSPath from "@duplojs/server/path";
 import { controlBodyAsFormData, useRouteBuilder } from "@duplojs/http";
 import * as DSFile from "@duplojs/server/file";
 import * as DCommon from "@duplojs/lang/common";
@@ -24,7 +25,7 @@ useRouteBuilder("POST", "/documents", {
 		async(floor, { response }) => {
 			const [myFile] = DTuple.from(floor.myFile);
 			DCommon.asserts(
-				await myFile.move(DPath.createOrThrow(`files/store/${floor.name}.jpg`)),
+				await myFile.move(DSPath.createOrThrow(`files/store/${floor.name}.jpg`)),
 				DEither.isRight,
 			);
 

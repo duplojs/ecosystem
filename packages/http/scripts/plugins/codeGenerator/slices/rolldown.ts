@@ -1,3 +1,4 @@
+import * as DSPath from "@duplojs/server/path";
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
 import * as DPath from "@duplojs/lang/path";
@@ -85,13 +86,13 @@ export function generateSlicesRolldown(
 				return files.has(id) ? id : null;
 			}
 
-			const normalizedPath = DPath.normalize(id);
+			const normalizedPath = DSPath.normalize(id);
 			const normalizedFrom = DCommon.pipe(
 				DEither.rightPipe(
 					from,
-					DPath.normalize,
+					DSPath.normalize,
 					DEither.toMaybe,
-					DPath.createAbsolute,
+					DSPath.createAbsolute,
 					DPath.getParentFolderPath,
 					DEither.toMaybe,
 				),

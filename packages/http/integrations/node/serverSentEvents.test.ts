@@ -1,3 +1,5 @@
+import * as DSCommon from "@duplojs/server/common";
+import * as DSPath from "@duplojs/server/path";
 import { hub } from "@core";
 import { createHttpServer } from "@duplojs/http/node";
 import * as DPath from "@duplojs/lang/path";
@@ -8,10 +10,10 @@ describe("server sent events", async() => {
 	const server = await createHttpServer(hub, {
 		host: "0.0.0.0",
 		port: 8971,
-		uploadFolder: DPath.resolveRelative([DPath.createOrThrow(import.meta.dirname), DCommon.cast("../files/upload")]),
+		uploadFolder: DPath.resolveRelative([DSPath.createAbsoluteOrThrow(import.meta.dirname), DCommon.cast("../files/upload")]),
 	});
 
-	process.chdir(DPath.resolveRelative([DPath.createOrThrow(import.meta.dirname), DCommon.cast("..")]));
+	DSCommon.setCurrentWorkingDirectoryOrThrow(DPath.resolveRelative([DSPath.createAbsoluteOrThrow(import.meta.dirname), DCommon.cast("..")]));
 
 	afterAll(() => {
 		server.close();

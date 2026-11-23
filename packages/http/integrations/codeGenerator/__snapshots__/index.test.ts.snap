@@ -100,7 +100,7 @@ declare const __duploRoute_2_9: import("@duplojs/http").Route<{
 type __duploRoute_2_9 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_2_9>;
 //#endregion
 //#region ../core/routes/document.d.ts
-declare const __duploRoute_3_8: import("@duplojs/http").Route<{
+declare const __duploRoute_3_9: import("@duplojs/http").Route<{
   readonly method: "POST";
   readonly paths: readonly ["/documents"];
   readonly preflightSteps: readonly [];
@@ -126,8 +126,8 @@ declare const __duploRoute_3_8: import("@duplojs/http").Route<{
     readonly metadata: readonly [];
   }>];
 }>;
-type __duploRoute_3_8 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_3_8>;
-declare const __duploRoute_3_9: import("@duplojs/http").Route<{
+type __duploRoute_3_9 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_3_9>;
+declare const __duploRoute_3_10: import("@duplojs/http").Route<{
   readonly method: "GET";
   readonly paths: readonly ["/documents/*"];
   readonly preflightSteps: readonly [];
@@ -139,7 +139,7 @@ declare const __duploRoute_3_9: import("@duplojs/http").Route<{
     readonly metadata: readonly [];
   }>];
 }>;
-type __duploRoute_3_9 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_3_9>;
+type __duploRoute_3_10 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_3_10>;
 //#endregion
 //#region ../core/routes/serverSentEvent.d.ts
 declare const __duploRoute_4_3: import("@duplojs/http").Route<{
@@ -359,7 +359,7 @@ declare const __duploRoute_7_7: import("@duplojs/http").Route<{
 type __duploRoute_7_7 = import("@duplojs/http").RouteDeclarationToContract<typeof __duploRoute_7_7>;
 //#endregion
 //#region ../core/routes.d.ts
-export type Routes = __duploRoute_2_6 | __duploRoute_2_7 | __duploRoute_2_8 | __duploRoute_2_9 | __duploRoute_3_8 | __duploRoute_3_9 | __duploRoute_4_3 | __duploRoute_5_2 | __duploRoute_5_3 | __duploRoute_6_3 | __duploRoute_6_4 | __duploRoute_7_2 | __duploRoute_7_4 | __duploRoute_7_7;
+export type Routes = __duploRoute_2_6 | __duploRoute_2_7 | __duploRoute_2_8 | __duploRoute_2_9 | __duploRoute_3_9 | __duploRoute_3_10 | __duploRoute_4_3 | __duploRoute_5_2 | __duploRoute_5_3 | __duploRoute_6_3 | __duploRoute_6_4 | __duploRoute_7_2 | __duploRoute_7_4 | __duploRoute_7_7;
 //#endregion
 export {};"
 `;

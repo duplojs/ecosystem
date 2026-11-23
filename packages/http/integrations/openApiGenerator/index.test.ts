@@ -1,12 +1,12 @@
+import * as DSPath from "@duplojs/server/path";
 import { hub } from "@core";
 import * as DSFile from "@duplojs/server/file";
 import * as DEither from "@duplojs/lang/either";
 import { createHttpServer } from "@duplojs/http/node";
 import { openApiGeneratorPlugin, type OpenApiDocument } from "@duplojs/http/openApiGenerator";
-import * as DPath from "@duplojs/lang/path";
 
 describe("openApiGenerator", () => {
-	const fileName = DPath.createOrThrow(`${import.meta.dirname}/swagger.generate.json`);
+	const fileName = DSPath.createOrThrow(`${import.meta.dirname}/swagger.generate.json`);
 	let server = undefined as unknown as Awaited<ReturnType<typeof createHttpServer>>;
 	let content = "";
 	let document = undefined as unknown as OpenApiDocument;
