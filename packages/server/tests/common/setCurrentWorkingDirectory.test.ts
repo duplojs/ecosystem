@@ -1,7 +1,8 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
 import type * as DPath from "@duplojs/lang/path";
-import { setCurrentWorkingDirectory, setEnvironment } from "@scripts";
+import { setEnvironment } from "@scripts";
+import * as DSCommon from "@scripts/common";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 import { setProcessMock } from "@tests/_utils/process.mock";
 
@@ -17,7 +18,7 @@ describe("setCurrentWorkingDirectory", () => {
 		const chdir = vi.fn();
 		setProcessMock({ chdir });
 
-		const result = setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
+		const result = DSCommon.setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(chdir).toHaveBeenCalledWith("/tmp/project");
@@ -31,7 +32,7 @@ describe("setCurrentWorkingDirectory", () => {
 			},
 		});
 
-		const result = setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
+		const result = DSCommon.setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -41,7 +42,7 @@ describe("setCurrentWorkingDirectory", () => {
 		const chdir = vi.fn();
 		setDenoMock({ chdir });
 
-		const result = setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
+		const result = DSCommon.setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
 
 		expect(DEither.isRight(result)).toBe(true);
 		expect(chdir).toHaveBeenCalledWith("/tmp/project");
@@ -55,7 +56,7 @@ describe("setCurrentWorkingDirectory", () => {
 			},
 		});
 
-		const result = setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
+		const result = DSCommon.setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});

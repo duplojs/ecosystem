@@ -1,7 +1,8 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DPath from "@duplojs/lang/path";
-import { DSDataStructure, DSFile } from "@scripts";
+import * as DSDataStructure from "@scripts/dataStructure";
+import * as DSFile from "@scripts/file";
 
 describe("MimeTypeConstraint", () => {
 	it.each([

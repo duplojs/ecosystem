@@ -2,7 +2,9 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
-import { DSDataStructure, DSFile, TESTImplementation, setEnvironment } from "@scripts";
+import { TESTImplementation, setEnvironment } from "@scripts";
+import * as DSDataStructure from "@scripts/dataStructure";
+import * as DSFile from "@scripts/file";
 import { createStatInfo } from "@tests/_utils/statInfo";
 
 describe("SizeConstraint", () => {

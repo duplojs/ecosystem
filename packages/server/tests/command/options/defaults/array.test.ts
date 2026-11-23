@@ -1,7 +1,7 @@
 import type * as DArray from "@duplojs/lang/array";
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import { DSCommand } from "@scripts";
+import * as DSCommand from "@scripts/command";
 
 describe("createArrayOption", () => {
 	it("validates the option name and aliases", () => {

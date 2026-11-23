@@ -1,7 +1,10 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DCommon from "@duplojs/lang/common";
-import { DSDataStructure, type DSFile, environmentVariable, setEnvironment } from "@scripts";
+import { setEnvironment } from "@scripts";
+import * as DSCommon from "@scripts/common";
+import * as DSDataStructure from "@scripts/dataStructure";
+import type * as DSFile from "@scripts/file";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 
@@ -22,7 +25,7 @@ describe("environmentVariable", () => {
 			readFile: vi.fn().mockResolvedValue("APP_NAME=duplo"),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 			},
@@ -57,7 +60,7 @@ describe("environmentVariable", () => {
 			readFile: vi.fn().mockResolvedValue("APP_FILE=/tmp/app.json"),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_FILE: DSDataStructure.file(),
 			},
@@ -95,7 +98,7 @@ describe("environmentVariable", () => {
 			)),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 			},
@@ -118,7 +121,7 @@ describe("environmentVariable", () => {
 			APP_NAME: "base",
 		};
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 			},
@@ -138,7 +141,7 @@ describe("environmentVariable", () => {
 			ADDITIONAL_KEY: "key",
 		};
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 			},
@@ -154,7 +157,7 @@ describe("environmentVariable", () => {
 			readFile: vi.fn().mockResolvedValue("APP_NAME=duplo"),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 			},
@@ -176,7 +179,7 @@ describe("environmentVariable", () => {
 			readFile: vi.fn().mockResolvedValue("APP_NAME=file"),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 			},
@@ -201,7 +204,7 @@ describe("environmentVariable", () => {
 			readFile: vi.fn().mockResolvedValue("APP_NAME=file"),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 			},
@@ -225,7 +228,7 @@ describe("environmentVariable", () => {
 			readFile: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 			},
@@ -245,7 +248,7 @@ describe("environmentVariable", () => {
 			readFile: vi.fn().mockResolvedValue("APP_NAME=duplo"),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				PORT: DDataStructure.number(),
 			},
@@ -266,7 +269,7 @@ describe("environmentVariable", () => {
 			readFile: vi.fn().mockResolvedValue("MESSAGE=\"line1\\nline2\\r\""),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				MESSAGE: DDataStructure.string(),
 			},
@@ -295,7 +298,7 @@ describe("environmentVariable", () => {
 			].join("\n")),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				MISSING: DDataStructure.string(),
 				SELF: DDataStructure.string(),
@@ -335,7 +338,7 @@ describe("environmentVariable", () => {
 			].join("\n")),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				BASE: DDataStructure.string(),
 				APP_NAME: DDataStructure.string(),
@@ -365,7 +368,7 @@ describe("environmentVariable", () => {
 			},
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 			},
@@ -389,7 +392,7 @@ describe("environmentVariable", () => {
 			},
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				EMPTY: DDataStructure.string(),
 				APP_NAME: DDataStructure.string(),
@@ -412,7 +415,7 @@ describe("environmentVariable", () => {
 			readTextFile: vi.fn().mockResolvedValue("APP_NAME=duplo"),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				BASE: DDataStructure.string(),
 				APP_NAME: DDataStructure.string(),
@@ -438,7 +441,7 @@ describe("environmentVariable", () => {
 			readTextFile: vi.fn().mockRejectedValue(new Error("boom")),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				APP_NAME: DDataStructure.string(),
 			},
@@ -462,7 +465,7 @@ describe("environmentVariable", () => {
 			readTextFile: vi.fn().mockResolvedValue("APP_NAME=duplo"),
 		});
 
-		const result = await environmentVariable(
+		const result = await DSCommon.environmentVariable(
 			{
 				PORT: DDataStructure.number(),
 			},
@@ -487,7 +490,7 @@ describe("environmentVariable", () => {
 			{
 				APP_NAME: DDataStructure.string(),
 			},
-			(shape) => environmentVariable(
+			(shape) => DSCommon.environmentVariable(
 				shape,
 				{
 					includedEnvironmentFiles: [DCommon.infer("/tmp/app.env")],

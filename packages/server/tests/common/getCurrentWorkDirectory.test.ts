@@ -1,7 +1,8 @@
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
-import { getCurrentWorkDirectory, setEnvironment } from "@scripts";
+import { setEnvironment } from "@scripts";
+import * as DSCommon from "@scripts/common";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 import { setProcessMock } from "@tests/_utils/process.mock";
 
@@ -17,7 +18,7 @@ describe("getCurrentWorkDirectory", () => {
 			cwd: () => expected,
 		});
 
-		const result = getCurrentWorkDirectory();
+		const result = DSCommon.getCurrentWorkDirectory();
 
 		expect(DEither.isRight(result)).toBe(true);
 
@@ -34,7 +35,7 @@ describe("getCurrentWorkDirectory", () => {
 			},
 		});
 
-		const result = getCurrentWorkDirectory();
+		const result = DSCommon.getCurrentWorkDirectory();
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -46,7 +47,7 @@ describe("getCurrentWorkDirectory", () => {
 			cwd: () => expected,
 		});
 
-		const result = getCurrentWorkDirectory();
+		const result = DSCommon.getCurrentWorkDirectory();
 
 		expect(DEither.isRight(result)).toBe(true);
 		if (DEither.isRight(result)) {
@@ -62,7 +63,7 @@ describe("getCurrentWorkDirectory", () => {
 			},
 		});
 
-		const result = getCurrentWorkDirectory();
+		const result = DSCommon.getCurrentWorkDirectory();
 
 		expect(DEither.isLeft(result)).toBe(true);
 	});
@@ -75,7 +76,7 @@ describe("getCurrentWorkDirectory", () => {
 		} else {
 			setDenoMock({ cwd });
 		}
-		const result = getCurrentWorkDirectory();
+		const result = DSCommon.getCurrentWorkDirectory();
 
 		type _CheckResult = DCommon.ExpectType<typeof result, DEither.Error<unknown> | DEither.Success<string & DPath.Absolute>, "strict">;
 
@@ -100,6 +101,6 @@ describe("getCurrentWorkDirectory", () => {
 			setDenoMock({ cwd: () => path });
 		}
 
-		expect(DEither.hasInformation(getCurrentWorkDirectory(), "error")).toBe(true);
+		expect(DEither.hasInformation(DSCommon.getCurrentWorkDirectory(), "error")).toBe(true);
 	});
 });

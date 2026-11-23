@@ -2,7 +2,8 @@ import { stripVTControlCharacters } from "node:util";
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
-import { DSCommand, TESTImplementation, setEnvironment } from "@scripts";
+import { TESTImplementation, setEnvironment } from "@scripts";
+import * as DSCommand from "@scripts/command";
 
 describe("exec", () => {
 	afterEach(() => {

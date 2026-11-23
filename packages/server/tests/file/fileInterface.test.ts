@@ -1,7 +1,8 @@
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DSFile, setEnvironment } from "@scripts";
+import { setEnvironment } from "@scripts";
+import * as DSFile from "@scripts/file";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 
 function createNodeStatsMock() {

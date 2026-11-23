@@ -1,7 +1,7 @@
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DCommon from "@duplojs/lang/common";
 import { setEnvironment } from "@scripts";
-import { EnvironmentVariableError, environmentVariableOrThrow } from "@scripts/common";
+import * as DSCommon from "@scripts/common";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 
 describe("environmentVariableOrThrow", () => {
@@ -20,7 +20,7 @@ describe("environmentVariableOrThrow", () => {
 			readFile: vi.fn().mockResolvedValue("APP_NAME=duplo"),
 		});
 
-		const result = await environmentVariableOrThrow(
+		const result = await DSCommon.environmentVariableOrThrow(
 			{
 				APP_NAME: DDataStructure.string(),
 			},
@@ -51,7 +51,7 @@ describe("environmentVariableOrThrow", () => {
 		});
 
 		await expect(
-			environmentVariableOrThrow(
+			DSCommon.environmentVariableOrThrow(
 				{
 					APP_NAME: DDataStructure.string(),
 				},
@@ -61,7 +61,7 @@ describe("environmentVariableOrThrow", () => {
 					justRead: false,
 				},
 			),
-		).rejects.toBeInstanceOf(EnvironmentVariableError);
+		).rejects.toBeInstanceOf(DSCommon.EnvironmentVariableError);
 	});
 
 	it("throws EnvironmentVariableError when structure validation fails", async() => {
@@ -71,7 +71,7 @@ describe("environmentVariableOrThrow", () => {
 		});
 
 		await expect(
-			environmentVariableOrThrow(
+			DSCommon.environmentVariableOrThrow(
 				{
 					PORT: DDataStructure.number(),
 				},
@@ -81,6 +81,6 @@ describe("environmentVariableOrThrow", () => {
 					justRead: false,
 				},
 			),
-		).rejects.toBeInstanceOf(EnvironmentVariableError);
+		).rejects.toBeInstanceOf(DSCommon.EnvironmentVariableError);
 	});
 });

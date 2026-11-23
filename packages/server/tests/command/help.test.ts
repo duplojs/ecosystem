@@ -1,7 +1,8 @@
 import { stripVTControlCharacters } from "node:util";
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import { DSCommand, DSDataStructure } from "@scripts";
+import * as DSCommand from "@scripts/command";
+import * as DSDataStructure from "@scripts/dataStructure";
 
 describe("help", () => {
 	it("renders folder existence before the argument description", () => {

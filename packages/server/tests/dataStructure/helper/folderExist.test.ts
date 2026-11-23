@@ -2,7 +2,8 @@ import * as DPath from "@duplojs/lang/path";
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
-import { DSDataStructure, DSFile } from "@scripts";
+import * as DSDataStructure from "@scripts/dataStructure";
+import * as DSFile from "@scripts/file";
 
 describe("folderExist", () => {
 	it("creates a folder existence constraint", () => {

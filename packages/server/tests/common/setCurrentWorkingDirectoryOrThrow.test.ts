@@ -1,6 +1,7 @@
 import * as DCommon from "@duplojs/lang/common";
 import type * as DPath from "@duplojs/lang/path";
-import { SetCurrentWorkingDirectoryError, setCurrentWorkingDirectoryOrThrow, setEnvironment } from "@scripts";
+import { setEnvironment } from "@scripts";
+import * as DSCommon from "@scripts/common";
 import { setProcessMock } from "@tests/_utils/process.mock";
 
 describe("setCurrentWorkingDirectoryOrThrow", () => {
@@ -16,7 +17,7 @@ describe("setCurrentWorkingDirectoryOrThrow", () => {
 			chdir: vi.fn(),
 		});
 
-		const result = setCurrentWorkingDirectoryOrThrow(DCommon.infer("/tmp/project"));
+		const result = DSCommon.setCurrentWorkingDirectoryOrThrow(DCommon.infer("/tmp/project"));
 
 		expect(result).toBeUndefined();
 	});
@@ -29,7 +30,7 @@ describe("setCurrentWorkingDirectoryOrThrow", () => {
 			},
 		});
 
-		expect(() => setCurrentWorkingDirectoryOrThrow(DCommon.infer("/tmp/project")))
-			.toThrow(SetCurrentWorkingDirectoryError);
+		expect(() => DSCommon.setCurrentWorkingDirectoryOrThrow(DCommon.infer("/tmp/project")))
+			.toThrow(DSCommon.SetCurrentWorkingDirectoryError);
 	});
 });

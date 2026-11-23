@@ -4,7 +4,7 @@ import * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DEither from "@duplojs/lang/either";
 import * as DModeling from "@duplojs/lang/modeling";
-import { DSCommand } from "@scripts";
+import * as DSCommand from "@scripts/command";
 
 describe("error", () => {
 	it("creates a command error and records every issue kind", () => {

@@ -1,6 +1,6 @@
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
-import { DSCommand } from "@scripts";
+import * as DSCommand from "@scripts/command";
 
 describe("isOptionToken", () => {
 	it.each([

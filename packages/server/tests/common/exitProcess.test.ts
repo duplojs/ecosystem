@@ -1,4 +1,5 @@
-import { exitProcess, setEnvironment } from "@scripts";
+import { setEnvironment } from "@scripts";
+import * as DSCommon from "@scripts/common";
 
 describe("exitProcess", () => {
 	afterEach(() => {
@@ -11,7 +12,7 @@ describe("exitProcess", () => {
 		setEnvironment("NODE");
 		const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => undefined) as never);
 
-		exitProcess(12);
+		DSCommon.exitProcess(12);
 
 		expect(exitSpy).toHaveBeenCalledWith(12);
 	});
@@ -23,7 +24,7 @@ describe("exitProcess", () => {
 			exit: denoExitSpy,
 		};
 
-		exitProcess(31);
+		DSCommon.exitProcess(31);
 
 		expect(denoExitSpy).toHaveBeenCalledWith(31);
 	});
@@ -32,7 +33,7 @@ describe("exitProcess", () => {
 		setEnvironment("BUN");
 		const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => undefined) as never);
 
-		exitProcess(7);
+		DSCommon.exitProcess(7);
 
 		expect(exitSpy).toHaveBeenCalledWith(7);
 	});

@@ -1,5 +1,5 @@
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import { DSDataStructure } from "@scripts";
+import * as DSDataStructure from "@scripts/dataStructure";
 
 describe("defaultInterpreter", () => {
 	it("interprets server file data structure issues", () => {

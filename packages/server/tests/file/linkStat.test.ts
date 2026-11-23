@@ -1,6 +1,7 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
-import { DSFile, setEnvironment } from "@scripts";
+import { setEnvironment } from "@scripts";
+import * as DSFile from "@scripts/file";
 import type * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { denoErrorsMock, setDenoMock } from "@tests/_utils/deno.mock";

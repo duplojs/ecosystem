@@ -1,6 +1,6 @@
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
-import { DSDataStructure } from "@scripts";
+import * as DSDataStructure from "@scripts/dataStructure";
 
 describe("ConstraintsStore", () => {
 	it("registers all server constraints with their exact types", () => {

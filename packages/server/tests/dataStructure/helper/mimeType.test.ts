@@ -1,7 +1,8 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
-import { DSDataStructure, DSFile } from "@scripts";
+import * as DSDataStructure from "@scripts/dataStructure";
+import * as DSFile from "@scripts/file";
 
 describe("mimeType", () => {
 	it.each([

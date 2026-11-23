@@ -1,7 +1,8 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DModeling from "@duplojs/lang/modeling";
-import { DSCommand, TESTImplementation, setEnvironment } from "@scripts";
+import { TESTImplementation, setEnvironment } from "@scripts";
+import * as DSCommand from "@scripts/command";
 
 describe("create", () => {
 	afterEach(() => {

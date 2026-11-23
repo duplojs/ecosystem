@@ -1,4 +1,4 @@
-import type { DSFile } from "@scripts";
+import type * as DSFile from "@scripts/file";
 
 export function createStatInfo(params: Partial<DSFile.StatInfo> = {}): DSFile.StatInfo {
 	return {

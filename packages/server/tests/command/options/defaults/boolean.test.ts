@@ -1,7 +1,7 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DModeling from "@duplojs/lang/modeling";
 import type * as DString from "@duplojs/lang/string";
-import { DSCommand } from "@scripts";
+import * as DSCommand from "@scripts/command";
 
 describe("createBooleanOption", () => {
 	it("accepts valid identifier literals and aliases", () => {

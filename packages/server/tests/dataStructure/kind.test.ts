@@ -1,6 +1,6 @@
 import type * as DCommon from "@duplojs/lang/common";
 import * as DKind from "@duplojs/lang/kind";
-import { DSDataStructure } from "@scripts";
+import * as DSDataStructure from "@scripts/dataStructure";
 
 describe("createKind", () => {
 	it("creates kinds in the server data structure namespace", () => {

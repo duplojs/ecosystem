@@ -1,7 +1,8 @@
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
-import { DSFile, TESTImplementation, setEnvironment } from "@scripts";
+import { TESTImplementation, setEnvironment } from "@scripts";
+import * as DSFile from "@scripts/file";
 
 describe("file path inputs", () => {
 	afterEach(() => {

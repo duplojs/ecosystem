@@ -1,7 +1,8 @@
 import * as DEither from "@duplojs/lang/either";
 import * as DCommon from "@duplojs/lang/common";
 import * as DArray from "@duplojs/lang/array";
-import { DSFile, setEnvironment } from "@scripts";
+import { setEnvironment } from "@scripts";
+import * as DSFile from "@scripts/file";
 import * as DPath from "@duplojs/lang/path";
 import { setFsPromisesMock } from "@tests/_utils/fsPromises.mock";
 import { expectFileSystemError } from "@tests/_utils/fileSystemError";

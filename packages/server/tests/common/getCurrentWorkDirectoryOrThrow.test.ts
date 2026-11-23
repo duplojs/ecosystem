@@ -1,4 +1,5 @@
-import { GetCurrentWorkDirectoryError, getCurrentWorkDirectoryOrThrow, setEnvironment } from "@scripts";
+import { setEnvironment } from "@scripts";
+import * as DSCommon from "@scripts/common";
 import { setDenoMock } from "@tests/_utils/deno.mock";
 import { setProcessMock } from "@tests/_utils/process.mock";
 
@@ -14,7 +15,7 @@ describe("getCurrentWorkDirectoryOrThrow", () => {
 			cwd: () => "/node",
 		});
 
-		const result = getCurrentWorkDirectoryOrThrow();
+		const result = DSCommon.getCurrentWorkDirectoryOrThrow();
 
 		expect(result).toBe("/node");
 	});
@@ -25,7 +26,7 @@ describe("getCurrentWorkDirectoryOrThrow", () => {
 			cwd: () => "/deno",
 		});
 
-		const result = getCurrentWorkDirectoryOrThrow();
+		const result = DSCommon.getCurrentWorkDirectoryOrThrow();
 
 		expect(result).toBe("/deno");
 	});
@@ -38,7 +39,7 @@ describe("getCurrentWorkDirectoryOrThrow", () => {
 			},
 		});
 
-		expect(() => getCurrentWorkDirectoryOrThrow())
-			.toThrow(GetCurrentWorkDirectoryError);
+		expect(() => DSCommon.getCurrentWorkDirectoryOrThrow())
+			.toThrow(DSCommon.GetCurrentWorkDirectoryError);
 	});
 });

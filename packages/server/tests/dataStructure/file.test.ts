@@ -3,7 +3,8 @@ import * as DEither from "@duplojs/lang/either";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DChrono from "@duplojs/lang/chrono";
 import type * as DCommon from "@duplojs/lang/common";
-import { DSDataStructure, DSFile } from "@scripts";
+import * as DSDataStructure from "@scripts/dataStructure";
+import * as DSFile from "@scripts/file";
 
 function createStatInfo(params?: Partial<DSFile.StatInfo>): DSFile.StatInfo {
 	const now = DChrono.createDateOrThrow(new Date("2020-01-01T00:00:00Z"));
