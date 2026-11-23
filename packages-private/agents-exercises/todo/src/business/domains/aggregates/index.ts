@@ -1,3 +1,4 @@
+export * from "./assignList";
 export * from "./completeLinkedTask";
 export * from "./completeTask";
 export * from "./createList";
