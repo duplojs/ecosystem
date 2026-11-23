@@ -1,4 +1,4 @@
-import * as DPath from "@duplojs/lang/path";
+import * as DSPath from "@scripts/path";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
 import * as DSFile from "@scripts/file";
 import * as FundamentalType from "../../../fundamentalType";
@@ -10,7 +10,7 @@ export const codecsJson = DDataStructure.createCodecs({
 		(data) => typeof data === "string",
 		(data) => data.path,
 		(data) => {
-			const result = DPath.normalize(data);
+			const result = DSPath.normalize(data);
 			if (!result) {
 				return DDataStructure.ErrorSymbol;
 			}
@@ -22,7 +22,7 @@ export const codecsJson = DDataStructure.createCodecs({
 		(data) => typeof data === "string",
 		(data) => data.path,
 		(data) => {
-			const result = DPath.normalize(data);
+			const result = DSPath.normalize(data);
 			if (!result) {
 				return DDataStructure.ErrorSymbol;
 			}

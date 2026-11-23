@@ -1,4 +1,4 @@
-import { toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DCommon from "@duplojs/lang/common";
 import type * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
@@ -201,7 +201,7 @@ function createStatInfoWithDeno(source: Deno.FileInfo): StatInfo {
 export const stat = implementFunction(
 	"stat",
 	{
-		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.stat(toPlatformPathOrThrow(path)))
+		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.stat(DSPath.toPlatformPathOrThrow(path)))
 			.then(
 				DCommon.innerPipe(
 					createStatInfoWithFsSource,
@@ -210,7 +210,7 @@ export const stat = implementFunction(
 			)
 			.catch(handleNodeStatError),
 		DENO: (path) => Promise.resolve().then(() => Deno
-			.stat(toPlatformPathOrThrow(path)))
+			.stat(DSPath.toPlatformPathOrThrow(path)))
 			.then(
 				DCommon.innerPipe(
 					createStatInfoWithDeno,
@@ -218,7 +218,7 @@ export const stat = implementFunction(
 				),
 			)
 			.catch(handleDenoStatError),
-		BUN: (path) => Promise.resolve().then(() => Bun.file(toPlatformPathOrThrow(path))
+		BUN: (path) => Promise.resolve().then(() => Bun.file(DSPath.toPlatformPathOrThrow(path))
 			.stat())
 			.then(
 				DCommon.innerPipe(

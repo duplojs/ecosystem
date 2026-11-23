@@ -1,4 +1,4 @@
-import { toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
@@ -130,7 +130,7 @@ const writeJsonFileImplementation = implementFunction(
 				),
 				"safe-callback-success": (value) => Promise.resolve().then(() => nodeFileSystem.value
 					.writeFile(
-						toPlatformPathOrThrow(path),
+						DSPath.toPlatformPathOrThrow(path),
 						value,
 						{ encoding: "utf-8" },
 					))
@@ -153,7 +153,7 @@ const writeJsonFileImplementation = implementFunction(
 				),
 				"safe-callback-success": (value) => Promise.resolve().then(() => Deno
 					.writeTextFile(
-						toPlatformPathOrThrow(path),
+						DSPath.toPlatformPathOrThrow(path),
 						value,
 					))
 					.then(() => DEither.right("file-system-write-json-file"))
@@ -173,7 +173,7 @@ const writeJsonFileImplementation = implementFunction(
 					"file-system-write-json-file-error",
 					new WriteJsonFileError(value as never),
 				),
-				"safe-callback-success": (value) => Promise.resolve().then(() => Bun.file(toPlatformPathOrThrow(path))
+				"safe-callback-success": (value) => Promise.resolve().then(() => Bun.file(DSPath.toPlatformPathOrThrow(path))
 					.write(value))
 					.then(() => DEither.right("file-system-write-json-file"))
 					.catch(handleNodeWriteJsonFileError),

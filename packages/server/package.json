@@ -42,6 +42,11 @@
       "require": "./dist/common/index.cjs",
       "types": "./dist/common/index.d.ts"
     },
+    "./path": {
+      "import": "./dist/path/index.mjs",
+      "require": "./dist/path/index.cjs",
+      "types": "./dist/path/index.d.ts"
+    },
     "./dataStructure": {
       "import": "./dist/dataStructure/index.mjs",
       "require": "./dist/dataStructure/index.cjs",

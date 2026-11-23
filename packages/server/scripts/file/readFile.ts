@@ -1,4 +1,4 @@
-import { toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -93,14 +93,16 @@ declare module "@scripts/implementor" {
 export const readFile = implementFunction(
 	"readFile",
 	{
-		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.readFile(toPlatformPathOrThrow(path)))
+		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.readFile(
+			DSPath.toPlatformPathOrThrow(path),
+		))
 			.then((value) => DEither.right("file-system-read-file", value))
 			.catch(handleNodeReadFileError),
 		DENO: (path) => Promise.resolve().then(() => Deno
-			.readFile(toPlatformPathOrThrow(path)))
+			.readFile(DSPath.toPlatformPathOrThrow(path)))
 			.then((value) => DEither.right("file-system-read-file", value))
 			.catch(handleDenoReadFileError),
-		BUN: (path) => Promise.resolve().then(() => Bun.file(toPlatformPathOrThrow(path))
+		BUN: (path) => Promise.resolve().then(() => Bun.file(DSPath.toPlatformPathOrThrow(path))
 			.bytes())
 			.then((value) => DEither.right("file-system-read-file", value))
 			.catch(handleNodeReadFileError),

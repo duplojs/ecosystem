@@ -1,4 +1,6 @@
-import { DSCommon, DSFile, setEnvironment } from "@scripts";
+import { setEnvironment } from "@scripts";
+import * as DSCommon from "@scripts/common";
+import * as DSFile from "@scripts/file";
 import * as DChrono from "@duplojs/lang/chrono";
 import * as DPath from "@duplojs/lang/path";
 import * as DCommon from "@duplojs/lang/common";
@@ -12,7 +14,7 @@ import { setCryptoMock } from "@tests/_utils/crypto.mock";
 // Cross-API tests complement the per-operation tests: every platform boundary must validate first.
 describe("Windows filesystem boundaries", () => {
 	const path = DPath.declarePath("/C:/work/file.txt");
-	const invalid = DPath.declarePath("/");
+	const invalid = DPath.declarePath("/C:/a\\b");
 
 	beforeEach(() => {
 		vi.stubGlobal("process", {
@@ -292,7 +294,7 @@ describe("Windows filesystem boundaries", () => {
 			mkdtemp: vi.fn(),
 		});
 		expect(DEither.isLeft(await DSFile.makeTemporaryFile(DCommon.infer("file-")))).toBe(true);
-		expect(DEither.isLeft(await DSFile.makeTemporaryDirectory("/"))).toBe(true);
+		expect(DEither.isLeft(await DSFile.makeTemporaryDirectory("/CC:/"))).toBe(true);
 		expect(fs.open).not.toHaveBeenCalled();
 		expect(fs.mkdtemp).not.toHaveBeenCalled();
 	});
@@ -376,7 +378,7 @@ describe("Windows filesystem boundaries", () => {
 		expect(DEither.isRight(DSCommon.setCurrentWorkingDirectory(DPath.createAbsoluteOrThrow("/D:/work")))).toBe(true);
 		expect(chdir).toHaveBeenCalledWith("D:\\work");
 		chdir.mockClear();
-		expect(DEither.isLeft(DSCommon.setCurrentWorkingDirectory(DPath.createAbsoluteOrThrow("/")))).toBe(true);
-		expect(chdir).not.toHaveBeenCalled();
+		expect(DEither.isRight(DSCommon.setCurrentWorkingDirectory(DPath.createAbsoluteOrThrow("/")))).toBe(true);
+		expect(chdir).toHaveBeenCalledWith("C:\\");
 	});
 });

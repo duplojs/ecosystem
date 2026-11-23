@@ -1,4 +1,4 @@
-import { toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -126,8 +126,8 @@ const renameImplementation = implementFunction(
 			const newPath = DPath.resolveRelative([parentPath, newName]);
 
 			return Promise.resolve().then(() => nodeFileSystem.value.rename(
-				toPlatformPathOrThrow(path),
-				toPlatformPathOrThrow(newPath),
+				DSPath.toPlatformPathOrThrow(path),
+				DSPath.toPlatformPathOrThrow(newPath),
 			))
 				.then(() => DEither.right("file-system-rename", newPath))
 				.catch(handleNodeRenameError);
@@ -147,8 +147,8 @@ const renameImplementation = implementFunction(
 			const newPath = DPath.resolveRelative([parentPath, newName]);
 
 			return Promise.resolve().then(() => Deno.rename(
-				toPlatformPathOrThrow(path),
-				toPlatformPathOrThrow(newPath),
+				DSPath.toPlatformPathOrThrow(path),
+				DSPath.toPlatformPathOrThrow(newPath),
 			))
 				.then(() => DEither.right("file-system-rename", newPath))
 				.catch(handleDenoRenameError);

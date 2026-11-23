@@ -1,4 +1,4 @@
-import { toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
@@ -132,12 +132,12 @@ const setModeImplementation = implementFunction(
 	"setMode",
 	{
 		NODE: async(path, mode) => Promise.resolve()
-			.then(() => nodeFileSystem.value.chmod(toPlatformPathOrThrow(path), toMode(mode)))
+			.then(() => nodeFileSystem.value.chmod(DSPath.toPlatformPathOrThrow(path), toMode(mode)))
 			.then(() => DEither.right("file-system-set-mode"))
 			.catch(handleNodeSetModeError),
 		DENO: (path, mode) => Promise.resolve()
 			.then(() => Deno
-				.chmod(toPlatformPathOrThrow(path), toMode(mode)))
+				.chmod(DSPath.toPlatformPathOrThrow(path), toMode(mode)))
 			.then(() => DEither.right("file-system-set-mode"))
 			.catch(handleDenoSetModeError),
 	},

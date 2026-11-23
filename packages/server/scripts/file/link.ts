@@ -1,4 +1,4 @@
-import { toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -115,15 +115,15 @@ const linkImplementation = implementFunction(
 	"link",
 	{
 		NODE: async(existingPath, newPath) => Promise.resolve().then(() => nodeFileSystem.value.link(
-			toPlatformPathOrThrow(existingPath),
-			toPlatformPathOrThrow(newPath),
+			DSPath.toPlatformPathOrThrow(existingPath),
+			DSPath.toPlatformPathOrThrow(newPath),
 		))
 			.then(() => DEither.right("file-system-link"))
 			.catch(handleNodeLinkError),
 		DENO: (existingPath, newPath) => Promise.resolve().then(() => Deno
 			.link(
-				toPlatformPathOrThrow(existingPath),
-				toPlatformPathOrThrow(newPath),
+				DSPath.toPlatformPathOrThrow(existingPath),
+				DSPath.toPlatformPathOrThrow(newPath),
 			))
 			.then(() => DEither.right("file-system-link"))
 			.catch(handleDenoLinkError),

@@ -1,4 +1,4 @@
-import { toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
@@ -93,14 +93,14 @@ declare module "@scripts/implementor" {
 export const readTextFile = implementFunction(
 	"readTextFile",
 	{
-		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.readFile(toPlatformPathOrThrow(path), { encoding: "utf-8" }))
+		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.readFile(DSPath.toPlatformPathOrThrow(path), { encoding: "utf-8" }))
 			.then((value) => DEither.right("file-system-read-text-file", value))
 			.catch(handleNodeReadTextFileError),
 		DENO: (path) => Promise.resolve().then(() => Deno
-			.readTextFile(toPlatformPathOrThrow(path)))
+			.readTextFile(DSPath.toPlatformPathOrThrow(path)))
 			.then((value) => DEither.right("file-system-read-text-file", value))
 			.catch(handleDenoReadTextFileError),
-		BUN: (path) => Promise.resolve().then(() => Bun.file(toPlatformPathOrThrow(path))
+		BUN: (path) => Promise.resolve().then(() => Bun.file(DSPath.toPlatformPathOrThrow(path))
 			.text())
 			.then((value) => DEither.right("file-system-read-text-file", value))
 			.catch(handleNodeReadTextFileError),

@@ -1,6 +1,8 @@
 import type * as DCommon from "@duplojs/lang/common";
-import * as DPath from "@duplojs/lang/path";
-import { DSCommon, setEnvironment } from "@scripts";
+import type * as DPath from "@duplojs/lang/path";
+import { setEnvironment } from "@scripts";
+import * as DSCommon from "@scripts/common";
+import * as DSPath from "@scripts/path";
 
 describe("getCurrentDirectoryName", () => {
 	afterEach(() => {
@@ -41,7 +43,7 @@ describe("getCurrentDirectoryName", () => {
 		};
 
 		expect(() => DSCommon.getCurrentDirectoryName(importMeta))
-			.toThrowError(DPath.CreateAbsolutePathError);
+			.toThrowError(DSPath.CreateAbsolutePathError);
 		expect(() => DSCommon.getCurrentDirectoryName(importMeta))
 			.toThrowError(expect.objectContaining({ value: dirname }));
 	});

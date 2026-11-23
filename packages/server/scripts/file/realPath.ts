@@ -1,4 +1,4 @@
-import { normalizePlatformPathOrThrow, toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
@@ -83,12 +83,14 @@ declare module "@scripts/implementor" {
 export const realPath = implementFunction(
 	"realPath",
 	{
-		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.realpath(toPlatformPathOrThrow(path)))
-			.then((value) => DEither.right("file-system-real-path", normalizePlatformPathOrThrow(value)))
+		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.realpath(
+			DSPath.toPlatformPathOrThrow(path),
+		))
+			.then((value) => DEither.right("file-system-real-path", DSPath.createOrThrow(value)))
 			.catch(handleNodeRealPathError),
 		DENO: (path) => Promise.resolve().then(() => Deno
-			.realPath(toPlatformPathOrThrow(path)))
-			.then((value) => DEither.right("file-system-real-path", normalizePlatformPathOrThrow(value)))
+			.realPath(DSPath.toPlatformPathOrThrow(path)))
+			.then((value) => DEither.right("file-system-real-path", DSPath.createOrThrow(value)))
 			.catch(handleDenoRealPathError),
 	},
 );

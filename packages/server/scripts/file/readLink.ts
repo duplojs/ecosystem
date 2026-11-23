@@ -1,4 +1,4 @@
-import { toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -88,13 +88,13 @@ export const readLink = implementFunction(
 	"readLink",
 	{
 		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.readlink(
-			toPlatformPathOrThrow(path),
+			DSPath.toPlatformPathOrThrow(path),
 			{ encoding: "utf-8" },
 		))
 			.then((value) => DEither.right("file-system-read-link", value))
 			.catch(handleNodeReadLinkError),
 		DENO: (path) => Promise.resolve().then(() => Deno
-			.readLink(toPlatformPathOrThrow(path)))
+			.readLink(DSPath.toPlatformPathOrThrow(path)))
 			.then((value) => DEither.right("file-system-read-link", value))
 			.catch(handleDenoReadLinkError),
 	},

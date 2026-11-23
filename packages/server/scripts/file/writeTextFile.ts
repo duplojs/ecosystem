@@ -1,4 +1,4 @@
-import { toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
@@ -111,7 +111,7 @@ const writeTextFileImplementation = implementFunction(
 	"writeTextFile",
 	{
 		NODE: async(path, data) => Promise.resolve().then(() => nodeFileSystem.value.writeFile(
-			toPlatformPathOrThrow(path),
+			DSPath.toPlatformPathOrThrow(path),
 			data,
 			{ encoding: "utf-8" },
 		))
@@ -119,13 +119,13 @@ const writeTextFileImplementation = implementFunction(
 			.catch(handleNodeWriteTextFileError),
 		DENO: (path, data) => Promise.resolve().then(() => Deno
 			.writeTextFile(
-				toPlatformPathOrThrow(path),
+				DSPath.toPlatformPathOrThrow(path),
 				data,
 			))
 			.then(() => DEither.right("file-system-write-text-file"))
 			.catch(handleDenoWriteTextFileError),
 		BUN: (path, data) => Promise.resolve().then(() => Bun
-			.file(toPlatformPathOrThrow(path))
+			.file(DSPath.toPlatformPathOrThrow(path))
 			.write(data))
 			.then(() => DEither.right("file-system-write-text-file"))
 			.catch(handleNodeWriteTextFileError),

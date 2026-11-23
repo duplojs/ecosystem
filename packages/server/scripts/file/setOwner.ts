@@ -1,4 +1,4 @@
-import { toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
@@ -93,12 +93,12 @@ const setOwnerImplementation = implementFunction(
 	"setOwner",
 	{
 		NODE: async(path, { userId, groupId }) => Promise.resolve()
-			.then(() => nodeFileSystem.value.chown(toPlatformPathOrThrow(path), userId, groupId))
+			.then(() => nodeFileSystem.value.chown(DSPath.toPlatformPathOrThrow(path), userId, groupId))
 			.then(() => DEither.right("file-system-set-owner"))
 			.catch(handleNodeSetOwnerError),
 		DENO: (path, { userId, groupId }) => Promise.resolve()
 			.then(() => Deno
-				.chown(toPlatformPathOrThrow(path), userId, groupId))
+				.chown(DSPath.toPlatformPathOrThrow(path), userId, groupId))
 			.then(() => DEither.right("file-system-set-owner"))
 			.catch(handleDenoSetOwnerError),
 	},

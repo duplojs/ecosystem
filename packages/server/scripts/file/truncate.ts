@@ -1,4 +1,4 @@
-import { toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import * as DPath from "@duplojs/lang/path";
@@ -111,7 +111,7 @@ export const truncate = implementFunction(
 	"truncate",
 	{
 		NODE: async(path, size) => Promise.resolve()
-			.then(() => nodeFileSystem.value.truncate(toPlatformPathOrThrow(path), size))
+			.then(() => nodeFileSystem.value.truncate(DSPath.toPlatformPathOrThrow(path), size))
 			.then(() => DEither.right("file-system-truncate"))
 			.catch(handleNodeTruncateError),
 		DENO: (path, size) => DCommon.pipe(
@@ -122,7 +122,7 @@ export const truncate = implementFunction(
 			),
 			(stringPath) => Promise.resolve()
 				.then(() => Deno
-					.truncate(toPlatformPathOrThrow(stringPath), size))
+					.truncate(DSPath.toPlatformPathOrThrow(stringPath), size))
 				.then(() => DEither.right("file-system-truncate"))
 				.catch(handleDenoTruncateError),
 		),

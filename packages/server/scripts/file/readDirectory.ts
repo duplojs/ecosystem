@@ -1,4 +1,5 @@
-import { normalizePlatformPathOrThrow, toPlatformPathOrThrow, getCurrentWorkDirectoryOrThrow } from "@scripts/common";
+import * as DSCommon from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
 import { implementFunction, nodeFileSystem } from "@scripts/implementor";
@@ -95,7 +96,7 @@ export const readDirectory = implementFunction(
 			const result = (
 				params?.absolute
 					? Promise.resolve().then(() => nodeFileSystem.value.readdir(
-						toPlatformPathOrThrow(path),
+						DSPath.toPlatformPathOrThrow(path),
 						{
 							recursive: params.recursive,
 							withFileTypes: true,
@@ -104,18 +105,18 @@ export const readDirectory = implementFunction(
 						(value) => DArray.map(
 							value,
 							({ name, parentPath }) => DPath.resolveFrom(
-								getCurrentWorkDirectoryOrThrow(),
-								[normalizePlatformPathOrThrow(`${parentPath}/${name}`)],
+								DSCommon.getCurrentWorkDirectoryOrThrow(),
+								[DSPath.createOrThrow(`${parentPath}/${name}`)],
 							),
 						),
 					)
 					: Promise.resolve().then(() => nodeFileSystem.value.readdir(
-						toPlatformPathOrThrow(path),
+						DSPath.toPlatformPathOrThrow(path),
 						{ recursive: params?.recursive },
 					)).then(
 						(value) => DArray.map(
 							value,
-							(subPath) => normalizePlatformPathOrThrow(subPath),
+							(subPath) => DSPath.createOrThrow(subPath),
 						),
 					)
 			)

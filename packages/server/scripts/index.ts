@@ -13,3 +13,6 @@ export * as DSDataStructure from "./dataStructure";
 
 export * as SC from "./command";
 export * as DSCommand from "./command";
+
+export * as SP from "./path";
+export * as DSPath from "./path";

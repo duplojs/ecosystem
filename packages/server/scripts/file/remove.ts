@@ -1,4 +1,4 @@
-import { toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
@@ -108,7 +108,7 @@ export const remove = implementFunction(
 	"remove",
 	{
 		NODE: async(path, params) => Promise.resolve().then(() => nodeFileSystem.value.rm(
-			toPlatformPathOrThrow(path),
+			DSPath.toPlatformPathOrThrow(path),
 			{
 				recursive: params?.recursive ?? false,
 				force: true,
@@ -117,7 +117,7 @@ export const remove = implementFunction(
 			.then(() => DEither.right("file-system-remove"))
 			.catch(handleNodeRemoveError),
 		DENO: (path, params) => Promise.resolve().then(() => Deno.remove(
-			toPlatformPathOrThrow(path),
+			DSPath.toPlatformPathOrThrow(path),
 			{
 				recursive: params?.recursive,
 			},

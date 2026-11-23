@@ -1,4 +1,4 @@
-import { normalizePlatformPathOrThrow, toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DCommon from "@duplojs/lang/common";
 import * as DPath from "@duplojs/lang/path";
 import * as DArray from "@duplojs/lang/array";
@@ -87,7 +87,7 @@ export const walkDirectory = implementFunction(
 	"walkDirectory",
 	{
 		NODE: async(path, params) => Promise.resolve().then(() => nodeFileSystem.value.readdir(
-			toPlatformPathOrThrow(path),
+			DSPath.toPlatformPathOrThrow(path),
 			{
 				recursive: params?.recursive ?? false,
 				withFileTypes: true,
@@ -104,7 +104,7 @@ export const walkDirectory = implementFunction(
 								dirent,
 								path: DPath.resolveFrom(
 									currentWorkDirectory,
-									[normalizePlatformPathOrThrow(`${dirent.parentPath}/${dirent.name}`)],
+									[DSPath.createOrThrow(`${dirent.parentPath}/${dirent.name}`)],
 								),
 							}),
 						),

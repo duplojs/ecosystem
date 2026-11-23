@@ -1,4 +1,4 @@
-import { toPlatformPathOrThrow } from "@scripts/common";
+import * as DSPath from "@scripts/path";
 import * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
@@ -93,17 +93,17 @@ declare module "@scripts/implementor" {
 export const readJsonFile = implementFunction(
 	"readJsonFile",
 	{
-		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.readFile(toPlatformPathOrThrow(path), { encoding: "utf-8" }))
+		NODE: async(path) => Promise.resolve().then(() => nodeFileSystem.value.readFile(DSPath.toPlatformPathOrThrow(path), { encoding: "utf-8" }))
 			.then(JSON.parse)
 			.then((value) => DEither.right("file-system-read-json-file", value))
 			.catch(handleNodeReadJsonFileError),
 
-		DENO: (path) => Promise.resolve().then(() => Deno.readTextFile(toPlatformPathOrThrow(path)))
+		DENO: (path) => Promise.resolve().then(() => Deno.readTextFile(DSPath.toPlatformPathOrThrow(path)))
 			.then(JSON.parse)
 			.then((value) => DEither.right("file-system-read-json-file", value))
 			.catch(handleDenoReadJsonFileError),
 
-		BUN: (path) => Promise.resolve().then(() => Bun.file(toPlatformPathOrThrow(path))
+		BUN: (path) => Promise.resolve().then(() => Bun.file(DSPath.toPlatformPathOrThrow(path))
 			.text())
 			.then(JSON.parse)
 			.then((value) => DEither.right("file-system-read-json-file", value))
