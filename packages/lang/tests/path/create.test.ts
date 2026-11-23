@@ -13,6 +13,7 @@ describe("create", () => {
 		["foo/../../../bar", "../../bar"],
 		["file:///project/src/main.ts", "/project/src/main.ts"],
 		["file:///project/call%20site/%C3%A9%23/main.ts", "/project/call site/é#/main.ts"],
+		["file://remote-host/foo", "/remote-host/foo"],
 	] as const)(
 		"creates a normalized path from %j",
 		(value, expected) => {
@@ -34,24 +35,23 @@ describe("create", () => {
 		"foo\0",
 		"file:///foo%00bar",
 		"file:///foo%GG",
-		"file://remote-host/foo",
 	] as const)(
-		"returns an error with the original input for invalid path %j",
+		"returns a custom left with the original input for invalid path %j",
 		(value) => {
 			const result = DPath.create(value);
 
-			expect(result).toStrictEqual(DEither.error(value));
+			expect(DEither.unwrapByInformationOrThrow(result, "create-path-error")).toBe(value);
 		},
 	);
 
-	it("returns either a path success or an input error", () => {
+	it("returns either a path success or a custom left", () => {
 		const value = "foo/../bar";
 		const result = DPath.create(value);
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
 			| DEither.Success<string & DPath.Path>
-			| DEither.Error<string>,
+			| DEither.Left<"create-path-error", string>,
 			"strict"
 		>;
 	});

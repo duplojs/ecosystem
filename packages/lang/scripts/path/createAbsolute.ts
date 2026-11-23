@@ -7,7 +7,7 @@ export function createAbsolute(
 	value: string,
 ): (
 	| DEither.Success<string & Absolute & Path>
-	| DEither.Error<string>
+	| DEither.Left<"create-absolute-path-error", string>
 );
 
 export function createAbsolute(
@@ -19,5 +19,5 @@ export function createAbsolute(
 		return DEither.success(result);
 	}
 
-	return DEither.error(value);
+	return DEither.left("create-absolute-path-error", value);
 }

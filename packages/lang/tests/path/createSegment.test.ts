@@ -17,7 +17,7 @@ describe("createSegment", () => {
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			DEither.Success<string & DPath.Segment & DPath.Path> | DEither.Error<string>,
+			DEither.Success<string & DPath.Segment & DPath.Path> | DEither.Left<"create-segment-path-error", string>,
 			"strict"
 		>;
 		type _CheckValue = DCommon.ExpectType<typeof value, string & DPath.Segment & DPath.Path, "strict">;
@@ -30,9 +30,9 @@ describe("createSegment", () => {
 		"foo/bar",
 		"/foo",
 		"foo\u0000bar",
-	])("returns the original invalid input %j", (input) => {
+	])("returns a custom left with the original input for invalid path %j", (input) => {
 		const result = DPath.createSegment(input);
 
-		expect(DEither.unwrapByInformationOrThrow(result, "error")).toBe(input);
+		expect(DEither.unwrapByInformationOrThrow(result, "create-segment-path-error")).toBe(input);
 	});
 });

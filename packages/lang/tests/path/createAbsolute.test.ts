@@ -16,7 +16,7 @@ describe("createAbsolute", () => {
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			DEither.Success<string & DPath.Absolute & DPath.Path> | DEither.Error<string>,
+			DEither.Success<string & DPath.Absolute & DPath.Path> | DEither.Left<"create-absolute-path-error", string>,
 			"strict"
 		>;
 		type _CheckValue = DCommon.ExpectType<typeof value, string & DPath.Absolute & DPath.Path, "strict">;
@@ -27,9 +27,9 @@ describe("createAbsolute", () => {
 		"foo",
 		"../foo",
 		"/foo\u0000bar",
-	])("returns the original invalid input %j", (input) => {
+	])("returns a custom left with the original input for invalid path %j", (input) => {
 		const result = DPath.createAbsolute(input);
 
-		expect(DEither.unwrapByInformationOrThrow(result, "error")).toBe(input);
+		expect(DEither.unwrapByInformationOrThrow(result, "create-absolute-path-error")).toBe(input);
 	});
 });

@@ -7,7 +7,7 @@ export function createSegment(
 	value: string,
 ): (
 	| DEither.Success<string & Segment & Path>
-	| DEither.Error<string>
+	| DEither.Left<"create-segment-path-error", string>
 );
 
 export function createSegment(
@@ -19,5 +19,5 @@ export function createSegment(
 		return DEither.success(result);
 	}
 
-	return DEither.error(value);
+	return DEither.left("create-segment-path-error", value);
 }

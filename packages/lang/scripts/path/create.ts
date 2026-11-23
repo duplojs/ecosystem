@@ -6,7 +6,7 @@ export function create(
 	value: string,
 ): (
 	| DEither.Success<string & Path>
-	| DEither.Error<string>
+	| DEither.Left<"create-path-error", string>
 );
 
 export function create(
@@ -18,5 +18,5 @@ export function create(
 		return DEither.success(result);
 	}
 
-	return DEither.error(value);
+	return DEither.left("create-path-error", value);
 }
