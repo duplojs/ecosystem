@@ -1,1 +1,1 @@
-export * from "./assignList";
+export {};

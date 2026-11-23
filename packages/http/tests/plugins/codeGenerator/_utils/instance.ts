@@ -21,7 +21,7 @@ export async function openProject() {
 	return DEither.unwrapByInformationOrThrow(result, "success");
 }
 
-type RouteEntries = readonly (readonly [string & DPath.Path & DPath.Absolute, readonly string[]])[];
+type RouteEntries = readonly (readonly [string & DPath.Absolute, readonly string[]])[];
 
 export function routesFiles(entries: RouteEntries = []) {
 	const files: RoutesFiles = DInvocation.appendEvidence(new Map(), "updated-route-files");
