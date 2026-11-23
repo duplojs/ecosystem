@@ -161,11 +161,21 @@ describe("preferred import paths in the base preset", () => {
 	tester.run("prefer-import-path with defaults", DOxlint.preferImportPath as never, {
 		valid: [
 			{
+				code: "import { DSPath, SP } from \"@duplojs/server\";",
+				options: [{ paths: DOxlint.defaultPreferImportPaths }],
+			},
+			{
 				code: "import { setEnvironment, TESTImplementation, DSFile } from \"@duplojs/server\";",
 				options: [{ paths: DOxlint.defaultPreferImportPaths }],
 			},
 		],
 		invalid: [
+			{
+				code: "import { DSPath, SP, getProcessArguments } from \"@duplojs/server\";",
+				output: "import { DSPath, SP } from \"@duplojs/server\";\nimport { getProcessArguments } from \"@duplojs/server/common\";",
+				options: [{ paths: DOxlint.defaultPreferImportPaths }],
+				errors: [{ messageId: "preferImportPath" }],
+			},
 			{
 				code: "import { setEnvironment, TESTImplementation, DSFile, getProcessArguments } from \"@duplojs/server\";",
 				output: "import { setEnvironment, TESTImplementation, DSFile } from \"@duplojs/server\";\nimport { getProcessArguments } from \"@duplojs/server/common\";",

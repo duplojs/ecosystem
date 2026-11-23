@@ -7,6 +7,7 @@ import * as DGenerator from "@duplojs/lang/generator";
 import * as DArray from "@duplojs/lang/array";
 import * as DString from "@duplojs/lang/string";
 import * as DEither from "@duplojs/lang/either";
+import * as DSPath from "@duplojs/server/path";
 
 async function isRouteHandler(
 	node: TypescriptNativeAPI.CallExpression,
@@ -100,7 +101,7 @@ export function createContentRoutesFiles(
 ) {
 	return DEither.rightAsyncPipe(
 		typescriptInstance.project.program.getSourceFileNames(),
-		DGenerator.map(DPath.normalize),
+		DGenerator.map(DSPath.normalize),
 		DGenerator.filter(DCommon.isType("string")),
 		DGenerator.filter((path) => params.isRoutePath(path)),
 		DGenerator.filter(DPath.isAbsolute),

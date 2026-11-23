@@ -14,7 +14,7 @@ describe("installSkillCommand", () => {
 	beforeEach(() => {
 		setEnvironment("TEST");
 		TESTImplementation.set("remove", () => Promise.resolve(DEither.right("file-system-remove")));
-		TESTImplementation.set("getCurrentWorkDirectory", () => DPath.createAbsolute("/project"));
+		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.success(DPath.createAbsoluteOrThrow("/project")));
 	});
 
 	afterEach(() => {

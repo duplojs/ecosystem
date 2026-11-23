@@ -31,7 +31,7 @@ describe("copySkill", () => {
 	beforeEach(() => {
 		setEnvironment("TEST");
 		TESTImplementation.set("remove", () => Promise.resolve(DEither.right("file-system-remove")));
-		TESTImplementation.set("getCurrentWorkDirectory", () => DPath.createAbsolute("/project"));
+		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.success(DPath.createAbsoluteOrThrow("/project")));
 	});
 
 	afterEach(() => {
@@ -49,7 +49,7 @@ describe("copySkill", () => {
 
 		const result = await copySkill(agent, skill);
 
-		type _CheckResult = DCommon.ExpectType<typeof result, DSFile.CopyResult | Extract<DSFile.RemoveResult, DEither.Left> | DEither.Error<unknown>, "strict">;
+		type _CheckResult = DCommon.ExpectType<typeof result, DSFile.CopyResult | Extract<DSFile.RemoveResult, DEither.Left> | DEither.Left<"get-current-work-directory-error", unknown>, "strict">;
 
 		expect(DEither.unwrapByInformationOrThrow(result, "file-system-copy")).toBeUndefined();
 		expect(copy).toHaveBeenCalledExactlyOnceWith(`${skillsPath}/${skill}`, `/project/${folder}/skills/duplojs-${skill}`);
@@ -68,7 +68,7 @@ describe("copySkill", () => {
 	it("does not copy when the working directory is unavailable", async() => {
 		const copy = vi.fn();
 		TESTImplementation.set("copy", copy);
-		const failure = DEither.error(new Error("Unavailable"));
+		const failure = DEither.left("get-current-work-directory-error", new Error("Unavailable"));
 		TESTImplementation.set("getCurrentWorkDirectory", () => failure);
 
 		const result = await copySkill("codex", "http-server");
@@ -82,7 +82,7 @@ describe("symlinkSkill", () => {
 	beforeEach(() => {
 		setEnvironment("TEST");
 		TESTImplementation.set("remove", () => Promise.resolve(DEither.right("file-system-remove")));
-		TESTImplementation.set("getCurrentWorkDirectory", () => DPath.createAbsolute("/project"));
+		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.success(DPath.createAbsoluteOrThrow("/project")));
 	});
 
 	afterEach(() => {
@@ -108,7 +108,7 @@ describe("symlinkSkill", () => {
 		pending.resolve(DEither.right("file-system-ensure-directory"));
 		const result = await execution;
 
-		type _CheckResult = DCommon.ExpectType<typeof result, DSFile.SymlinkResult | Extract<DSFile.EnsureDirectoryResult | DSFile.RemoveResult, DEither.Left> | DEither.Error<unknown>, "strict">;
+		type _CheckResult = DCommon.ExpectType<typeof result, DSFile.SymlinkResult | Extract<DSFile.EnsureDirectoryResult | DSFile.RemoveResult, DEither.Left> | DEither.Left<"get-current-work-directory-error", unknown>, "strict">;
 
 		expect(DEither.unwrapByInformationOrThrow(result, "file-system-symlink")).toBeUndefined();
 		const relativeSkillsPath = DPath.computeRelative(DPath.createAbsoluteOrThrow(`/project/${folder}/skills`), skillsPath);
@@ -154,7 +154,7 @@ describe.each([
 ] as const)("$name replacement", ({ install, information }) => {
 	beforeEach(() => {
 		setEnvironment("TEST");
-		TESTImplementation.set("getCurrentWorkDirectory", () => DPath.createAbsolute("/project"));
+		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.success(DPath.createAbsoluteOrThrow("/project")));
 		TESTImplementation.set("ensureDirectory", () => Promise.resolve(DEither.right("file-system-ensure-directory")));
 	});
 

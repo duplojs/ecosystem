@@ -42,7 +42,7 @@ describe("updateSkillsCommand", () => {
 
 	beforeEach(() => {
 		setEnvironment("TEST");
-		TESTImplementation.set("getCurrentWorkDirectory", () => DPath.createAbsolute("/project"));
+		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.success(DPath.createAbsoluteOrThrow("/project")));
 		remove.mockReset().mockResolvedValue(DEither.right("file-system-remove"));
 		symlink.mockReset().mockResolvedValue(DEither.right("file-system-symlink"));
 		copy.mockReset().mockResolvedValue(DEither.right("file-system-copy"));
@@ -145,7 +145,7 @@ describe("updateSkillsCommand", () => {
 	});
 
 	it("does not inspect skills when the working directory is unavailable", async() => {
-		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.error(new Error("Unavailable")));
+		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.left("get-current-work-directory-error", new Error("Unavailable")));
 
 		await expect(updateSkillsCommand.execute([], DSCommand.createError("update"))).resolves.toBeUndefined();
 

@@ -33,7 +33,7 @@ describe("setupCommand", () => {
 		exitProcess.mockClear();
 		TESTImplementation.set("exitProcess", exitProcess);
 		vi.spyOn(console, "error").mockImplementation(() => {});
-		TESTImplementation.set("getCurrentWorkDirectory", () => DPath.createAbsolute("/project with spaces"));
+		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.success(DPath.createAbsoluteOrThrow("/project with spaces")));
 	});
 
 	afterEach(() => {
@@ -97,7 +97,7 @@ describe("setupCommand", () => {
 			relativePath: "../project with spaces/node_modules/@duplojs/agents-kit",
 		},
 	])("inserts a package path relative to AGENTS.md in $directory", async({ directory, relativePath }) => {
-		TESTImplementation.set("getCurrentWorkDirectory", () => DPath.createAbsolute(directory));
+		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.success(DPath.createAbsoluteOrThrow(directory)));
 		const read = vi.fn()
 			.mockResolvedValueOnce(DEither.right("file-system-read-text-file", "Read {{packagePath}}/docs."))
 			.mockResolvedValueOnce(DEither.left("file-system-read-text-file-error", new NotFoundError(new Error("Missing file"))));
@@ -206,7 +206,7 @@ describe("setupCommand", () => {
 	});
 
 	it("reports the working directory failure without accessing files", async() => {
-		const failure = DEither.error("Working directory unavailable");
+		const failure = DEither.left("get-current-work-directory-error", "Working directory unavailable");
 		const read = vi.fn();
 		TESTImplementation.set("getCurrentWorkDirectory", () => failure);
 		TESTImplementation.set("readTextFile", read);

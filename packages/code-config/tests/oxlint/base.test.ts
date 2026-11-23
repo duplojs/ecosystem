@@ -47,6 +47,26 @@ describe("base import rules", () => {
 			expected: "import * as DSFile from \"@duplojs/server/file\";\nDSFile.readTextFile(path);",
 		},
 		{
+			code: "import { DSPath } from \"@duplojs/server\";\nDSPath.normalize(path);",
+			expected: "import * as DSPath from \"@duplojs/server/path\";\nDSPath.normalize(path);",
+		},
+		{
+			code: "import { SP } from \"@duplojs/server\";\nSP.normalize(path);",
+			expected: "import * as DSPath from \"@duplojs/server/path\";\nDSPath.normalize(path);",
+		},
+		{
+			code: "import { normalize } from \"@duplojs/server/path\";\nnormalize(path);",
+			expected: "import * as DSPath from \"@duplojs/server/path\";\nDSPath.normalize(path);",
+		},
+		{
+			code: "import * as SP from \"@duplojs/server/path\";\nSP.normalize(path);",
+			expected: "import * as DSPath from \"@duplojs/server/path\";\nDSPath.normalize(path);",
+		},
+		{
+			code: "import { DSPath, setEnvironment, getProcessArguments } from \"@duplojs/server\";\nDSPath.normalize(getProcessArguments()[0]);\nsetEnvironment(\"TEST\");",
+			expected: "import { setEnvironment } from \"@duplojs/server\";\nimport * as DSCommon from \"@duplojs/server/common\";\nimport * as DSPath from \"@duplojs/server/path\";\nDSPath.normalize(DSCommon.getProcessArguments()[0]);\nsetEnvironment(\"TEST\");",
+		},
+		{
 			code: "import { DSCommon, setEnvironment, TESTImplementation } from \"@duplojs/server\";\nDSCommon.getProcessArguments();\nsetEnvironment(\"TEST\");\nTESTImplementation.clear();",
 			expected: "import { setEnvironment, TESTImplementation } from \"@duplojs/server\";\nimport * as DSCommon from \"@duplojs/server/common\";\nDSCommon.getProcessArguments();\nsetEnvironment(\"TEST\");\nTESTImplementation.clear();",
 		},

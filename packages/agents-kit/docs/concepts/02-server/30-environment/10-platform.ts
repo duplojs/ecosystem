@@ -21,7 +21,7 @@ type _CheckWriteJsonResult = DCommon.ExpectType<typeof writeJsonResult, DSFile.W
 const currentWorkingDirectoryResult = DSCommon.getCurrentWorkDirectory();
 type _CheckCurrentWorkingDirectoryResultLine21 = DCommon.ExpectType<
 	typeof currentWorkingDirectoryResult,
-	DEither.Error<unknown> | DEither.Success<string & DPath.Absolute>,
+	DEither.Left<"get-current-work-directory-error", unknown> | DEither.Success<string & DPath.Absolute>,
 	"strict"
 >;
 

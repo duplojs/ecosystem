@@ -22,6 +22,7 @@ export const defaultPreferNamespaceImportPaths = {
 
 	"@duplojs/server/file": "DSFile",
 	"@duplojs/server/common": "DSCommon",
+	"@duplojs/server/path": "DSPath",
 	"@duplojs/server/dataStructure": "DSDataStructure",
 	"@duplojs/server/command": "DSCommand",
 };
@@ -60,6 +61,8 @@ export const defaultPreferNamespaceFromBarrelOptions = {
 		DSFile: "@duplojs/server/file",
 		SF: "@duplojs/server/file",
 		DSCommon: "@duplojs/server/common",
+		DSPath: "@duplojs/server/path",
+		SP: "@duplojs/server/path",
 		DSDataStructure: "@duplojs/server/dataStructure",
 		SDS: "@duplojs/server/dataStructure",
 		DSCommand: "@duplojs/server/command",
@@ -107,6 +110,8 @@ export const defaultPreferImportPaths = {
 			"setEnvironment",
 			"TESTImplementation",
 			"DSCommon",
+			"DSPath",
+			"SP",
 			"SF",
 			"DSFile",
 			"SDS",

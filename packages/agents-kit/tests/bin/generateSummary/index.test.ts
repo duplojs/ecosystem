@@ -15,7 +15,7 @@ describe("generateSummaryCommand", () => {
 		setEnvironment("TEST");
 		writeTextFile.mockClear();
 		readTextFile.mockClear();
-		TESTImplementation.set("getCurrentWorkDirectory", () => DPath.createAbsolute("/project"));
+		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.success(DPath.createAbsoluteOrThrow("/project")));
 		TESTImplementation.set("stat", () => Promise.resolve(DEither.right("file-system-stat", {
 			isFile: false,
 			isDirectory: true,

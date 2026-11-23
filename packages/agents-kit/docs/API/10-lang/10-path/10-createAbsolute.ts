@@ -11,11 +11,11 @@ const result = DPath.createAbsolute("/workspace/src/../index.ts");
 // Le Right contient /workspace/index.ts ; un chemin relatif produit un Left.
 type _CheckResult = DCommon.ExpectType<
 	typeof result,
-	DEither.Success<string & DPath.Absolute & DPath.Path> | DEither.Error<string>,
+	DEither.Success<string & DPath.Absolute & DPath.Path> | DEither.Left<"create-absolute-path-error", string>,
 	"strict"
 >;
 
 // Refus : un chemin relatif ne produit pas le chemin demandé.
 const rejected = DPath.createAbsolute("src/index.ts");
-// Error contient la chaîne d’origine, sans normalisation de sa valeur d’erreur.
-type _CheckRejected = DCommon.ExpectType<typeof rejected, DEither.Success<string & DPath.Absolute & DPath.Path> | DEither.Error<string>, "strict">;
+// Le Left contient la chaîne d’origine, sans normalisation de sa valeur d’erreur.
+type _CheckRejected = DCommon.ExpectType<typeof rejected, DEither.Success<string & DPath.Absolute & DPath.Path> | DEither.Left<"create-absolute-path-error", string>, "strict">;
