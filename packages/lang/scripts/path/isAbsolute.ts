@@ -1,5 +1,5 @@
 import type * as DString from "@scripts/string";
-import type { Absolute } from "./constraints";
+import type { Absolute, Segment } from "./constraints";
 import { type IsLiteralAbsolutePath } from "./types";
 import { is } from "./is";
 
@@ -8,13 +8,15 @@ export function isAbsolute<
 >(
 	value: GenericPath,
 ): value is (
-	GenericPath extends Absolute
-		? GenericPath
-		: IsLiteralAbsolutePath<GenericPath> extends true
+	GenericPath extends Segment
+		? never
+		: GenericPath extends Absolute
 			? GenericPath
-			: DString.IsLiteral<GenericPath> extends true
-				? never
-				: GenericPath & Absolute
+			: IsLiteralAbsolutePath<GenericPath> extends true
+				? GenericPath
+				: DString.IsLiteral<GenericPath> extends true
+					? never
+					: GenericPath & Absolute
 );
 
 export function isAbsolute(

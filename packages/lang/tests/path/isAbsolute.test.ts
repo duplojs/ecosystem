@@ -64,6 +64,7 @@ describe("isAbsolute", () => {
 			| "src/index.ts"
 			| (string & DPath.Path)
 			| (string & DPath.Absolute)
+			| (string & DPath.Segment)
 
 			| ""
 			| "."
@@ -110,6 +111,7 @@ describe("isAbsolute", () => {
 				| ".git/config"
 				| "src/index.ts"
 				| (string & DPath.Path)
+				| (string & DPath.Segment)
 				| ""
 				| "."
 				| "./foo"
@@ -144,6 +146,26 @@ describe("isAbsolute", () => {
 			type check = DCommon.ExpectType<
 				typeof value,
 				string,
+				"strict"
+			>;
+		}
+	});
+
+	it("excludes constrained segments from absolute paths", () => {
+		const segment = "foo" as string & DPath.Segment;
+
+		expect(DPath.isAbsolute(segment)).toBe(false);
+
+		if (DPath.isAbsolute(segment)) {
+			type check = DCommon.ExpectType<
+				typeof segment,
+				never,
+				"strict"
+			>;
+		} else {
+			type check = DCommon.ExpectType<
+				typeof segment,
+				string & DPath.Segment,
 				"strict"
 			>;
 		}

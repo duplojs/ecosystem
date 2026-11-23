@@ -107,7 +107,7 @@ export function createContentRoutesFiles(
 		DGenerator.asyncReduce(
 			DGenerator.reduceFrom<
 				Map<
-					string & DPath.Path & DPath.Absolute,
+					string & DPath.Absolute,
 					{
 						content: string;
 						variablesName: readonly TypescriptNativeAPI.Identifier[];
