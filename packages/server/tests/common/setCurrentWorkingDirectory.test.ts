@@ -24,17 +24,18 @@ describe("setCurrentWorkingDirectory", () => {
 		expect(chdir).toHaveBeenCalledWith("/tmp/project");
 	});
 
-	it("returns fail when NODE chdir throws", () => {
+	it("returns an identified left when NODE chdir throws", () => {
 		setEnvironment("NODE");
+		const cause = new Error("boom");
 		setProcessMock({
 			chdir: () => {
-				throw new Error("boom");
+				throw cause;
 			},
 		});
 
 		const result = DSCommon.setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
 
-		expect(DEither.isLeft(result)).toBe(true);
+		expect(DEither.unwrapByInformationOrThrow(result, "set-current-working-directory-error")).toBe(cause);
 	});
 
 	it("sets current working directory in DENO env", () => {
@@ -48,16 +49,17 @@ describe("setCurrentWorkingDirectory", () => {
 		expect(chdir).toHaveBeenCalledWith("/tmp/project");
 	});
 
-	it("returns fail when DENO chdir throws", () => {
+	it("returns an identified left when DENO chdir throws", () => {
 		setEnvironment("DENO");
+		const cause = new Error("boom");
 		setDenoMock({
 			chdir: () => {
-				throw new Error("boom");
+				throw cause;
 			},
 		});
 
 		const result = DSCommon.setCurrentWorkingDirectory(DCommon.infer("/tmp/project"));
 
-		expect(DEither.isLeft(result)).toBe(true);
+		expect(DEither.unwrapByInformationOrThrow(result, "set-current-working-directory-error")).toBe(cause);
 	});
 });

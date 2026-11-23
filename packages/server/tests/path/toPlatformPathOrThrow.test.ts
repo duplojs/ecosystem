@@ -48,7 +48,7 @@ describe("toPlatformPathOrThrow", () => {
 	});
 
 	it("throws when the current drive cannot be obtained", () => {
-		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.error("unavailable"));
+		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.left("get-current-work-directory-error", "unavailable"));
 
 		expect(() => DSPath.toPlatformPathOrThrow(DPath.declareAbsolutePath("/tmp")))
 			.toThrow(DSPath.InvalidPlatformPathError);

@@ -27,17 +27,18 @@ describe("getCurrentWorkDirectory", () => {
 		}
 	});
 
-	it("returns fail when process.cwd throws in NODE env", () => {
+	it("returns an identified left when process.cwd throws in NODE env", () => {
 		setEnvironment("NODE");
+		const cause = new Error("boom");
 		setProcessMock({
 			cwd: () => {
-				throw new Error("boom");
+				throw cause;
 			},
 		});
 
 		const result = DSCommon.getCurrentWorkDirectory();
 
-		expect(DEither.isLeft(result)).toBe(true);
+		expect(DEither.unwrapByInformationOrThrow(result, "get-current-work-directory-error")).toBe(cause);
 	});
 
 	it("returns current working directory in DENO env", () => {
@@ -55,17 +56,18 @@ describe("getCurrentWorkDirectory", () => {
 		}
 	});
 
-	it("returns fail when Deno.cwd throws in DENO env", () => {
+	it("returns an identified left when Deno.cwd throws in DENO env", () => {
 		setEnvironment("DENO");
+		const cause = new Error("boom");
 		setDenoMock({
 			cwd: () => {
-				throw new Error("boom");
+				throw cause;
 			},
 		});
 
 		const result = DSCommon.getCurrentWorkDirectory();
 
-		expect(DEither.isLeft(result)).toBe(true);
+		expect(DEither.unwrapByInformationOrThrow(result, "get-current-work-directory-error")).toBe(cause);
 	});
 
 	it.each(["NODE", "DENO"] as const)("normalizes an absolute cwd in %s", (environment) => {
@@ -78,7 +80,7 @@ describe("getCurrentWorkDirectory", () => {
 		}
 		const result = DSCommon.getCurrentWorkDirectory();
 
-		type _CheckResult = DCommon.ExpectType<typeof result, DEither.Error<unknown> | DEither.Success<string & DPath.Absolute>, "strict">;
+		type _CheckResult = DCommon.ExpectType<typeof result, DEither.Left<"get-current-work-directory-error", unknown> | DEither.Success<string & DPath.Absolute>, "strict">;
 
 		const value = DEither.unwrapByInformationOrThrow(result, "success");
 
@@ -101,6 +103,6 @@ describe("getCurrentWorkDirectory", () => {
 			setDenoMock({ cwd: () => path });
 		}
 
-		expect(DEither.hasInformation(DSCommon.getCurrentWorkDirectory(), "error")).toBe(true);
+		expect(DEither.hasInformation(DSCommon.getCurrentWorkDirectory(), "get-current-work-directory-error")).toBe(true);
 	});
 });

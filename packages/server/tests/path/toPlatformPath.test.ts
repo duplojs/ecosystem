@@ -126,7 +126,7 @@ describe("toPlatformPath", () => {
 		["C:foo", "C:foo"],
 		["foo/bar", "foo\\bar"],
 	])("converts %j without reading cwd", (path, expected) => {
-		const directory = vi.fn(() => DEither.error("unavailable"));
+		const directory = vi.fn(() => DEither.left("get-current-work-directory-error", "unavailable"));
 		TESTImplementation.set("getCurrentWorkDirectory", directory);
 
 		const result = DSPath.toPlatformPath(DPath.createOrThrow(path));
@@ -169,7 +169,7 @@ describe("toPlatformPath", () => {
 		});
 
 		it("returns an error when cwd is unavailable", () => {
-			TESTImplementation.set("getCurrentWorkDirectory", () => DEither.error("unavailable"));
+			TESTImplementation.set("getCurrentWorkDirectory", () => DEither.left("get-current-work-directory-error", "unavailable"));
 			const input = DPath.declareAbsolutePath("/foo");
 
 			const result = DSPath.toPlatformPath(input);
@@ -273,7 +273,7 @@ describe("toPlatformPath", () => {
 			"C:\\foo",
 			"foo\\bar",
 		])("preserves %j without consulting cwd", (path) => {
-			const directory = vi.fn(() => DEither.error("unavailable"));
+			const directory = vi.fn(() => DEither.left("get-current-work-directory-error", "unavailable"));
 			TESTImplementation.set("getCurrentWorkDirectory", directory);
 			const input = DPath.createOrThrow(path);
 

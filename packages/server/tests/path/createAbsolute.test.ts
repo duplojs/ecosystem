@@ -71,7 +71,7 @@ describe("createAbsolute", () => {
 
 	it("fails when the current drive is unavailable", () => {
 		vi.spyOn(currentOS, "value", "get").mockReturnValue(OS.windows);
-		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.error("unavailable"));
+		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.left("get-current-work-directory-error", "unavailable"));
 
 		const result = DSPath.createAbsolute("/foo");
 

@@ -55,7 +55,7 @@ describe("createOrThrow", () => {
 
 	it("fails when the current drive is unavailable", () => {
 		vi.spyOn(currentOS, "value", "get").mockReturnValue(OS.windows);
-		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.error("unavailable"));
+		TESTImplementation.set("getCurrentWorkDirectory", () => DEither.left("get-current-work-directory-error", "unavailable"));
 
 		expect(() => DSPath.createOrThrow("/foo")).toThrow(DSPath.CreatePathError);
 	});

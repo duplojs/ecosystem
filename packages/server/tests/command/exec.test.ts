@@ -34,7 +34,7 @@ describe("exec", () => {
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			DEither.Error<DSCommand.Error> | DEither.Ok,
+			DEither.Left<"command-exec-error", DSCommand.Error> | DEither.Ok,
 			"strict"
 		>;
 
@@ -103,7 +103,7 @@ describe("exec", () => {
 			throw new Error("Expected exec to return a left.");
 		}
 
-		expect(DEither.unwrapLeft(result).issues).toEqual([
+		expect(DEither.unwrapByInformationOrThrow(result, "command-exec-error").issues).toEqual([
 			expect.objectContaining({
 				argumentName: "id",
 				data: "bad",
@@ -128,7 +128,7 @@ describe("exec", () => {
 				DSCommand.createOption("count", DDataStructure.number(), { required: true }),
 			],
 		}, executeSpy);
-		const error = DEither.unwrapByInformationOrThrow(result, "error");
+		const error = DEither.unwrapByInformationOrThrow(result, "command-exec-error");
 
 		expect(error.issues).toEqual([
 			expect.objectContaining({

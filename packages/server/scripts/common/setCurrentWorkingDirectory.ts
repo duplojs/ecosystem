@@ -7,7 +7,7 @@ declare module "@scripts/implementor" {
 	interface ServerFunction {
 		setCurrentWorkingDirectory(
 			path: string & DPath.Absolute
-		): DEither.Fail | DEither.Ok;
+		): DEither.Left<"set-current-working-directory-error", unknown> | DEither.Ok;
 	}
 }
 
@@ -17,12 +17,12 @@ export const setCurrentWorkingDirectory = implementFunction(
 		NODE: (path) => DEither.whenIsRightOtherwise(
 			DEither.safeCallback(() => void process.chdir(DSPath.toPlatformPathOrThrow(path))),
 			DEither.ok,
-			DEither.fail,
+			(error) => DEither.left("set-current-working-directory-error", DEither.unwrapLeft(error)),
 		),
 		DENO: (path) => DEither.whenIsRightOtherwise(
 			DEither.safeCallback(() => void Deno.chdir(DSPath.toPlatformPathOrThrow(path))),
 			DEither.ok,
-			DEither.fail,
+			(error) => DEither.left("set-current-working-directory-error", DEither.unwrapLeft(error)),
 		),
 	},
 );

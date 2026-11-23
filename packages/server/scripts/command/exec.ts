@@ -24,7 +24,7 @@ export function exec(
 	execute: () => void,
 ): Promise<
 	| DEither.Ok
-	| DEither.Error<Error>
+	| DEither.Left<"command-exec-error", Error>
 >;
 
 export function exec<
@@ -48,7 +48,7 @@ export function exec<
 	) => DCommon.MaybePromise<void>,
 ): Promise<
 	| DEither.Ok
-	| DEither.Error<Error>
+	| DEither.Left<"command-exec-error", Error>
 >;
 
 export async function exec(
@@ -74,7 +74,7 @@ export async function exec(
 	if (result === SymbolCommandError) {
 		// oxlint-disable-next-line no-console
 		console.error(interpretExecCommandError(error, params?.dataStructureErrorInterpreter));
-		return DEither.error(error);
+		return DEither.left("command-exec-error", error);
 	}
 
 	return DEither.ok();

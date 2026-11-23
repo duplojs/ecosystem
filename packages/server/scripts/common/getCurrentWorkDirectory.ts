@@ -7,7 +7,7 @@ import { implementFunction } from "@scripts/implementor";
 declare module "@scripts/implementor" {
 	interface ServerFunction {
 		getCurrentWorkDirectory(): (
-			| DEither.Error<unknown>
+			| DEither.Left<"get-current-work-directory-error", unknown>
 			| DEither.Success<string & DPath.Absolute>
 		);
 	}
@@ -18,11 +18,11 @@ export const getCurrentWorkDirectory = implementFunction(
 	{
 		NODE: () => DCommon.pipe(
 			DEither.safeCallback(() => DSPath.createAbsolute(process.cwd())),
-			DEither.whenIsLeft(DEither.error),
+			DEither.whenIsLeft((error) => DEither.left("get-current-work-directory-error", error)),
 		),
 		DENO: () => DCommon.pipe(
 			DEither.safeCallback(() => DSPath.createAbsolute(Deno.cwd())),
-			DEither.whenIsLeft(DEither.error),
+			DEither.whenIsLeft((error) => DEither.left("get-current-work-directory-error", error)),
 		),
 	},
 );

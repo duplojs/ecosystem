@@ -196,13 +196,13 @@ describe("normalize", () => {
 		});
 
 		it("returns null when cwd is unavailable", () => {
-			TESTImplementation.set("getCurrentWorkDirectory", () => DEither.error("unavailable"));
+			TESTImplementation.set("getCurrentWorkDirectory", () => DEither.left("get-current-work-directory-error", "unavailable"));
 
 			expect(DSPath.normalize("\\foo")).toBeNull();
 		});
 
 		it("returns null when traversal removes the namespace and cwd is unavailable", () => {
-			TESTImplementation.set("getCurrentWorkDirectory", () => DEither.error("unavailable"));
+			TESTImplementation.set("getCurrentWorkDirectory", () => DEither.left("get-current-work-directory-error", "unavailable"));
 
 			expect(DSPath.normalize("C:/../foo")).toBeNull();
 		});
@@ -214,7 +214,7 @@ describe("normalize", () => {
 			["C:foo", "C:foo"],
 			["//?/GLOBALROOT/Device/foo", "/DEVICE:/GLOBALROOT/Device/foo"],
 		])("normalizes %j without reading cwd", (input, expected) => {
-			const directory = vi.fn(() => DEither.error("unavailable"));
+			const directory = vi.fn(() => DEither.left("get-current-work-directory-error", "unavailable"));
 			TESTImplementation.set("getCurrentWorkDirectory", directory);
 
 			expect(DSPath.normalize(input)).toBe(expected);

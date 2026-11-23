@@ -31,7 +31,8 @@ describe("execOptions", () => {
 					readonly name: string | undefined;
 				}>
 				| DEither.Right<"log-help">
-				| DEither.Error<DSCommand.Error>
+				| DEither.Left<"command-exec-options-help-error", DSCommand.Error>
+				| DEither.Left<"command-exec-options-error", DSCommand.Error>
 			),
 			"strict"
 		>;
@@ -125,7 +126,7 @@ describe("execOptions", () => {
 			throw new Error("Expected execOptions to return a left.");
 		}
 
-		expect(DEither.unwrapLeft(result).issues).toEqual([
+		expect(DEither.unwrapByInformationOrThrow(result, "command-exec-options-help-error").issues).toEqual([
 			expect.objectContaining({
 				optionName: "help",
 				data: "true",
@@ -148,7 +149,7 @@ describe("execOptions", () => {
 			throw new Error("Expected execOptions to return a left.");
 		}
 
-		expect(DEither.unwrapLeft(result).issues).toEqual([
+		expect(DEither.unwrapByInformationOrThrow(result, "command-exec-options-error").issues).toEqual([
 			expect.objectContaining({
 				optionName: "count",
 				data: "invalid",

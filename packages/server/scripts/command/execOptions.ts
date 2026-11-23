@@ -37,7 +37,8 @@ export function execOptions<
 		>
 	>
 	| DEither.Right<"log-help">
-	| DEither.Error<Error>
+	| DEither.Left<"command-exec-options-help-error", Error>
+	| DEither.Left<"command-exec-options-error", Error>
 >;
 
 export async function execOptions(
@@ -51,7 +52,7 @@ export async function execOptions(
 	if (help === SymbolCommandError) {
 		// oxlint-disable-next-line no-console
 		console.error(interpretExecOptionsError(error, params?.dataStructureErrorInterpreter));
-		return DEither.error(error);
+		return DEither.left("command-exec-options-help-error", error);
 	} else if (help.result) {
 		logExecOptionHelp(options);
 		return DEither.right("log-help");
@@ -88,7 +89,7 @@ export async function execOptions(
 	if (result === SymbolCommandError) {
 		// oxlint-disable-next-line no-console
 		console.error(interpretExecOptionsError(error, params?.dataStructureErrorInterpreter));
-		return DEither.error(error);
+		return DEither.left("command-exec-options-error", error);
 	}
 
 	return DEither.success(result.options);
