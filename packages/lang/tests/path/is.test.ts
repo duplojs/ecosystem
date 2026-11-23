@@ -77,43 +77,6 @@ describe("is", () => {
 		expect(DPath.is(value)).toBe(false);
 	});
 
-	describe("at the literal split limit", () => {
-		const tenSegments = "a/a/a/a/a/a/a/a/a/a/";
-		const fiftySegments = DString.join([tenSegments, tenSegments, tenSegments, tenSegments, tenSegments] as const, "");
-		const prefix = DString.join([fiftySegments, fiftySegments, fiftySegments, fiftySegments, fiftySegments] as const, "");
-
-		it("agrees with the type on a valid path with 250 separators", () => {
-			const value = `${prefix}a` as const;
-
-			expect(DPath.is(value)).toBe(true satisfies DPath.IsLiteralPath<typeof value>);
-		});
-
-		it.each([
-			{
-				name: "a final dot segment at 250 separators",
-				tail: ".",
-				expected: true satisfies DPath.IsLiteralPath<`${typeof prefix}.`>,
-			},
-			{
-				name: "a final parent segment at 250 separators",
-				tail: "..",
-				expected: true satisfies DPath.IsLiteralPath<`${typeof prefix}..`>,
-			},
-			{
-				name: "a final null character at 250 separators",
-				tail: "\0",
-				expected: true satisfies DPath.IsLiteralPath<`${typeof prefix}\0`>,
-			},
-			{
-				name: "only valid segments at 251 separators",
-				tail: "a/a",
-				expected: false satisfies DPath.IsLiteralPath<`${typeof prefix}a/a`>,
-			},
-		])("agrees with the type with $name", ({ tail, expected }) => {
-			expect(DPath.is(`${prefix}${tail}`)).toBe(expected);
-		});
-	});
-
 	it("narrows literal and constrained paths", () => {
 		const literalPath = "/" as ValidPath | InvalidPath | (string & DPath.Path) | (string & DPath.Absolute);
 

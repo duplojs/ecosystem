@@ -19,7 +19,7 @@ type _Split<
 				: DCommon.IsEqual<InferredResult["length"], 250> extends true
 					? Includes<InferredAfter, GenericSeparator> extends true
 						? readonly [...InferredResult, ...string[]]
-						: InferredResult
+						: readonly [...InferredResult, InferredAfter]
 					: DCommon.IsEqual<InferredResult["length"], GenericLimit> extends true
 						? InferredResult
 						: _Split<
