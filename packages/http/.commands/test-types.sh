@@ -15,6 +15,7 @@ pnpm dlx --package=typescript@7.0.2 tsc -p integrations/core/tsconfig.json
 # client
 pnpm dlx --package=typescript@7.0.2 tsc -p tests/client/tsconfig.json
 pnpm dlx --package=typescript@7.0.2 tsc -p integrations/client/tsconfig.json 
+pnpm dlx --package=typescript@7.0.2 tsc -p integrations/client/rejections/tsconfig.json
 # interfaces
 pnpm dlx --package=typescript@7.0.2 tsc -p tests/interfaces/node/tsconfig.json
 pnpm dlx --package=typescript@7.0.2 tsc -p integrations/node/tsconfig.json

@@ -20,5 +20,5 @@ export default oxlint.defineConfig({
 			},
 		}),
 	],
-	ignorePatterns: ["dist/**", "**/*.generate.*", "**/*.generate"],
+	ignorePatterns: ["dist/**", "**/*.generate.*", "**/*.generate", "integrations/client/clientType.ts"],
 });

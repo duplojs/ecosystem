@@ -4,3 +4,4 @@ import "./serverSentEvent";
 import "./cookie";
 import "./stream";
 import "./rejection";
+import "./entityFixture";

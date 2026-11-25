@@ -10,4 +10,5 @@
 	"types": ["vitest/globals", "node", "web"]
   },
   "include": ["**/*.ts", "../core/**/*.ts", "../utils/**/*.ts"],
+  "exclude": ["rejections"],
 }

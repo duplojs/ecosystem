@@ -72,11 +72,15 @@ describe("codeGenerator", () => {
 
 		const outputStat = DEither.unwrapByInformationOrThrow(await DSFile.stat(outputFolder), "file-system-stat");
 		const content = DEither.unwrapByInformationOrThrow(await DSFile.readTextFile(outputFile), "file-system-read-text-file");
+		const clientTypes = DEither.unwrapByInformationOrThrow(
+			await DSFile.readTextFile(DSPath.createAbsoluteOrThrow(`${import.meta.dirname}/../client/clientType.ts`)),
+			"file-system-read-text-file",
+		);
 
 		expect(outputStat.isDirectory).toBe(true);
 		expect(content).toContain("export type Routes = ");
 		expect(content).not.toContain("ResponseContract");
-		expect(content).toMatchSnapshot();
+		expect(clientTypes).toBe(content);
 
 		assertTypeScriptProject(DSPath.createAbsoluteOrThrow(`${import.meta.dirname}/tsconfig.generatedRoutes.json`));
 	}, 45_000);

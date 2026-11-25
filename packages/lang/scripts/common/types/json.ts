@@ -29,9 +29,11 @@ type FlagMetadata<
 type PropertiesToJson<
 	GenericValue,
 	GenericIgnore,
-> = {
-	[Prop in keyof GenericValue]: ToJson<GenericValue[Prop], GenericIgnore>
-};
+> = GenericValue extends unknown
+	? {
+		[Prop in keyof GenericValue]: ToJson<GenericValue[Prop], GenericIgnore>
+	}
+	: never;
 
 type ObjectToJson<
 	GenericValue extends object,
@@ -75,7 +77,7 @@ type ObjectToJson<
 	),
 	GenericClearValue = (
 		GenericUnconstrainedValue extends GenericMetadata & infer InferredValue
-			? InferredValue
+			? DKind.Remove<Extract<InferredValue, object>>
 			: never
 	),
 > = GenericClearValue extends unknown

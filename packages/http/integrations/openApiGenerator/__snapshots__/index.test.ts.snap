@@ -282,6 +282,64 @@ exports[`openApiGenerator > generates input documentation without output metadat
         "responses": {}
       }
     },
+    "/entity-fixture/new": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotIdentified17"
+              }
+            }
+          }
+        },
+        "responses": {
+          "422": {
+            "description": "extract-error",
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "extract-error",
+                  "type": "string"
+                },
+                "description": "extract-error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/entity-fixture/map": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotIdentified19"
+              }
+            }
+          }
+        },
+        "responses": {
+          "422": {
+            "description": "extract-error",
+            "headers": {
+              "information": {
+                "schema": {
+                  "const": "extract-error",
+                  "type": "string"
+                },
+                "description": "extract-error"
+              }
+            }
+          }
+        }
+      }
+    },
     "/static-file": {
       "get": {
         "parameters": [],
@@ -503,6 +561,143 @@ exports[`openApiGenerator > generates input documentation without output metadat
         "additionalProperties": false
       },
       "NotIdentified16": {
+        "not": {}
+      },
+      "RecursiveName0": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecursiveName0"
+            }
+          }
+        },
+        "required": [
+          "label",
+          "children"
+        ],
+        "additionalProperties": false
+      },
+      "NotIdentified17": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "EntityFixtureId",
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "name": {
+            "title": "EntityFixtureName",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 80
+          },
+          "priority": {
+            "title": "EntityFixturePriority",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "createdAt": {
+            "title": "EntityFixtureCreatedAt",
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^date-?(\\\\d{1,16})([+-])$"
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              }
+            ]
+          },
+          "duration": {
+            "title": "EntityFixtureDuration",
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^time-?(\\\\d{1,16})([+-])$"
+              },
+              {
+                "type": "string",
+                "format": "time"
+              }
+            ]
+          },
+          "tree": {
+            "title": "EntityFixtureNode",
+            "$ref": "#/components/schemas/RecursiveName0"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "priority",
+          "createdAt",
+          "duration",
+          "tree"
+        ],
+        "additionalProperties": false
+      },
+      "NotIdentified18": {
+        "not": {}
+      },
+      "NotIdentified19": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "number"
+          },
+          "createdAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^date-?(\\\\d{1,16})([+-])$"
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              }
+            ]
+          },
+          "duration": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^time-?(\\\\d{1,16})([+-])$"
+              },
+              {
+                "type": "string",
+                "format": "time"
+              }
+            ]
+          },
+          "tree": {
+            "$ref": "#/components/schemas/RecursiveName0"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "priority",
+          "createdAt",
+          "duration",
+          "tree"
+        ],
+        "additionalProperties": false
+      },
+      "NotIdentified20": {
         "not": {}
       }
     }

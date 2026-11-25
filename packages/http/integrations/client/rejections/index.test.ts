@@ -3,8 +3,72 @@ import { createHttpClient } from "@duplojs/http/client";
 import { createHttpServer } from "@duplojs/http/node";
 import type * as DCommon from "@duplojs/lang/common";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
-import { type CustomExtractionRejectionRoute, type ProductionRejectionRoutes } from "./clientType";
-import "@routes/rejection";
+import "../../core/routes/rejection";
+
+type ProductionRejectionRoutes =
+	| {
+		readonly method: "POST";
+		readonly path: "/rejections/extract";
+		readonly body: { readonly id: number };
+		readonly responses:
+			| {
+				readonly code: "422";
+				readonly information: "extract-error";
+				readonly body: string;
+			}
+			| {
+				readonly code: "204";
+				readonly information: "handled";
+				readonly body: undefined;
+			};
+	}
+	| {
+		readonly method: "GET";
+		readonly path: "/rejections/checker";
+		readonly responses:
+			| {
+				readonly code: "403";
+				readonly information: "checker-rejected";
+				readonly body: { readonly reason: string };
+			}
+			| {
+				readonly code: "204";
+				readonly information: "handled";
+				readonly body: undefined;
+			};
+	}
+	| {
+		readonly method: "GET";
+		readonly path: "/rejections/process";
+		readonly responses:
+			| {
+				readonly code: "409";
+				readonly information: "process-rejected";
+				readonly body: { readonly reason: "nested" };
+			}
+			| {
+				readonly code: "204";
+				readonly information: "handled";
+				readonly body: undefined;
+			};
+	};
+
+interface CustomExtractionRejectionRoute {
+	readonly method: "POST";
+	readonly path: "/rejections/extract";
+	readonly body: { readonly id: number };
+	readonly responses:
+		| {
+			readonly code: "400";
+			readonly information: "custom-extract-error";
+			readonly body: { readonly source: "hub" };
+		}
+		| {
+			readonly code: "204";
+			readonly information: "handled";
+			readonly body: undefined;
+		};
+}
 
 declare module "@duplojs/http" {
 	interface OverrideDefaultOtherwiseExtractResponse {

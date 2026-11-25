@@ -49,11 +49,12 @@ type ReplaceProperties<
 	GenericValue,
 	GenericReplacer extends [unknown, unknown],
 	GenericReplaceType extends ("extends" | "equal"),
-> = {
-	readonly [Prop in keyof GenericValue]: ComputeReplace<GenericValue[Prop], GenericReplacer, GenericReplaceType>
-};
+> = GenericValue extends unknown
+	? {
+		readonly [Prop in keyof GenericValue]: ComputeReplace<GenericValue[Prop], GenericReplacer, GenericReplaceType>
+	}
+	: never;
 
-// The conditional result expands the replaced shape in tooltips while preserving constraint aliases.
 type ReplaceObject<
 	GenericObject extends object,
 	GenericReplacer extends [unknown, unknown],
@@ -101,7 +102,6 @@ type ReplaceObject<
 				? Exclude<keyof GenericClearValue, keyof unknown[]> extends never
 					? GenericClearValue extends readonly [...unknown[], unknown]
 						? ReplaceProperties<GenericClearValue, GenericReplacer, GenericReplaceType>
-						// Keep mapped tuples and extra properties; expand plain arrays directly.
 						: readonly ComputeReplace<GenericClearValue[number], GenericReplacer, GenericReplaceType>[]
 					: ReplaceProperties<GenericClearValue, GenericReplacer, GenericReplaceType>
 				: ReplaceProperties<GenericClearValue, GenericReplacer, GenericReplaceType>
@@ -109,7 +109,6 @@ type ReplaceObject<
 	) & GenericConstraint & GenericMetadata
 	: never;
 
-// These types can be replaced directly, but their properties are not traversed.
 export interface ReplaceTraversalExclusions {
 	theDate: DChrono.TheDate;
 	theTime: DChrono.TheTime;
