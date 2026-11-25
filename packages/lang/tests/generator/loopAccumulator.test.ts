@@ -288,11 +288,25 @@ describe("loopAccumulator", () => {
 				return params.next(params.accumulator + 1);
 			}
 
-			const result = params.next(params.accumulator + 1, 0, false, "", null, ...values);
+			const result = params.next(
+				params.accumulator + 1,
+				0,
+				false,
+				"",
+				null,
+				...values,
+			);
 
 			expect(result).toStrictEqual({
 				accumulator: 1,
-				"-nextData": [0, false, "", null, 2, "tail"],
+				"-nextData": [
+					0,
+					false,
+					"",
+					null,
+					2,
+					"tail",
+				],
 			});
 
 			type _CheckNextResult = DCommon.ExpectType<
@@ -304,7 +318,17 @@ describe("loopAccumulator", () => {
 			return result;
 		});
 
-		expect(DArray.from(result)).toStrictEqual([0, false, "", null, 2, "tail", 7, "done", "end"]);
+		expect(DArray.from(result)).toStrictEqual([
+			0,
+			false,
+			"",
+			null,
+			2,
+			"tail",
+			7,
+			"done",
+			"end",
+		]);
 		expect(observer).toHaveBeenCalledTimes(4);
 		expect(observer).toHaveBeenNthCalledWith(2, expect.objectContaining({
 			accumulator: 1,

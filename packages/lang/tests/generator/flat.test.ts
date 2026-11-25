@@ -40,9 +40,21 @@ describe("flat", () => {
 	});
 
 	it("does not flatten non iterable values", () => {
-		const result = DGenerator.flat([[1], 2, false, null, undefined]);
+		const result = DGenerator.flat([
+			[1],
+			2,
+			false,
+			null,
+			undefined,
+		]);
 
-		expect(DArray.from(result)).toStrictEqual([1, 2, false, null, undefined]);
+		expect(DArray.from(result)).toStrictEqual([
+			1,
+			2,
+			false,
+			null,
+			undefined,
+		]);
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,

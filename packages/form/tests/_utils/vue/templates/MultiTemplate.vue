@@ -7,8 +7,7 @@ export type Props = (
 
 const props = withDefaults(
 	defineProps<Props>(),
-	{
-	},
+	{},
 );
 
 defineSlots<MultiTemplateProperties["slots"]>();

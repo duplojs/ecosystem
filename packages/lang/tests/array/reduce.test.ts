@@ -98,7 +98,13 @@ describe("reduce", () => {
 
 	it("should skip empty spreads between non-empty spreads in pipe", () => {
 		const result = DCommon.pipe(
-			[[], [1, 2], [], [3], []],
+			[
+				[],
+				[1, 2],
+				[],
+				[3],
+				[],
+			],
 			DArray.reduce(
 				DArray.reduceFrom<readonly number[]>([]),
 				(params) => params.nextPush(params.lastValue, ...params.element),

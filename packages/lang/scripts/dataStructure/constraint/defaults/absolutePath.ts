@@ -21,7 +21,7 @@ export interface AbsolutePathConstraint extends DCommon.Forward<
 export const AbsolutePathConstraint = createConstraint(
 	absolutePathConstraintKind,
 	({ init }) => () => init<AbsolutePathConstraint>(
-		{ },
+		{},
 		{
 			executeCheck: (_self, data) => DPath.isAbsolute(data)
 				? SuccessSymbol

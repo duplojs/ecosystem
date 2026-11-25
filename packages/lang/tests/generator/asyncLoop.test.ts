@@ -49,7 +49,13 @@ describe("asyncLoop", () => {
 			return params.exit(Promise.resolve(4), Promise.resolve(undefined), 5);
 		});
 
-		await expect(DArray.from(result)).resolves.toStrictEqual([1, 2, 3, 4, 5]);
+		await expect(DArray.from(result)).resolves.toStrictEqual([
+			1,
+			2,
+			3,
+			4,
+			5,
+		]);
 		expect(observer).toHaveBeenCalledTimes(3);
 		expect(observer).toHaveBeenNthCalledWith(2, expect.objectContaining({ count: 1 }));
 		expect(observer).toHaveBeenNthCalledWith(3, expect.objectContaining({ count: 2 }));
@@ -181,9 +187,22 @@ describe("asyncLoop", () => {
 				return params.next();
 			}
 
-			const result = params.next(0, false, "", null, ...values);
+			const result = params.next(
+				0,
+				false,
+				"",
+				null,
+				...values,
+			);
 
-			expect(result).toStrictEqual({ "-nextData": [0, false, "", null, 2, "tail"] });
+			expect(result).toStrictEqual({ "-nextData": [
+				0,
+				false,
+				"",
+				null,
+				2,
+				"tail",
+			] });
 
 			type _CheckNextResult = DCommon.ExpectType<
 				typeof result,
@@ -195,7 +214,17 @@ describe("asyncLoop", () => {
 		});
 
 		expect(observer).not.toHaveBeenCalled();
-		await expect(DArray.from(result)).resolves.toStrictEqual([0, false, "", null, 2, "tail", 7, "done", "end"]);
+		await expect(DArray.from(result)).resolves.toStrictEqual([
+			0,
+			false,
+			"",
+			null,
+			2,
+			"tail",
+			7,
+			"done",
+			"end",
+		]);
 		expect(observer).toHaveBeenCalledTimes(4);
 		expect(observer).toHaveBeenNthCalledWith(2, expect.objectContaining({
 			count: 1,
@@ -218,9 +247,23 @@ describe("asyncLoop", () => {
 		const observer = vi.fn();
 		const result = DGenerator.asyncLoop((params) => {
 			observer(params);
-			const result = params.exit("done", 1, undefined, false, "", null);
+			const result = params.exit(
+				"done",
+				1,
+				undefined,
+				false,
+				"",
+				null,
+			);
 
-			expect(result).toStrictEqual({ "-exitData": ["done", 1, undefined, false, "", null] });
+			expect(result).toStrictEqual({ "-exitData": [
+				"done",
+				1,
+				undefined,
+				false,
+				"",
+				null,
+			] });
 
 			type _CheckExitResult = DCommon.ExpectType<
 				typeof result,
@@ -231,7 +274,13 @@ describe("asyncLoop", () => {
 			return result;
 		});
 
-		await expect(DArray.from(result)).resolves.toStrictEqual(["done", 1, false, "", null]);
+		await expect(DArray.from(result)).resolves.toStrictEqual([
+			"done",
+			1,
+			false,
+			"",
+			null,
+		]);
 		expect(observer).toHaveBeenCalledTimes(1);
 
 		type _CheckResult = DCommon.ExpectType<

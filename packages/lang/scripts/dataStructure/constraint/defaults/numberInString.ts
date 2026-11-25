@@ -21,7 +21,7 @@ export interface NumberInStringConstraint extends DCommon.Forward<
 export const NumberInStringConstraint = createConstraint(
 	numberInStringConstraintKind,
 	({ init }) => () => init<NumberInStringConstraint>(
-		{ },
+		{},
 		{
 			executeCheck: (_self, data) => DString.isNumber(data)
 				? SuccessSymbol

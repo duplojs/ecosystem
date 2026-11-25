@@ -89,7 +89,17 @@ describe("implementor", () => {
 		expect(isolatedImplementor.currentOS.value).toBe(expected);
 	});
 
-	it.each(["darwin", "linux", "android", "windows", "freebsd", "netbsd", "aix", "solaris", "illumos"] as const)("preserves Deno OS %s and memoizes it", async(os) => {
+	it.each([
+		"darwin",
+		"linux",
+		"android",
+		"windows",
+		"freebsd",
+		"netbsd",
+		"aix",
+		"solaris",
+		"illumos",
+	] as const)("preserves Deno OS %s and memoizes it", async(os) => {
 		vi.resetModules();
 		const getOS = vi.fn().mockReturnValue(os);
 		vi.stubGlobal("Deno", {

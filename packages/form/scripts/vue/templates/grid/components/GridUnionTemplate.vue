@@ -15,7 +15,7 @@ export type Props = (
 
 const props = withDefaults(
 	defineProps<Props>(),
-	{ },
+	{},
 );
 
 const emit = defineEmits<UnionTemplateProperties["emits"]>();

@@ -15,7 +15,14 @@ describe("command feature on bun", () => {
 
 	it("executes a command with options and arguments", async() => {
 		setEnvironment("TEST");
-		TESTImplementation.set("getProcessArguments", mock(() => ["build", "--verbose", "--count", "3", "--tags", "api,http"]));
+		TESTImplementation.set("getProcessArguments", mock(() => [
+			"build",
+			"--verbose",
+			"--count",
+			"3",
+			"--tags",
+			"api,http",
+		]));
 
 		const executeSpy = mock(() => undefined);
 		const result = await DSCommand.exec(

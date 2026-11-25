@@ -69,7 +69,13 @@ describe("concat", () => {
 		const rest = Object.freeze([true] as const);
 		const result = DArray.concat(source, elements, rest, rest);
 
-		expect(result).toStrictEqual([1, 2, "a", true, true]);
+		expect(result).toStrictEqual([
+			1,
+			2,
+			"a",
+			true,
+			true,
+		]);
 		expect(source).toStrictEqual([1, 2]);
 		expect(elements).toStrictEqual(["a"]);
 		expect(rest).toStrictEqual([true]);

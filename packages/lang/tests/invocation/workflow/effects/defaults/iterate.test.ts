@@ -452,7 +452,13 @@ describe("consumeWorkflow iterate", () => {
 			yield *commit("after");
 		});
 		const source = (function *() {
-			for (const item of [1, 2, 3, 4, 5]) {
+			for (const item of [
+				1,
+				2,
+				3,
+				4,
+				5,
+			]) {
 				pull(item);
 				yield item;
 			}

@@ -21,7 +21,7 @@ export interface SegmentPathConstraint extends DCommon.Forward<
 export const SegmentPathConstraint = createConstraint(
 	segmentPathConstraintKind,
 	({ init }) => () => init<SegmentPathConstraint>(
-		{ },
+		{},
 		{
 			executeCheck: (_self, data) => DPath.isSegment(data)
 				? SuccessSymbol

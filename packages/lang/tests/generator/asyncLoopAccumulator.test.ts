@@ -134,7 +134,13 @@ describe("asyncLoopAccumulator", () => {
 			observer(params);
 
 			if (params.count === 0) {
-				return params.next(1, Promise.resolve(1), Promise.resolve(undefined), 2, Promise.resolve(undefined));
+				return params.next(
+					1,
+					Promise.resolve(1),
+					Promise.resolve(undefined),
+					2,
+					Promise.resolve(undefined),
+				);
 			}
 			if (params.count === 1) {
 				return params.next(2, Promise.resolve(3));
@@ -143,7 +149,13 @@ describe("asyncLoopAccumulator", () => {
 			return params.exit(Promise.resolve(4), Promise.resolve(undefined), 5);
 		});
 
-		await expect(DArray.from(result)).resolves.toStrictEqual([1, 2, 3, 4, 5]);
+		await expect(DArray.from(result)).resolves.toStrictEqual([
+			1,
+			2,
+			3,
+			4,
+			5,
+		]);
 		expect(observer).toHaveBeenCalledTimes(3);
 		expect(observer).toHaveBeenNthCalledWith(2, expect.objectContaining({ count: 1 }));
 		expect(observer).toHaveBeenNthCalledWith(3, expect.objectContaining({ count: 2 }));
@@ -340,11 +352,25 @@ describe("asyncLoopAccumulator", () => {
 				return params.next(params.accumulator + 1);
 			}
 
-			const result = params.next(params.accumulator + 1, 0, false, "", null, ...values);
+			const result = params.next(
+				params.accumulator + 1,
+				0,
+				false,
+				"",
+				null,
+				...values,
+			);
 
 			expect(result).toStrictEqual({
 				accumulator: 1,
-				"-nextData": [0, false, "", null, 2, "tail"],
+				"-nextData": [
+					0,
+					false,
+					"",
+					null,
+					2,
+					"tail",
+				],
 			});
 
 			type _CheckNextResult = DCommon.ExpectType<
@@ -356,7 +382,17 @@ describe("asyncLoopAccumulator", () => {
 			return result;
 		});
 
-		await expect(DArray.from(result)).resolves.toStrictEqual([0, false, "", null, 2, "tail", 7, "done", "end"]);
+		await expect(DArray.from(result)).resolves.toStrictEqual([
+			0,
+			false,
+			"",
+			null,
+			2,
+			"tail",
+			7,
+			"done",
+			"end",
+		]);
 		expect(observer).toHaveBeenCalledTimes(4);
 		expect(observer).toHaveBeenNthCalledWith(2, expect.objectContaining({
 			accumulator: 1,

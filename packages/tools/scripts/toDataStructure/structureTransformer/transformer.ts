@@ -43,7 +43,7 @@ export function structureTransformer(
 ): TransformerEither {
 	const currentStructure = DArray.reduce(
 		params.hooks,
-		DArray.reduceFrom< DDataStructure.Structure>(structure),
+		DArray.reduceFrom<DDataStructure.Structure>(structure),
 		({ element: hook, lastValue, next, exit }) => {
 			const result = hook({
 				structure: lastValue,

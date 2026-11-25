@@ -22,7 +22,7 @@ export interface FileExistConstraint extends DCommon.UnionToIntersection<
 export const FileExistConstraint = DDataStructure.createConstraint(
 	fileExistConstraintKind,
 	({ init }) => () => init<FileExistConstraint>(
-		{ },
+		{},
 		{
 			executeCheck: async(_self, data) => {
 				const result = DEither.rightPipe(

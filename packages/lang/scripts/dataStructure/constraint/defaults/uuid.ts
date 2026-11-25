@@ -21,7 +21,7 @@ export interface UuidConstraint extends DCommon.Forward<
 export const UuidConstraint = createConstraint(
 	uuidConstraintKind,
 	({ init }) => () => init<UuidConstraint>(
-		{ },
+		{},
 		{
 			executeCheck: (_self, data) => DString.isUuid(data)
 				? SuccessSymbol

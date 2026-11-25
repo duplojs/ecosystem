@@ -33,7 +33,13 @@ export default defineConfig({
 			light: "light-plus",
 			dark: "dark-plus",
 		},
-		languages: ["js", "jsx", "ts", "tsx", "vue"],
+		languages: [
+			"js",
+			"jsx",
+			"ts",
+			"tsx",
+			"vue",
+		],
 		config(md) {
 			md.use(groupIconMdPlugin);
 		},

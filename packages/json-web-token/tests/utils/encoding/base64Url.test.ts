@@ -15,14 +15,26 @@ describe("encodeBase64Url / decodeBase64Url / isBase64Url", () => {
 	it("decodes a base64url string", () => {
 		const result = decodeBase64Url("SGVsbG8");
 
-		expect(result).toEqual(new Uint8Array([72, 101, 108, 108, 111]));
+		expect(result).toEqual(new Uint8Array([
+			72,
+			101,
+			108,
+			108,
+			111,
+		]));
 	});
 
 	it("decodes a base64url buffer", () => {
 		const encoded = encodeText("SGVsbG8");
 
 		expect(decodeBase64Url(encoded.buffer)).toEqual(
-			new Uint8Array([72, 101, 108, 108, 111]),
+			new Uint8Array([
+				72,
+				101,
+				108,
+				108,
+				111,
+			]),
 		);
 	});
 

@@ -57,23 +57,34 @@ if (DEither.isRight(createdTokenResult)) {
 
 // `verify` applique la même politique et restitue header/payload typés.
 const verifiedTokenResult = await tokenHandler.verify("receive-token");
-type _CheckVerifiedTokenResult = DCommon.ExpectType<typeof verifiedTokenResult,
-	DEither.Left<"token-format", unknown> | DEither.Left<"header-json-error", unknown> | DEither.Left<"header-decode-error", DDataStructure.Error> | DEither.Left<"payload-json-error", unknown> | DEither.Left<"payload-decode-error", DDataStructure.Error> | DEither.Left<"signature-invalid", unknown> | DEither.Left<"issue-invalid", unknown> | DEither.Left<"subject-invalid", unknown> | DEither.Left<"audience-invalid", unknown> | DEither.Left<"expired", unknown> | DEither.Right<"token-verified", {
-		readonly header: {
-			readonly typ: "JWT";
-			readonly alg: "HS256";
-			readonly kid?: string | undefined;
-		};
-		readonly payload: {
-			readonly iss: string;
-			readonly sub: undefined;
-			readonly aud: string;
-			readonly exp: number;
-			readonly iat: number;
-			readonly userId: string;
-			readonly role: "admin";
-		};
-	}>,
+type _CheckVerifiedTokenResult = DCommon.ExpectType<
+	typeof verifiedTokenResult,
+	(
+		| DEither.Left<"token-format", unknown>
+		| DEither.Left<"header-json-error", unknown>
+		| DEither.Left<"header-decode-error", DDataStructure.Error>
+		| DEither.Left<"payload-json-error", unknown> | DEither.Left<"payload-decode-error", DDataStructure.Error>
+		| DEither.Left<"signature-invalid", unknown> | DEither.Left<"issue-invalid", unknown>
+		| DEither.Left<"subject-invalid", unknown>
+		| DEither.Left<"audience-invalid", unknown>
+		| DEither.Left<"expired", unknown>
+		| DEither.Right<"token-verified", {
+			readonly header: {
+				readonly typ: "JWT";
+				readonly alg: "HS256";
+				readonly kid?: string | undefined;
+			};
+			readonly payload: {
+				readonly iss: string;
+				readonly sub: undefined;
+				readonly aud: string;
+				readonly exp: number;
+				readonly iat: number;
+				readonly userId: string;
+				readonly role: "admin";
+			};
+		}>
+	),
 	"strict"
 >;
 

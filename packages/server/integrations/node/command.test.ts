@@ -16,7 +16,14 @@ void describe("command feature on node", () => {
 
 	void it("executes a command with options and arguments", async() => {
 		setEnvironment("TEST");
-		TESTImplementation.set("getProcessArguments", mock.fn(() => ["build", "--verbose", "--count", "3", "--tags", "api,http"]));
+		TESTImplementation.set("getProcessArguments", mock.fn(() => [
+			"build",
+			"--verbose",
+			"--count",
+			"3",
+			"--tags",
+			"api,http",
+		]));
 
 		const executeSpy = mock.fn();
 		const result = await DSCommand.exec(

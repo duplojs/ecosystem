@@ -119,7 +119,13 @@ describe("asyncChunk", () => {
 	it.each([
 		{
 			size: 0.5,
-			expected: [[1], [2], [3], [4], [5]],
+			expected: [
+				[1],
+				[2],
+				[3],
+				[4],
+				[5],
+			],
 		},
 		{
 			size: 2.4,
@@ -131,7 +137,13 @@ describe("asyncChunk", () => {
 		},
 	] as const)("rounds fractional size $size without applying a maximum length constraint", async({ size, expected }) => {
 		const input = (async function *() {
-			yield *await Promise.resolve([1, 2, 3, 4, 5]);
+			yield *await Promise.resolve([
+				1,
+				2,
+				3,
+				4,
+				5,
+			]);
 		})();
 		const result = DGenerator.asyncChunk(input, size);
 
@@ -147,7 +159,13 @@ describe("asyncChunk", () => {
 	it("rounds a fractional size in pipe without applying a maximum length constraint", async() => {
 		const result = DCommon.pipe(
 			(async function *() {
-				yield *await Promise.resolve([1, 2, 3, 4, 5]);
+				yield *await Promise.resolve([
+					1,
+					2,
+					3,
+					4,
+					5,
+				]);
 			})(),
 			DGenerator.asyncChunk(1.6),
 		);

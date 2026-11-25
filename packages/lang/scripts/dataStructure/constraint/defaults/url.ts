@@ -21,7 +21,7 @@ export interface UrlConstraint extends DCommon.Forward<
 export const UrlConstraint = createConstraint(
 	urlConstraintKind,
 	({ init }) => () => init<UrlConstraint>(
-		{ },
+		{},
 		{
 			executeCheck: (_self, data) => DString.isUrl(data)
 				? SuccessSymbol

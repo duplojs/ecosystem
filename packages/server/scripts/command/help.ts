@@ -50,7 +50,13 @@ function formatLiteral(value: unknown) {
 }
 
 function formatBytes(value: number) {
-	const units = ["B", "KB", "MB", "GB", "TB"] as const;
+	const units = [
+		"B",
+		"KB",
+		"MB",
+		"GB",
+		"TB",
+	] as const;
 	let size = value;
 	let index = 0;
 
@@ -320,7 +326,13 @@ function renderSimpleConstraint(
 		)
 		.when(
 			DDataStructure.constraintIdentifier(DDataStructure.betweenThanConstraintKind),
-			({ definition }) => [constraintLabel("> "), literal(String(definition.greater)), secondary(" and "), constraintLabel("< "), literal(String(definition.less))],
+			({ definition }) => [
+				constraintLabel("> "),
+				literal(String(definition.greater)),
+				secondary(" and "),
+				constraintLabel("< "),
+				literal(String(definition.less)),
+			],
 		)
 		.when(
 			DDataStructure.constraintIdentifier(DDataStructure.betweenThanOrEqualConstraintKind),

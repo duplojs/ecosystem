@@ -67,7 +67,13 @@ describe.each([
 
 		expect(firstContent).toMatchSnapshot();
 
-		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "setup", "--type", type], { cwd: workspace });
+		execFileSync("pnpm", [
+			"exec",
+			"duplojs-agents-kit",
+			"setup",
+			"--type",
+			type,
+		], { cwd: workspace });
 
 		const secondContent = await DCommon.asyncPipe(
 			targetPath,

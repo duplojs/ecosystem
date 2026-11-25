@@ -13,7 +13,13 @@ export interface PageEngine<
 	GenericMethods extends ComponentMethods | undefined = undefined,
 	GenericComponent extends ComponentEngine = never,
 > {
-	(website: Website): Page<GenericName, GenericPathParams, GenericElements, GenericMethods, GenericComponent>;
+	(website: Website): Page<
+		GenericName,
+		GenericPathParams,
+		GenericElements,
+		GenericMethods,
+		GenericComponent
+	>;
 	componentName: GenericName;
 }
 
@@ -74,12 +80,24 @@ export function createPage<
 		getMethods?(params: GetComponentMethodsParams<GenericElements>): GenericMethods;
 		components?: GenericComponent[];
 	},
-): PageEngine<GenericName, InferPagePathParams<GenericMakePath>, GenericElements, GenericMethods, GenericComponent> {
+): PageEngine<
+	GenericName,
+	InferPagePathParams<GenericMakePath>,
+	GenericElements,
+	GenericMethods,
+	GenericComponent
+> {
 	const component = createComponent(name, params);
 
 	function page(
 		website: Website,
-	): Page<GenericName, InferPagePathParams<GenericMakePath>, GenericElements, GenericMethods, GenericComponent> {
+	): Page<
+		GenericName,
+		InferPagePathParams<GenericMakePath>,
+		GenericElements,
+		GenericMethods,
+		GenericComponent
+	> {
 		const pageBase = component(website);
 
 		return pageKind.setTo(

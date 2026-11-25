@@ -203,7 +203,13 @@ describe("objectTag", () => {
 		});
 
 		it("removes duplicate groups from a flat tuple", () => {
-			type Pending = DModeling.ObjectTagWithGroup<"pending", readonly [UserGroup, UserGroup, AccountGroup, UserGroup, AccountGroup]>;
+			type Pending = DModeling.ObjectTagWithGroup<"pending", readonly [
+				UserGroup,
+				UserGroup,
+				AccountGroup,
+				UserGroup,
+				AccountGroup,
+			]>;
 			const properties = {
 				id: 1,
 				accountId: 2,
@@ -251,7 +257,13 @@ describe("objectTag", () => {
 			interface Pending extends DModeling.ObjectTagWithGroup<"pending", readonly [
 				UserGroup,
 				AccountGroup,
-				readonly [UserDetails, CreationGroup, UserIdentifier, UserDetails, AccountDetails],
+				readonly [
+					UserDetails,
+					CreationGroup,
+					UserIdentifier,
+					UserDetails,
+					AccountDetails,
+				],
 			]> {}
 
 			const name: Pending["name"] = DCommon.infer("Jane");

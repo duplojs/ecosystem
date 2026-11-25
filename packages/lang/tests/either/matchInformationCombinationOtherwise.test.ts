@@ -245,9 +245,21 @@ describe("matchInformationCombinationOtherwise", () => {
 			),
 		);
 
-		type _CheckResult = DCommon.ExpectType<typeof result, readonly [undefined, null, false, 0, ""], "strict">;
+		type _CheckResult = DCommon.ExpectType<typeof result, readonly [
+			undefined,
+			null,
+			false,
+			0,
+			"",
+		], "strict">;
 
-		expect(result).toStrictEqual([undefined, null, false, 0, ""]);
+		expect(result).toStrictEqual([
+			undefined,
+			null,
+			false,
+			0,
+			"",
+		]);
 	});
 
 	it("preserves payload references without mutating the input in a pipe", () => {

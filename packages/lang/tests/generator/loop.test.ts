@@ -117,9 +117,22 @@ describe("loop", () => {
 				return params.next();
 			}
 
-			const result = params.next(0, false, "", null, ...values);
+			const result = params.next(
+				0,
+				false,
+				"",
+				null,
+				...values,
+			);
 
-			expect(result).toStrictEqual({ "-nextData": [0, false, "", null, 2, "tail"] });
+			expect(result).toStrictEqual({ "-nextData": [
+				0,
+				false,
+				"",
+				null,
+				2,
+				"tail",
+			] });
 
 			type _CheckNextResult = DCommon.ExpectType<
 				typeof result,
@@ -131,7 +144,17 @@ describe("loop", () => {
 		});
 
 		expect(observer).not.toHaveBeenCalled();
-		expect(DArray.from(result)).toStrictEqual([0, false, "", null, 2, "tail", 7, "done", "end"]);
+		expect(DArray.from(result)).toStrictEqual([
+			0,
+			false,
+			"",
+			null,
+			2,
+			"tail",
+			7,
+			"done",
+			"end",
+		]);
 		expect(observer).toHaveBeenCalledTimes(4);
 		expect(observer).toHaveBeenNthCalledWith(2, expect.objectContaining({
 			count: 1,
@@ -150,9 +173,23 @@ describe("loop", () => {
 		const observer = vi.fn();
 		const result = DGenerator.loop((params) => {
 			observer(params);
-			const result = params.exit("done", 1, undefined, false, "", null);
+			const result = params.exit(
+				"done",
+				1,
+				undefined,
+				false,
+				"",
+				null,
+			);
 
-			expect(result).toStrictEqual({ "-exitData": ["done", 1, undefined, false, "", null] });
+			expect(result).toStrictEqual({ "-exitData": [
+				"done",
+				1,
+				undefined,
+				false,
+				"",
+				null,
+			] });
 
 			type _CheckExitResult = DCommon.ExpectType<
 				typeof result,
@@ -163,7 +200,13 @@ describe("loop", () => {
 			return result;
 		});
 
-		expect(DArray.from(result)).toStrictEqual(["done", 1, false, "", null]);
+		expect(DArray.from(result)).toStrictEqual([
+			"done",
+			1,
+			false,
+			"",
+			null,
+		]);
 		expect(observer).toHaveBeenCalledTimes(1);
 
 		type _CheckResult = DCommon.ExpectType<

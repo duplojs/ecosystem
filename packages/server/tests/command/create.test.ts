@@ -144,7 +144,13 @@ describe("create", () => {
 		);
 
 		await expect(
-			command.execute(["--verbose", "--name", "duplo", "42", "release"], DSCommand.createError("root")),
+			command.execute([
+				"--verbose",
+				"--name",
+				"duplo",
+				"42",
+				"release",
+			], DSCommand.createError("root")),
 		).resolves.toBeUndefined();
 
 		expect(executeSpy).toHaveBeenCalledWith({
@@ -210,7 +216,14 @@ describe("create", () => {
 	});
 
 	it.each([
-		{ args: ["--verbose", "app", "--output", "dist", "--tags", "alpha,beta"] },
+		{ args: [
+			"--verbose",
+			"app",
+			"--output",
+			"dist",
+			"--tags",
+			"alpha,beta",
+		] },
 		{ args: ["-v", "app", "-o=dist", "-t=alpha,beta"] },
 		{ args: ["--tags=alpha,beta", "--output=dist", "--verbose", "app"] },
 	])("combines boolean, simple and array options with positional arguments in $args", async({ args }) => {
@@ -740,7 +753,15 @@ describe("create", () => {
 			],
 			subjects: [argument],
 		}, executeSpy);
-		const args = ["--count", "bad", "--verbose", "--ids", "1,bad", "--title", "--quiet"];
+		const args = [
+			"--count",
+			"bad",
+			"--verbose",
+			"--ids",
+			"1,bad",
+			"--title",
+			"--quiet",
+		];
 
 		await expect(command.execute(args, error)).resolves.toBe(DSCommand.SymbolCommandError);
 
@@ -769,7 +790,14 @@ describe("create", () => {
 			}),
 		]);
 		expect(verboseSpy).toHaveBeenCalledExactlyOnceWith(args, error);
-		expect(quietSpy).toHaveBeenCalledExactlyOnceWith(["--count", "bad", "--ids", "1,bad", "--title", "--quiet"], error);
+		expect(quietSpy).toHaveBeenCalledExactlyOnceWith([
+			"--count",
+			"bad",
+			"--ids",
+			"1,bad",
+			"--title",
+			"--quiet",
+		], error);
 		expect(argumentSpy).not.toHaveBeenCalled();
 		expect(executeSpy).not.toHaveBeenCalled();
 	});

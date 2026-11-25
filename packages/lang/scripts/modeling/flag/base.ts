@@ -40,7 +40,8 @@ const flagHandlerKind = createKind("flag-handler");
 export interface FlagHandler<
 	GenericName extends Capitalize<string> = Capitalize<string>,
 	GenericEntity extends Entity = Entity,
-	GenericPayload extends unknown = unknown> extends DKind.Kind<typeof flagHandlerKind> {
+	GenericPayload extends unknown = unknown,
+> extends DKind.Kind<typeof flagHandlerKind> {
 	readonly name: GenericName;
 
 	append<

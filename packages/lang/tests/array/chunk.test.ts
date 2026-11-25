@@ -3,7 +3,13 @@ import * as DCommon from "@scripts/common";
 
 describe("chunk", () => {
 	it("should split an array into chunks", () => {
-		const result = DArray.chunk([1, 2, 3, 4, 5] as const, 2);
+		const result = DArray.chunk([
+			1,
+			2,
+			3,
+			4,
+			5,
+		] as const, 2);
 
 		expect(result).toEqual([[1, 2], [3, 4], [5]]);
 
@@ -19,7 +25,13 @@ describe("chunk", () => {
 	});
 
 	it("should split an array with non literal value", () => {
-		const result = DArray.chunk([1, 2, 3, 4, 5] as const, 2 as number);
+		const result = DArray.chunk([
+			1,
+			2,
+			3,
+			4,
+			5,
+		] as const, 2 as number);
 
 		expect(result).toStrictEqual([[1, 2], [3, 4], [5]]);
 
@@ -55,7 +67,13 @@ describe("chunk", () => {
 	it.each([
 		{
 			size: 0.5,
-			expected: [[1], [2], [3], [4], [5]],
+			expected: [
+				[1],
+				[2],
+				[3],
+				[4],
+				[5],
+			],
 		},
 		{
 			size: 2.4,
@@ -66,7 +84,13 @@ describe("chunk", () => {
 			expected: [[1, 2, 3], [4, 5]],
 		},
 	] as const)("should round fractional size $size without applying a maximum length constraint", ({ size, expected }) => {
-		const result = DArray.chunk([1, 2, 3, 4, 5], size);
+		const result = DArray.chunk([
+			1,
+			2,
+			3,
+			4,
+			5,
+		], size);
 
 		expect(result).toStrictEqual(expected);
 
@@ -79,7 +103,13 @@ describe("chunk", () => {
 
 	it("should round a fractional size in pipe without applying a maximum length constraint", () => {
 		const result = DCommon.pipe(
-			[1, 2, 3, 4, 5],
+			[
+				1,
+				2,
+				3,
+				4,
+				5,
+			],
 			DArray.chunk(1.6),
 		);
 

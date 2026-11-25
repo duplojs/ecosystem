@@ -988,7 +988,13 @@ describe("and", () => {
 		expect(curried).toBe(transformed);
 	});
 
-	it.each(["a", "b", "c", "d", null] as const)("keeps disjoint output unions unreachable for $input", (value) => {
+	it.each([
+		"a",
+		"b",
+		"c",
+		"d",
+		null,
+	] as const)("keeps disjoint output unions unreachable for $input", (value) => {
 		type Input = "a" | "b" | "c" | "d" | null;
 		const input = value as Input;
 		const isAB = (value: Input): value is "a" | "b" => value === "a" || value === "b";

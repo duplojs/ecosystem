@@ -8,29 +8,59 @@ import { createKind } from "./kind";
 const webSiteKind = createKind("web-site");
 
 type PageOf<
-	GenericPageEngine extends PageEngine<any, any, any, any, any>,
+	GenericPageEngine extends PageEngine<
+		any,
+		any,
+		any,
+		any,
+		any
+	>,
 > = ReturnType<GenericPageEngine>;
 
 type PageArgs<
-	GenericPageEngine extends PageEngine<any, any, any, any, any>,
+	GenericPageEngine extends PageEngine<
+		any,
+		any,
+		any,
+		any,
+		any
+	>,
 > = Parameters<PageOf<GenericPageEngine>["makePath"]>;
 
 export interface Website extends DKind.Kind<typeof webSiteKind> {
 	playwrightPage: PlaywrightPage;
 	iNavigateTo<
-		GenericPageEngine extends PageEngine<any, any, any, any, any>,
+		GenericPageEngine extends PageEngine<
+			any,
+			any,
+			any,
+			any,
+			any
+		>,
 	>(
 		pageEngine: GenericPageEngine,
 		...args: PageArgs<GenericPageEngine>
 	): Promise<PageOf<GenericPageEngine>>;
 	iGoTo<
-		GenericPageEngine extends PageEngine<any, any, any, any, any>,
+		GenericPageEngine extends PageEngine<
+			any,
+			any,
+			any,
+			any,
+			any
+		>,
 	>(
 		pageEngine: GenericPageEngine,
 		...args: PageArgs<GenericPageEngine>
 	): Promise<PageOf<GenericPageEngine>>;
 	iWantToBeOnPage<
-		GenericPageEngine extends PageEngine<any, any, any, any, any>,
+		GenericPageEngine extends PageEngine<
+			any,
+			any,
+			any,
+			any,
+			any
+		>,
 	>(
 		pageEngine: GenericPageEngine,
 	): Promise<PageOf<GenericPageEngine>>;
@@ -108,7 +138,13 @@ export function createWebsite(params: CreateWebsiteParams) {
 		{
 			playwrightPage: params.playwrightPage,
 			async iNavigateTo<
-				GenericPageEngine extends PageEngine<any, any, any, any, any>,
+				GenericPageEngine extends PageEngine<
+					any,
+					any,
+					any,
+					any,
+					any
+				>,
 			>(pageEngine: GenericPageEngine, ...args: PageArgs<GenericPageEngine>) {
 				const page = pageEngine(website);
 				const url = buildUrl(
@@ -127,7 +163,13 @@ export function createWebsite(params: CreateWebsiteParams) {
 				return page as never;
 			},
 			async iGoTo<
-				GenericPageEngine extends PageEngine<any, any, any, any, any>,
+				GenericPageEngine extends PageEngine<
+					any,
+					any,
+					any,
+					any,
+					any
+				>,
 			>(pageEngine: GenericPageEngine, ...args: PageArgs<GenericPageEngine>) {
 				const page = pageEngine(website);
 				const url = buildUrl(
@@ -144,7 +186,13 @@ export function createWebsite(params: CreateWebsiteParams) {
 				return page as never;
 			},
 			async iWantToBeOnPage<
-				GenericPageEngine extends PageEngine<any, any, any, any, any>,
+				GenericPageEngine extends PageEngine<
+					any,
+					any,
+					any,
+					any,
+					any
+				>,
 			>(pageEngine: GenericPageEngine) {
 				const page = pageEngine(website);
 

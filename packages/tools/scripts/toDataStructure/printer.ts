@@ -9,7 +9,13 @@ import { Typescript } from "@scripts/typescript";
 import type { BuildedContext } from "./buildContext";
 
 export function printer(params: BuildedContext) {
-	const sourceFile = Typescript.createSourceFile("print.ts", "", Typescript.ScriptTarget.Latest, false, Typescript.ScriptKind.TS);
+	const sourceFile = Typescript.createSourceFile(
+		"print.ts",
+		"",
+		Typescript.ScriptTarget.Latest,
+		false,
+		Typescript.ScriptKind.TS,
+	);
 	const printer = Typescript.createPrinter();
 
 	const dataStructureStatements = DGenerator.reduce(

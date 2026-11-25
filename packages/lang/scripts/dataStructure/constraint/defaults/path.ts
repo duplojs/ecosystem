@@ -21,7 +21,7 @@ export interface PathConstraint extends DCommon.Forward<
 export const PathConstraint = createConstraint(
 	pathConstraintKind,
 	({ init }) => () => init<PathConstraint>(
-		{ },
+		{},
 		{
 			executeCheck: (_self, data) => DPath.is(data)
 				? SuccessSymbol

@@ -1,4 +1,6 @@
-import { engineConfig, createOxlintOverride, oxlint } from "@duplojs/code-config/oxlint";
+import { baseRules, engineConfig, createOxlintOverride, oxlint } from "@duplojs/code-config/oxlint";
+
+const [, listStyle] = baseRules["@stylistic/list-style"];
 
 export default oxlint.defineConfig({
 	plugins: ["vue"],
@@ -21,6 +23,26 @@ export default oxlint.defineConfig({
 				"typescript/no-confusing-void-expression": "off",
 			},
 		}),
+		createOxlintOverride({
+			files: ["docs/**/*", "skills/**/*"],
+			ruleset: { base: false },
+			customRules: {
+				"@stylistic/list-style": [
+					"error",
+					{
+						...listStyle,
+						overrides: {
+							...listStyle.overrides,
+							"[]": { singleLine: { maxItems: 1000 } },
+						},
+					},
+				],
+			},
+		}),
 	],
-	ignorePatterns: ["dist/**"],
+	ignorePatterns: [
+		"dist/**",
+		// Copie inchangée de la sortie Rolldown utilisée par la documentation.
+		"docs/API/30-http/90-plugins/10-code-generator/fixtures/routes.d.ts",
+	],
 });

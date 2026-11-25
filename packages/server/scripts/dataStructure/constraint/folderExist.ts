@@ -22,7 +22,7 @@ export interface FolderExistConstraint extends DCommon.UnionToIntersection<
 export const FolderExistConstraint = DDataStructure.createConstraint(
 	folderExistConstraintKind,
 	({ init }) => () => init<FolderExistConstraint>(
-		{ },
+		{},
 		{
 			executeCheck: async(_self, data) => {
 				const result = DEither.rightPipe(

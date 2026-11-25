@@ -30,7 +30,13 @@ describe("TheFile", () => {
 	it("rejects values that are not file interfaces", () => {
 		const folder = DSFile.createFolderInterface(DPath.declarePath("/tmp/folder"));
 
-		for (const value of [folder, { path: "/tmp/file" }, "/tmp/file", null, undefined]) {
+		for (const value of [
+			folder,
+			{ path: "/tmp/file" },
+			"/tmp/file",
+			null,
+			undefined,
+		]) {
 			expect(DSDataStructure.TheFile.executeCheck(value)).toBe(DDataStructure.ErrorSymbol);
 		}
 	});

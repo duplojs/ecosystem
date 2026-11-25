@@ -35,7 +35,14 @@ void describe("command feature on deno", () => {
 	});
 
 	void it("executes a command with options and arguments", async() => {
-		TESTImplementation.set("getProcessArguments", () => ["build", "--verbose", "--count", "3", "--tags", "api,http"]);
+		TESTImplementation.set("getProcessArguments", () => [
+			"build",
+			"--verbose",
+			"--count",
+			"3",
+			"--tags",
+			"api,http",
+		]);
 
 		let executeParams: unknown = undefined;
 		const result = await DSCommand.exec(

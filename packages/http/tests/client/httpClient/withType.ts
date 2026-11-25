@@ -413,8 +413,7 @@ void promiseRequest
 				}
 				| AllNotPredictedClientResponse<{
 					params1: string;
-				}>
-				>,
+				}>>,
 				"strict"
 			>;
 		}
@@ -465,8 +464,7 @@ void promiseRequest
 				}
 				| AllNotPredictedClientResponse<{
 					params1: string;
-				}>
-				>,
+				}>>,
 				"strict"
 			>;
 		}
@@ -491,8 +489,7 @@ void promiseRequest
 				}>
 				| AllNotPredictedClientResponse<{
 					params1: string;
-				}>
-				>,
+				}>>,
 				"strict"
 			>;
 		}
@@ -619,8 +616,7 @@ void promiseRequest
 				}
 				| AllNotPredictedClientResponse<{
 					params1: string;
-				}>
-				>,
+				}>>,
 				"strict"
 			>;
 		}
@@ -645,8 +641,7 @@ void promiseRequest
 				}>
 				| AllNotPredictedClientResponse<{
 					params1: string;
-				}>
-				>,
+				}>>,
 				"strict"
 			>;
 		}
@@ -699,8 +694,7 @@ void promiseRequest
 				}>
 				| AllNotPredictedClientResponse<{
 					params1: string;
-				}>
-				>,
+				}>>,
 				"strict"
 			>;
 		}
@@ -754,8 +748,7 @@ void promiseRequest
 				}
 				| AllNotPredictedClientResponse<{
 					params1: string;
-				}>
-				>,
+				}>>,
 				"strict"
 			>;
 		}

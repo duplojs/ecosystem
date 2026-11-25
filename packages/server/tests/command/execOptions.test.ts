@@ -46,7 +46,14 @@ describe("execOptions", () => {
 	});
 
 	it.each([
-		{ args: ["--verbose", "app", "--output", "dist", "--tags", "alpha,beta"] },
+		{ args: [
+			"--verbose",
+			"app",
+			"--output",
+			"dist",
+			"--tags",
+			"alpha,beta",
+		] },
 		{ args: ["-v", "app", "-o=dist", "-t=alpha,beta"] },
 	])("parses boolean flags and value options around unmatched arguments in $args", async({ args }) => {
 		setEnvironment("TEST");

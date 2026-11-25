@@ -5,7 +5,13 @@ import type * as DCommon from "@scripts/common";
 
 describe("findDuplicates", () => {
 	it("should return duplicated values once", () => {
-		const result = DArray.findDuplicates(["a", "b", "a", "b", "a"] as const);
+		const result = DArray.findDuplicates([
+			"a",
+			"b",
+			"a",
+			"b",
+			"a",
+		] as const);
 
 		expect(result).toEqual(["a", "b"]);
 

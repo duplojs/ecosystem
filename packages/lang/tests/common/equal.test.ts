@@ -142,7 +142,14 @@ describe("equal", () => {
 		const token = Symbol("token");
 		const input = 1 as "a" | 1 | 1n | boolean | typeof token | null | undefined;
 
-		if (DCommon.equal(input, [1, 1n, true, token, null, undefined])) {
+		if (DCommon.equal(input, [
+			1,
+			1n,
+			true,
+			token,
+			null,
+			undefined,
+		])) {
 			type _CheckInput = DCommon.ExpectType<
 				typeof input,
 				1 | 1n | true | typeof token | null | undefined,

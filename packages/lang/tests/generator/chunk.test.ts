@@ -4,7 +4,13 @@ import * as DGenerator from "@scripts/generator";
 
 describe("chunk", () => {
 	it("splits iterable values into chunks", () => {
-		const result = DGenerator.chunk([1, 2, 3, 4, 5], 2);
+		const result = DGenerator.chunk([
+			1,
+			2,
+			3,
+			4,
+			5,
+		], 2);
 
 		expect(DArray.from(result)).toStrictEqual([[1, 2], [3, 4], [5]]);
 
@@ -70,7 +76,13 @@ describe("chunk", () => {
 	it.each([
 		{
 			size: 0.5,
-			expected: [[1], [2], [3], [4], [5]],
+			expected: [
+				[1],
+				[2],
+				[3],
+				[4],
+				[5],
+			],
 		},
 		{
 			size: 2.4,
@@ -81,7 +93,13 @@ describe("chunk", () => {
 			expected: [[1, 2, 3], [4, 5]],
 		},
 	] as const)("rounds fractional size $size without applying a maximum length constraint", ({ size, expected }) => {
-		const input = [1, 2, 3, 4, 5];
+		const input = [
+			1,
+			2,
+			3,
+			4,
+			5,
+		];
 		const result = DGenerator.chunk(input, size);
 
 		expect(DArray.from(result)).toStrictEqual(expected);
@@ -95,7 +113,13 @@ describe("chunk", () => {
 
 	it("rounds a fractional size in pipe without applying a maximum length constraint", () => {
 		const result = DCommon.pipe(
-			new Set([1, 2, 3, 4, 5]),
+			new Set([
+				1,
+				2,
+				3,
+				4,
+				5,
+			]),
 			DGenerator.chunk(1.6),
 		);
 

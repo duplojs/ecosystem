@@ -64,7 +64,13 @@ describe("generateSummaryCommand", () => {
 	])("generates a documentation summary as a reusable command with $args", async({ args, expected }) => {
 		const error = DSCommand.createError("generate-summary");
 
-		const result = await generateSummaryCommand.execute(["--input", "/docs", "--output", "/docs/router.llms.md", ...args], error);
+		const result = await generateSummaryCommand.execute([
+			"--input",
+			"/docs",
+			"--output",
+			"/docs/router.llms.md",
+			...args,
+		], error);
 
 		type _CheckCommand = DCommon.ExpectType<typeof generateSummaryCommand, DSCommand.Command<"generate-summary">, "strict">;
 		type _CheckResult = DCommon.ExpectType<typeof result, undefined | DSCommand.SymbolCommandError, "strict">;
@@ -116,7 +122,13 @@ describe("generateSummaryCommand", () => {
 	});
 
 	it("dispatches generate-summary from the local bin entry point", async() => {
-		const getProcessArguments = vi.fn(() => ["generate-summary", "--input", "/docs", "--output", "/docs/router.llms.md"]);
+		const getProcessArguments = vi.fn(() => [
+			"generate-summary",
+			"--input",
+			"/docs",
+			"--output",
+			"/docs/router.llms.md",
+		]);
 		TESTImplementation.set("getProcessArguments", getProcessArguments);
 
 		await import("../../../bin");

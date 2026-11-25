@@ -10,7 +10,15 @@ describe("codecsNativeChrono", () => {
 			time: DDataStructure.time(),
 		});
 		const input = {
-			date: DChrono.createDateOrThrow(Date.UTC(2024, 0, 2, 3, 4, 5, 6)),
+			date: DChrono.createDateOrThrow(Date.UTC(
+				2024,
+				0,
+				2,
+				3,
+				4,
+				5,
+				6,
+			)),
 			time: DChrono.createTimeOrThrow(3_661_007),
 		};
 		const encoded = DEither.unwrapByInformationOrThrow(
@@ -62,15 +70,35 @@ describe("codecsNativeChrono", () => {
 
 		expect(date.predicateEncode(nativeDate)).toBe(true);
 		expect(time.predicateEncode(nativeTime)).toBe(true);
-		for (const value of [null, undefined, "2024-01-02", {}, 0]) {
+		for (const value of [
+			null,
+			undefined,
+			"2024-01-02",
+			{},
+			0,
+		]) {
 			expect(date.predicateEncode(value)).toBe(false);
 		}
-		for (const value of [null, undefined, "1000", new Date(0), DChrono.createTimeOrThrow(0)]) {
+		for (const value of [
+			null,
+			undefined,
+			"1000",
+			new Date(0),
+			DChrono.createTimeOrThrow(0),
+		]) {
 			expect(time.predicateEncode(value)).toBe(false);
 		}
 	});
 
-	it.each([0, -1, Date.UTC(2024, 0, 2, 3, 4, 5, 6)])("converts native date timestamp %i", async(timestamp) => {
+	it.each([0, -1, Date.UTC(
+		2024,
+		0,
+		2,
+		3,
+		4,
+		5,
+		6,
+	)])("converts native date timestamp %i", async(timestamp) => {
 		const codec = DDataStructure.codecsNativeChrono.definition.date;
 
 		type _CheckCodec = DCommon.ExpectType<
@@ -85,7 +113,13 @@ describe("codecsNativeChrono", () => {
 		expect(await codec.encode(DChrono.createDateOrThrow(timestamp))).toStrictEqual(native);
 	});
 
-	it.each([0, -3_661_007, 3_661_007, Number.MIN_SAFE_INTEGER + 1, Number.MAX_SAFE_INTEGER - 1])("converts native time value %i", async(value) => {
+	it.each([
+		0,
+		-3_661_007,
+		3_661_007,
+		Number.MIN_SAFE_INTEGER + 1,
+		Number.MAX_SAFE_INTEGER - 1,
+	])("converts native time value %i", async(value) => {
 		const codec = DDataStructure.codecsNativeChrono.definition.time;
 
 		type _CheckCodec = DCommon.ExpectType<
@@ -110,7 +144,15 @@ describe("codecsNativeChrono", () => {
 		))).toBe(true);
 	});
 
-	it.each([Number.NaN, Infinity, -Infinity, 0.5, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER + 1])("rejects invalid native time %s", async(value) => {
+	it.each([
+		Number.NaN,
+		Infinity,
+		-Infinity,
+		0.5,
+		Number.MIN_SAFE_INTEGER,
+		Number.MAX_SAFE_INTEGER,
+		Number.MAX_SAFE_INTEGER + 1,
+	])("rejects invalid native time %s", async(value) => {
 		const codec = DDataStructure.codecsNativeChrono.definition.time;
 
 		expect(codec.predicateEncode(value)).toBe(true);

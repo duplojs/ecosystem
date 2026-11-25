@@ -21,7 +21,7 @@ export interface EmailConstraint extends DCommon.Forward<
 export const EmailConstraint = createConstraint(
 	emailConstraintKind,
 	({ init }) => () => init<EmailConstraint>(
-		{ },
+		{},
 		{
 			executeCheck: (_self, data) => DString.isEmail(data)
 				? SuccessSymbol

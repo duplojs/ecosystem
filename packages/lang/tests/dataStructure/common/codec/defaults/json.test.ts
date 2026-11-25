@@ -11,7 +11,15 @@ describe("codecsJson", () => {
 		});
 		const input = {
 			bigint: 9007199254740993n,
-			date: DChrono.createDateOrThrow(Date.UTC(2024, 0, 2, 3, 4, 5, 6)),
+			date: DChrono.createDateOrThrow(Date.UTC(
+				2024,
+				0,
+				2,
+				3,
+				4,
+				5,
+				6,
+			)),
 			time: DChrono.createTimeOrThrow(3_661_007),
 		};
 

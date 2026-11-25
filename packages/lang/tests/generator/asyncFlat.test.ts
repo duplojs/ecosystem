@@ -211,7 +211,13 @@ describe("asyncFlat", () => {
 			yield await Promise.resolve(undefined);
 		})());
 
-		await expect(DArray.from(result)).resolves.toStrictEqual([1, 2, false, null, undefined]);
+		await expect(DArray.from(result)).resolves.toStrictEqual([
+			1,
+			2,
+			false,
+			null,
+			undefined,
+		]);
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,

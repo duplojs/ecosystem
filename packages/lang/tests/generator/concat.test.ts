@@ -6,7 +6,13 @@ describe("concat", () => {
 	it("concatenates several iterables", () => {
 		const result = DGenerator.concat([1, 2] as const, new Set([3] as const), [4, 5] as const);
 
-		expect(DArray.from(result)).toStrictEqual([1, 2, 3, 4, 5]);
+		expect(DArray.from(result)).toStrictEqual([
+			1,
+			2,
+			3,
+			4,
+			5,
+		]);
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,

@@ -46,8 +46,21 @@ describe("skills integration", () => {
 	it.each([
 		[["skills", "install", "fundamental"], ".agents", ["fundamental"], true],
 		[["skills", "install", "http-server", "--copy"], ".agents", ["http-server"], false],
-		[["skills", "install", "http-server", "--type", "claude", "--copy"], ".claude", ["http-server"], false],
-		[["skills", "install", "fundamental", "--type", "codex"], ".codex", ["fundamental"], true],
+		[[
+			"skills",
+			"install",
+			"http-server",
+			"--type",
+			"claude",
+			"--copy",
+		], ".claude", ["http-server"], false],
+		[[
+			"skills",
+			"install",
+			"fundamental",
+			"--type",
+			"codex",
+		], ".codex", ["fundamental"], true],
 		[["skills", "install"], ".agents", allSkills, true],
 		[["skills", "install", "--copy"], ".agents", allSkills, false],
 	] as const)("installs skills for %j into %s", async(args, agentFolder, skills, expectedSymlink) => {
@@ -154,7 +167,15 @@ describe("skills integration", () => {
 			DEither.unwrapByInformationOrThrow("file-system-write-text-file"),
 		);
 
-		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "install", "http-server", "--type", agent], { cwd: workspace });
+		execFileSync("pnpm", [
+			"exec",
+			"duplojs-agents-kit",
+			"skills",
+			"install",
+			"http-server",
+			"--type",
+			agent,
+		], { cwd: workspace });
 
 		const installedEntries = await DCommon.asyncPipe(
 			installedDirectory,
@@ -200,8 +221,22 @@ describe("skills integration", () => {
 			expectedSymlink: false,
 		},
 	])("replaces an installation from $initialOptions with $options", async({ initialOptions, options, expectedSymlink }) => {
-		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "install", "http-server", ...initialOptions], { cwd: workspace });
-		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "install", "http-server", ...options], { cwd: workspace });
+		execFileSync("pnpm", [
+			"exec",
+			"duplojs-agents-kit",
+			"skills",
+			"install",
+			"http-server",
+			...initialOptions,
+		], { cwd: workspace });
+		execFileSync("pnpm", [
+			"exec",
+			"duplojs-agents-kit",
+			"skills",
+			"install",
+			"http-server",
+			...options,
+		], { cwd: workspace });
 
 		const destination = DPath.resolveRelative([workspace, DPath.declarePath(".agents/skills/duplojs-http-server")]);
 		const installedStat = await DCommon.asyncPipe(
@@ -235,7 +270,14 @@ describe("skills integration", () => {
 			DEither.unwrapByInformationOrThrow("file-system-write-text-file"),
 		);
 
-		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "install", "http-server", ...options], { cwd: workspace });
+		execFileSync("pnpm", [
+			"exec",
+			"duplojs-agents-kit",
+			"skills",
+			"install",
+			"http-server",
+			...options,
+		], { cwd: workspace });
 
 		const installedStat = await DCommon.asyncPipe(
 			destination,
@@ -301,7 +343,14 @@ describe("skills integration", () => {
 			DEither.unwrapByInformationOrThrow("file-system-symlink"),
 		);
 
-		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "install", "http-server", ...options], { cwd: workspace });
+		execFileSync("pnpm", [
+			"exec",
+			"duplojs-agents-kit",
+			"skills",
+			"install",
+			"http-server",
+			...options,
+		], { cwd: workspace });
 
 		const installedStat = await DCommon.asyncPipe(
 			destination,
@@ -332,7 +381,13 @@ describe("skills integration", () => {
 
 	it.each([
 		["skills", "install", "unknown"],
-		["skills", "install", "http-server", "--type", "unknown"],
+		[
+			"skills",
+			"install",
+			"http-server",
+			"--type",
+			"unknown",
+		],
 		["skills", "install", "http-server", "--copy=false"],
 	])("does not install skills for invalid arguments %j", async(...args) => {
 		const result = spawnSync("pnpm", ["exec", "duplojs-agents-kit", ...args], {
@@ -407,14 +462,27 @@ describe("skills integration", () => {
 			await DCommon.asyncPipe(DSFile.symlink(source, destination, { type: "directory" }), DEither.unwrapByInformationOrThrow("file-system-symlink"));
 		}
 
-		execFileSync("pnpm", ["exec", "duplojs-agents-kit", "skills", "update", "--type", agent], { cwd: workspace });
+		execFileSync("pnpm", [
+			"exec",
+			"duplojs-agents-kit",
+			"skills",
+			"update",
+			"--type",
+			agent,
+		], { cwd: workspace });
 
 		const entries = await DCommon.asyncPipe(
 			DSFile.readDirectory(installedDirectory),
 			DEither.unwrapByInformationOrThrow("file-system-read-directory"),
 			DString.sort("ASC"),
 		);
-		expect(entries).toEqual(["another-skill", "duplojs-command", "duplojs-fundamental", "duplojs-http-client", "duplojs-unknown"]);
+		expect(entries).toEqual([
+			"another-skill",
+			"duplojs-command",
+			"duplojs-fundamental",
+			"duplojs-http-client",
+			"duplojs-unknown",
+		]);
 		for (const skill of ["fundamental", "command"]) {
 			const destination = DPath.resolveRelative([installedDirectory, DPath.createSegmentOrThrow(`duplojs-${skill}`)]);
 			const source = DPath.resolveRelative([skillsDirectory, DPath.createSegmentOrThrow(skill)]);

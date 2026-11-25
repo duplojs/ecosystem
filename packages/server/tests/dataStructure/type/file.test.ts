@@ -31,7 +31,13 @@ describe("FileType", () => {
 		const type = DSDataStructure.FileType();
 		const folder = DSFile.createFolderInterface(DPath.declarePath("/tmp/folder"));
 
-		for (const value of [folder, { path: "/tmp/file" }, "/tmp/file", null, undefined]) {
+		for (const value of [
+			folder,
+			{ path: "/tmp/file" },
+			"/tmp/file",
+			null,
+			undefined,
+		]) {
 			expect(type.executeCheck(value)).toBe(DDataStructure.ErrorSymbol);
 		}
 	});

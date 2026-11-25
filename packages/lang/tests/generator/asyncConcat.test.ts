@@ -16,7 +16,13 @@ describe("asyncConcat", () => {
 			})(),
 		);
 
-		await expect(DArray.from(result)).resolves.toStrictEqual([1, 2, 3, 4, 5]);
+		await expect(DArray.from(result)).resolves.toStrictEqual([
+			1,
+			2,
+			3,
+			4,
+			5,
+		]);
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
