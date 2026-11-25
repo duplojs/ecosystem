@@ -1,5 +1,5 @@
 import { Option } from '../base';
-import { EligibleType } from '../../types';
+import { EligibleType, ForbiddenInvalidIdentifier } from '../../types';
 import * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
 import * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -13,12 +13,14 @@ export interface ArrayOption<GenericName extends string = string, GenericValue e
     readonly min?: number;
     readonly max?: number;
 }
-export interface CreateArrayOptionParams {
+export interface CreateArrayOptionParams<GenericAliases extends readonly string[] = readonly string[]> {
     description?: string;
-    aliases?: readonly string[];
+    aliases?: (GenericAliases & {
+        readonly [Index in keyof GenericAliases]: ForbiddenInvalidIdentifier<GenericAliases[Index]>;
+    });
     min?: number;
     max?: number;
     required?: boolean;
     separator?: string;
 }
-export declare const createArrayOption: <GenericName extends string, GenericStructure extends DDataStructure.Structure<EligibleType>, GenericValue extends DDataStructure.StructureValue<GenericStructure>, const GenericParams extends CreateArrayOptionParams = {}>(name: GenericName, dataStructure: GenericStructure, params?: GenericParams & CreateArrayOptionParams) => ArrayOption<GenericName, ((readonly GenericValue[] & (DNumber.IsLiteral<Extract<GenericParams["min"], number>> extends true ? DArray.MinElements<Extract<GenericParams["min"], number>> : unknown) & (DNumber.IsLiteral<Extract<GenericParams["max"], number>> extends true ? DArray.MaxElements<Extract<GenericParams["max"], number>> : unknown)) | (DCommon.IsEqual<GenericParams["required"], true> extends true ? never : undefined))>;
+export declare const createArrayOption: <GenericName extends string, GenericStructure extends DDataStructure.Structure<EligibleType>, GenericValue extends DDataStructure.StructureValue<GenericStructure>, const GenericAliases extends readonly string[] = readonly string[], const GenericParams extends CreateArrayOptionParams<GenericAliases> = {}>(name: GenericName & ForbiddenInvalidIdentifier<GenericName>, dataStructure: GenericStructure, params?: GenericParams & CreateArrayOptionParams<GenericAliases>) => ArrayOption<GenericName, ((readonly GenericValue[] & (DNumber.IsLiteral<Extract<GenericParams["min"], number>> extends true ? DArray.MinElements<Extract<GenericParams["min"], number>> : unknown) & (DNumber.IsLiteral<Extract<GenericParams["max"], number>> extends true ? DArray.MaxElements<Extract<GenericParams["max"], number>> : unknown)) | (DCommon.IsEqual<GenericParams["required"], true> extends true ? never : undefined))>;

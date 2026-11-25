@@ -3,7 +3,7 @@ import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import type * as DSFile from '../../file';
 export interface EnvironmentVariableFileParams {
-    includedEnvironmentFiles?: (string & DPath.Path)[];
+    includedEnvironmentFiles?: DPath.AnyPath[];
     override?: boolean;
     justRead?: boolean;
     codecs?: DDataStructure.Codecs;

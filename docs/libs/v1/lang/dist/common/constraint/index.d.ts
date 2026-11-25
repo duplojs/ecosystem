@@ -1,4 +1,5 @@
 export * from './cast';
+export * from './createConstraintFactory';
 export * from './infer';
 export * from './remove';
-export * from './types';
+export type * from './types';

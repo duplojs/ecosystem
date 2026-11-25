@@ -1,5 +1,5 @@
 import { Option } from '../base';
-import { EligibleType } from '../../types';
+import { EligibleType, ForbiddenInvalidIdentifier } from '../../types';
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -8,9 +8,11 @@ export interface SimpleOption<GenericName extends string = string, GenericValue 
     readonly dataStructure: DDataStructure.Structure<GenericValue>;
     readonly required: boolean;
 }
-export interface CreateSimpleOptionParams {
+export interface CreateSimpleOptionParams<GenericAliases extends readonly string[] = readonly string[]> {
     description?: string;
-    aliases?: readonly string[];
+    aliases?: (GenericAliases & {
+        readonly [Index in keyof GenericAliases]: ForbiddenInvalidIdentifier<GenericAliases[Index]>;
+    });
     required?: boolean;
 }
-export declare const createOption: <GenericName extends string, GenericStructure extends DDataStructure.Structure<EligibleType>, GenericValue extends DDataStructure.StructureValue<GenericStructure>, const GenericParams extends CreateSimpleOptionParams = {}>(name: GenericName, dataStructure: GenericStructure, params?: GenericParams & CreateSimpleOptionParams) => SimpleOption<GenericName, (GenericValue | (DCommon.IsEqual<GenericParams["required"], true> extends true ? never : undefined))>;
+export declare const createOption: <GenericName extends string, GenericStructure extends DDataStructure.Structure<EligibleType>, GenericValue extends DDataStructure.StructureValue<GenericStructure>, const GenericAliases extends readonly string[] = readonly string[], const GenericParams extends CreateSimpleOptionParams<GenericAliases> = {}>(name: GenericName & ForbiddenInvalidIdentifier<GenericName>, dataStructure: GenericStructure, params?: GenericParams & CreateSimpleOptionParams<GenericAliases>) => SimpleOption<GenericName, (GenericValue | (DCommon.IsEqual<GenericParams["required"], true> extends true ? never : undefined))>;

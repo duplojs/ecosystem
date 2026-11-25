@@ -1,7 +1,6 @@
 export * from './assign';
 export * from './countKeys';
 export * from './deepOverride';
-export * from './deepDiscriminate';
 export * from './discriminate';
 export * from './discriminateEntryKey';
 export * from './discriminateEntryValue';
@@ -11,6 +10,7 @@ export * from './fromEntries';
 export * from './getDeepProperty';
 export * from './getProperty';
 export * from './hasKeys';
+export * from './is';
 export * from './isSimple';
 export * from './keys';
 export * from './omit';

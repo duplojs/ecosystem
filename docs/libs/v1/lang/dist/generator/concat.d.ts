@@ -1,2 +1,2 @@
-export declare function concat<const GenericItem extends unknown>(items: Iterable<GenericItem>): (iterator: Iterable<GenericItem>) => Generator<GenericItem, unknown, unknown>;
-export declare function concat<const GenericItem extends unknown>(iterator: Iterable<GenericItem>, items: Iterable<GenericItem>, ...itemsRest: Iterable<GenericItem>[]): Generator<GenericItem, unknown, unknown>;
+export declare function concat<const GenericItemFrom extends unknown, const GenericItem extends unknown>(items: Iterable<GenericItem>): (iterator: Iterable<GenericItemFrom>) => Generator<GenericItem | GenericItemFrom, unknown, unknown>;
+export declare function concat<const GenericItemFrom extends unknown, const GenericItem extends unknown>(iterator: Iterable<GenericItemFrom>, items: Iterable<GenericItem>, ...itemsRest: Iterable<GenericItem>[]): Generator<GenericItem | GenericItemFrom, unknown, unknown>;

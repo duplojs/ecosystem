@@ -1,2 +1,2 @@
-import { Path } from './constraints';
-export declare function normalize(path: string): (string & Path) | null;
+import { AnyPath } from './types';
+export declare function normalize(path: string): AnyPath | null;

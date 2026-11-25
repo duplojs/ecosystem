@@ -1,28 +1,22 @@
-import { IsEqual, AnyFunction, UnionToIntersection } from './types';
-type ExtractIntersection<GenericInput extends unknown, GenericPredicateList extends AnyFunction<any[], boolean>[], GenericResult extends unknown = GenericInput> = GenericPredicateList extends [
-    (input: any) => input is infer InferredPredicate,
-    ...infer InferredRest extends AnyFunction<any[], boolean>[]
-] ? Extract<GenericResult, InferredPredicate> extends infer InferredResult extends GenericInput ? InferredRest extends readonly [] ? InferredResult : ExtractIntersection<GenericInput, InferredRest, InferredResult> : never : never;
-type ExtractPredicate<GenericInput extends unknown, GenericPredicateList extends AnyFunction<any[], boolean>[]> = GenericPredicateList extends [
-    (input: any) => input is infer InferredPredicate,
-    ...infer InferredRest extends AnyFunction<any[], boolean>[]
-] ? InferredRest extends readonly [] ? InferredPredicate : InferredPredicate | ExtractPredicate<GenericInput, InferredRest> : GenericInput;
-type ComputeResult<GenericInput extends unknown, GenericPredicateList extends AnyFunction<any[], boolean>[]> = ExtractIntersection<GenericInput, GenericPredicateList> extends infer InferredResult extends GenericInput ? IsEqual<InferredResult, never> extends true ? GenericInput & UnionToIntersection<ExtractPredicate<GenericInput, GenericPredicateList>> : InferredResult : never;
-export declare function and<GenericInput extends unknown, GenericPredicateList extends [
+import { IsEqual, AnyFunction, AnyPredicate, IsUnion, Predicate, IsNever } from './types';
+type PredicateList<GenericInput extends unknown> = readonly [
     (input: GenericInput) => input is any,
     (input: GenericInput) => input is any,
     ...((input: GenericInput) => input is any)[]
-]>(predicateList: GenericPredicateList): (input: GenericInput) => input is ComputeResult<GenericInput, GenericPredicateList>;
-export declare function and<GenericInput extends unknown>(predicateList: [
+];
+type ExtractPredicate<GenericPredicateList extends readonly AnyFunction<any[], boolean>[], GenericResult extends unknown = unknown> = IsUnion<GenericPredicateList> extends true ? unknown : number extends GenericPredicateList["length"] ? unknown : GenericPredicateList extends readonly [
+    infer InferredFirstPredicate extends AnyPredicate,
+    ...infer InferredRest extends readonly AnyPredicate[]
+] ? IsUnion<InferredFirstPredicate> extends true ? unknown : IsEqual<Predicate<InferredFirstPredicate>, any> extends true ? unknown : IsNever<Predicate<InferredFirstPredicate>> extends true ? unknown : InferredRest extends readonly [] ? [GenericResult & Predicate<InferredFirstPredicate>] : ExtractPredicate<InferredRest, GenericResult & Predicate<InferredFirstPredicate>> : never;
+type ComputeResult<GenericInput extends unknown, GenericPredicateList extends readonly AnyFunction<any[], boolean>[]> = ExtractPredicate<GenericPredicateList> extends readonly [infer InferredOutput] ? GenericInput extends InferredOutput ? GenericInput : InferredOutput extends GenericInput ? InferredOutput : GenericInput & InferredOutput : never;
+type IsPredicateOutputCompatible<GenericInput extends unknown, GenericPredicateList extends readonly AnyFunction<any[], boolean>[]> = IsEqual<PredicateList<GenericInput>, GenericPredicateList> extends true ? unknown : ExtractPredicate<GenericPredicateList> extends infer InferredResult ? IsEqual<InferredResult, unknown> extends true ? never : unknown : never;
+export declare function and<GenericInput extends unknown, const GenericPredicateList extends PredicateList<GenericInput>>(predicateList: GenericPredicateList & IsPredicateOutputCompatible<GenericInput, GenericPredicateList>): (input: GenericInput) => input is ComputeResult<GenericInput, GenericPredicateList>;
+export declare function and<GenericInput extends unknown>(predicateList: readonly [
     (input: GenericInput) => boolean,
     (input: GenericInput) => boolean,
     ...((input: GenericInput) => boolean)[]
 ]): (input: GenericInput) => boolean;
-export declare function and<GenericInput extends unknown, GenericPredicateList extends [
-    (input: GenericInput) => input is any,
-    (input: GenericInput) => input is any,
-    ...((input: GenericInput) => input is any)[]
-]>(input: GenericInput, predicateList: GenericPredicateList): input is ComputeResult<GenericInput, GenericPredicateList>;
+export declare function and<GenericInput extends unknown, const GenericPredicateList extends PredicateList<GenericInput>>(input: GenericInput, predicateList: GenericPredicateList & IsPredicateOutputCompatible<GenericInput, GenericPredicateList>): input is ComputeResult<GenericInput, GenericPredicateList>;
 export declare function and<GenericInput extends unknown>(input: GenericInput, predicateList: [
     (input: GenericInput) => boolean,
     (input: GenericInput) => boolean,

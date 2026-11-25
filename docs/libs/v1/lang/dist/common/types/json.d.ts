@@ -1,15 +1,21 @@
-import { RemoveConstraint } from '../constraint';
+import { BaseConstraint, ConstraintSymbol, RemoveConstraint } from '../constraint';
 import { MaybeArray } from './maybeArray';
+import { IsEqual } from './isEqual';
+import { UnionToIntersection } from './unionToIntersection';
 import type * as DModeling from '../../modeling';
 import type * as DKind from '../../kind';
 export type JsonPrimitive = (string | undefined | boolean | number | null);
 export type Json = MaybeArray<JsonPrimitive | {
     readonly [key: string]: Json;
 }>;
-type ObjectToJson<GenericValue extends object, GenericIgnore extends unknown, GenericClearValue = RemoveConstraint<DKind.Remove<GenericValue>>, GenericConstraint = (GenericValue extends (GenericClearValue & infer InferredConstraint) ? InferredConstraint : unknown), GenericEntity = (GenericValue extends DModeling.Entity<infer InferredName> ? DModeling.Entity<InferredName> : unknown), GenericObjectTag = (GenericValue extends DModeling.ObjectTag<infer InferredName> ? DModeling.ObjectTag<InferredName> : unknown)> = GenericClearValue extends [infer InferredFirst, ...infer InferredRest] ? [ToJson<InferredFirst, GenericIgnore>, ...ToJson<InferredRest, GenericIgnore>] & GenericConstraint : GenericClearValue extends [] ? [] & GenericConstraint : GenericClearValue extends (infer InferredElement)[] ? ToJson<InferredElement, GenericIgnore>[] & GenericConstraint : GenericClearValue extends readonly [infer InferredFirst, ...infer InferredRest] ? readonly [ToJson<InferredFirst, GenericIgnore>, ...ToJson<InferredRest, GenericIgnore>] : GenericClearValue extends readonly [] & GenericConstraint ? readonly [] & GenericConstraint : GenericClearValue extends readonly (infer InferredElement)[] ? readonly ToJson<InferredElement, GenericIgnore>[] & GenericConstraint : GenericClearValue extends object ? ({
-    [Prop in keyof GenericClearValue]: ToJson<GenericClearValue[Prop], GenericIgnore>;
-} & GenericConstraint & GenericEntity & GenericObjectTag) : never;
-export type ToJson<GenericValue extends unknown, GenericIgnore extends unknown = never> = GenericValue extends (JsonPrimitive | GenericIgnore) ? GenericValue : GenericValue extends {
+type FlagMetadata<GenericFlags extends Record<Capitalize<string>, unknown>> = UnionToIntersection<{
+    [Prop in keyof GenericFlags]: Prop extends Capitalize<string> ? DModeling.Flag<Prop, GenericFlags[Prop]> : never;
+}[keyof GenericFlags]>;
+type PropertiesToJson<GenericValue, GenericIgnore> = GenericValue extends unknown ? {
+    [Prop in keyof GenericValue]: ToJson<GenericValue[Prop], GenericIgnore>;
+} : never;
+type ObjectToJson<GenericValue extends object, GenericIgnore extends unknown, GenericUnconstrainedValue = (GenericValue extends BaseConstraint ? GenericValue extends infer InferredValue & Pick<GenericValue, ConstraintSymbol> ? RemoveConstraint<InferredValue> : never : GenericValue), GenericConstraint = (GenericValue extends (GenericUnconstrainedValue & (infer InferredConstraint extends BaseConstraint)) ? InferredConstraint : unknown), GenericMetadata = ((GenericValue extends DModeling.Entity<infer InferredName> ? DModeling.Entity<InferredName> : unknown) & (GenericValue extends DModeling.ObjectTag<infer InferredName> ? DModeling.ObjectTag<InferredName> : unknown) & (GenericValue extends DModeling.Flag ? FlagMetadata<DKind.GetValue<typeof DModeling.flagKind, GenericValue>> : unknown) & (GenericValue extends DModeling.Fact<infer InferredName, infer InferredPayload> ? DModeling.Fact<InferredName, InferredPayload> : unknown)), GenericClearValue = (GenericUnconstrainedValue extends GenericMetadata & infer InferredValue ? DKind.Remove<Extract<InferredValue, object>> : never)> = GenericClearValue extends unknown ? (GenericClearValue extends readonly unknown[] ? number extends GenericClearValue["length"] ? Exclude<keyof GenericClearValue, keyof unknown[]> extends never ? GenericClearValue extends readonly [...unknown[], unknown] ? PropertiesToJson<GenericClearValue, GenericIgnore> : GenericClearValue extends unknown[] ? ToJson<GenericClearValue[number], GenericIgnore>[] : readonly ToJson<GenericClearValue[number], GenericIgnore>[] : PropertiesToJson<GenericClearValue, GenericIgnore> : PropertiesToJson<GenericClearValue, GenericIgnore> : PropertiesToJson<GenericClearValue, GenericIgnore>) & GenericConstraint & GenericMetadata : never;
+export type ToJson<GenericValue extends unknown, GenericIgnore extends unknown = never> = IsEqual<GenericValue, any> extends true ? GenericValue : GenericValue extends (JsonPrimitive | GenericIgnore) ? GenericValue : GenericValue extends {
     toJSON(): unknown;
 } ? ToJson<ReturnType<GenericValue["toJSON"]>, GenericIgnore> : GenericValue extends object ? ObjectToJson<GenericValue, GenericIgnore> : GenericValue;
 export {};

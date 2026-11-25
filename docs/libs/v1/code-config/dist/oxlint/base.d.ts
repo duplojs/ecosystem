@@ -17,6 +17,7 @@ export declare const defaultPreferNamespaceImportPaths: {
     "@duplojs/lang/printer": string;
     "@duplojs/server/file": string;
     "@duplojs/server/common": string;
+    "@duplojs/server/path": string;
     "@duplojs/server/dataStructure": string;
     "@duplojs/server/command": string;
 };
@@ -54,6 +55,8 @@ export declare const defaultPreferNamespaceFromBarrelOptions: {
         DSFile: string;
         SF: string;
         DSCommon: string;
+        DSPath: string;
+        SP: string;
         DSDataStructure: string;
         SDS: string;
         DSCommand: string;
@@ -383,13 +386,63 @@ export declare const baseRules: {
     readonly "typescript/unbound-method": "off";
     readonly "typescript/unified-signatures": "off";
     readonly "typescript/use-unknown-in-catch-callback-variable": "error";
-    readonly "@stylistic/array-bracket-newline": ["error", {
-        readonly multiline: true;
-    }];
-    readonly "@stylistic/array-bracket-spacing": ["error", "never"];
-    readonly "@stylistic/array-element-newline": ["error", {
-        readonly consistent: true;
-        readonly multiline: true;
+    readonly "@stylistic/list-style": ["error", {
+        readonly empty: "never";
+        readonly singleLine: {
+            readonly spacing: "never";
+        };
+        readonly multiLine: {
+            readonly minItems: 1;
+        };
+        readonly overrides: {
+            readonly "{}": {
+                readonly singleLine: {
+                    readonly spacing: "always";
+                };
+            };
+            readonly "[]": {
+                readonly singleLine: {
+                    readonly maxItems: 4;
+                };
+            };
+            readonly "()": {
+                readonly singleLine: {
+                    readonly maxItems: 4;
+                };
+            };
+            readonly "<>": {
+                readonly singleLine: {
+                    readonly maxItems: 4;
+                };
+            };
+            readonly ObjectExpression: {
+                readonly singleLine: {
+                    readonly spacing: "always";
+                    readonly maxItems: 1;
+                };
+            };
+            readonly TSInterfaceBody: {
+                readonly empty: "ignore";
+                readonly singleLine: {
+                    readonly spacing: "always";
+                    readonly maxItems: 1;
+                };
+            };
+            readonly TSTypeLiteral: {
+                readonly empty: "ignore";
+                readonly singleLine: {
+                    readonly spacing: "always";
+                    readonly maxItems: 1;
+                };
+            };
+            readonly TSEnumBody: {
+                readonly singleLine: {
+                    readonly spacing: "always";
+                    readonly maxItems: 1;
+                };
+            };
+            readonly ImportAttributes: "off";
+        };
     }];
     readonly "@stylistic/arrow-parens": ["error", "always"];
     readonly "@stylistic/arrow-spacing": "error";
@@ -405,8 +458,6 @@ export declare const baseRules: {
     readonly "@stylistic/dot-location": ["error", "property"];
     readonly "@stylistic/eol-last": ["error", "always"];
     readonly "@stylistic/function-call-spacing": ["error", "never"];
-    readonly "@stylistic/function-call-argument-newline": ["error", "consistent"];
-    readonly "@stylistic/function-paren-newline": ["error", "multiline-arguments"];
     readonly "@stylistic/generator-star-spacing": ["error", {
         readonly before: true;
         readonly after: false;
@@ -460,12 +511,6 @@ export declare const baseRules: {
     readonly "@stylistic/no-trailing-spaces": "error";
     readonly "@stylistic/no-whitespace-before-property": "error";
     readonly "@stylistic/nonblock-statement-body-position": ["error", "beside"];
-    readonly "@stylistic/object-curly-newline": ["error", {
-        readonly consistent: true;
-        readonly multiline: true;
-    }];
-    readonly "@stylistic/object-curly-spacing": ["error", "always"];
-    readonly "@stylistic/object-property-newline": "error";
     readonly "@stylistic/one-var-declaration-per-line": ["error", "always"];
     readonly "@stylistic/operator-linebreak": ["error", "before", {
         readonly overrides: {
@@ -523,6 +568,7 @@ export declare const baseRules: {
             "@duplojs/lang/printer": string;
             "@duplojs/server/file": string;
             "@duplojs/server/common": string;
+            "@duplojs/server/path": string;
             "@duplojs/server/dataStructure": string;
             "@duplojs/server/command": string;
         };
@@ -561,6 +607,8 @@ export declare const baseRules: {
             DSFile: string;
             SF: string;
             DSCommon: string;
+            DSPath: string;
+            SP: string;
             DSDataStructure: string;
             SDS: string;
             DSCommand: string;

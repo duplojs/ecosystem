@@ -384,13 +384,45 @@ export const baseRules: FlatConfig.Rules = {
 	"@typescript-eslint/unified-signatures": "off",
 	"@typescript-eslint/use-unknown-in-catch-callback-variable": "error",
 
-	"@stylistic/array-bracket-newline": ["error", { multiline: true }],
-	"@stylistic/array-bracket-spacing": ["error", "never"],
-	"@stylistic/array-element-newline": [
+	"@stylistic/list-style": [
 		"error",
 		{
-			consistent: true,
-			multiline: true,
+			empty: "never",
+			singleLine: { spacing: "never" },
+			multiLine: { minItems: 1 },
+			overrides: {
+				"{}": { singleLine: { spacing: "always" } },
+				"[]": { singleLine: { maxItems: 4 } },
+				"()": { singleLine: { maxItems: 4 } },
+				"<>": { singleLine: { maxItems: 4 } },
+				ObjectExpression: {
+					singleLine: {
+						spacing: "always",
+						maxItems: 1,
+					},
+				},
+				TSInterfaceBody: {
+					empty: "ignore",
+					singleLine: {
+						spacing: "always",
+						maxItems: 1,
+					},
+				},
+				TSTypeLiteral: {
+					empty: "ignore",
+					singleLine: {
+						spacing: "always",
+						maxItems: 1,
+					},
+				},
+				TSEnumBody: {
+					singleLine: {
+						spacing: "always",
+						maxItems: 1,
+					},
+				},
+				ImportAttributes: "off",
+			},
 		},
 	],
 	"@stylistic/arrow-parens": ["error", "always"],
@@ -399,8 +431,6 @@ export const baseRules: FlatConfig.Rules = {
 	"@stylistic/computed-property-spacing": ["error", "never"],
 	"@stylistic/dot-location": ["error", "property"],
 	"@stylistic/eol-last": ["error", "always"],
-	"@stylistic/function-call-argument-newline": ["error", "consistent"],
-	"@stylistic/function-paren-newline": ["error", "multiline-arguments"],
 	"@stylistic/generator-star-spacing": [
 		"error",
 		{
@@ -483,15 +513,6 @@ export const baseRules: FlatConfig.Rules = {
 	"@stylistic/member-delimiter-style": "error",
 	"@stylistic/no-extra-parens": "off",
 	"@stylistic/no-extra-semi": "error",
-	"@stylistic/object-curly-newline": [
-		"error",
-		{
-			consistent: true,
-			multiline: true,
-		},
-	],
-	"@stylistic/object-curly-spacing": ["error", "always"],
-	"@stylistic/object-property-newline": "error",
 	"@stylistic/padding-line-between-statements": "off",
 	"@stylistic/quote-props": ["error", "as-needed"],
 	"@stylistic/quotes": ["error", "double"],

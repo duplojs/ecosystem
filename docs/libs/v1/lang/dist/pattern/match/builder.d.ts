@@ -1,5 +1,7 @@
 import { ComplexMatchedValue, ComplexUnMatchedValue, Pattern, PatternValue } from '../types';
 import * as DCommon from '../../common';
+type IsPredicateOutputCompatible<GenericInput extends unknown, GenericPredicatedInput extends GenericInput, GenericPredicate extends unknown> = DCommon.IsEqual<GenericPredicatedInput, any> extends true ? never : DCommon.IsUnion<GenericPredicate> extends true ? never : unknown;
+type ComputeCallbackInput<GenericInput extends unknown, GenericPredicate extends unknown, GenericPredicatedInput extends GenericInput> = GenericPredicate extends (input: GenericInput) => input is GenericPredicatedInput ? DCommon.IsEqual<DCommon.Predicate<GenericPredicate>, any> extends true ? GenericInput : Exclude<GenericInput, GenericPredicatedInput> : GenericInput;
 export interface BuilderMatcher {
     isMatch(value: unknown): boolean;
     theFunction(value: unknown): unknown;
@@ -12,7 +14,7 @@ export interface MatchBuilder<GenericValue extends unknown = never, GenericResul
     with<const GenericPattern extends Pattern<GenericValue>, GenericOutput extends unknown>(pattern: DCommon.FixDeepFunctionInfer<Pattern<GenericValue>, GenericPattern>, theFunction: (value: ComplexMatchedValue<GenericValue, PatternValue<GenericPattern>>) => GenericOutput): MatchBuilder<ComplexUnMatchedValue<GenericValue, PatternValue<GenericPattern>>, GenericOutput | GenericResult>;
     when<GenericPredicatedInput extends GenericValue, GenericOutput extends unknown>(predicate: (input: GenericValue) => input is GenericPredicatedInput, theFunction: (predicatedInput: GenericPredicatedInput) => GenericOutput): MatchBuilder<Exclude<GenericValue, GenericPredicatedInput>, GenericOutput | GenericResult>;
     when<GenericOutput extends unknown>(predicate: (input: GenericValue) => boolean, theFunction: (predicatedInput: GenericValue) => GenericOutput): MatchBuilder<GenericValue, GenericOutput | GenericResult>;
-    whenNot<GenericPredicatedInput extends GenericValue, GenericOutput extends unknown>(predicate: (input: GenericValue) => input is GenericPredicatedInput, theFunction: (predicatedInput: Exclude<GenericValue, GenericPredicatedInput>) => GenericOutput): MatchBuilder<Extract<GenericValue, GenericPredicatedInput>, GenericOutput | GenericResult>;
+    whenNot<GenericPredicatedInput extends GenericValue, GenericOutput extends unknown, GenericPredicate extends unknown = (input: GenericValue) => input is GenericPredicatedInput>(predicate: (((input: GenericValue) => input is GenericPredicatedInput) & DCommon.FixDeepFunctionInfer<(input: GenericValue) => input is GenericPredicatedInput, GenericPredicate> & IsPredicateOutputCompatible<GenericValue, GenericPredicatedInput, GenericPredicate>), theFunction: (predicatedInput: ComputeCallbackInput<GenericValue, GenericPredicate, GenericPredicatedInput>) => GenericOutput): MatchBuilder<GenericPredicatedInput, GenericOutput | GenericResult>;
     whenNot<GenericOutput extends unknown>(predicate: (input: GenericValue) => boolean, theFunction: (predicatedInput: GenericValue) => GenericOutput): MatchBuilder<GenericValue, GenericOutput | GenericResult>;
     exhaustive: DCommon.IsEqual<GenericValue, never> extends true ? () => GenericResult : (DCommon.ComputedTypeError<"Pattern are not exhaustive."> & {
         restValue: GenericValue;

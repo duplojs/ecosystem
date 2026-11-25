@@ -4,7 +4,7 @@ import type * as DKind from '../kind';
 type FormatPortName<GenericValue extends string> = Uncapitalize<GenericValue> extends infer InferredResult extends string ? InferredResult extends `${infer InferredName}Port` ? InferredName : InferredResult : never;
 export type ReaderDependencies = Record<string, Reader | PortHandler>;
 export type ReaderDependenciesValue<GenericDependencies extends ReaderDependencies> = DCommon.SimplifyTopLevel<{
-    [Prop in keyof GenericDependencies as (GenericDependencies[Prop] extends PortHandler ? FormatPortName<Extract<Prop, string>> : Uncapitalize<Extract<Prop, string>>)]: GenericDependencies[Prop] extends PortHandler ? ReturnType<GenericDependencies[Prop]["createImplementation"]> : GenericDependencies[Prop] extends Reader ? ReturnType<GenericDependencies[Prop]["run"]> : never;
+    [Prop in keyof GenericDependencies as (GenericDependencies[Prop] extends PortHandler ? FormatPortName<Extract<Prop, string>> : Uncapitalize<Extract<Prop, string>>)]: GenericDependencies[Prop] extends PortHandler ? Parameters<GenericDependencies[Prop]["createImplementation"]>[0] : GenericDependencies[Prop] extends Reader ? ReturnType<GenericDependencies[Prop]["run"]> : never;
 }>;
 export type GetAllPorts<GenericDependenciesValue extends ReaderDependencies> = GenericDependenciesValue extends any ? ({
     [Prop in keyof GenericDependenciesValue]: (GenericDependenciesValue[Prop] extends PortHandler ? [

@@ -6,7 +6,6 @@ import { ReadDirectoryResult } from './readDirectory';
 import { StatResult } from './stat';
 import { WalkDirectoryParams, WalkDirectoryResult } from './walkDirectory';
 import { RelocateResult } from './relocate';
-import { EntryPath } from './unknownEntryInterface';
 import type * as DKind from "@duplojs/lang/kind";
 import * as DPath from "@duplojs/lang/path";
 import * as DEither from "@duplojs/lang/either";
@@ -14,21 +13,21 @@ declare const folderInterfaceKind: DKind.Handler<DKind.Definition<"@DuplojsServe
 type FolderInterfaceRenameResult = Exclude<RenameResult, DEither.Right> | DEither.Right<"file-system-rename", FolderInterface>;
 type FolderInterfaceRelocateResult = Exclude<RelocateResult, DEither.Right> | DEither.Right<"file-system-relocate", FolderInterface>;
 type FolderInterfaceMoveResult = Exclude<MoveResult, DEither.Right> | DEither.Right<"file-system-move", FolderInterface>;
-export interface FolderInterface<GenericPath extends EntryPath = EntryPath> extends DKind.Kind<typeof folderInterfaceKind> {
+export interface FolderInterface<GenericPath extends DPath.AnyPath = DPath.AnyPath> extends DKind.Kind<typeof folderInterfaceKind> {
     path: GenericPath & DPath.Path;
     getName(): (string & DPath.Segment & DPath.Path) | null;
-    getParentPath(): (string & DPath.Path) | null;
+    getParentPath(): ReturnType<typeof DPath.getParentFolderPath<GenericPath>>;
     rename(newName: (string & DPath.Segment)): Promise<FolderInterfaceRenameResult>;
     exists(): Promise<ExistsResult>;
-    relocate(parentPath: string & DPath.Path): Promise<FolderInterfaceRelocateResult>;
-    move(newPath: string & DPath.Path): Promise<FolderInterfaceMoveResult>;
+    relocate(parentPath: DPath.AnyPath): Promise<FolderInterfaceRelocateResult>;
+    move(newPath: DPath.AnyPath): Promise<FolderInterfaceMoveResult>;
     remove(): Promise<RemoveResult>;
     getChildren(): Promise<ReadDirectoryResult>;
     stat(): Promise<StatResult>;
     walk(params?: WalkDirectoryParams): Promise<WalkDirectoryResult>;
     isFolder(): Promise<boolean>;
 }
-export declare function createFolderInterface<GenericPath extends EntryPath = EntryPath>(path: GenericPath): FolderInterface<GenericPath>;
+export declare function createFolderInterface<GenericPath extends DPath.AnyPath = DPath.AnyPath>(path: GenericPath): FolderInterface<GenericPath>;
 export declare function isFolderInterface<GenericInput extends unknown>(input: GenericInput): input is Extract<GenericInput, FolderInterface>;
 export declare const isFolderInterfaceFromUnknown: (input: unknown) => input is FolderInterface;
 export {};

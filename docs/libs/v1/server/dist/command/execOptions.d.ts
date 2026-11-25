@@ -10,5 +10,5 @@ type ComputeResult<GenericOptions extends DCommon.AnyTuple<Option>> = DCommon.Si
 export interface ExecOptionsParams {
     dataStructureErrorInterpreter?: DDataStructure.ErrorInterpreter;
 }
-export declare function execOptions<GenericOptions extends DCommon.AnyTuple<Option>>(options: GenericOptions & ForbiddenDuplicateName<GenericOptions, "option">, params?: ExecOptionsParams): Promise<DEither.Success<Extract<ComputeResult<GenericOptions>, any>> | DEither.Right<"log-help"> | DEither.Error<Error>>;
+export declare function execOptions<GenericOptions extends DCommon.AnyTuple<Option>>(options: GenericOptions & ForbiddenDuplicateName<GenericOptions, "option">, params?: ExecOptionsParams): Promise<DEither.Success<Extract<ComputeResult<GenericOptions>, any>> | DEither.Right<"log-help"> | DEither.Left<"command-exec-options-help-error", Error> | DEither.Left<"command-exec-options-error", Error>>;
 export {};

@@ -7,7 +7,6 @@ interface LoopOutputNextResult<GenericOutput extends AnyValue> {
 }
 export interface LoopParams<GenericNextOutput extends AnyValue> {
     count: number;
-    previousOutput: GenericNextOutput | undefined;
     next<GenericValue extends GenericNextOutput | undefined = undefined>(output?: GenericValue): LoopOutputNextResult<GenericValue>;
     exit<GenericOutput extends AnyValue = undefined>(output?: GenericOutput): LoopOutputExitResult<GenericOutput>;
 }

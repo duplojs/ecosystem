@@ -6,12 +6,7 @@ type ComputeLastUsableValue<GenericAccumulator extends DCommon.AnyTuple> = Gener
     infer InferredLast
 ] ? InferredLast extends FlowControllerResult<infer InferredFlowControllerResult> ? Exclude<Awaited<InferredFlowControllerResult>, FlowControllerPreviousFunctionResult | FlowControllerExit> extends infer InferredOutputValue ? DCommon.HasSomething<InferredOutputValue> extends true ? InferredOutputValue : InferredRest extends DCommon.AnyTuple ? ComputeLastUsableValue<InferredRest> : never : never : InferredLast : never;
 type Pipe<GenericAccumulator extends DCommon.AnyTuple, GenericOutput extends unknown> = (this: never, input: Awaited<ComputeLastUsableValue<GenericAccumulator>>, argument: GenericAccumulator[0]) => GenericOutput;
-type IsMaybePromise<GenericAccumulator extends DCommon.AnyTuple> = {
-    [Index in keyof GenericAccumulator]: UnwrapFlowControllerResult<GenericAccumulator[Index]> extends infer InferredResult ? DCommon.IsExtends<InferredResult, Promise<unknown>> extends true ? false : DCommon.ContainExtends<InferredResult, Promise<any>> : never;
-}[number] extends false ? false : true;
-type ComputeTypeOutput<GenericAccumulator extends DCommon.AnyTuple> = Extract<(ComputeLastUsableValue<GenericAccumulator> | (UnwrapFlowControllerResult<GenericAccumulator[number]> extends infer InferredResult ? InferredResult extends FlowControllerExit ? DKind.GetValue<typeof flowControllerExitKind, InferredResult> : InferredResult extends Promise<infer InferredValue> ? DCommon.IsNever<InferredValue> extends true ? Promise<never> : InferredValue extends FlowControllerExit ? Promise<DKind.GetValue<typeof flowControllerExitKind, InferredValue>> : Promise<never> : never : never)) extends infer InferredResult ? DCommon.Or<[
-    DCommon.ContainExtends<InferredResult, Promise<any>>
-]> extends true ? IsMaybePromise<GenericAccumulator> extends true ? DCommon.MaybePromise<Awaited<InferredResult>> : Promise<Awaited<InferredResult>> : InferredResult : never, any>;
+type ComputeTypeOutput<GenericAccumulator extends DCommon.AnyTuple> = Promise<Awaited<ComputeLastUsableValue<GenericAccumulator> | (Awaited<UnwrapFlowControllerResult<GenericAccumulator[number]>> extends infer InferredResult ? InferredResult extends FlowControllerExit ? DKind.GetValue<typeof flowControllerExitKind, InferredResult> : never : never)>>;
 export declare function flow<const GenericInput extends unknown, const GenericOutput1 extends unknown>(pipe1: Pipe<[
     GenericInput
 ], GenericOutput1>): (input: GenericInput) => DCommon.BreakGenericLink<Extract<ComputeTypeOutput<[

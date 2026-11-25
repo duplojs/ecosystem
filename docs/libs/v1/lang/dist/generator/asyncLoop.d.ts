@@ -1,3 +1,5 @@
-import { LoopOutputExistResult, LoopOutputNextResult, LoopParams } from './loop';
+import { LoopResult, LoopOutputValue, LoopParams } from './loop';
 import type * as DCommon from '../common';
-export declare function asyncLoop<GenericRawNextOutput extends unknown, GenericOutput extends DCommon.MaybePromise<LoopOutputNextResult<GenericRawNextOutput> | LoopOutputExistResult<unknown> | LoopOutputNextResult<undefined> | LoopOutputExistResult<undefined>>>(loop: (params: LoopParams<GenericRawNextOutput>) => GenericOutput): AsyncGenerator<Exclude<Awaited<GenericOutput> extends infer InferredOutput ? InferredOutput extends LoopOutputNextResult ? InferredOutput["-nextData"] : InferredOutput extends LoopOutputExistResult ? InferredOutput["-exitData"] : never : never, undefined>, unknown, unknown>;
+export interface AsyncLoopParams<GenericOutput extends unknown> extends LoopParams<DCommon.MaybePromise<GenericOutput | undefined>> {
+}
+export declare function asyncLoop<GenericRawNextOutput extends unknown, GenericResult extends DCommon.MaybePromise<LoopResult<DCommon.MaybePromise<GenericRawNextOutput | undefined>>>>(loop: (params: AsyncLoopParams<GenericRawNextOutput>) => GenericResult): AsyncGenerator<Exclude<Awaited<LoopOutputValue<Awaited<GenericResult>>>, undefined>, unknown, unknown>;

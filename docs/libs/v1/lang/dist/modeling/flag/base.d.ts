@@ -14,5 +14,6 @@ export interface FlagHandler<GenericName extends Capitalize<string> = Capitalize
     getPayload<GenericInputEntity extends GenericEntity & Flag<GenericName, GenericPayload>>(entity: GenericInputEntity): DKind.GetValue<typeof flagKind, GenericInputEntity>[GenericName];
     has<GenericInputEntity extends GenericEntity>(entity: GenericInputEntity): entity is Extract<GenericInputEntity, Flag<GenericName, any>>;
 }
-export declare function createFlag<GenericFLag extends Flag, GenericEntityStructure extends EntityStructure>(name: GetFlagName<GenericFLag>): FlagHandler<GetFlagName<GenericFLag>, DDataStructure.StructureValue<GenericEntityStructure>, GetFlagPayload<GenericFLag>>;
+export type GetFlag<GenericHandler extends FlagHandler> = GenericHandler extends FlagHandler<infer InferredName, any, infer InferredPayload> ? Flag<InferredName, InferredPayload> : never;
+export declare function createFlag<GenericName extends Capitalize<string>, GenericPayload extends unknown, GenericEntityStructure extends EntityStructure>(name: GenericName): FlagHandler<GenericName, DDataStructure.StructureValue<GenericEntityStructure>, GenericPayload>;
 export {};

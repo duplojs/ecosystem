@@ -2,45 +2,45 @@ import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import * as DCommon from "@duplojs/lang/common";
 declare const LinkErrorNotFound_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-link-not-found", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-link-not-found", unknown>>, unknown>;
-declare class LinkErrorNotFound extends LinkErrorNotFound_base {
+export declare class LinkErrorNotFound extends LinkErrorNotFound_base {
 }
 declare const LinkErrorPermissionDenied_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-link-permission-denied", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-link-permission-denied", unknown>>, unknown>;
-declare class LinkErrorPermissionDenied extends LinkErrorPermissionDenied_base {
+export declare class LinkErrorPermissionDenied extends LinkErrorPermissionDenied_base {
 }
 declare const LinkErrorAlreadyExists_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-link-already-exists", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-link-already-exists", unknown>>, unknown>;
-declare class LinkErrorAlreadyExists extends LinkErrorAlreadyExists_base {
+export declare class LinkErrorAlreadyExists extends LinkErrorAlreadyExists_base {
 }
 declare const LinkErrorNotDirectory_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-link-not-directory", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-link-not-directory", unknown>>, unknown>;
-declare class LinkErrorNotDirectory extends LinkErrorNotDirectory_base {
+export declare class LinkErrorNotDirectory extends LinkErrorNotDirectory_base {
 }
 declare const LinkErrorNoSpace_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-link-no-space", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-link-no-space", unknown>>, unknown>;
-declare class LinkErrorNoSpace extends LinkErrorNoSpace_base {
+export declare class LinkErrorNoSpace extends LinkErrorNoSpace_base {
 }
 declare const LinkErrorReadOnly_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-link-read-only", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-link-read-only", unknown>>, unknown>;
-declare class LinkErrorReadOnly extends LinkErrorReadOnly_base {
+export declare class LinkErrorReadOnly extends LinkErrorReadOnly_base {
 }
 declare const LinkErrorInvalidArgument_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-link-invalid-argument", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-link-invalid-argument", unknown>>, unknown>;
-declare class LinkErrorInvalidArgument extends LinkErrorInvalidArgument_base {
+export declare class LinkErrorInvalidArgument extends LinkErrorInvalidArgument_base {
 }
 declare const LinkErrorTooManyOpenFiles_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-link-too-many-open-files", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-link-too-many-open-files", unknown>>, unknown>;
-declare class LinkErrorTooManyOpenFiles extends LinkErrorTooManyOpenFiles_base {
+export declare class LinkErrorTooManyOpenFiles extends LinkErrorTooManyOpenFiles_base {
 }
 declare const LinkErrorBusy_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-link-busy", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-link-busy", unknown>>, unknown>;
-declare class LinkErrorBusy extends LinkErrorBusy_base {
+export declare class LinkErrorBusy extends LinkErrorBusy_base {
 }
 declare const LinkErrorCrossDevice_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-link-cross-device", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-link-cross-device", unknown>>, unknown>;
-declare class LinkErrorCrossDevice extends LinkErrorCrossDevice_base {
+export declare class LinkErrorCrossDevice extends LinkErrorCrossDevice_base {
 }
 declare const LinkError_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-link-error", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-link-error", unknown>>, unknown>;
-declare class LinkError extends LinkError_base {
+export declare class LinkError extends LinkError_base {
 }
 export type LinkErrors = (LinkErrorNotFound | LinkErrorPermissionDenied | LinkErrorAlreadyExists | LinkErrorNotDirectory | LinkErrorNoSpace | LinkErrorReadOnly | LinkErrorInvalidArgument | LinkErrorTooManyOpenFiles | LinkErrorBusy | LinkErrorCrossDevice | LinkError);
 export type LinkResult = (DEither.Right<"file-system-link", void> | DEither.Left<"file-system-link-error", LinkErrors>);
 declare module '../implementor' {
     interface ServerFunction {
-        link(existingPath: string & DPath.Path, newPath: string & DPath.Path): Promise<LinkResult>;
+        link(existingPath: DPath.AnyPath, newPath: DPath.AnyPath): Promise<LinkResult>;
     }
 }
-export declare function link(newPath: string & DPath.Path): (existingPath: string & DPath.Path) => Promise<LinkResult>;
-export declare function link(existingPath: string & DPath.Path, newPath: string & DPath.Path): Promise<LinkResult>;
+export declare function link(newPath: DPath.AnyPath): (existingPath: DPath.AnyPath) => Promise<LinkResult>;
+export declare function link(existingPath: DPath.AnyPath, newPath: DPath.AnyPath): Promise<LinkResult>;
 export {};

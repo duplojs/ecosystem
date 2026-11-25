@@ -27,17 +27,25 @@ export interface DataStructureArgumentIssue extends ArgumentIssueBase, DModeling
 export interface CommandArgumentIssueBase {
     readonly path: string;
 }
+export interface UnknownOptionIssue extends CommandArgumentIssueBase, DModeling.ObjectTag<"UnknownOptionIssue"> {
+    readonly optionTokens: readonly string[];
+}
+export interface UnknownSubCommandIssue extends CommandArgumentIssueBase, DModeling.ObjectTag<"UnknownSubCommandIssue"> {
+    readonly subCommandName: string;
+}
 export interface TooMuchCommandArgumentIssue extends CommandArgumentIssueBase, DModeling.ObjectTag<"TooMuchCommandArgumentIssue"> {
     readonly expect: number;
     readonly receive: number;
 }
-export type Issues = (RequiredOptionIssue | RequiredOptionValueIssue | UnexpectedOptionValueIssue | DataStructureOptionIssue | RequiredArgumentIssue | DataStructureArgumentIssue | TooMuchCommandArgumentIssue);
+export type Issues = (RequiredOptionIssue | RequiredOptionValueIssue | UnexpectedOptionValueIssue | DataStructureOptionIssue | RequiredArgumentIssue | DataStructureArgumentIssue | TooMuchCommandArgumentIssue | UnknownOptionIssue | UnknownSubCommandIssue);
 export declare const SymbolCommandError: unique symbol;
 export type SymbolCommandError = typeof SymbolCommandError;
 export interface Error {
     readonly issues: readonly Issues[];
     readonly currentPath: readonly string[];
     pushPath(path: string): void;
+    addUnknownOptionIssue(optionTokens: readonly string[]): SymbolCommandError;
+    addUnknownSubCommandIssue(subCommandName: string): SymbolCommandError;
     addRequiredOptionIssue(optionName: string): SymbolCommandError;
     addRequiredOptionValueIssue(optionName: string): SymbolCommandError;
     addUnexpectedOptionValueIssue(optionName: string, data: unknown): SymbolCommandError;

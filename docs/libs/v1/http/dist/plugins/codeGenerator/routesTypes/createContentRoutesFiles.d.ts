@@ -6,7 +6,7 @@ import * as DEither from "@duplojs/lang/either";
 export interface UpdateRoutesFilesParams {
     isRoutePath: DPath.PathMatcher;
 }
-export declare function createContentRoutesFiles(typescriptInstance: DInvocation.GetEvidenceResult<typeof createTypescriptInstance, "typescript-instance">, params: UpdateRoutesFilesParams): Promise<DEither.Success<Map<string & DPath.Path & DPath.Absolute, {
+export declare function createContentRoutesFiles(typescriptInstance: DInvocation.GetEvidenceResult<typeof createTypescriptInstance, "typescript-instance">, params: UpdateRoutesFilesParams): Promise<DEither.Success<Map<string & DPath.Absolute, {
     content: string;
     variablesName: readonly TypescriptNativeAPI.Identifier[];
 }> & DInvocation.Evidence<"updated-route-files">>>;

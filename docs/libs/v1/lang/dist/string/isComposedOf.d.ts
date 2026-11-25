@@ -1,4 +1,4 @@
-import { AllowedCharacters, CharactersRange } from './constraints';
+import { ComputeAllowedCharactersCompatibility, AllowedCharacters, CharactersRange } from './constraints';
 import type * as DCommon from '../common';
 declare module "./constraints" {
     interface CharactersRangeStore {
@@ -7,5 +7,7 @@ declare module "./constraints" {
         "0-9": "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
     }
 }
-export declare function isComposedOf<GenericCharactersRange extends CharactersRange>(charactersRange: DCommon.MaybeArray<GenericCharactersRange>): (value: string) => value is string & AllowedCharacters<GenericCharactersRange>;
-export declare function isComposedOf<GenericCharactersRange extends CharactersRange>(value: string, charactersRange: DCommon.MaybeArray<GenericCharactersRange>): value is string & AllowedCharacters<GenericCharactersRange>;
+type ComputedCompositionPredicate<GenericValue extends string, GenericCharactersRange extends CharactersRange> = GenericValue extends unknown ? ComputeAllowedCharactersCompatibility<GenericValue, AllowedCharacters<GenericCharactersRange>, unknown> extends infer InferredResult extends DCommon.CompatibilityConstraintResult ? InferredResult extends DCommon.CompatibilityConstraintResult<true> ? GenericValue : never : GenericValue & AllowedCharacters<GenericCharactersRange> : never;
+export declare function isComposedOf<GenericValue extends string, GenericCharactersRange extends CharactersRange>(charactersRange: DCommon.MaybeArray<GenericCharactersRange>): (value: GenericValue) => value is ComputedCompositionPredicate<GenericValue, GenericCharactersRange>;
+export declare function isComposedOf<GenericValue extends string, GenericCharactersRange extends CharactersRange>(value: GenericValue, charactersRange: DCommon.MaybeArray<GenericCharactersRange>): value is ComputedCompositionPredicate<GenericValue, GenericCharactersRange>;
+export {};

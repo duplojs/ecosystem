@@ -1,3 +1,4 @@
+export * from './additionalResult';
 export * from './evidence';
 export * from './flow';
 export * from './kind';
@@ -5,3 +6,5 @@ export * from './port';
 export * from './reader';
 export * from './resolver';
 export * from './signature';
+export * from './step';
+export * from './workflow';

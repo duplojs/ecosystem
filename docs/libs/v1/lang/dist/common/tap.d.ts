@@ -1,0 +1,2 @@
+export declare function tap<GenericInput extends unknown, GenericTapOutput extends unknown>(theFunction: (input: GenericInput) => GenericTapOutput): (input: GenericInput) => (GenericTapOutput extends Promise<unknown> ? Promise<GenericInput> : GenericInput);
+export declare function tap<GenericInput extends unknown, GenericTapOutput extends unknown>(input: GenericInput, theFunction: (input: GenericInput) => GenericTapOutput): (GenericTapOutput extends Promise<unknown> ? Promise<GenericInput> : GenericInput);

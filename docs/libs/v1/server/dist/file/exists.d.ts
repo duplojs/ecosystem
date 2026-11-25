@@ -2,26 +2,26 @@ import * as DEither from "@duplojs/lang/either";
 import type * as DPath from "@duplojs/lang/path";
 import * as DCommon from "@duplojs/lang/common";
 declare const ExistsErrorNotFound_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-exists-not-found", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-exists-not-found", unknown>>, unknown>;
-declare class ExistsErrorNotFound extends ExistsErrorNotFound_base {
+export declare class ExistsErrorNotFound extends ExistsErrorNotFound_base {
 }
 declare const ExistsErrorPermissionDenied_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-exists-permission-denied", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-exists-permission-denied", unknown>>, unknown>;
-declare class ExistsErrorPermissionDenied extends ExistsErrorPermissionDenied_base {
+export declare class ExistsErrorPermissionDenied extends ExistsErrorPermissionDenied_base {
 }
 declare const ExistsErrorNotDirectory_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-exists-not-directory", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-exists-not-directory", unknown>>, unknown>;
-declare class ExistsErrorNotDirectory extends ExistsErrorNotDirectory_base {
+export declare class ExistsErrorNotDirectory extends ExistsErrorNotDirectory_base {
 }
 declare const ExistsErrorTooManyOpenFiles_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-exists-too-many-open-files", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-exists-too-many-open-files", unknown>>, unknown>;
-declare class ExistsErrorTooManyOpenFiles extends ExistsErrorTooManyOpenFiles_base {
+export declare class ExistsErrorTooManyOpenFiles extends ExistsErrorTooManyOpenFiles_base {
 }
 declare const ExistsError_base: abstract new (error: Error) => DCommon.DuploJSError<"file-system-exists-error", Error> & import('@duplojs/lang/kind').Kind<import('@duplojs/lang/kind').Handler<import('@duplojs/lang/kind').Definition<"@DuplojsLangCommon/duplojs-error-file-system-exists-error", unknown>>, unknown>;
-declare class ExistsError extends ExistsError_base {
+export declare class ExistsError extends ExistsError_base {
 }
 export type ExistsErrors = (ExistsErrorNotFound | ExistsErrorPermissionDenied | ExistsErrorNotDirectory | ExistsErrorTooManyOpenFiles | ExistsError);
 export type ExistsResult = (DEither.Right<"file-system-exists", void> | DEither.Left<"file-system-exists-error", ExistsErrors>);
 declare module '../implementor' {
     interface ServerFunction {
-        exists(path: string & DPath.Path): Promise<ExistsResult>;
+        exists(path: DPath.AnyPath): Promise<ExistsResult>;
     }
 }
-export declare const exists: (path: string & DPath.Path) => Promise<ExistsResult>;
+export declare const exists: (path: DPath.AnyPath) => Promise<ExistsResult>;
 export {};

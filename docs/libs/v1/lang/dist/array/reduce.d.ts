@@ -10,11 +10,11 @@ export interface ReduceTheFunctionParams<GenericArray extends readonly unknown[]
     element: GenericArray[number];
     index: number;
     lastValue: GenericOutput;
-    nextWithObject: GenericOutput extends object ? (object1: GenericOutput, object2: Partial<GenericOutput>) => ReduceNext<GenericOutput> : undefined;
+    nextWithObject: DCommon.ContainExtends<GenericOutput, object> extends true ? (object1: GenericOutput, object2: Partial<GenericOutput>) => ReduceNext<GenericOutput> : undefined;
     next(output: GenericOutput): ReduceNext<GenericOutput>;
     exit<GenericExitValue extends unknown>(output: GenericExitValue): ReduceExit<GenericExitValue>;
     self: GenericArray;
-    nextPush: GenericOutput extends readonly any[] ? (array: GenericOutput, ...values: GenericOutput) => ReduceNext<GenericOutput> : undefined;
+    nextPush: DCommon.ContainExtends<GenericOutput, readonly any[]> extends true ? GenericOutput extends readonly any[] ? (array: GenericOutput, ...values: GenericOutput[number][]) => ReduceNext<readonly GenericOutput[number][]> : never : undefined;
 }
 export declare const reduceKind: DKind.Handler<DKind.Definition<"@DuplojsLangArray/reduce", unknown>>;
 export interface ReduceFromResult<GenericValue extends unknown = unknown> extends DKind.Kind<typeof reduceKind, GenericValue> {

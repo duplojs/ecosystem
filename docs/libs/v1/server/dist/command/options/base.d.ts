@@ -2,6 +2,12 @@ import { Error, SymbolCommandError } from '../error';
 import * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
 export declare const optionKind: DKind.Handler<DKind.Definition<"@DuplojsServerCommand/command-option", unknown>>;
+export declare function isOptionToken(input: string): boolean;
+export declare function findOptionToken(args: readonly string[], option: Pick<Option, "name" | "aliases">): {
+    key: string;
+    value: string | undefined;
+    index: number;
+} | null;
 export interface Option<GenericName extends string = string, GenericValue extends unknown = unknown> extends DKind.Kind<typeof optionKind> {
     readonly name: GenericName;
     readonly description: string | null;

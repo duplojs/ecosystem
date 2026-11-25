@@ -1,14 +1,14 @@
-import type * as DCommon from '../common';
 export interface LoopOutputExistResult<GenericOutput extends unknown = unknown> {
-    "-exitData": GenericOutput;
+    "-exitData": readonly GenericOutput[];
 }
 export interface LoopOutputNextResult<GenericOutput extends unknown = unknown> {
-    "-nextData": GenericOutput;
+    "-nextData": readonly GenericOutput[];
 }
-export interface LoopParams<GenericRawNextOutput extends any> {
+export interface LoopParams<GenericRawNextOutput extends unknown> {
     count: number;
-    previousOutput: GenericRawNextOutput | undefined;
-    next<GenericValue extends GenericRawNextOutput | undefined = undefined>(output?: GenericValue): LoopOutputNextResult<GenericValue>;
-    exit<GenericOutput extends DCommon.AnyValue = undefined>(output?: GenericOutput): LoopOutputExistResult<GenericOutput>;
+    next<const GenericOutputs extends readonly (GenericRawNextOutput | undefined)[]>(...outputs: GenericOutputs): LoopOutputNextResult<GenericOutputs[number]>;
+    exit<const GenericOutputs extends readonly (GenericRawNextOutput | undefined)[]>(...outputs: GenericOutputs): LoopOutputExistResult<GenericOutputs[number]>;
 }
-export declare function loop<GenericRawExitOutput extends DCommon.AnyValue = undefined, GenericRawNextOutput extends DCommon.AnyValue = undefined>(loop: (params: LoopParams<GenericRawNextOutput>) => (LoopOutputNextResult<GenericRawNextOutput> | LoopOutputNextResult<undefined> | LoopOutputExistResult<GenericRawExitOutput> | LoopOutputExistResult<undefined>)): Generator<Exclude<GenericRawExitOutput | GenericRawNextOutput, undefined>, unknown, unknown>;
+export type LoopResult<GenericOutput extends unknown = unknown> = LoopOutputNextResult<GenericOutput> | LoopOutputExistResult<GenericOutput>;
+export type LoopOutputValue<GenericResult extends unknown> = GenericResult extends (LoopOutputNextResult<infer InferredOutput> | LoopOutputExistResult<infer InferredOutput>) ? InferredOutput : never;
+export declare function loop<GenericRawNextOutput extends unknown, GenericResult extends LoopResult<GenericRawNextOutput | undefined>>(loop: (params: LoopParams<GenericRawNextOutput>) => GenericResult): Generator<Exclude<LoopOutputValue<GenericResult>, undefined>, unknown, unknown>;

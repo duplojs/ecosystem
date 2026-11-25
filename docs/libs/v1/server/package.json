@@ -13,6 +13,9 @@
     "./common": {
       "types": "./dist/common/index.d.ts"
     },
+    "./path": {
+      "types": "./dist/path/index.d.ts"
+    },
     "./dataStructure": {
       "types": "./dist/dataStructure/index.d.ts"
     },

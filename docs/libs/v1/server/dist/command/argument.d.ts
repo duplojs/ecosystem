@@ -1,5 +1,5 @@
 import { Error, SymbolCommandError } from './error';
-import { EligibleType } from './types';
+import { EligibleType, ForbiddenInvalidIdentifier } from './types';
 import type * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
 import type * as DDataStructure from "@duplojs/lang/dataStructure";
@@ -15,4 +15,4 @@ export interface CreateArgumentParams {
     readonly description?: string;
     readonly optional?: boolean;
 }
-export declare function createArgument<GenericName extends string, GenericStructure extends DDataStructure.Structure<EligibleType>, GenericValue extends DDataStructure.StructureValue<GenericStructure>, const GenericParams extends CreateArgumentParams = {}>(name: GenericName, dataStructure: GenericStructure, params?: GenericParams): Argument<GenericName, (GenericValue | (DCommon.IsEqual<GenericParams["optional"], true> extends true ? undefined : never))>;
+export declare function createArgument<GenericName extends string, GenericStructure extends DDataStructure.Structure<EligibleType>, GenericValue extends DDataStructure.StructureValue<GenericStructure>, const GenericParams extends CreateArgumentParams = {}>(name: GenericName & ForbiddenInvalidIdentifier<GenericName>, dataStructure: GenericStructure, params?: GenericParams): Argument<GenericName, (GenericValue | (DCommon.IsEqual<GenericParams["optional"], true> extends true ? undefined : never))>;

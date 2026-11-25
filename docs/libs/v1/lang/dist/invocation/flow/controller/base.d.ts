@@ -12,9 +12,13 @@ export interface FlowControllerResult<GenericResult extends unknown> {
     readonly [FlowControllerResultSymbol]: GenericResult;
 }
 export type UnwrapFlowControllerResult<GenericValue extends unknown> = GenericValue extends FlowControllerResult<infer InferredResult> ? InferredResult : GenericValue;
+export interface FlowControllerContext {
+    readonly executionReference: symbol;
+    onFlowEnd(callback: () => void): void;
+}
 export interface FlowController<GenericInput extends unknown = unknown, GenericOutput extends unknown = unknown> extends DKind.Kind<typeof flowControllerKind> {
     (this: never, input: GenericInput): FlowControllerResult<GenericOutput>;
-    exec(previousFunction: () => FlowControllerPreviousFunctionResult): (FlowControllerPreviousFunctionResult | GenericOutput | DCommon.MergePromise<FlowControllerPreviousFunctionResult | GenericOutput>);
+    exec(previousFunction: () => FlowControllerPreviousFunctionResult, context: FlowControllerContext): (FlowControllerPreviousFunctionResult | GenericOutput | DCommon.MergePromise<FlowControllerPreviousFunctionResult | GenericOutput>);
 }
 export interface CreateFlowControllerConstructorParams<GenericKindHandler extends DKind.Handler = DKind.Handler> {
     init<GenericFlowController extends (FlowController<any, any> & DKind.Kind<GenericKindHandler>)>(exec: GenericFlowController["exec"]): GenericFlowController;

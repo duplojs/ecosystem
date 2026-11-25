@@ -1,1 +1,1 @@
-export declare function isSimple(input: unknown): input is object;
+export declare function isSimple(input: object): boolean;

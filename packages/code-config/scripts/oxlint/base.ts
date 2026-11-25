@@ -493,21 +493,45 @@ export const baseRules = defineRules({
 	"typescript/use-unknown-in-catch-callback-variable": "error",
 
 	// @stylistic/eslint-plugin
-	"@stylistic/array-bracket-newline": [
+	"@stylistic/list-style": [
 		"error",
 		{
-			multiline: true,
-		},
-	],
-	"@stylistic/array-bracket-spacing": [
-		"error",
-		"never",
-	],
-	"@stylistic/array-element-newline": [
-		"error",
-		{
-			consistent: true,
-			multiline: true,
+			empty: "never",
+			singleLine: { spacing: "never" },
+			multiLine: { minItems: 1 },
+			overrides: {
+				"{}": { singleLine: { spacing: "always" } },
+				"[]": { singleLine: { maxItems: 4 } },
+				"()": { singleLine: { maxItems: 4 } },
+				"<>": { singleLine: { maxItems: 4 } },
+				ObjectExpression: {
+					singleLine: {
+						spacing: "always",
+						maxItems: 1,
+					},
+				},
+				TSInterfaceBody: {
+					empty: "ignore",
+					singleLine: {
+						spacing: "always",
+						maxItems: 1,
+					},
+				},
+				TSTypeLiteral: {
+					empty: "ignore",
+					singleLine: {
+						spacing: "always",
+						maxItems: 1,
+					},
+				},
+				TSEnumBody: {
+					singleLine: {
+						spacing: "always",
+						maxItems: 1,
+					},
+				},
+				ImportAttributes: "off",
+			},
 		},
 	],
 	"@stylistic/arrow-parens": [
@@ -547,14 +571,6 @@ export const baseRules = defineRules({
 	"@stylistic/function-call-spacing": [
 		"error",
 		"never",
-	],
-	"@stylistic/function-call-argument-newline": [
-		"error",
-		"consistent",
-	],
-	"@stylistic/function-paren-newline": [
-		"error",
-		"multiline-arguments",
 	],
 	"@stylistic/generator-star-spacing": [
 		"error",
@@ -658,18 +674,6 @@ export const baseRules = defineRules({
 		"error",
 		"beside",
 	],
-	"@stylistic/object-curly-newline": [
-		"error",
-		{
-			consistent: true,
-			multiline: true,
-		},
-	],
-	"@stylistic/object-curly-spacing": [
-		"error",
-		"always",
-	],
-	"@stylistic/object-property-newline": "error",
 	"@stylistic/one-var-declaration-per-line": [
 		"error",
 		"always",

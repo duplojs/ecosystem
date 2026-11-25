@@ -1,4 +1,5 @@
 import * as DCommon from "@duplojs/lang/common";
+import * as DPath from "@duplojs/lang/path";
 import * as DSFile from "@duplojs/server/file";
 import * as DEither from "@duplojs/lang/either";
 export declare const AgentTypeEnum: {
@@ -23,6 +24,12 @@ export declare const SkillEnum: {
     contract: <GenericContractValue extends string = "fundamental" | "http-server" | "http-client" | "command" | "server" | "modeling" | "test">(...args: (Exclude<"fundamental", GenericContractValue> | Exclude<"http-server", GenericContractValue> | Exclude<"http-client", GenericContractValue> | Exclude<"command", GenericContractValue> | Exclude<"server", GenericContractValue> | Exclude<"modeling", GenericContractValue> | Exclude<"test", GenericContractValue> extends infer InferredMissingValue extends string ? DCommon.IsNever<InferredMissingValue> extends true ? unknown : DCommon.ComputedTypeError<`Enum contract is missing value "${InferredMissingValue}".`> : never) & (Exclude<GenericContractValue, "fundamental" | "http-server" | "http-client" | "command" | "server" | "modeling" | "test"> extends infer InferredUnknownValue extends string ? DCommon.IsNever<InferredUnknownValue> extends true ? unknown : DCommon.ComputedTypeError<`Enum contract contains unknown value "${InferredUnknownValue}".`> : never) extends infer InferredRequirement ? DCommon.IsEqual<InferredRequirement, unknown> extends true ? [] : [] & InferredRequirement : never) => /*elided*/ any;
 };
 type SkillEnum = DCommon.GetEnumValue<typeof SkillEnum>;
-export declare function copySkill(agentType: AgentTypeEnum, skill: SkillEnum): Promise<DEither.Error<unknown> | DEither.Left<"file-system-remove-error", DSFile.RemoveErrors> | DEither.Right<"file-system-copy", void> | DEither.Left<"file-system-copy-error", DSFile.CopyErrors>>;
-export declare function symlinkSkill(agentType: AgentTypeEnum, skill: SkillEnum): Promise<DEither.Error<unknown> | DEither.Left<"file-system-remove-error", DSFile.RemoveErrors> | DEither.Left<"file-system-ensure-directory-error", DSFile.EnsureDirectoryErrors> | DEither.Right<"file-system-symlink", void> | DEither.Left<"file-system-symlink-error", DSFile.SymlinkErrors>>;
+export declare function getSkillsFolder(agentType: AgentTypeEnum): DEither.Left<"get-current-work-directory-error", unknown> | DEither.Success<string & DPath.Path & DPath.Absolute>;
+export declare function getSkillPaths(agentType: AgentTypeEnum, skill: SkillEnum): DEither.Left<"get-current-work-directory-error", unknown> | DEither.Success<{
+    readonly selectedSkillPath: string & DPath.Path & DPath.Absolute;
+    readonly skillsFolder: string & DPath.Path & DPath.Absolute;
+    readonly currentSkillFolder: string & DPath.Path & DPath.Absolute;
+}>;
+export declare function copySkill(agentType: AgentTypeEnum, skill: SkillEnum): Promise<DEither.Left<"get-current-work-directory-error", unknown> | DEither.Left<"file-system-remove-error", DSFile.RemoveErrors> | DEither.Right<"file-system-copy", void> | DEither.Left<"file-system-copy-error", DSFile.CopyErrors>>;
+export declare function symlinkSkill(agentType: AgentTypeEnum, skill: SkillEnum): Promise<DEither.Left<"get-current-work-directory-error", unknown> | DEither.Left<"file-system-remove-error", DSFile.RemoveErrors> | DEither.Left<"file-system-ensure-directory-error", DSFile.EnsureDirectoryErrors> | DEither.Right<"file-system-symlink", void> | DEither.Left<"file-system-symlink-error", DSFile.SymlinkErrors>>;
 export {};

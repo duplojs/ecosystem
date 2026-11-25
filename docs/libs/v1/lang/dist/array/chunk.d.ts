@@ -1,3 +1,6 @@
 import { MaxElements, MinElements } from './constraints';
-export declare function chunk<GenericArray extends readonly unknown[], GenericSize extends number>(size: GenericSize): (array: GenericArray) => readonly (readonly GenericArray[number][] & MinElements<1> & (number extends GenericSize ? unknown : MaxElements<GenericSize>))[];
-export declare function chunk<GenericArray extends readonly unknown[], GenericSize extends number>(array: GenericArray, size: GenericSize): readonly (readonly GenericArray[number][] & MinElements<1> & (number extends GenericSize ? unknown : MaxElements<GenericSize>))[];
+import * as DNumber from '../number';
+type ChunkOutput<GenericArray extends readonly unknown[], GenericSize extends number> = Extract<readonly (readonly GenericArray[number][] & MinElements<1> & (DNumber.IsPositiveInteger<GenericSize> extends true ? MaxElements<GenericSize> : unknown))[], any>;
+export declare function chunk<GenericArray extends readonly unknown[], GenericSize extends number>(size: GenericSize): (array: GenericArray) => ChunkOutput<GenericArray, GenericSize>;
+export declare function chunk<GenericArray extends readonly unknown[], GenericSize extends number>(array: GenericArray, size: GenericSize): ChunkOutput<GenericArray, GenericSize>;
+export {};

@@ -16,7 +16,7 @@ export interface StructureTransformerParams {
     readonly importContext: DStoTS.MapImportContext;
     transformer(structure: DDataStructure.Structure): TransformerEither;
     success(result: Typescript.CallExpression | Typescript.Identifier): TransformerSuccessEither;
-    transformConstraint(constraint: DDataStructure.Constraint | readonly DDataStructure.Constraint[]): ((Typescript.CallExpression | Typescript.Identifier)[] | ConstraintNotSupportedEither | ConstraintErrorEither);
+    transformConstraint(constraint: DDataStructure.Constraint | readonly DDataStructure.Constraint[]): (readonly (Typescript.CallExpression | Typescript.Identifier)[] | ConstraintNotSupportedEither | ConstraintErrorEither);
     transformType(type: DDataStructure.Type): DataStructureTypeTransformerEither;
     buildError(): DataStructureErrorEither;
     addImport(path: string, typeName: string, type?: DStoTS.ImportKind): void;

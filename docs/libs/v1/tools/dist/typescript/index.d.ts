@@ -1,2 +1,3 @@
 import * as Typescript from "typescript";
-export { Typescript };
+import * as TypescriptNativeAPI from "./nativeAPI";
+export { Typescript, TypescriptNativeAPI, };

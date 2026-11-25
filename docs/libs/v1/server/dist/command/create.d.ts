@@ -1,7 +1,7 @@
 import { Option } from './options';
 import { SymbolCommandError, Error } from './error';
 import { Argument } from './argument';
-import { ForbiddenDuplicateName } from './types';
+import { ForbiddenDuplicateName, ForbiddenInvalidIdentifier } from './types';
 import * as DCommon from "@duplojs/lang/common";
 import type * as DKind from "@duplojs/lang/kind";
 declare const commandKind: DKind.Handler<DKind.Definition<"@DuplojsServerCommand/command", unknown>>;
@@ -42,6 +42,6 @@ export type CreateCommandExecuteParams<GenericOptions extends DCommon.AnyTuple<O
         readonly [GenericArgument in GenericArguments[number] as GenericArgument["name"]]: Exclude<Awaited<ReturnType<GenericArgument["execute"]>>, SymbolCommandError>;
     };
 }));
-export declare function create<GenericName extends string>(name: GenericName, execute: () => void): Command<GenericName>;
-export declare function create<GenericName extends string, const GenericOptions extends DCommon.AnyTuple<Option> = never, GenericSubjects extends Subjects = never>(name: GenericName, params: CreateCommandParams<GenericOptions, GenericSubjects>, execute: (params: CreateCommandExecuteParams<GenericOptions, Extract<GenericSubjects, DCommon.AnyTuple<Argument>>>) => DCommon.MaybePromise<void>): Command<GenericName>;
+export declare function create<GenericName extends string>(name: GenericName & ForbiddenInvalidIdentifier<GenericName>, execute: () => void): Command<GenericName>;
+export declare function create<GenericName extends string, const GenericOptions extends DCommon.AnyTuple<Option> = never, GenericSubjects extends Subjects = never>(name: GenericName & ForbiddenInvalidIdentifier<GenericName>, params: CreateCommandParams<GenericOptions, GenericSubjects>, execute: (params: CreateCommandExecuteParams<GenericOptions, Extract<GenericSubjects, DCommon.AnyTuple<Argument>>>) => DCommon.MaybePromise<void>): Command<GenericName>;
 export {};
