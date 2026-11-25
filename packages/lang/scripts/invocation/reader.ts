@@ -29,7 +29,7 @@ export type ReaderDependenciesValue<
 			: Uncapitalize<Extract<Prop, string>>
 	)
 	]: GenericDependencies[Prop] extends PortHandler
-		? ReturnType<GenericDependencies[Prop]["createImplementation"]>
+		? Parameters<GenericDependencies[Prop]["createImplementation"]>[0]
 		: GenericDependencies[Prop] extends Reader
 			? ReturnType<GenericDependencies[Prop]["run"]>
 			: never

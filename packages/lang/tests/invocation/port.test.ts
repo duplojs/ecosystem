@@ -25,7 +25,7 @@ describe("createPort", () => {
 
 		type _CheckResult = DCommon.ExpectType<
 			typeof result,
-			UserRepository,
+			UserRepository & DInvocation.Evidence<"implemented-from-port">,
 			"strict"
 		>;
 	});

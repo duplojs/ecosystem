@@ -98,8 +98,20 @@ export type FindEvidence<
 		DCommon.IsNever<GenericValue>,
 	]> extends true
 		? never
-		: GenericValue extends Evidence
-			? GenericValue
+		: GenericValue extends Evidence<infer InferredEvidenceValue>
+			? (
+				| GenericValue
+				| (
+					InferredEvidenceValue extends string
+						? GenericValue extends (
+							& Evidence<InferredEvidenceValue>
+							& infer InferredRest
+						)
+							? FindEvidence<InferredRest>
+							: never
+						: never
+				)
+			)
 			: GenericValue extends Promise<unknown>
 				? FindEvidence<
 					Awaited<GenericValue>

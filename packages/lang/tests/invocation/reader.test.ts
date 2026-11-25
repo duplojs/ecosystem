@@ -72,12 +72,12 @@ describe("createReader", () => {
 			},
 		);
 		const values = {
-			value: 1,
-			lowercaseport: 2,
-			uppercasePORT: 3,
-			portValue: 4,
-			repeatedPort: 5,
-			alreadyFormatted: 6,
+			value: ValuePort.createImplementation(1),
+			lowercaseport: ValuePort.createImplementation(2),
+			uppercasePORT: ValuePort.createImplementation(3),
+			portValue: ValuePort.createImplementation(4),
+			repeatedPort: ValuePort.createImplementation(5),
+			alreadyFormatted: ValuePort.createImplementation(6),
 		};
 
 		expect(valueReader.run(values)).toStrictEqual(values);
@@ -146,7 +146,7 @@ describe("createReader", () => {
 		type _CheckInjectedDependencies = DCommon.ExpectType<
 			Parameters<typeof welcomeUserReader.run>[0],
 			{
-				userRepository: UserRepository;
+				userRepository: UserRepository & DInvocation.Evidence<"implemented-from-port">;
 				getUserNamePort?(id: string): string;
 			},
 			"strict"
@@ -191,7 +191,7 @@ describe("createReader", () => {
 			},
 		);
 
-		expect(reader.run({ value: 42 })).toStrictEqual({
+		expect(reader.run({ value: ValuePort.createImplementation(42) })).toStrictEqual({
 			value: 42,
 			readValuePort: "reader",
 			readValue: "reader",

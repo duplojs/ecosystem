@@ -1,18 +1,24 @@
 import type * as DCommon from "@scripts/common";
 import type * as DObject from "@scripts/object";
+import { type Evidence } from "./evidence";
+
+type EvidenceFunctionWithAdditionalResult = Evidence<"function-with-additional-result">;
 
 export type AddAdditionalResultOnFunction<
 	GenericFunction extends DCommon.AnyFunction,
 	GenericResult extends unknown,
 > = (
-	| GenericFunction
-	| (
-		ReturnType<GenericFunction> extends infer InferredResult
-			? InferredResult extends Promise<any> | AsyncIterable<any>
-				? (() => Promise<GenericResult>)
-				: (() => GenericResult)
-			: never
+	& (
+		| GenericFunction
+		| (
+			ReturnType<GenericFunction> extends infer InferredResult
+				? InferredResult extends Promise<any> | AsyncIterable<any>
+					? (() => Promise<GenericResult>)
+					: (() => GenericResult)
+				: never
+		)
 	)
+	& EvidenceFunctionWithAdditionalResult
 );
 
 export type AddAdditionalResultOnMethods<
@@ -43,11 +49,15 @@ export type AddAdditionalResultOnMethods<
 	: never;
 
 export function withAdditionalResult<
-	GenericFunction extends DCommon.AnyFunction,
+	GenericFunction extends (
+		& DCommon.AnyFunction
+		& EvidenceFunctionWithAdditionalResult
+	),
 >(
-	theFunction: (...args: Exclude<Parameters<GenericFunction>, []> extends never
-		? Parameters<GenericFunction>
-		: Exclude<Parameters<GenericFunction>, []>
+	theFunction: (
+		...args: Exclude<Parameters<GenericFunction>, readonly []> extends never
+			? readonly []
+			: Exclude<Parameters<GenericFunction>, readonly []>
 	) => (
 		| Exclude<ReturnType<GenericFunction>, Promise<any>>
 		| (
@@ -56,6 +66,6 @@ export function withAdditionalResult<
 				: DCommon.MergePromise<ReturnType<GenericFunction>>
 		)
 	),
-) {
-	return theFunction as GenericFunction;
+): GenericFunction {
+	return theFunction as never;
 }

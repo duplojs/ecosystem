@@ -88,4 +88,40 @@ describe("evidenceResult", () => {
 			"strict"
 		>;
 	});
+
+	type _CheckEvidence1 = DCommon.ExpectType<
+		DInvocation.FindEvidence<
+			& (
+				| DInvocation.EvidenceResult<"one", true>
+				| DInvocation.EvidenceResult<"two", true>
+				| DInvocation.EvidenceResult<"three", true>
+			)
+			& DInvocation.Evidence<"all">
+		>,
+		| (DInvocation.EvidenceResult<"one", true> & DInvocation.Evidence<"all">)
+		| (DInvocation.EvidenceResult<"two", true> & DInvocation.Evidence<"all">)
+		| (DInvocation.EvidenceResult<"three", true> & DInvocation.Evidence<"all">)
+		| (true & DInvocation.Evidence<"one">)
+		| (true & DInvocation.Evidence<"two">)
+		| (true & DInvocation.Evidence<"three">),
+		"strict"
+	>;
+
+	type _CheckEvidence2 = DCommon.ExpectType<
+		DInvocation.GetEvidenceResult<
+			() => (
+				& (
+					| DInvocation.EvidenceResult<"one", true>
+					| DInvocation.EvidenceResult<"two", true>
+					| DInvocation.EvidenceResult<"three", true>
+				)
+				& DInvocation.Evidence<"all">
+			),
+			"all"
+		>,
+		| (DInvocation.EvidenceResult<"one", true> & DInvocation.Evidence<"all">)
+		| (DInvocation.EvidenceResult<"two", true> & DInvocation.Evidence<"all">)
+		| (DInvocation.EvidenceResult<"three", true> & DInvocation.Evidence<"all">),
+		"strict"
+	>;
 });
