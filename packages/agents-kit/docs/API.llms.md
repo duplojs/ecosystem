@@ -30,6 +30,10 @@ Création, discrimination, transformation et propagation des réussites ou des �
 
 Création et composition de génératrices synchrones ou asynchrones pour produire, transformer, filtrer, réduire et consommer des séquences de valeurs.
 
+## [DInvocation](API/10-lang/10-invocation/index.llms.md)
+
+Primitives pour composer des traitements, orchestrer des workflows, exprimer leurs contrats et représenter la provenance des valeurs.
+
 ## [DNumber](API/10-lang/10-number/index.llms.md)
 
 Prédicats et transformations fonctionnelles pour comparer, vérifier, agréger et trier des nombres tout en conservant leurs contraintes de typage.
