@@ -17,6 +17,66 @@ describe("flow", () => {
 			},
 		),
 	);
+	const contextControllerKind = DInvocation.createKind("test-flow-context");
+	const observeContext = DInvocation.createFlowController(
+		contextControllerKind,
+		({ init }) => <GenericInput extends unknown>(
+			observe: (context: DInvocation.FlowControllerContext) => void,
+		) => init<
+			& DInvocation.FlowController<GenericInput, never>
+			& DKind.Kind<typeof contextControllerKind>
+		>(
+			(previousFunction, context) => {
+				observe(context);
+				return previousFunction();
+			},
+		),
+	);
+
+	it("shares the execution reference across controllers and retry attempts", async() => {
+		const observe = vi.fn<(context: DInvocation.FlowControllerContext) => void>();
+		const execute = vi.fn((): DEither.Left<"temporary"> | DEither.Success<number> => DEither.success(42))
+			.mockReturnValueOnce(DEither.left("temporary", undefined));
+		const useFlow = DInvocation.flow(
+			observeContext<number>(observe),
+			execute,
+			observeContext(observe),
+			DInvocation.retry({ times: 2 }),
+		);
+		const result = await useFlow(1);
+		const [context] = observe.mock.calls[0]!;
+
+		expect(DEither.unwrapByInformationOrThrow(result, "success")).toBe(42);
+		expect(execute).toHaveBeenCalledTimes(2);
+		expect(observe).toHaveBeenCalledTimes(4);
+		expect(context.executionReference).toEqual(expect.any(Symbol));
+		for (const [observedContext] of observe.mock.calls) {
+			expect(observedContext.executionReference).toBe(context.executionReference);
+		}
+
+		type _CheckExecutionReference = DCommon.ExpectType<
+			Pick<typeof context, "executionReference">,
+			{ readonly executionReference: symbol },
+			"strict"
+		>;
+	});
+
+	it("creates distinct execution references for overlapping calls with the same input", async() => {
+		const pending = DCommon.createExternalPromise<number>();
+		const observe = vi.fn<(context: DInvocation.FlowControllerContext) => void>();
+		const useFlow = DInvocation.flow(
+			observeContext<number>(observe),
+			() => pending.promise,
+		);
+		const first = useFlow(1);
+		const second = useFlow(1);
+
+		expect(observe).toHaveBeenCalledTimes(2);
+		expect(observe.mock.calls[0]![0].executionReference).not.toBe(observe.mock.calls[1]![0].executionReference);
+		pending.resolve(42);
+		await expect(first).resolves.toBe(42);
+		await expect(second).resolves.toBe(42);
+	});
 
 	it("returns a promise while executing synchronous pipes immediately in sequence", async() => {
 		const lastStep = vi.fn((input: string) => `value-${input}` as const);

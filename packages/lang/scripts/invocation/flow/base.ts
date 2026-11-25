@@ -2,7 +2,7 @@
 import * as DCommon from "@scripts/common";
 import * as DArray from "@scripts/array";
 import type * as DKind from "@scripts/kind";
-import { type FlowControllerExit, type FlowController, type FlowControllerResult, flowControllerExitKind, type FlowControllerPreviousFunctionResult, flowControllerKind, type UnwrapFlowControllerResult, type FlowControllerHooks } from "./controller";
+import { type FlowControllerExit, type FlowController, type FlowControllerResult, flowControllerExitKind, type FlowControllerPreviousFunctionResult, flowControllerKind, type UnwrapFlowControllerResult, type FlowControllerContext } from "./controller";
 
 type ComputeLastUsableValue<
 	GenericAccumulator extends DCommon.AnyTuple,
@@ -1785,19 +1785,19 @@ export function flow<
 export function flow(
 	...args: (DCommon.AnyFunction<[any, any]> | FlowController<any, any>)[]
 ): any {
-	const accumulateFunction = args.reduce<DCommon.AnyFunction<[any, any, FlowControllerHooks]>>(
+	const accumulateFunction = args.reduce<DCommon.AnyFunction<[any, any, FlowControllerContext]>>(
 		(accumulator, currentValue) => {
 			if (flowControllerKind.has(currentValue)) {
-				return (input, argument, hooks) => currentValue.exec(
-					() => accumulator(input, argument, hooks),
-					hooks,
+				return (input, argument, context) => currentValue.exec(
+					() => accumulator(input, argument, context),
+					context,
 				);
 			} else {
 				const preparedResultTreatment = (result: any, argument: any) => flowControllerExitKind.has(result)
 					? result
 					: currentValue(result, argument);
-				return (input, argument, hooks) => DCommon.callThen(
-					accumulator(input, argument, hooks),
+				return (input, argument, context) => DCommon.callThen(
+					accumulator(input, argument, context),
 					(result) => preparedResultTreatment(result, argument),
 				);
 			}
@@ -1810,7 +1810,8 @@ export function flow(
 		: result;
 	return (input: unknown) => {
 		let flowEndCallbacks: readonly (() => void)[] = [];
-		const hooks: FlowControllerHooks = {
+		const context: FlowControllerContext = {
+			executionReference: Symbol("flow-execution"),
 			onFlowEnd: (callback) => {
 				flowEndCallbacks = DArray.push(flowEndCallbacks, callback);
 			},
@@ -1823,7 +1824,7 @@ export function flow(
 			}
 		};
 		return DCommon.callThen(
-			() => accumulateFunction(input, input, hooks),
+			() => accumulateFunction(input, input, context),
 			(result) => {
 				emitFlowEnd();
 				return Promise.resolve(preparedResultTreatment(result));

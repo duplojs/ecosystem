@@ -3,6 +3,55 @@ import * as DEither from "@scripts/either";
 import * as DInvocation from "@scripts/invocation";
 
 describe("exclusive", () => {
+	it("allows retry attempts from the owning execution while rejecting other calls until the flow ends", async() => {
+		const pending = DCommon.createExternalPromise<number>();
+		const reachedEnd = DCommon.createExternalPromise<undefined>();
+		const execute = vi.fn((input: number): DEither.Left<"temporary"> | DEither.Success<number> => DEither.success(input))
+			.mockReturnValueOnce(DEither.left("temporary", undefined));
+		const useFlow = DInvocation.flow(
+			DInvocation.exclusive<number>(),
+			execute,
+			DInvocation.retry({ times: 2 }),
+			() => {
+				reachedEnd.resolve(undefined);
+				return pending.promise;
+			},
+		);
+		const firstResult = useFlow(1);
+
+		await reachedEnd.promise;
+		expect(execute).toHaveBeenCalledTimes(2);
+		expect(DEither.hasInformation(await useFlow(2), "exclusive-reject")).toBe(true);
+		expect(DEither.hasInformation(await useFlow(3), "exclusive-reject")).toBe(true);
+		expect(execute).toHaveBeenCalledTimes(2);
+
+		pending.resolve(42);
+		await expect(firstResult).resolves.toBe(42);
+		await expect(useFlow(4)).resolves.toBe(42);
+		expect(execute).toHaveBeenCalledTimes(3);
+
+		type _CheckResult = DCommon.ExpectType<
+			typeof firstResult,
+			Promise<number | DEither.Left<"exclusive-reject">>,
+			"strict"
+		>;
+	});
+
+	it("releases the lock when retry attempts are exhausted", async() => {
+		const execute = vi.fn((input: number) => DEither.left("temporary", input));
+		const useFlow = DInvocation.flow(
+			execute,
+			DInvocation.exclusive(),
+			DInvocation.retry({ times: 3 }),
+		);
+		const first = await useFlow(1);
+		const second = await useFlow(2);
+
+		expect(DEither.unwrapByInformationOrThrow(first, "temporary")).toBe(1);
+		expect(DEither.unwrapByInformationOrThrow(second, "temporary")).toBe(2);
+		expect(execute).toHaveBeenCalledTimes(6);
+	});
+
 	it("rejects overlapping calls until the last step finishes when placed first", async() => {
 		const pending = DCommon.createExternalPromise<number>();
 		const execute = vi.fn((input: number) => input + 1);

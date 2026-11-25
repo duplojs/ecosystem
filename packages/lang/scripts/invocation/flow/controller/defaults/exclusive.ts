@@ -23,20 +23,21 @@ export const exclusive = createFlowController(
 	({ init, exitFlow }) => <
 		GenericInput extends unknown,
 	>() => {
-		let running = false;
+		let runningExecution: symbol | undefined = undefined;
 
 		return init<FlowControllerExclusive<GenericInput>>(
-			(previousFunction, { onFlowEnd }) => {
-				if (running) {
+			(previousFunction, { onFlowEnd, executionReference }) => {
+				if (runningExecution === undefined) {
+					runningExecution = executionReference;
+					onFlowEnd(() => {
+						runningExecution = undefined;
+					});
+					return previousFunction();
+				} else if (runningExecution === executionReference) {
+					return previousFunction();
+				} else {
 					return exitFlow(DEither.left("exclusive-reject", undefined));
 				}
-
-				running = true;
-				onFlowEnd(() => {
-					running = false;
-				});
-
-				return previousFunction();
 			},
 		);
 	},

@@ -40,7 +40,8 @@ export type UnwrapFlowControllerResult<
 	? InferredResult
 	: GenericValue;
 
-export interface FlowControllerHooks {
+export interface FlowControllerContext {
+	readonly executionReference: symbol;
 	onFlowEnd(callback: () => void): void;
 }
 
@@ -54,7 +55,7 @@ export interface FlowController<
 	): FlowControllerResult<GenericOutput>;
 	exec(
 		previousFunction: () => FlowControllerPreviousFunctionResult,
-		hooks: FlowControllerHooks,
+		context: FlowControllerContext,
 	): (
 		| FlowControllerPreviousFunctionResult
 		| GenericOutput

@@ -41,7 +41,7 @@ describe("createFlowController", () => {
 		>;
 	});
 
-	it("should pass the previous function and hooks to a custom controller", async() => {
+	it("should pass the previous function and context to a custom controller", async() => {
 		const testFlowControllerKind = DInvocation.createKind("test-flow-controller-without-argument");
 		type TestFlowController = (
 			& DInvocation.FlowController<number, string>
@@ -69,6 +69,7 @@ describe("createFlowController", () => {
 
 		await expect(result).resolves.toBe("value-controlled");
 		expect(exec).toHaveBeenCalledExactlyOnceWith(expect.any(Function), {
+			executionReference: expect.any(Symbol),
 			onFlowEnd: expect.any(Function),
 		});
 
@@ -81,7 +82,7 @@ describe("createFlowController", () => {
 			Parameters<TestFlowController["exec"]>,
 			[
 				previousFunction: () => DInvocation.FlowControllerPreviousFunctionResult,
-				hooks: DInvocation.FlowControllerHooks,
+				context: DInvocation.FlowControllerContext,
 			],
 			"strict"
 		>;
