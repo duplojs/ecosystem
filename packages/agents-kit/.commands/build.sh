@@ -15,6 +15,7 @@ pnpm run llms generate-summary --input docs/API/10-lang/10-dataStructure --outpu
 pnpm run llms generate-summary --input docs/API/10-lang/10-either --output docs/API/10-lang/10-either/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-generator --output docs/API/10-lang/10-generator/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-invocation --output docs/API/10-lang/10-invocation/index.llms.md --ignore '*.llms.md'
+pnpm run llms generate-summary --input docs/API/10-lang/10-modeling --output docs/API/10-lang/10-modeling/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-number --output docs/API/10-lang/10-number/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-object --output docs/API/10-lang/10-object/index.llms.md --ignore '*.llms.md'
 pnpm run llms generate-summary --input docs/API/10-lang/10-path --output docs/API/10-lang/10-path/index.llms.md --ignore '*.llms.md'

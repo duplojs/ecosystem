@@ -34,6 +34,10 @@ Création et composition de génératrices synchrones ou asynchrones pour produi
 
 Primitives pour composer des traitements, orchestrer des workflows, exprimer leurs contrats et représenter la provenance des valeurs.
 
+## [DModeling](API/10-lang/10-modeling/index.llms.md)
+
+Construire des types métier, des entités, des objets tagués et les preuves de leurs transitions ou de leur état.
+
 ## [DNumber](API/10-lang/10-number/index.llms.md)
 
 Prédicats et transformations fonctionnelles pour comparer, vérifier, agréger et trier des nombres tout en conservant leurs contraintes de typage.
