@@ -30,6 +30,19 @@ const belowTwenty: number & DNumber.LessThan<20> = DCommon.cast(belowTen);
 const declaredName: string & DString.MinCharacters<10> = DCommon.cast("thisIsASuperName");
 const declaredAge: number & DNumber.GreaterThanOrEqual<18> = DCommon.cast(20);
 
+// Une fabrique réutilise les règles de cast et conserve les littéraux.
+type ShortName = string & DString.MinCharacters<3> & DString.MaxCharacters<8>;
+const declareShortName = DCommon.createConstraintFactory<ShortName>();
+const shortName = declareShortName("Alice");
+type _CheckShortName = DCommon.ExpectType<
+	typeof shortName,
+	"Alice" & ShortName,
+	"strict"
+>;
+
+// @ts-expect-error Cette valeur ne prouve pas la longueur minimale.
+declareShortName("Al");
+
 declare function myFunctionWithGeneric<
 	GenericName extends string & DString.MinCharacters<10>,
 >(name: GenericName): void;

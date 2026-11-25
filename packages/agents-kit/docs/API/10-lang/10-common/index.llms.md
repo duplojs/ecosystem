@@ -46,6 +46,10 @@ Décorer une fonction asynchrone avec une stratégie de nouvelle tentative.
 
 Configurer des handlers réutilisables pour construire un objet par étapes.
  
+### [DCommon.createConstraintFactory](10-createConstraintFactory.ts)
+
+Créer une fonction qui applique un type contraint lorsque l'entrée le prouve statiquement.
+
 ### [DCommon.createEnum](10-createEnum.ts)
 
 Créer un enum littéral qui expose ses valeurs, un tuple et un prédicat `has`.
@@ -166,6 +170,10 @@ Préparer une fabrique de pipelines asynchrones partageant une contrainte d’en
 
 Préparer une fabrique de pipelines partageant une contrainte d’entrée.
  
+### [DCommon.print](10-print.ts)
+
+Afficher une valeur et la retourner inchangée.
+
 ### [DCommon.promiseAll](10-promiseAll.ts)
 
 Attendre un tuple ou un itérable de promesses en conservant la forme du tuple.

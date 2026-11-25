@@ -78,6 +78,10 @@ Décoder et valider les interfaces de fichiers et dossiers avec les contraintes 
 
 Déclarer et exécuter des commandes CLI et leurs entrées typées.
 
+## [Path](API/20-server/50-path/index.llms.md)
+
+Normaliser les chemins issus de la plateforme et convertir les chemins DuploJS pour les API système.
+
 # @duplojs/json-web-token
 
 Politiques JWT réutilisables, signature, chiffrement facultatif et primitives cryptographiques.
