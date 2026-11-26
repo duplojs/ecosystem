@@ -1,3 +1,3 @@
 ## DContainer
 
-Structures de données techniques adaptées à des besoins de stockage, d'accès, de parcours ou d'exécution de tâches : cellules, listes chaînées circulaires et files d'attente.
+Structures de données techniques proposant des modes d'organisation, d'accès et de manipulation adaptés à différents besoins.
