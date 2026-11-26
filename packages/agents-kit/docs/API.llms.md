@@ -70,25 +70,133 @@ Manipulation et typage des tuples : convertir les garanties de cardinalité en p
 
 Capacités portables de fichiers, environnement, validation de ressources et commandes CLI.
 
-## [File](API/20-server/10-file/index.llms.md)
+## [DSFile](API/20-server/10-file/index.llms.md)
 
 Lire et modifier les ressources du système de fichiers, leurs chemins et leurs métadonnées.
 
-## [Common](API/20-server/20-common/index.llms.md)
+## [DSCommon](API/20-server/20-common/index.llms.md)
 
 Accéder à la configuration, aux arguments et aux capacités du processus.
 
-## [DataStructure](API/20-server/30-dataStructure/index.llms.md)
+## [DSDataStructure](API/20-server/30-dataStructure/index.llms.md)
 
 Décoder et valider les interfaces de fichiers et dossiers avec les contraintes serveur.
 
-## [Command](API/20-server/40-command/index.llms.md)
+## [DSCommand](API/20-server/40-command/index.llms.md)
 
 Déclarer et exécuter des commandes CLI et leurs entrées typées.
 
 ## [Path](API/20-server/50-path/index.llms.md)
 
 Normaliser les chemins issus de la plateforme et convertir les chemins DuploJS pour les API système.
+
+# @duplojs/http
+
+Construire une application HTTP avec des routes, des vérifications réutilisables et des process. Les preflights préparent des routes communes et les hooks interviennent dans leur cycle de vie. Le package fournit aussi un client typé, des connecteurs pour les plateformes et des plugins complémentaires.
+
+## [Hub](API/30-http/10-hub/index.llms.md)
+
+Création et configuration du Hub qui assemble les routes, les plugins et les hooks d'une application HTTP avant son démarrage par un connecteur.
+
+## Route
+
+Déclaration des routes HTTP, composition de leurs steps et configuration de la lecture du body.
+
+### [Builder de route](API/30-http/20-route/10-builder/index.llms.md)
+
+Déclarer une méthode et des chemins, configurer une route et finaliser sa construction.
+
+### [Steps de route](API/30-http/20-route/20-steps/index.llms.md)
+
+Composer les traitements d'une route, propager les données du floor et produire une réponse.
+
+### [Body des routes](API/30-http/20-route/30-body/index.llms.md)
+
+Choisir le contrôleur de lecture du body et configurer les limites utiles à son extraction.
+
+## [Checker](API/30-http/30-checker/index.llms.md)
+
+Créer des checkers aux résultats identifiés, les utiliser dans un flux HTTP et partager leur interprétation avec un preset.
+
+## [Process](API/30-http/40-process/index.llms.md)
+
+Créer et composer des séquences réutilisables de steps, configurables par options, et exporter leurs données vers une route ou un autre process.
+
+## [Preflight](API/30-http/50-preflight/index.llms.md)
+
+Préparer des builders de routes réutilisables avec des process, leurs données importées et des configurations communes de hooks et metadata.
+
+# [Hooks HTTP](API/30-http/60-hooks/index.llms.md)
+
+Les hooks du Hub interviennent dans la construction et le cycle de vie du serveur ; les hooks de route accompagnent le traitement d'une requête et de sa réponse.
+
+# Client HTTP
+
+Construire un client HTTP, configurer ses requêtes et traiter leurs réponses, flux et cache.
+
+# [Construction du client HTTP](API/30-http/70-client/10-construction/index.llms.md)
+
+Créer un client avec ou sans contrat et déduire un contrat des routes HTTP.
+
+# [Requêtes du client HTTP](API/30-http/70-client/20-request/index.llms.md)
+
+Construire les requêtes, leurs paramètres et leurs headers par défaut.
+
+# [Réponses du client HTTP](API/30-http/70-client/30-response/index.llms.md)
+
+Observer, sélectionner et traiter les réponses et les erreurs de requête.
+
+# [Hooks du client HTTP](API/30-http/70-client/40-hooks/index.llms.md)
+
+Configurer les traitements communs et les intercepteurs locaux aux requêtes.
+
+# [Flux du client HTTP](API/30-http/70-client/50-streaming/index.llms.md)
+
+Consommer les événements SSE et les flux de données.
+
+# [Cache du client HTTP](API/30-http/70-client/60-cache/index.llms.md)
+
+Configurer les clés et contrôler le cache applicatif du client.
+
+# Connecteurs HTTP
+
+Démarrer une application HTTP sur une plateforme avec le connecteur adapté.
+
+# [Connecteur Node](API/30-http/80-connectors/10-node/index.llms.md)
+
+Exécuter une application DuploJS HTTP avec un serveur HTTP ou HTTPS Node.js, à partir d'un Hub et d'une configuration propre au serveur.
+
+# Plugins HTTP
+
+Générer des contrats, ajouter des fonctionnalités HTTP et créer des plugins pour le Hub.
+
+# [CodeGenerator](API/30-http/90-plugins/10-code-generator/index.llms.md)
+
+Générer les types des routes pour un client HTTP et partager des modules avec Rolldown.
+
+# [CORS](API/30-http/90-plugins/20-cors/index.llms.md)
+
+Configurer les réponses CORS et les requêtes de préflight.
+
+# [Cookies](API/30-http/90-plugins/30-cookie/index.llms.md)
+
+Lire et écrire les cookies dans les routes HTTP.
+
+# [OpenAPI](API/30-http/90-plugins/40-open-api/index.llms.md)
+
+Produire une description OpenAPI et une interface Swagger.
+
+# [Fichiers statiques](API/30-http/90-plugins/50-static/index.llms.md)
+
+Exposer un fichier ou un dossier par HTTP.
+
+# [Cache-Control](API/30-http/90-plugins/60-cache-controller/index.llms.md)
+
+Ajouter des directives de cache aux réponses éligibles.
+
+# [Créer un plugin](API/30-http/90-plugins/70-create-plugin/index.llms.md)
+
+Assembler des routes et des hooks dans un plugin de Hub.
 
 # @duplojs/json-web-token
 
