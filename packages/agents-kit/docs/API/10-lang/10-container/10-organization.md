@@ -4,10 +4,10 @@ Périmètre du domaine `container` et critères de choix d'une organisation des 
 
 ---
 
-Le domaine `container` de `@duplojs/lang`, exposé sous le namespace `DContainer`, a vocation à regrouper les piles, maps, sets, listes chaînées et autres conteneurs génériques indépendants de la plateforme.
+Le domaine `container` de `@duplojs/lang`, exposé sous le namespace `DContainer`, regroupe différentes structures de données techniques, génériques et indépendantes de la plateforme. Les cellules, listes chaînées circulaires et files d'attente répondent à des besoins particuliers de stockage, d'accès, de parcours ou d'exécution de tâches.
 
-Le choix d'un conteneur dépend des opérations nécessaires : ajout, retrait, recherche, accès par clé ou parcours. Les garanties d'ordre, d'unicité et de coût d'accès ou de modification devront être précisées par le contrat de chaque conteneur.
+Choisir une structure selon les opérations nécessaires et les garanties recherchées : conserver une valeur partagée, ajouter ou retirer des éléments, parcourir des données dans un ordre donné ou limiter le nombre de tâches exécutées simultanément. Chaque structure possède son propre contrat, notamment pour la mutation, l'ordre des éléments et les modalités d'accès ou de modification.
 
 Les [DataStructure](../10-dataStructure/index.llms.md) décrivent et valident les contrats des données. Les conteneurs portent leur organisation et leur accès. Les transformations fonctionnelles déjà disponibles sur les tableaux, objets et générateurs restent dans leurs domaines respectifs.
 
-Le domaine est initialisé sans primitive. Ses futures API s'importeront depuis `@duplojs/lang/container` avec le namespace `DContainer`.
+Les API s'importent depuis `@duplojs/lang/container` avec le namespace `DContainer`. La fonction [`DContainer.createQueue`](10-createQueue.ts) organise l'exécution des tâches selon une concurrence configurable.

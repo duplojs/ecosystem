@@ -1,12 +1,13 @@
 /**
- * @title DCommon.createQueue
+ * @title DContainer.createQueue
  *
- * Créer une file d’attente typée avec une capacité optionnelle.
+ * Créer une file d’attente de tâches avec une concurrence configurable.
  */
-import * as DCommon from "@duplojs/lang/common";
+import type * as DCommon from "@duplojs/lang/common";
+import * as DContainer from "@duplojs/lang/container";
 import type * as DEither from "@duplojs/lang/either";
 
-const queue = DCommon.createQueue({ concurrency: 1 });
+const queue = DContainer.createQueue({ concurrency: 1 });
 const result = queue.add(() => "done");
 
 // Le résultat contient la valeur de la tâche, ou un Left si son exécution lève une erreur.

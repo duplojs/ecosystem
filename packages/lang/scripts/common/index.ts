@@ -43,7 +43,6 @@ export * from "./preparePipe";
 export * from "./print";
 export * from "./promiseAll";
 export * from "./promiseObject";
-export * from "./queue";
 export * from "./simpleClone";
 export * from "./stringToBytes";
 export * from "./stringToMillisecond";

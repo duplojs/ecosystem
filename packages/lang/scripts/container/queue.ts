@@ -1,9 +1,8 @@
-import { callThen } from "./callThen";
-import { createExternalPromise } from "./externalPromise";
+import * as DCommon from "@scripts/common";
 import * as DEither from "@scripts/either";
 import type * as DKind from "@scripts/kind";
 import { createKind } from "./kind";
-import * as DContainer from "@scripts/container";
+import { createCircularDoublyLinkedList } from "./circularDoublyLinkedList";
 
 export const queueKind = createKind("queue");
 
@@ -36,7 +35,7 @@ class _Queue implements Record<
 
 	public inRunning = 0;
 
-	private tasks = DContainer.createCircularDoublyLinkedList<() => void>();
+	private tasks = createCircularDoublyLinkedList<() => void>();
 
 	public constructor(params?: CreateQueueParams) {
 		this.concurrency = params?.concurrency === undefined || params.concurrency < 1
@@ -47,11 +46,11 @@ class _Queue implements Record<
 	public add(
 		task: () => unknown,
 	) {
-		const externalPromise = createExternalPromise();
+		const externalPromise = DCommon.createExternalPromise();
 		const preparedTask = () => {
 			this.inRunning++;
 
-			callThen(
+			DCommon.callThen(
 				() => task(),
 				(output) => {
 					externalPromise.resolve(output);
@@ -76,8 +75,8 @@ class _Queue implements Record<
 	}
 
 	public addExternal() {
-		const externalPromiseToStart = createExternalPromise<() => void>();
-		const externalPromiseToFinish = createExternalPromise<never>();
+		const externalPromiseToStart = DCommon.createExternalPromise<() => void>();
+		const externalPromiseToFinish = DCommon.createExternalPromise<never>();
 
 		void this.add(
 			() => {

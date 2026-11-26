@@ -66,10 +66,6 @@ Transformer un objet de valeurs en `FormData` en conservant ses valeurs d’entr
 
 Préparer une fonction qui remplace les identifiants entre accolades dans un modèle.
  
-### [DCommon.createQueue](10-createQueue.ts)
-
-Créer une file d’attente typée avec une capacité optionnelle.
- 
 ### [DCommon.createTransformer](10-createTransformer.ts)
 
 Créer une fonction de transformation récursive liée à un nom de méthode.

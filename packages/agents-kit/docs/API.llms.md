@@ -20,7 +20,7 @@ Fonctions générales de composition, de transformation, de contrôle de flux et
 
 ## [DContainer](API/10-lang/10-container/index.llms.md)
 
-Conteneurs de données organisés selon leur mode de rangement, de parcours et d'accès : piles, maps, sets et listes chaînées. Le domaine est initialisé ; aucune primitive n'est encore disponible.
+Structures de données techniques adaptées à des besoins de stockage, d'accès, de parcours ou d'exécution de tâches : cellules, listes chaînées circulaires et files d'attente.
 
 ## [DDataStructure](API/10-lang/10-dataStructure/index.llms.md)
 

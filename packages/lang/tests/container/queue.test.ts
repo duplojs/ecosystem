@@ -1,10 +1,11 @@
 
 import * as DCommon from "@scripts/common";
+import * as DContainer from "@scripts/container";
 import * as DEither from "@scripts/either";
 
 describe("queue", () => {
 	it("executes queued tasks in FIFO order with concurrency one", async() => {
-		const queue = DCommon.createQueue({ concurrency: 1 });
+		const queue = DContainer.createQueue({ concurrency: 1 });
 		const blocker = DCommon.createExternalPromise<DCommon.EscapeVoid>();
 		const order: string[] = [];
 
@@ -49,7 +50,7 @@ describe("queue", () => {
 	});
 
 	it("falls back to concurrency one when concurrency is lower than one", async() => {
-		const queue = DCommon.createQueue({ concurrency: 0 });
+		const queue = DContainer.createQueue({ concurrency: 0 });
 		const blocker = DCommon.createExternalPromise<DCommon.EscapeVoid>();
 		let secondStarted = false;
 
@@ -70,7 +71,7 @@ describe("queue", () => {
 	});
 
 	it("wraps thrown and rejected errors in a left", async() => {
-		const queue = DCommon.createQueue();
+		const queue = DContainer.createQueue();
 		const syncError = new Error("sync");
 		const asyncError = new Error("async");
 
@@ -83,7 +84,7 @@ describe("queue", () => {
 	});
 
 	it("reserves a slot with addExternal until the resolver is called", async() => {
-		const queue = DCommon.createQueue({ concurrency: 1 });
+		const queue = DContainer.createQueue({ concurrency: 1 });
 		const order: string[] = [];
 		const releasePromise = queue.addExternal();
 		const queuedTask = queue.add(() => {
