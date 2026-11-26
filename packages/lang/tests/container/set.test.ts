@@ -72,12 +72,24 @@ describe("createSet", () => {
 	});
 
 	it("preserves undefined, null and falsy values as entries", () => {
-		const set = DContainer.createSet<undefined | null | number | boolean | string>([undefined, null, 0, false, ""]);
+		const set = DContainer.createSet<undefined | null | number | boolean | string>([
+			undefined,
+			null,
+			0,
+			false,
+			"",
+		]);
 
 		expect(set.has(undefined)).toBe(true);
 		expect(set.has(null)).toBe(true);
 		expect(set.size).toBe(5);
-		expect([...set]).toStrictEqual([undefined, null, 0, false, ""]);
+		expect([...set]).toStrictEqual([
+			undefined,
+			null,
+			0,
+			false,
+			"",
+		]);
 		expect(set.delete(undefined)).toBe(true);
 		expect(set.has(undefined)).toBe(false);
 	});
@@ -85,7 +97,15 @@ describe("createSet", () => {
 	it("uses native equality and preserves object references", () => {
 		const value = { id: 1 };
 		const otherValue = { id: 1 };
-		const set = DContainer.createSet<object | number>([value, value, otherValue, NaN, NaN, -0, 0]);
+		const set = DContainer.createSet<object | number>([
+			value,
+			value,
+			otherValue,
+			NaN,
+			NaN,
+			-0,
+			0,
+		]);
 
 		expect(set.has(value)).toBe(true);
 		expect(set.has({ id: 1 })).toBe(false);

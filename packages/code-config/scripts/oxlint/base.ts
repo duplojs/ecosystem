@@ -404,7 +404,7 @@ export const baseRules = defineRules({
 	"typescript/explicit-function-return-type": "off",
 	"typescript/explicit-member-accessibility": "error",
 	"typescript/explicit-module-boundary-types": "off",
-	"typescript/method-signature-style": "off",
+	"typescript/method-signature-style": ["error", "method"],
 	"typescript/no-array-delete": "error",
 	"typescript/no-base-to-string": "error",
 	"typescript/no-confusing-non-null-assertion": "error",

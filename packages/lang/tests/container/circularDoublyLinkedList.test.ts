@@ -350,7 +350,7 @@ describe("createCircularDoublyLinkedList", () => {
 			const list = DContainer.createCircularDoublyLinkedList([1]);
 			const iterator = list[Symbol.iterator]();
 
-			expect(iterator.next()).toStrictEqual({
+			expect(iterator.next()).toEqual({
 				value: 1,
 				done: false,
 			});
@@ -387,7 +387,7 @@ describe("createCircularDoublyLinkedList", () => {
 			type _CheckIterator = DCommon.ExpectType<typeof iterator, ReturnType<Iterable<number, unknown>[typeof Symbol.iterator]>, "strict">;
 
 			expect(iterator.next().done).toBe(true);
-			expect(steps).toStrictEqual([
+			expect(steps).toEqual([
 				{
 					value: 1,
 					done: false,

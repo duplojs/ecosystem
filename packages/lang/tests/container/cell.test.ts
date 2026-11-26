@@ -32,7 +32,13 @@ describe("createCell", () => {
 		expect(cell.value).toBe(42);
 	});
 
-	it.each([undefined, null, false, 0, ""])("preserves the initial value %s", (value) => {
+	it.each([
+		undefined,
+		null,
+		false,
+		0,
+		"",
+	])("preserves the initial value %s", (value) => {
 		const cell = DContainer.createCell(value);
 
 		expect(cell.value).toBe(value);

@@ -26,6 +26,45 @@ class _CircularDoublyLinkedListNode implements Record<
 	public [circularDoublyLinkedListNodeKind.runTimeKey] = null;
 }
 
+class _IteratorYieldResult implements IteratorYieldResult<unknown> {
+	public readonly done = false;
+
+	public constructor(
+		public readonly value: unknown,
+	) {}
+}
+
+const iteratorReturnResult: IteratorReturnResult<undefined> = {
+	done: true,
+	value: undefined,
+};
+
+class _CircularDoublyLinkedListIterator implements Iterator<unknown> {
+	private currentNode: _CircularDoublyLinkedListNode | undefined;
+
+	public constructor(
+		private readonly firstNode: _CircularDoublyLinkedListNode | undefined,
+	) {
+		this.currentNode = firstNode;
+	}
+
+	public next(): IteratorResult<unknown, undefined> {
+		const currentNode = this.currentNode;
+
+		if (currentNode === undefined) {
+			return iteratorReturnResult;
+		}
+
+		const nextNode = currentNode.next;
+
+		this.currentNode = nextNode === this.firstNode
+			? undefined
+			: nextNode;
+
+		return new _IteratorYieldResult(currentNode.value);
+	}
+}
+
 export const circularDoublyLinkedListKind = createKind("circular-doubly-linked-list");
 
 export interface CircularDoublyLinkedList<
@@ -119,19 +158,8 @@ class _CircularDoublyLinkedList implements Record<
 		return this.firstNode?.previous.value;
 	}
 
-	public *[Symbol.iterator]() {
-		if (this.firstNode === undefined) {
-			return;
-		}
-
-		let currentNode = this.firstNode;
-		do {
-			yield currentNode.value;
-			currentNode = currentNode.next;
-		} while (
-			this.firstNode !== undefined
-			&& currentNode !== this.firstNode
-		);
+	public [Symbol.iterator]() {
+		return new _CircularDoublyLinkedListIterator(this.firstNode);
 	}
 
 	public [circularDoublyLinkedListKind.runTimeKey] = null;
