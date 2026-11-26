@@ -3,11 +3,13 @@ import { createExternalPromise } from "./externalPromise";
 import * as DEither from "@scripts/either";
 import type * as DKind from "@scripts/kind";
 import { createKind } from "./kind";
-import type { MaybePromise } from "./types";
+import * as DContainer from "@scripts/container";
 
 export const queueKind = createKind("queue");
 
 export interface Queue extends DKind.Kind<typeof queueKind> {
+	readonly inRunning: number;
+	readonly concurrency: number;
 	add<
 		GenericOutput extends unknown,
 	>(
@@ -22,98 +24,62 @@ export interface Queue extends DKind.Kind<typeof queueKind> {
 	>;
 }
 
-interface QueueElement {
-	task(): MaybePromise<unknown>;
-	next: QueueElement;
-	previous: QueueElement;
-}
-
 export interface CreateQueueParams {
 	concurrency?: number;
 }
 
-export function createQueue(params?: CreateQueueParams): Queue;
+class _Queue implements Record<
+	keyof DKind.Remove<Queue>,
+	unknown
+> {
+	public concurrency: number;
 
-export function createQueue(params?: CreateQueueParams): Queue {
-	const concurrency = params?.concurrency === undefined || params.concurrency < 1
-		? 1
-		: params.concurrency;
-	let runningCount = 0;
-	let firstElement: QueueElement | undefined = undefined;
+	public inRunning = 0;
 
-	function add(
+	private tasks = DContainer.createCircularDoublyLinkedList<() => void>();
+
+	public constructor(params?: CreateQueueParams) {
+		this.concurrency = params?.concurrency === undefined || params.concurrency < 1
+			? 1
+			: params.concurrency;
+	}
+
+	public add(
 		task: () => unknown,
 	) {
 		const externalPromise = createExternalPromise();
 		const preparedTask = () => {
-			runningCount++;
-
-			if (firstElement?.task === preparedTask) {
-				if (firstElement === firstElement.next) {
-					firstElement = undefined;
-				} else {
-					const newFirst = firstElement.next;
-					const last = firstElement.previous;
-					newFirst.previous = last;
-					last.next = newFirst;
-
-					firstElement = newFirst;
-				}
-			}
-
-			let taskResult: unknown = undefined;
-			try {
-				const maybePromise = task();
-
-				taskResult = maybePromise instanceof Promise
-					? maybePromise.catch(
-						(error) => DEither.left("execution-error", error),
-					)
-					: maybePromise;
-			} catch (error) {
-				taskResult = DEither.left("execution-error", error);
-			}
+			this.inRunning++;
 
 			callThen(
-				taskResult,
+				() => task(),
 				(output) => {
 					externalPromise.resolve(output);
-					runningCount--;
-					firstElement?.task();
+					this.inRunning--;
+					this.tasks.shift()?.();
+				},
+				(error) => {
+					externalPromise.resolve(DEither.left("execution-error", error));
+					this.inRunning--;
+					this.tasks.shift()?.();
 				},
 			);
 		};
 
-		if (runningCount < concurrency) {
+		if (this.inRunning < this.concurrency) {
 			void preparedTask();
-		} else if (firstElement === undefined) {
-			firstElement = {
-				task: preparedTask,
-				next: undefined as unknown as QueueElement,
-				previous: undefined as unknown as QueueElement,
-			};
-			firstElement.next = firstElement;
-			firstElement.previous = firstElement;
 		} else {
-			const oldLast = firstElement.previous;
-			const newLastElement = {
-				task: preparedTask,
-				next: firstElement,
-				previous: firstElement.previous,
-			};
-
-			oldLast.next = newLastElement;
-			firstElement.previous = newLastElement;
+			this.tasks.add(preparedTask);
 		}
 
 		return externalPromise.promise;
 	}
 
-	function addExternal() {
+	public addExternal() {
 		const externalPromiseToStart = createExternalPromise<() => void>();
 		const externalPromiseToFinish = createExternalPromise<never>();
 
-		void add(
+		void this.add(
 			() => {
 				externalPromiseToStart.resolve(
 					externalPromiseToFinish.resolve as never,
@@ -126,11 +92,9 @@ export function createQueue(params?: CreateQueueParams): Queue {
 		return externalPromiseToStart.promise;
 	}
 
-	return queueKind.setTo(
-		{
-			add,
-			addExternal,
-		} satisfies Record<keyof DKind.Remove<Queue>, unknown>,
-		undefined,
-	) as never;
+	public [queueKind.runTimeKey] = null;
+}
+
+export function createQueue(params?: CreateQueueParams): Queue {
+	return new _Queue(params) as never;
 }
