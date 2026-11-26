@@ -19,6 +19,7 @@ export const defaultPreferNamespaceImportPaths = {
 	"@duplojs/lang/invocation": "DInvocation",
 	"@duplojs/lang/path": "DPath",
 	"@duplojs/lang/printer": "DPrinter",
+	"@duplojs/lang/container": "DContainer",
 
 	"@duplojs/server/file": "DSFile",
 	"@duplojs/server/common": "DSCommon",
@@ -58,6 +59,7 @@ export const defaultPreferNamespaceFromBarrelOptions = {
 		I: "@duplojs/lang/invocation",
 		DPath: "@duplojs/lang/path",
 		DPrinter: "@duplojs/lang/printer",
+		DContainer: "@duplojs/lang/container",
 		DSFile: "@duplojs/server/file",
 		SF: "@duplojs/server/file",
 		DSCommon: "@duplojs/server/common",
@@ -102,6 +104,7 @@ export const defaultPreferImportPaths = {
 			"DInvocation",
 			"DPath",
 			"DPrinter",
+			"DContainer",
 		],
 	},
 	"@duplojs/server": {
@@ -401,10 +404,7 @@ export const baseRules = defineRules({
 	"typescript/explicit-function-return-type": "off",
 	"typescript/explicit-member-accessibility": "error",
 	"typescript/explicit-module-boundary-types": "off",
-	"typescript/method-signature-style": [
-		"error",
-		"method",
-	],
+	"typescript/method-signature-style": "off",
 	"typescript/no-array-delete": "error",
 	"typescript/no-base-to-string": "error",
 	"typescript/no-confusing-non-null-assertion": "error",

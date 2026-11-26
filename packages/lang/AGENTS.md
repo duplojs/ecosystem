@@ -51,6 +51,7 @@ Chaque domaine peut posséder son propre `AGENTS.md`, qui constitue le point d'e
 * [`array`](./scripts/array) : manipulation fonctionnelle et fortement typée des tableaux.
 * [`chrono`](./scripts/chrono) : manipulation des valeurs et opérations liées au temps.
 * [`common`](./scripts/common) : primitives et utilitaires communs aux différents domaines.
+* [`container`](./scripts/container) : conteneurs organisant le rangement, le parcours et l'accès aux données.
 * [`dataStructure`](./scripts/dataStructure) : représentation, validation et construction de contrats de données.
 * [`either`](./scripts/either) : représentation explicite d'une opération pouvant réussir ou échouer.
 * [`generator`](./scripts/generator) : utilitaires fonctionnels autour des générateurs.

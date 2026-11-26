@@ -111,6 +111,11 @@
       "import": "./dist/printer/index.mjs",
       "require": "./dist/printer/index.cjs",
       "types": "./dist/printer/index.d.ts"
+    },
+    "./container": {
+      "import": "./dist/container/index.mjs",
+      "require": "./dist/container/index.cjs",
+      "types": "./dist/container/index.d.ts"
     }
   },
   "devDependencies": {

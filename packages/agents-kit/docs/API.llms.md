@@ -18,6 +18,10 @@ Création, calcul, comparaison, sérialisation et formatage des dates, heures, d
 
 Fonctions générales de composition, de transformation, de contrôle de flux et de manipulation des valeurs partagées par les autres domaines DuploJS.
 
+## [DContainer](API/10-lang/10-container/index.llms.md)
+
+Conteneurs de données organisés selon leur mode de rangement, de parcours et d'accès : piles, maps, sets et listes chaînées. Le domaine est initialisé ; aucune primitive n'est encore disponible.
+
 ## [DDataStructure](API/10-lang/10-dataStructure/index.llms.md)
 
 Construction de contrats de données validables au runtime, composables et reflétés dans les types TypeScript.

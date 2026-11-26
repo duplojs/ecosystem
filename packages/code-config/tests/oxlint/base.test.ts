@@ -31,6 +31,14 @@ describe("base import rules", () => {
 
 	it.each([
 		{
+			code: "import { DContainer } from \"@duplojs/lang\";\nDContainer;",
+			expected: "import * as DContainer from \"@duplojs/lang/container\";\nDContainer;",
+		},
+		{
+			code: "import * as Container from \"@duplojs/lang/container\";\nContainer;",
+			expected: "import * as DContainer from \"@duplojs/lang/container\";\nDContainer;",
+		},
+		{
 			code: "import { DArray } from \"@duplojs/lang\";\nDArray.map(values, mapper);",
 			expected: "import * as DArray from \"@duplojs/lang/array\";\nDArray.map(values, mapper);",
 		},

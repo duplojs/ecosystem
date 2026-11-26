@@ -40,12 +40,14 @@
     "@duplojs/lang/invocation": "../../../lang/dist/invocation/index.mjs",
     "@duplojs/lang/path": "../../../lang/dist/path/index.mjs",
     "@duplojs/lang/printer": "../../../lang/dist/printer/index.mjs",
+    "@duplojs/lang/container": "../../../lang/dist/container/index.mjs",
 
     "@duplojs/server": "../../dist/index.mjs",
     "@duplojs/server/file": "../../dist/file/index.mjs",
     "@duplojs/server/common": "../../dist/common/index.mjs",
     "@duplojs/server/dataStructure": "../../dist/dataStructure/index.mjs",
-    "@duplojs/server/command": "../../dist/command/index.mjs"
+    "@duplojs/server/command": "../../dist/command/index.mjs",
+    "@duplojs/server/path": "../../dist/path/index.mjs"
   },
   "lint": {
     "rules": {
