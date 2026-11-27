@@ -1,3 +1,3 @@
-# Construction du client HTTP
+### Construction
 
-Créer un client avec ou sans contrat et déduire un contrat des routes HTTP.
+Créer un client et définir son contrat.

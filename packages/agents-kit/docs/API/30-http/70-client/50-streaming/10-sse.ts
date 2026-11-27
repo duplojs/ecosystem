@@ -1,5 +1,5 @@
 /**
- * @title Client HTTP : Server-Sent Events
+ * @title Server-Sent Events
  *
  * Sélectionner et consommer les événements SSE typés d'une réponse.
  */

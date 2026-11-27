@@ -1,5 +1,5 @@
 /**
- * @title Client HTTP : flux de données
+ * @title Flux de données
  *
  * Consommer des chunks texte ou binaires sans les confondre avec les SSE.
  */

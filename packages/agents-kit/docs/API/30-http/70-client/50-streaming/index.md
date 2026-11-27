@@ -1,3 +1,3 @@
-# Flux du client HTTP
+### Flux
 
-Consommer les événements SSE et les flux de données.
+Consommer les réponses progressives.

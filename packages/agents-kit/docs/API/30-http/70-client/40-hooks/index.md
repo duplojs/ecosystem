@@ -1,3 +1,3 @@
-# Hooks du client HTTP
+### Hooks
 
 Configurer les traitements communs et les intercepteurs locaux aux requêtes.

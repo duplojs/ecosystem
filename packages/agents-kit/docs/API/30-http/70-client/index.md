@@ -1,3 +1,3 @@
-# Client HTTP
+## Client
 
-Construire un client HTTP, configurer ses requêtes et traiter leurs réponses, flux et cache.
+Construire un client typé et gérer les échanges avec le serveur.

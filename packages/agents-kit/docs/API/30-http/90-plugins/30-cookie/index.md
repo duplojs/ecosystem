@@ -1,3 +1,3 @@
-# Cookies
+### Cookies
 
-Lire et écrire les cookies dans les routes HTTP.
+Manipuler les cookies des requêtes et réponses.

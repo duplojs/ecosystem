@@ -1,5 +1,5 @@
 /**
- * @title Cache applicatif du client HTTP
+ * @title Cache applicatif
  *
  * Choisir la clé, contourner ou actualiser le stockage en mémoire du client.
  */

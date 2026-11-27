@@ -1,4 +1,4 @@
-### Steps de route
+### Steps
 
 Composer les traitements d'une route, propager les données du floor et produire une réponse.
 

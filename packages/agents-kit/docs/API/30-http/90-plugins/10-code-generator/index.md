@@ -1,4 +1,4 @@
-# CodeGenerator
+### CodeGenerator
 
 Générer les types des routes pour un client HTTP et partager des modules avec Rolldown.
 

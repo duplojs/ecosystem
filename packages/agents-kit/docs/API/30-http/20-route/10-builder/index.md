@@ -1,3 +1,3 @@
-### Builder de route
+### Builder
 
-Déclarer une méthode et des chemins, configurer une route et finaliser sa construction.
+Déclarer et configurer une route.

@@ -1,5 +1,5 @@
 /**
- * @title Hooks et intercepteurs du client HTTP
+ * @title Hooks et intercepteurs
  *
  * Transformer ou observer un échange globalement ou pour une seule requête.
  */

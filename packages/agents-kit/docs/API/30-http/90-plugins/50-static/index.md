@@ -1,3 +1,3 @@
-# Fichiers statiques
+### Fichiers statiques
 
-Exposer un fichier ou un dossier par HTTP.
+Servir des ressources statiques.
