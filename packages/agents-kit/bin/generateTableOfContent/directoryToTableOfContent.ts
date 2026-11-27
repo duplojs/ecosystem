@@ -45,8 +45,13 @@ export const directoryToTableOfContent: (params: DirectoryToTableOfContentParams
 		),
 	),
 	async(entries, params) => {
+		const index = DArray.first(entries.indexes ?? []);
+		const summary = DArray.first(entries.summaries ?? []);
+
 		const children = await DGenerator.asyncReduce(
-			entries.folders ?? [],
+			index && summary
+				? []
+				: entries.folders ?? [],
 			DGenerator.reduceFrom<readonly string[]>([]),
 			async({ item, lastValue, next, nextPush, exit }) => {
 				const result = await directoryToTableOfContent({
@@ -61,12 +66,10 @@ export const directoryToTableOfContent: (params: DirectoryToTableOfContentParams
 				return content ? nextPush(lastValue, content) : next(lastValue);
 			},
 		);
+
 		if (DEither.isLeft(children)) {
 			return children;
 		}
-
-		const index = DArray.first(entries.indexes ?? []);
-		const summary = DArray.first(entries.summaries ?? []);
 
 		return DEither.rightAsyncPipe(
 			index ? DSFile.readTextFile(index.path) : DEither.success(""),

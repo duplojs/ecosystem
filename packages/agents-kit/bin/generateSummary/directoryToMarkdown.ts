@@ -8,11 +8,37 @@ import * as DArray from "@duplojs/lang/array";
 import * as DPattern from "@duplojs/lang/pattern";
 import * as DPath from "@duplojs/lang/path";
 
+const headings = [
+	"#",
+	"##",
+	"###",
+	"####",
+	"#####",
+	"######",
+];
+const markdownSeparator = /^---[\t ]*\r?$/m;
+const markdownHeading = /^(?<hashtag>#{1,6})[\t ]+(?<title>[^\r\n]+)$/m;
+const headingPrefix = /^#{1,6}(?=[\t ])/m;
+const indexHeadingPattern = /^(?<heading>#{1,6})[\t ]/m;
+
+export class HeadingLevelExceededError extends DCommon.DuploJSError.parentClass("agents-kit-summary-heading-level-exceeded") {}
+
+function renderHeading(level: number, inputPathFolder: DPath.AnyPath) {
+	const heading = level > 0 ? DArray.at(headings, level - 1) : undefined;
+
+	if (!heading) {
+		throw new HeadingLevelExceededError(`Cannot generate a heading below level 6 in ${inputPathFolder}`);
+	}
+
+	return heading;
+}
+
 export const directoryToMarkdown: (
 	params: {
 		inputPathFolder: string & DPath.Absolute;
 		outputPathFolderFile: string & DPath.Absolute;
 		isIgnore: DPath.PathMatcher;
+		headingLevel?: number;
 	},
 ) => Promise<
 	| DEither.Left<"file-system-walk-directory-error", DSFile.WalkDirectoryErrors>
@@ -51,16 +77,51 @@ export const directoryToMarkdown: (
 		entryGroupe,
 		argument,
 	) => {
-		const indexContent = DCommon.pipe(
+		const rawIndexContent = DCommon.pipe(
 			await DEither.rightAsyncPipe(
 				entryGroupe.indexes,
 				DEither.toMaybe,
 				DArray.first,
-				(file) => DSFile.readTextFile(file.path),
+				(file) => DEither.rightAsyncPipe(
+					DSFile.readTextFile(file.path),
+					(content) => {
+						const sections = DString.split(content, markdownSeparator);
+						const introduction = DArray.first(sections) ?? "";
+
+						return DArray.length(sections) > 1
+							? DString.replace(
+								introduction,
+								markdownHeading,
+								({ namedGroups }) => `${namedGroups.hashtag} [${namedGroups.title}](${DPath.computeRelative(argument.outputPathFolderFile, file.path)})`,
+							)
+							: introduction;
+					},
+				),
 				DString.concat("\n"),
 			),
 			DEither.unwrapOr(null),
 		);
+
+		const indexHeading = rawIndexContent && DString.extract(rawIndexContent, indexHeadingPattern);
+		const headingLevel = DCommon.justExec(() => {
+			if (!indexHeading) {
+				return argument.headingLevel ?? 2;
+			}
+
+			if (argument.headingLevel !== undefined) {
+				return argument.headingLevel + 1;
+			}
+
+			return DString.length(indexHeading.namedGroups.heading ?? "##");
+		});
+
+		const indexContent = rawIndexContent && indexHeading
+			? DString.replace(
+				rawIndexContent,
+				headingPrefix,
+				renderHeading(headingLevel, argument.inputPathFolder),
+			)
+			: rawIndexContent;
 
 		const markdownContent = DCommon.pipe(
 			await DEither.rightAsyncPipe(
@@ -83,22 +144,29 @@ export const directoryToMarkdown: (
 									return DEither.success(content);
 								}
 
-								if (DString.includes(content, "---")) {
+								if (DString.test(content, markdownSeparator)) {
 									const filePath = file.path;
 
 									return DCommon.pipe(
 										content,
-										DString.split("---"),
+										DString.split(markdownSeparator),
 										DArray.first,
 										DString.replace(
-											/(?<hashtag>#+) (?<title>[^\n]+)/g,
-											({ namedGroups }) => `${namedGroups.hashtag} [${namedGroups.title}](${DPath.computeRelative(argument.outputPathFolderFile, filePath)})`,
+											markdownHeading,
+											({ namedGroups }) => `${renderHeading(headingLevel + 1, argument.inputPathFolder)} [${namedGroups.title}](${DPath.computeRelative(argument.outputPathFolderFile, filePath)})`,
 										),
 										DEither.success,
 									);
 								}
 
-								return DEither.success(content);
+								return DCommon.pipe(
+									content,
+									DString.replace(
+										headingPrefix,
+										() => renderHeading(headingLevel + 1, argument.inputPathFolder),
+									),
+									DEither.success,
+								);
 							},
 							DString.concat("\n"),
 						);
@@ -119,6 +187,7 @@ export const directoryToMarkdown: (
 					DGenerator.reduceFrom<readonly string[]>([]),
 					async({ lastValue, item, next }) => {
 						const fileName = item.getName();
+
 						if (
 							!fileName
 							|| !DString.test(fileName, /^[0-9]+-/)
@@ -166,7 +235,7 @@ export const directoryToMarkdown: (
 									DString.replace(
 										header,
 										/@title/g,
-										"###",
+										renderHeading(headingLevel + 1, argument.inputPathFolder),
 									),
 									"",
 									`\`\`\`${item.getExtension() ?? "txt"}${exampleContent}\`\`\`\n\n`,
@@ -181,7 +250,7 @@ export const directoryToMarkdown: (
 									DString.replace(
 										header,
 										/@title *(?<title>[^\n]*)/g,
-										({ namedGroups }) => `### [${namedGroups.title}](${DPath.computeRelative(argument.outputPathFolderFile, item.path)})`,
+										({ namedGroups }) => `${renderHeading(headingLevel + 1, argument.inputPathFolder)} [${namedGroups.title}](${DPath.computeRelative(argument.outputPathFolderFile, item.path)})`,
 									),
 								),
 								next,
@@ -206,6 +275,9 @@ export const directoryToMarkdown: (
 					inputPathFolder: path,
 					outputPathFolderFile: argument.outputPathFolderFile,
 					isIgnore: argument.isIgnore,
+					headingLevel: indexHeading
+						? headingLevel
+						: argument.headingLevel,
 				})),
 				DCommon.promiseAll,
 				DArray.filter(DEither.isRight),

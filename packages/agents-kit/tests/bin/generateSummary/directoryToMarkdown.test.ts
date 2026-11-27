@@ -1,4 +1,4 @@
-import { directoryToMarkdown } from "../../../bin/generateSummary/directoryToMarkdown";
+import { directoryToMarkdown, HeadingLevelExceededError } from "../../../bin/generateSummary/directoryToMarkdown";
 import * as DArray from "@duplojs/lang/array";
 import type * as DCommon from "@duplojs/lang/common";
 import * as DEither from "@duplojs/lang/either";
@@ -91,5 +91,130 @@ describe("directoryToMarkdown ignore", () => {
 				expect(content).toContain(path);
 			}
 		}
+	});
+
+	it.each([
+		{
+			index: "# Domain",
+			expected: "## [Example]",
+		},
+		{
+			index: "## Domain",
+			expected: "### [Example]",
+		},
+		{
+			index: "### Domain",
+			expected: "#### [Example]",
+		},
+		{
+			index: "#### Domain",
+			expected: "##### [Example]",
+		},
+		{
+			index: "##### Domain",
+			expected: "###### [Example]",
+		},
+	])("places entries below the index heading: $index", async({ index, expected }) => {
+		TESTImplementation.set("walkDirectory", () => Promise.resolve(DEither.right(
+			"file-system-walk-directory",
+			DGenerator.map(["/docs/index.md", "/docs/10-example.ts"], (path) => DSFile.createFileInterface(DPath.createAbsoluteOrThrow(path))),
+		)));
+		TESTImplementation.set("readTextFile", (path) => Promise.resolve(DEither.right(
+			"file-system-read-text-file",
+			path === "/docs/index.md" ? index : "/**\n * @title Example\n */",
+		)));
+
+		const result = await directoryToMarkdown({
+			inputPathFolder,
+			outputPathFolderFile,
+			isIgnore: DPath.createMatcher([]),
+		});
+		expect(DEither.unwrapByInformationOrThrow(result, "render-success")).toContain(expected);
+	});
+
+	it("links to detailed index content without including it in the summary", async() => {
+		TESTImplementation.set("walkDirectory", () => Promise.resolve(DEither.right(
+			"file-system-walk-directory",
+			DGenerator.map(["/docs/index.md"], (path) => DSFile.createFileInterface(DPath.createAbsoluteOrThrow(path))),
+		)));
+		TESTImplementation.set("readTextFile", () => Promise.resolve(DEither.right(
+			"file-system-read-text-file",
+			"## Guide\n\nIntroduction.\n\n---\n\nDetailed explanation.",
+		)));
+
+		const result = await directoryToMarkdown({
+			inputPathFolder,
+			outputPathFolderFile,
+			isIgnore: DPath.createMatcher([]),
+		});
+		const content = DEither.unwrapByInformationOrThrow(result, "render-success");
+		expect(content).toContain("## [Guide](../docs/index.md)");
+		expect(content).toContain("Introduction.");
+		expect(content).not.toContain("Detailed explanation.");
+	});
+
+	it("rejects entries below heading level six", async() => {
+		TESTImplementation.set("walkDirectory", () => Promise.resolve(DEither.right(
+			"file-system-walk-directory",
+			DGenerator.map(["/docs/index.md", "/docs/10-example.ts"], (path) => DSFile.createFileInterface(DPath.createAbsoluteOrThrow(path))),
+		)));
+		TESTImplementation.set("readTextFile", (path) => Promise.resolve(DEither.right(
+			"file-system-read-text-file",
+			path === "/docs/index.md" ? "###### Domain" : "/**\n * @title Example\n */",
+		)));
+
+		const result = directoryToMarkdown({
+			inputPathFolder,
+			outputPathFolderFile,
+			isIgnore: DPath.createMatcher([]),
+		});
+
+		await expect(result).rejects.toThrow(HeadingLevelExceededError);
+		await expect(result).rejects.toThrow("Cannot generate a heading below level 6 in /docs");
+	});
+
+	it("derives nested heading levels from their parent indexes", async() => {
+		TESTImplementation.set("walkDirectory", (path) => Promise.resolve(DEither.right(
+			"file-system-walk-directory",
+			path === "/docs"
+				? DGenerator.concat([DSFile.createFileInterface(DPath.declareAbsolutePath("/docs/index.md"))], [DSFile.createFolderInterface(DPath.declareAbsolutePath("/docs/10-child"))])
+				: DGenerator.map(["/docs/10-child/index.md", "/docs/10-child/10-example.ts"], (value) => DSFile.createFileInterface(DPath.createAbsoluteOrThrow(value))),
+		)));
+		TESTImplementation.set("readTextFile", (path) => {
+			if (path === "/docs/index.md") {
+				return Promise.resolve(DEither.right("file-system-read-text-file", "## Parent"));
+			}
+			if (path === "/docs/10-child/index.md") {
+				return Promise.resolve(DEither.right("file-system-read-text-file", "# Child"));
+			}
+			return Promise.resolve(DEither.right("file-system-read-text-file", "/**\n * @title Example\n */"));
+		});
+
+		const result = await directoryToMarkdown({
+			inputPathFolder,
+			outputPathFolderFile,
+			isIgnore: DPath.createMatcher([]),
+		});
+		const content = DEither.unwrapByInformationOrThrow(result, "render-success");
+		expect(content).toContain("### Child");
+		expect(content).toContain("#### [Example]");
+	});
+
+	it("retains the root heading of an indexed child when its parent has no index", async() => {
+		TESTImplementation.set("walkDirectory", (path) => Promise.resolve(DEither.right(
+			"file-system-walk-directory",
+			path === "/docs"
+				? DGenerator.map(["/docs/10-child"], (value) => DSFile.createFolderInterface(DPath.createAbsoluteOrThrow(value)))
+				: DGenerator.map(["/docs/10-child/index.md"], (value) => DSFile.createFileInterface(DPath.createAbsoluteOrThrow(value))),
+		)));
+		TESTImplementation.set("readTextFile", () => Promise.resolve(DEither.right("file-system-read-text-file", "# Domain")));
+
+		const result = await directoryToMarkdown({
+			inputPathFolder,
+			outputPathFolderFile,
+			isIgnore: DPath.createMatcher([]),
+		});
+		expect(DEither.unwrapByInformationOrThrow(result, "render-success")).toContain("# Domain");
+		expect(DEither.unwrapByInformationOrThrow(result, "render-success")).not.toContain("## Domain");
 	});
 });

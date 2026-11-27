@@ -59,7 +59,7 @@ pnpm exec duplojs-agents-kit setup --type claude
 
 The block comes from `instructions/coding-conventions.md`, included in the published package. Every `{{packagePath}}` placeholder is replaced with the path to the installed AgentKit package relative to the directory containing the selected instructions file (the current working directory). Running `setup` again replaces the block between `<!-- duplojs-agents-kit:coding-conventions:start -->` and `<!-- duplojs-agents-kit:coding-conventions:stop -->`. Incomplete or duplicate markers cause an error before writing. The supported setup types are `default` and `claude`.
 
-For AgentKit development, `pnpm run llms` runs the local LLM documentation tools through `bin/index.ts`. The `generate-summary` subcommand generates a documentation summary from a source directory. It preserves introductory content and links to detailed pages and examples according to their exposure level. This local CLI is not included in the published package. From the package root:
+For AgentKit development, `pnpm run llms` runs the local LLM documentation tools through `bin/index.ts`. The `generate-summary` subcommand generates a documentation summary from a source directory. It preserves introductory content and links to detailed pages and examples according to their exposure level. Index introductions precede `---` and link to any following details. Headings follow their hierarchy up to level six; deeper entries fail generation. This local CLI is not included in the published package. From the package root:
 
 ```sh
 pnpm run llms generate-summary --input docs/concepts --output docs/concepts.llms.md
@@ -68,14 +68,14 @@ pnpm run llms generate-summary --input docs/API/10-lang/10-array --output docs/A
 
 The required `--input` option selects the source directory, and `--output` selects an output path ending in `.llms.md`. The optional `--ignore` pattern excludes matching paths; quote patterns such as `'*.llms.md'` to pass them to the command without shell expansion.
 
-The `generate-table-of-content` subcommand uses the same options to collect existing `llms.md` and `*.llms.md` files recursively, including directories without numeric prefixes:
+The `generate-table-of-content` subcommand uses the same options to collect existing `llms.md` and `*.llms.md` files, including directories without numeric prefixes:
 
 ```sh
 pnpm run llms generate-table-of-content --input docs/API --output docs/API.llms.md
 pnpm run llms generate-table-of-content --input docs/API --output docs/API.llms.md --ignore '**/10-chrono/**'
 ```
 
-For each directory containing an `index.md`, it includes that index's introduction. When an LLM summary is present in the same directory, it turns the index's Markdown headings into links to that summary, relative to the output file. Each index is paired only with the first summary encountered; additional summaries in the same directory do not duplicate the index. Content after a `---` separator is omitted. Indexes without a summary keep their unlinked headings. Child content is included even when a parent directory has no index; summaries without an index provide no local presentation. Entries retain the directory traversal order, ignored directories are not traversed, and the output itself is excluded. This lets an agent choose a domain before loading its function summary.
+The command includes each `index.md` introduction and links its headings to the first summary in the same directory, when present. It stops descending at an indexed summary; otherwise, it continues through child directories. Links are relative to the output, ignored directories are skipped, and the output itself is excluded.
 
 In the monorepo, `pnpm --filter @duplojs/agents-kit build` builds the package, then runs `llms generate-summary` for the concepts and each configured API domain, followed by `llms generate-table-of-content` for `docs/API.llms.md`. `pnpm --filter @duplojs/agents-kit test:types` also checks examples and fixtures under `docs/` and `skills/` through `tsconfig.doc.json`, and `pnpm --filter @duplojs/agents-kit test:lint` includes them in the package's lint checks. Skill references link directly to their TypeScript examples under `references/examples/`; these files are included when the skill is copied or linked during installation.
 
