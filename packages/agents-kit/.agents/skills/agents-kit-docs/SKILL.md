@@ -44,7 +44,7 @@ Le parcours de `generate-summary` commence dans le dossier source passé à `--i
 | --- | --- |
 | Dossier parcouru | Préfixe ordinal sur deux chiffres : `01-constraint/`, `02-currying/`, etc. |
 | Fichier documentaire | Préfixe sur deux chiffres, selon le niveau d'exposition ci-dessous. Même convention pour Markdown et TypeScript. |
-| `index.md` | Présentation courte du domaine correspondant au dossier. |
+| `index.md` | Présentation courte du domaine ou de la section ; facultatif pour les dossiers internes d’un résumé. |
 | Ressource auxiliaire | Fichier ou dossier sans préfixe numérique, comme `fixtures/` ; non parcouru, sauf `index.md`. Peut être référencé ou importé par les documents. |
 
 Choisir le niveau d'exposition avant de numéroter un nouveau fichier :
@@ -53,17 +53,20 @@ Choisir le niveau d'exposition avant de numéroter un nouveau fichier :
 | --- | --- | --- |
 | TypeScript fondamental | `01` à `09` | Header et contenu documentaire. |
 | TypeScript consulté à la demande | `10, 20, 30, 40, 50, 60, 70, 80, 90` | Header uniquement. |
-| Markdown, y compris `index.md` | `01` à `09` ou les dizaines ci-dessus ; `index.md` sans préfixe | Partie précédant le premier séparateur `---`, ou fichier entier sans séparateur. |
+| Markdown fondamental | `01` à `09` | Fichier entier. |
+| Markdown consulté à la demande | `10, 20, 30, 40, 50, 60, 70, 80, 90` ; `index.md` sans préfixe | Introduction avant le premier séparateur `---`, ou fichier entier sans séparateur. |
 
-Les fichiers détaillés utilisent exclusivement les dizaines indiquées : les positions intermédiaires comme `15` ou `25` sont exclues. Le préfixe ordonne les ressources dans leur niveau ; il ne change pas la règle d'exposition du Markdown.
+Les fichiers détaillés utilisent exclusivement les dizaines indiquées : les positions intermédiaires comme `15` ou `25` sont exclues. Le préfixe ordonne les ressources et détermine leur niveau d’exposition.
 
-Le séparateur Markdown est une ligne contenant exactement `---` ; il n'est pas exposé. La partie suivante reste dans le fichier source et se consulte à la demande. Un Markdown sans séparateur doit donc contenir uniquement du routage.
+Pour un Markdown consulté à la demande ou un `index.md`, le séparateur est une ligne contenant `---` ; il n’est pas exposé. Le titre de l’introduction renvoie au fichier lorsque celui-ci contient des détails après le séparateur. Sans séparateur, le fichier entier est exposé : réserver alors son contenu au routage. Les Markdown fondamentaux sont intégrés en entier.
+
+Un résumé peut regrouper plusieurs sous-dossiers : leurs `index.md` facultatifs introduisent les sections, tandis que leurs ressources apparaissent directement dans le même résumé. Les titres des sections et des ressources suivent la hiérarchie des index présents, jusqu’au niveau Markdown 6. Un dossier sans index hérite du niveau de son parent ; un dossier sans index au-dessus des premiers index ne leur impose pas de niveau. Éviter une profondeur excessive et corriger la structure si un titre dépasse le niveau 6.
 
 ## Relier les résumés par un sommaire
 
-`generate-table-of-content` parcourt récursivement le dossier passé à `--input`, y compris les dossiers sans préfixe numérique. Il construit le sommaire à partir des introductions des `index.md`, avant le premier séparateur `---`, et repère les fichiers `llms.md` ou `*.llms.md` présents dans les mêmes dossiers. Il transforme les titres de chaque introduction en liens vers le premier fichier LLM rencontré dans son dossier, relativement au fichier de sortie.
+`generate-table-of-content` parcourt le dossier passé à `--input`, y compris les dossiers sans préfixe numérique. Il utilise les introductions des `index.md` et les fichiers `llms.md` ou `*.llms.md` présents dans le même dossier. Lorsqu’un dossier possède les deux, il lie les titres de son introduction au premier résumé rencontré, relativement à la sortie, puis s’arrête à ce dossier : les sous-dossiers sont exposés par le résumé, pas par le sommaire.
 
-Placer un `index.md` auprès de chaque résumé à rendre accessible dans le sommaire. Son titre et sa description doivent permettre de choisir le domaine ; conserver l'inventaire des ressources dans le résumé. Les index des dossiers parents présentent les regroupements : sans fichier LLM dans leur dossier, leurs titres restent sans lien. Un dossier sans index laisse parcourir ses enfants, mais un résumé sans index n'apporte aucune entrée locale au sommaire.
+Placer un `index.md` auprès de chaque résumé à rendre accessible dans le sommaire. Son titre et sa description doivent permettre de choisir le domaine ; conserver l’inventaire des ressources dans le résumé. Un dossier sans résumé indexé laisse parcourir ses enfants : son index éventuel présente le regroupement sans lien, et un résumé sans index n’apporte aucune entrée locale. Les sous-dossiers couverts par un résumé parent n’ont pas besoin de leur propre résumé ni d’un index pour apparaître dans ce résumé.
 
 Le sommaire réutilise ces présentations sans incorporer le contenu des résumés. Rédiger les index pour qu'ils restent utiles aux deux niveaux où ils sont exposés, plutôt que maintenir manuellement un second catalogue dans le fichier généré.
 

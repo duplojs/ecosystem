@@ -10,7 +10,7 @@ Consacrer un fichier TypeScript à chaque fonction demandée, en regroupant ses 
 
 Le titre du header est `Namespace.fonction`, par exemple `@title DArray.map`, accompagné d'une courte phrase décrivant son rôle. Exposer uniquement ce header dans le résumé du domaine.
 
-La référence API suit le parcours `docs/API.llms.md` → `docs/API/<package>/<domaine>/index.llms.md` → `10-<fonction>.ts`. Chaque domaine possède un `index.md` présentant le rôle de ses API et un résumé `index.llms.md` rassemblant cette présentation et les headers de ses fonctions. Les index parents présentent les packages et l'ensemble de la référence. Appliquer les règles communes de génération et de vérification à ce parcours ; pour un nouveau domaine, ajouter sa commande de résumé au build avant la génération du sommaire.
+La référence API suit le parcours `docs/API.llms.md` → `docs/API/<package>/<domaine>/index.llms.md` → `10-<fonction>.ts`, éventuellement dans un sous-dossier. Chaque domaine possède un `index.md` présentant le rôle de ses API et un résumé `index.llms.md` rassemblant cette présentation et les headers de ses fonctions, y compris celles rangées dans des sous-dossiers. Un sous-dossier peut posséder un `index.md` pour présenter une section, sans nécessiter son propre résumé. Les index parents présentent les packages et l’ensemble de la référence. Appliquer les règles communes de génération et de vérification à ce parcours ; pour un nouveau domaine, ajouter sa commande de résumé au build avant la génération du sommaire.
 
 ## Couvrir les usages et les comportements
 
